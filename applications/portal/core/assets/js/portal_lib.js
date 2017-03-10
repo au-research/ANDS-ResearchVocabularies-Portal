@@ -14893,7 +14893,12 @@ angular.module('uiGmapgoogle-maps.extensions')
       };
     });
 
-}(angular));;angular.module('record_components',['profile_components'])
+  if (typeof module !== 'undefined') {
+    module.exports = 'lz-string';
+  }
+
+}(angular));
+;angular.module('record_components',['profile_components'])
 
 .factory('record_factory', function($http){
 	return{
