@@ -111,7 +111,7 @@
 
 				<div ng-repeat="doc in result.response.docs" class="animated fadeInLeft vocab-search-result">
                     <span class="label label-default pull-right" ng-if="doc.status=='deprecated'"  style="margin-left:5px">[[ doc.status ]]</span>
-                    <a id="widget-link" class="pull-right" href="javascript:showWidget()" ng-if="doc.widgetable" tip="<b>Widgetable</b><br/>This vocabulary can be readily used for resource description or discovery in your system using our vocabulary widget.<br/><a id='widget-link2' href='javascript:showWidget()'>Learn more</a>">
+                    <a id="widget-link" class="pull-right" href="#" ng-if="doc.widgetable" tip="<b>Widgetable</b><br/>This vocabulary can be readily used for resource description or discovery in your system using our vocabulary widget.<br/><a id='widget-link2' target='_blank' href='{{portal_url('vocabs/page/widget_explorer')}}'>Learn more</a>">
                        <span class="label label-default pull-right"><img class="widget-icon" height="16" width="16"src="{{asset_url('images/cogwheels_white.png', 'core')}}"/> widgetable</span>
                     </a>
 
