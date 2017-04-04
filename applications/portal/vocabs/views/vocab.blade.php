@@ -147,9 +147,6 @@ foreach ($vocab['versions'] as $version) {
         @if(isset($sissvocEndPoint))
         <div id="widget" class="panel swatch-white">
             <div class="panel-body">Use this code snippet to describe or discover resources with {{$vocab['title']}} in your system
-                <a id="widget-link" class="pull-right" href="javascript:showWidget()" tip="<b>Widgetable</b><br/>This vocabulary can be readily used for resource description or discovery in your system using our vocabulary widget.<br/><a id='widget-link2' href='javascript:showWidget()'>Learn more</a>">
-                    <span class="label label-default pull-right"><img class="widget-icon" height="16" width="16"src="{{asset_url('images/cogwheels_white.png', 'core')}}"/> widgetable</span>
-                </a>
                 <br/><br/><b>Example:</b> Search for and select concepts in this vocabulary
             <input type="text" id="{{$vocab['slug']}}" name="{{$vocab['slug']}}" placeholder="Search" size="80" autocomplete="off">
                 <script>
@@ -162,7 +159,7 @@ foreach ($vocab['versions'] as $version) {
                 });
                 </script>
             </div>
-            <button id="widget-toggle">Show code</button><div class="pull-right dev-link"><a target="_blank" href="http://developers.ands.org.au/widgets/vocab_widget/">Learn more</a></div>
+            <button id="widget-toggle">Show code</button><div class="pull-right dev-link"><a target="_blank" href="{{portal_url('vocabs/page/widget_explorer')}}">Learn more</a></div>
             <br/>
             <div id="widget-info" class="toggle">
             <pre class="panel-body prettyprint">

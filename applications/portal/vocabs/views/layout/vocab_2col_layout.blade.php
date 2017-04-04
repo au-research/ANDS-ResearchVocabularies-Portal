@@ -37,7 +37,7 @@ $title = rawurlencode(substr($vocab['title'], 0, 200)) ;
                                 @if($vocab['status']=='deprecated')
                                 <span class="label label-default pull-right" style="margin-left:5px">{{ $vocab['status'] }}</span>
                                 @endif
-                                <a id="widget-link" class="pull-right" href="javascript:showWidget()" tip="<b>Widgetable</b><br/>This vocabulary can be readily used for resource description or discovery in your system using our vocabulary widget.<br/><a id='widget-link2' href='javascript:showWidget()'>Learn more</a>">
+                                <a id="widget-link" class="pull-right" href="" tip="<b>Widgetable</b><br/>This vocabulary can be readily used for resource description or discovery in your system using our vocabulary widget.<br/><a id='widget-link2' target='_blank' href='{{portal_url('vocabs/page/widget_explorer')}}'>Learn more</a>">
                                     <span class="label label-default pull-right"><img class="widget-icon" height="16" width="16"src="{{asset_url('images/cogwheels_white.png', 'core')}}"/> widgetable</span>
                                 </a>
                                 <h1 class="hairline bordered-normal break" style="line-height:1.1em"><span itemprop="name" ng-non-bindable>{{ htmlspecialchars($vocab['title']) }} </span></h1>
