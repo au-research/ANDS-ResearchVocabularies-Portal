@@ -3,6 +3,12 @@ DirectoryIndex index.php
 RewriteEngine on
 RewriteBase /
 
+# Hide .git directories
+RewriteRule ^\.git ./index.php [L]
+
+# Hide .env
+RewriteRule ^\.env ./index.php [L]
+
 RewriteRule ^services/ registry/ [R=301,L]
 
 # ANDS-specific deploy rules (not needed in third-party deployment)
