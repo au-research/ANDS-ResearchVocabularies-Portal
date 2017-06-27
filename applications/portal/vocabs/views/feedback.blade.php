@@ -46,9 +46,8 @@
               <li>changes to concept definitions;</li>
               <li>improvements to vocabulary descriptions.</li>
             </ul>
-            To suggest a change or correction to the information about
-            a vocabulary or a concept within a vocabulary that is
-            included in Research Vocabularies Australia:
+            To suggest a change to a vocabulary in Research
+            Vocabularies Australia:
             <ol>
               <li>Navigate to the vocabulary description
                 in Research Vocabularies Australia.</li>
