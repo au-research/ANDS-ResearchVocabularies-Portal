@@ -191,7 +191,7 @@ class Migrate extends MX_Controller
      */
     private function readMigrationStatus()
     {
-        $file = '/tmp/migrationStatus';
+        $file = '/tmp/migrationStatus-vocabs';
         if (file_exists($file)) {
             $fileContents = parse_ini_file($file);
             return $fileContents;
@@ -206,7 +206,7 @@ class Migrate extends MX_Controller
      */
     private function writeMigrationStatus($migrationStatus)
     {
-        $file = '/tmp/migrationStatus';
+        $file = '/tmp/migrationStatus-vocabs';
         $this->write_ini_file($migrationStatus, $file, false);
     }
 
