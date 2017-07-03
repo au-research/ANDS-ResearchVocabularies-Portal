@@ -13,7 +13,10 @@ return [
         'database' => 'dbs_vocabs'
     ],
     'roles' => [
-        'database' => 'dbs_roles'
+        'database' => env('DB_DATABASE_ROLES', 'dbs_roles'),
+        'hostname' => env('DB_HOSTNAME_ROLES', null),
+        'username' => env('DB_USERNAME_ROLES', null),
+        'password' => env('DB_PASSWORD_ROLES', null)
     ],
     'vocabs' => [
         'database' => 'dbs_vocabs'
