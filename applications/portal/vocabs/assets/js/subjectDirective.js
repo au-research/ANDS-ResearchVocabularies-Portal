@@ -32,7 +32,7 @@
                 // First, set a default. This value is taken from
                 // applications/apps/vocab_widget/assets/js/vocab_widget.js
                 scope.subject_vocab_proxy_setting =
-                    'https://researchdata.ands.org.au/apps/vocab_widget/proxy/';
+                    'https://vocabs.ands.org.au/apps/vocab_widget/proxy/';
                 // Then, see if there is an override present.
                 if (typeof subject_vocab_proxy === 'string') {
                     scope.subject_vocab_proxy_setting = subject_vocab_proxy;
