@@ -27,18 +27,18 @@
 
 	var defaults = {
 	    //location (absolute URL) of the jsonp proxy
-	    endpoint: 'http://researchdata.ands.org.au/api/v1.0/vocab.jsonp/',
+	    endpoint: 'https://vocabs.ands.org.au/api/v1.0/vocab.jsonp/',
 
-        //api_key set when instantiated
-        api_key: 'public',
+	    //api_key set when instantiated
+	    api_key: 'public',
 
 	    //sisvoc repository to query.
 	    repository: '',
 
-	    //UI helper mode. currently, 'search' and 'narrow', and 'tree' are available
+	    //UI helper mode. currently, 'search', 'narrow', 'collection', and 'tree' are available
 	    mode: "",
 
-	    //search doesn't require any parameters, but narrow does (and broaden will)
+	    //search doesn't require any parameters, but narrow and collection do (and broaden will)
 	    //in the latter case, the parameter is the URI to narrow/broaden on
 	    mode_params: "",
 
@@ -55,7 +55,7 @@
 	    //should we cache results? yes by default
 	    cache: true,
 
-	    //search mode: what to show when no hits? set to boolean(false) to supress
+	    //search mode: what to show when no hits? set to boolean(false) to suppress
 	    nohits_msg: "No matches found",
 
 	    //what to show when there's some weird error? set to boolean(false)
@@ -114,7 +114,7 @@
 		    case 'narrow':
 			handler = new NarrowHandler($this, settings);
 			break;
-			case 'collection':
+		    case 'collection':
 			handler = new CollectionHandler($this, settings);
 			break;
 		    case 'tree':
@@ -756,7 +756,7 @@
 	}
 
     });
-	
+
     var NarrowHandler = UIHandler.extend({
 	preconditions: function() {
 	    var preconds = this._super();
@@ -826,6 +826,30 @@
 				       handler.handle_selection(event)
 				   });
 		     });
+	    // And same again, for collection mode.
+	    handler._container
+		.one('collection.vocab.ands',
+		     function(event, data) {
+			 if (data.status === "OK") {
+			     $.each(data.items, function(idx, item) {
+				 handler._list.append(handler.vocab_item(item));
+			     });
+			 }
+			 else {
+			     handler._err({status:500,
+					   responseText:data.message});
+			 }
+			 handler._container.bind("keyup", function(e) {
+			     handler.vocab_lookup(e);
+			 });
+			 handler._list
+			     .children('li[role="vocab_item"]')
+			     .bind('click',
+				   function(event) {
+				       handler.handle_selection(event)
+				   });
+		     });
+
 
 	    handler._container.one('error.vocab.ands',
 				   function(event, xhr) {
@@ -1037,8 +1061,8 @@
 
     });
 
-	var CollectionHandler = NarrowHandler.extend({
-		
+    var CollectionHandler = NarrowHandler.extend({
+
 		preconditions: function() {
 			// Skip NarrowHandlers's preconditions, just call the UIHandler preconditions
 		    var preconds = this.__proto__.__proto__.__proto__.preconditions();

@@ -27,7 +27,7 @@ module.exports = function(grunt){
                 files:{'<%= yeoman.vocab_widget %>/dist/vocab_widget.min.js':['<%= yeoman.vocab_widget %>/js/vocab_widget.js']}
             },
             vocab_widget_v2:{
-                files:{'<%= yeoman.vocab_widget %>/dist/vocab_widget_v2.min.js':['<%= yeoman.vocab_widget %>/js/vocab_widget.js']}
+                files:{'<%= yeoman.vocab_widget %>/dist/vocab_widget_v2.min.js':['<%= yeoman.vocab_widget %>/js/vocab_widget_v2.js']}
             },
 			location_widget:{
 				files:{'<%= yeoman.location_widget %>/dist/location_capture_widget.min.js':['<%= yeoman.location_widget %>/js/location_capture_widget.js']}
