@@ -4,25 +4,28 @@
 <body ng-app="app" ng-controller="searchCtrl">
 @include('includes/top-menu')
 <?php
+
+// There are FIXMEs in this file! Fix them!
+
+use ANDS\VocabsRegistry\Model\Vocabulary;
+use ANDS\VocabsRegistry\Model\RelatedEntity;
+use ANDS\VocabsRegistry\Model\RelatedEntityRef;
+
 $publisher = array();
-if(isset($vocab['related_entity'])){
-    foreach($vocab['related_entity'] as $related){
-        if($related['type']=='party'){
-            if(is_array($related['relationship'])){
-                foreach($related['relationship'] as $relationship){
-                    if($relationship=='publishedBy'){
-                        $publisher[]=$related;
-                    }
-                }
-            }elseif($related['relationship']=='publishedBy'){
+
+foreach($vocab->getRelatedEntityRef() as $relatedRef) {
+    $related = $relatedRef->getRelatedEntity();
+    if ($related->getType() == RelatedEntity::TYPE_PARTY) {
+        foreach ($relatedRef->getRelation() as $relationship) {
+            if ($relationship == RelatedEntityRef::RELATION_PUBLISHED_BY) {
                 $publisher[]=$related;
             }
         }
     }
 }
 
-$url = base_url().$vocab['slug'];
-$title = rawurlencode(substr($vocab['title'], 0, 200)) ;
+$url = base_url().$vocab->getSlug();
+$title = rawurlencode(substr($vocab->getTitle(), 0, 200)) ;
 
 ?>
 <div id="content">
@@ -34,23 +37,23 @@ $title = rawurlencode(substr($vocab['title'], 0, 200)) ;
 
                         <div class="panel panel-primary swatch-white panel-content">
                             <div class="panel-body">
-                                @if($vocab['status']=='deprecated')
-                                <span class="label label-default pull-right" style="margin-left:5px">{{ $vocab['status'] }}</span>
+                                @if($vocab->getStatus()==Vocabulary::STATUS_DEPRECATED)
+                                <span class="label label-default pull-right" style="margin-left:5px">{{ htmlspecialchars($vocab->getStatus()) }}</span>
                                 @endif
-                                <a id="widget-link" class="pull-right" href="" tip="<b>Widgetable</b><br/>This vocabulary can be readily used for resource description or discovery in your system using our vocabulary widget.<br/><a id='widget-link2' target='_blank' href='{{portal_url('vocabs/page/widget_explorer')}}'>Learn more</a>">
+                                <a id="widget-link" class="pull-right" href="" tip="&lt;b>Widgetable&lt;/b>&lt;br/>This vocabulary can be readily used for resource description or discovery in your system using our vocabulary widget.&lt;br/>&lt;a id='widget-link2' target='_blank' href='{{portal_url('vocabs/page/widget_explorer')}}'>Learn more&lt;/a>">
                                     <span class="label label-default pull-right"><img class="widget-icon" height="16" width="16"src="{{asset_url('images/cogwheels_white.png', 'core')}}"/> widgetable</span>
                                 </a>
-                                <h1 class="hairline bordered-normal break" style="line-height:1.1em"><span itemprop="name" ng-non-bindable>{{ htmlspecialchars($vocab['title']) }} </span></h1>
-                                @if (isset($vocab['acronym']))
-                                <small>Acronym: {{ $vocab['acronym'] }}</small><br>
+                                <h1 class="hairline bordered-normal break" style="line-height:1.1em"><span itemprop="name" ng-non-bindable>{{ htmlspecialchars($vocab->getTitle()) }} </span></h1>
+                                @if (!empty($vocab->getAcronym()))
+                                <small>Acronym: {{ htmlspecialchars($vocab->getAcronym()) }}</small><br>
                                 @endif
                                 @if(isset($publisher))
                                 @foreach($publisher as $apub)
-                                <small>Publisher </small>  <a class="re_preview" related='{{json_encode($apub)}}' v_id="{{ $vocab['id'] }}" sub_type="publisher"> {{$apub['title']}} </a>
+                                <small>Publisher </small>  <a class="re_preview" related='FIXME {{$apub}}' v_id="{{ $vocab->getId() }}" sub_type="publisher"> {{htmlspecialchars($apub->getTitle())}} </a>
                                 @endforeach
                                 @endif
                                 <div class="pull-right">
-                                    {{ isset($vocab['creation_date']) ? "Created: ".display_release_date($vocab['creation_date']) : ''}}
+                                    {{ !empty($vocab->getCreationDate()) ? "Created: ".display_release_date($vocab->getCreationDate()) : ''}}
                                     <a href="http://www.facebook.com/sharer.php?u={{$url}}"><i class="fa fa-facebook" style="padding-right:4px"></i></a>
                                     <a href="https://twitter.com/share?url={{$url}}&text={{$title}}&hashtags=andsdata"><i class="fa fa-twitter" style="padding-right:4px"></i></a>
                                     <a href="https://plus.google.com/share?url={{$url}}"><i class="fa fa-google" style="padding-right:4px"></i></a>

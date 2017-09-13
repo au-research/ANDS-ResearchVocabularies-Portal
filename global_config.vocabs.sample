@@ -10,9 +10,9 @@
 /*
 /*					Vocabs Software Configuration
 /*
-/*		Release Version :	19
+/*		Release Version :	25
 /*		Contact Person  :	services@ands.org.au
-/*		Help/support    :	http://developers.ands.org.au/
+/*		Help/support    :	http://documentation.ands.org.au/
 /*
 /*************************************************************************/
 
@@ -20,7 +20,7 @@
 /* (SECTION 1) REQUIRED CONFIGURATION OPTIONS
 /*************************************************************************/
 // The Release Version
-$ENV['release_version'] = 'r19';
+$ENV['release_version'] = 'r25';
 
 // Details of your database server (note: advanced settings can be modified in Sect 4)
 $eDBCONF['default']['hostname'] = 'localhost';  // hostname or IP address
@@ -99,6 +99,9 @@ $environment_directives['portal'] = array(
 // Definitely _do_ need to make modifications below; at least,
 // to auth_url.
 $ENV['vocab_config'] = array(
+	// This must resolve to the Vocabs Registry. Use web server
+	// configuration to proxy, if necessary.
+	'registry_url' => 'http://localhost/repository/api/registry/',
 	// This must resolve to the Vocabs toolkit. Use web server
 	// configuration to proxy, if necessary.
 	'toolkit_url' => 'http://localhost/repository/api/toolkit/',
