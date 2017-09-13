@@ -242,7 +242,7 @@ foreach ($vocab['versions'] as $version) {
                 <?php
                     if (isset($related['relationship'])) {
                         if (is_array($related['relationship'])) {
-                            echo readable(implode($related['relationship'], ','));
+                            echo readable(implode($related['relationship'], ', '));
                         } else {
                             echo readable($related['relationship']);
                         }
@@ -260,7 +260,7 @@ foreach ($vocab['versions'] as $version) {
                 <?php
                     if (isset($related['relationship'])) {
                         if (is_array($related['relationship'])) {
-                            echo implode($related['relationship'], ',');
+                            echo implode(array_map('readable', $related['relationship']), ', ');
                         } else {
                             echo readable($related['relationship']);
                         }
