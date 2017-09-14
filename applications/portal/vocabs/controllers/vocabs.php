@@ -2,6 +2,8 @@
 
 use ANDS\VocabsRegistry\Model\AccessPoint;
 use ANDS\VocabsRegistry\Model\Version;
+use ANDS\VocabsRegistry\Model\Vocabulary;
+use ANDS\VocabsRegistry\ApiException;
 
 require_once('vocabs-registry-client/autoload.php');
 
@@ -1143,155 +1145,6 @@ class Vocabs extends MX_Controller
         echo(json_encode($response));
     }
 
-    /**
-     * New Services Controller
-     * For allowing RESTful API against the Vocabs Registry
-     *
-     *    Used by assets/js/vocabs_visualise_directive.js:
-     *       tree
-     *
-     *
-     * @param  string $class [vocabs] context
-     * @param  string $id [id] of the context
-     * @param  string $method [method] description of the query
-     * @return API response / JSON
-     * @example services/vocabs/ , services/vocabs/anzsrc-for ,
-     *          services/vocabs/rifcs/versions
-     */
-    public function servicesnew($class = '', $id = '', $method = '', $type = '')
-    {
-
-        //header
-        header('Cache-Control: no-cache, must-revalidate');
-        header('Content-type: application/json');
-        set_exception_handler('json_exception_handler');
-
-        if ($class != 'vocabs') {
-            throw new Exception('/vocabs required');
-        }
-        $result = '';
-        if ($id == 'all' || $id == '') {
-            // More to come.
-        } elseif ($id != '') {
-            // an individual vocab id was specified
-            if ($method == 'tree') {
-                $result = $this->display_tree($id);
-            } elseif ($method == 'tree-raw') {
-                $result = $this->display_tree($id, true);
-            }
-        }
-        echo json_encode(
-            array(
-                'status' => 'OK',
-                'message' => $result,
-            ));
-    }
-
-
-    /** Get the current version for a vocabulary, if it has one.
-     * @param int $id The vocabulary ID of the vocabulary to be looked up
-     * @return NULL|Version
-     */
-    private function getCurrentVersionForVocabularyId($id) {
-        $versions = $this->RegistryAPI->getVersionsForVocabularyById($id);
-        $current_version = null;
-        foreach ($versions as $version) {
-            if ($version->getStatus() == Version::STATUS_CURRENT) {
-                $current_version = $version;
-                break;
-            }
-        }
-        return $current_version;
-    }
-
-
-    /**
-     * Return the tree representation of the current version
-     * requires the concepts_tree already harvested and transformed
-     * Recursive to with the BuilTree function
-     * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
-     * @param int $id If !$raw, then a version ID; if $raw, then a vocabulary ID
-     * @param  boolean $raw whether to send back the tree as returned from the Registry
-     * @return array $tree
-     */
-    private function display_tree($id, $raw = false)
-    {
-        // FIXME: this version of raw handling assumes a numeric vocabulary ID.
-        // The old version supports lookup by slug, and we may need to
-        // support that (which might be by a different service name).
-        if ($raw) {
-            $current_version = $this->getCurrentVersionForVocabularyId($id);
-            $id = $current_version->getId();
-        }
-
-        $aps = $this->RegistryAPI->getAccessPointsForVersionById($id);
-
-        $sissvoc_end_point = "";
-
-        foreach ($aps->getAccessPoint() as $ap) {
-            if ($ap->getDiscriminator() ==
-                AccessPoint::DISCRIMINATOR_AP_SISSVOC) {
-                $sissvoc_end_point = $ap->getApSissvoc()->getUrlPrefix();
-            }
-        }
-
-        list($content, $statusCode, $httpHeader) =
-            $this->RegistryAPI->getVersionArtefactConceptTreeWithHttpInfo($id);
-
-        if ($statusCode != 200) {
-            //file doesn't exist
-            return false;
-        }
-
-//         echo('statusCode='.$statusCode);
-//         echo('content='.gettype($content));
-
-        $tree_data = json_decode($content, true);
-        if ($raw) return $tree_data;
-
-        //build a tree a little bit nicer
-        $this->buildTree($tree_data, $sissvoc_end_point);
-
-        return $tree_data;
-    }
-
-    /**
-     * Helper function for @display_tree.
-     * Recursively called to build the tree when there are child concepts.
-     * See Toolkit class ...provider.transform.JsonTreeTransformProvider
-     * for a description of the structure of the input tree data.
-     * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
-     * @param  array $treeData
-     */
-    private function buildTree(&$treeData, $sissvoc_end_point = '')
-    {
-        if (is_array($treeData)) {
-            foreach ($treeData as &$concept) {
-                $uri = $concept['iri'];
-                $title = isset($concept['prefLabel']) ?
-                $concept['prefLabel'] : 'No Title';
-                $tipText = '<p><b>'. $title . '<br/>IRI: </b>'. $uri;
-
-                if(isset($concept['definition']))
-                    $tipText .= '<br/><b>Definition: </b>'
-                        . $concept['definition'];
-                        if(isset($concept['notation']))
-                            $tipText .= '<br/><b>Notation: </b>' .$concept['notation'];
-                            if($sissvoc_end_point != '')
-                                $tipText .= '<br/><a class="pull-right" target="_blank" href="' .$sissvoc_end_point . '/resource?uri=' . $uri . '">View as linked data</a>';
-                                $concept['value'] = $title;
-                                $concept['tip'] = $tipText. '</p>';
-                                if (isset($concept['narrower'])) {
-                                    $this->buildTree($concept['narrower'],
-                                        $sissvoc_end_point);
-                                    $concept['num_child'] = sizeof($concept['narrower']);
-                                } else {
-                                    $concept['num_child'] = 0;
-                                }
-            }
-        }
-    }
-
 
 
     /**
@@ -1612,6 +1465,9 @@ class Vocabs extends MX_Controller
         var_dump($this->user->isSuperAdmin());
     }
 
+    /* New methods for registry version of the portal follow here. */
+
+
     /**
      * Viewing a vocabulary by ID.
      * The top-level global_config.php routes requests by default
@@ -1651,6 +1507,282 @@ class Vocabs extends MX_Controller
         }
     }
 
+    /**
+     * Edit a vocabulary in the Registry.
+     * Displaying a view for editing a vocabulary
+     * Using the same CMS as add but directed towards a vocabulary
+     * Authorization is checked.
+     * @param  string $id ID of the vocabulary, unique for a vocabulary
+     * @return view
+     * @throws Exception
+     * @author  Minh Duc Nguyen <minh.nguyen@ands.org.au>
+     */
+    public function editnew($id = false)
+    {
+        if (!$this->user->isLoggedIn()) {
+            // throw new Exception('User not logged in');
+            redirect(get_vocab_config('auth_url')
+                . 'login#?redirect='
+                . portal_url('vocabs/editnew/' . $id));
+        }
+        if (!$id) {
+            throw new Exception('Require a Vocabulary ID to edit');
+        }
+
+        try {
+            $vocab = $this->RegistryAPI->getVocabularyById($id,
+                'true', 'true', 'true');
+
+            // First, check existence
+            if (!$vocab) {
+                throw new Exception('Vocab ID ' . $id . ' not found');
+            }
+
+            // Then, check authorization.
+            if (!$this->isOwner($id)) {
+                throw new Exception('Not authorised to edit Vocab ID ' . $id);
+            }
+            // var_dump($vocab);
+            // throw new Exception($vocab->prop['status']);
+            if ($vocab->getStatus() == Vocabulary::STATUS_PUBLISHED) {
+                // throw new Exception('This is published');
+                $hasDraft = $this->RegistryAPI->hasDraftVocabularyById($id);
+                if ($hasDraft) {
+                    // FIXME
+//                     $draft_vocab = $this->vocab->getDraftBySlug($vocab->prop['slug']);
+//                     redirect(portal_url('vocabs/editnew/') . $draft_vocab->id);
+                    //throw new Exception($vocab->id);
+                }
+            }
+
+            $event = array(
+                'event' => 'pageview',
+                'page' => 'edit',
+                'vocab' => $vocab->getTitle(),
+                'slug' => $vocab->getSlug(),
+                'id' => $vocab->getId(),
+            );
+            vocab_log_terms($event);
+
+            $this->blade
+                ->set(
+                'scripts',
+                array('vocabs_cms', 'versionCtrl', 'relatedCtrl',
+                    'subjectDirective')
+                )
+                ->set('vocab', $vocab)
+                ->set('title', 'Edit - '
+                    . $vocab->getTitle() . ' - Research Vocabularies Australia')
+                    ->render('cms');
+        } catch (Exception $e) {
+            // No longer throw an exception, like this:
+            // throw new Exception('No Record found with slug: ' . $slug);
+            // But instead, show the soft 404 page.
+//             $message = 'Vocab ID ' . $id . ' not found';
+            $message = $e->getMessage();
+            $this->blade
+            ->set('message', $message)
+            ->render('soft_404');
+        }
+    }
+
+    /**
+     * New Services Controller
+     * For allowing RESTful API against the Vocabs Registry
+     *
+     *    Used by assets/js/vocabs_visualise_directive.js:
+     *       tree
+     *
+     *
+     * @param  string $class [vocabs] context
+     * @param  string $id [id] of the context
+     * @param  string $method [method] description of the query
+     * @return API response / JSON
+     * @example services/vocabs/ , services/vocabs/anzsrc-for ,
+     *          services/vocabs/rifcs/versions
+     */
+    public function servicesnew($class = '', $id = '', $method = '', $type = '')
+    {
+
+        //header
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Content-type: application/json');
+        set_exception_handler('json_exception_handler');
+
+        if ($class != 'vocabs') {
+            throw new Exception('/vocabs required');
+        }
+        $result = '';
+        if ($id == 'all' || $id == '') {
+            // More to come.
+        } elseif ($id != '') {
+            // an individual vocab id was specified
+            if ($method == 'tree') {
+                $result = $this->display_tree($id);
+            } elseif ($method == 'tree-raw') {
+                $result = $this->display_tree($id, true);
+            }
+        }
+        echo json_encode(
+            array(
+                'status' => 'OK',
+                'message' => $result,
+            ));
+    }
+
+
+    /** Get the current version for a vocabulary, if it has one.
+     * @param int $id The vocabulary ID of the vocabulary to be looked up
+     * @return NULL|Version
+     */
+    private function getCurrentVersionForVocabularyId($id) {
+        $versions = $this->RegistryAPI->getVersionsForVocabularyById($id);
+        $current_version = null;
+        foreach ($versions as $version) {
+            if ($version->getStatus() == Version::STATUS_CURRENT) {
+                $current_version = $version;
+                break;
+            }
+        }
+        return $current_version;
+    }
+
+
+    /**
+     * Return the tree representation of the current version
+     * requires the concepts_tree already harvested and transformed
+     * Recursive to with the BuilTree function
+     * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
+     * @param int $id If !$raw, then a version ID; if $raw, then a vocabulary ID
+     * @param  boolean $raw whether to send back the tree as returned from the Registry
+     * @return array $tree
+     */
+    private function display_tree($id, $raw = false)
+    {
+        // FIXME: this version of raw handling assumes a numeric vocabulary ID.
+        // The old version supports lookup by slug, and we may need to
+        // support that (which might be by a different service name).
+        if ($raw) {
+            $current_version = $this->getCurrentVersionForVocabularyId($id);
+            $id = $current_version->getId();
+        }
+
+        $aps = $this->RegistryAPI->getAccessPointsForVersionById($id);
+
+        $sissvoc_end_point = "";
+
+        foreach ($aps->getAccessPoint() as $ap) {
+            if ($ap->getDiscriminator() ==
+                AccessPoint::DISCRIMINATOR_AP_SISSVOC) {
+                    $sissvoc_end_point = $ap->getApSissvoc()->getUrlPrefix();
+                }
+        }
+
+        list($content, $statusCode, $httpHeader) =
+        $this->RegistryAPI->getVersionArtefactConceptTreeWithHttpInfo($id);
+
+        if ($statusCode != 200) {
+            //file doesn't exist
+            return false;
+        }
+
+        //         echo('statusCode='.$statusCode);
+        //         echo('content='.gettype($content));
+
+        $tree_data = json_decode($content, true);
+        if ($raw) return $tree_data;
+
+        //build a tree a little bit nicer
+        $this->buildTree($tree_data, $sissvoc_end_point);
+
+        return $tree_data;
+    }
+
+    /**
+     * Helper function for @display_tree.
+     * Recursively called to build the tree when there are child concepts.
+     * See Toolkit class ...provider.transform.JsonTreeTransformProvider
+     * for a description of the structure of the input tree data.
+     * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
+     * @param  array $treeData
+     */
+    private function buildTree(&$treeData, $sissvoc_end_point = '')
+    {
+        if (is_array($treeData)) {
+            foreach ($treeData as &$concept) {
+                $uri = $concept['iri'];
+                $title = isset($concept['prefLabel']) ?
+                $concept['prefLabel'] : 'No Title';
+                $tipText = '<p><b>'. $title . '<br/>IRI: </b>'. $uri;
+
+                if(isset($concept['definition']))
+                    $tipText .= '<br/><b>Definition: </b>'
+                        . $concept['definition'];
+                        if(isset($concept['notation']))
+                            $tipText .= '<br/><b>Notation: </b>' .$concept['notation'];
+                            if($sissvoc_end_point != '')
+                                $tipText .= '<br/><a class="pull-right" target="_blank" href="' .$sissvoc_end_point . '/resource?uri=' . $uri . '">View as linked data</a>';
+                                $concept['value'] = $title;
+                                $concept['tip'] = $tipText. '</p>';
+                                if (isset($concept['narrower'])) {
+                                    $this->buildTree($concept['narrower'],
+                                        $sissvoc_end_point);
+                                    $concept['num_child'] = sizeof($concept['narrower']);
+                                } else {
+                                    $concept['num_child'] = 0;
+                                }
+            }
+        }
+    }
+
+    /**
+     * Returns true if the user is logged in
+     * and has ownership of the given vocab.
+     * @param  Vocabulary $vocab The Vocabulary to check ownership.
+     * @param  bool $allowSuperuser Take superuser privileges
+     *         into account. If true (the default), if the user
+     *         is logged in as a registry superuser, this method
+     *         will always return true. (This test is performed
+     *         _before_ checking the existence of the vocabulary.
+     *         Therefore, note the method's precondition that the
+     *         vocabulary must exist, for this method to give
+     *         a correct result.) If false, superuser privileges
+     *         are ignored; the user must have an appropriate
+     *         affiliation. In general, there is no need to
+     *         pass in a value for this parameter. The presence
+     *         of this parameter is (for now) specifically to support
+     *         unit testing of this method.
+     * @return true if and only the user is logged in
+     * and has ownership of the vocabulary.
+     */
+    public function isOwner($id, $allowSuperuser = true)
+    {
+        if (!$this->user->isLoggedIn()) {
+            // Not even logged in.
+            return false;
+        }
+        // Only take superuser privileges into account if we
+        // are asked to (which is also the default).
+        if ($allowSuperuser) {
+            if ($this->user->isSuperAdmin()) {
+                // Superuser, so definitely authorised.
+                return true;
+            }
+        }
+
+        try {
+            $authorized = $this->RegistryAPI->ownsVocabularyById($id);
+            if ($authorized->getBooleanValue()) {
+                return true;
+            }
+        } catch (ApiException $e) {
+            return false;
+        }
+        // Not an owner.
+        return false;
+    }
+
+
 
     /**
      * Constructor Method
@@ -1663,7 +1795,16 @@ class Vocabs extends MX_Controller
         $this->load->library('blade');
         ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()->setHost(
             get_vocab_config('registry_url'));
+         ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()
+             ->setDebug(true)
+         ->setDebugFile('/var/www/html/workareas/richard/vocabs-new/engine/logs/error/richardvocabsnewphpdebug.txt');
 
+        $cookie_name = $this->session->sess_cookie_name;
+        $cookie = $this->input->cookie($cookie_name);
+        if ($cookie) {
+            ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()
+                ->setApiKey($cookie_name, $cookie);
+        }
         $this->RegistryAPI = new ANDS\VocabsRegistry\Api\ResourcesApi();
 
     }
