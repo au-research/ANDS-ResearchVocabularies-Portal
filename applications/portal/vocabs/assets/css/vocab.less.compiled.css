@@ -353,6 +353,10 @@ input:disabled + label {
   margin-left: 15px;
   margin-bottom: 2px;
 }
+/* Allow Related entity tooltips to be much wider than usual. */
+.re-help-tip {
+  max-width: 460px;
+}
 /* Allow Confluence help tooltips to be much wider than usual. */
 .cms-help-tip {
   max-width: 460px;

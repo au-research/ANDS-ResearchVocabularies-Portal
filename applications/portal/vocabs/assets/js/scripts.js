@@ -2434,7 +2434,7 @@ $(document).on(
                     viewport: $(window)
                 },
                 style: {
-                    classes: 'qtip-light qtip-shadow qtip-normal qtip-bootstrap'
+                    classes: 'qtip-light qtip-shadow qtip-normal qtip-bootstrap re-help-tip'
                 }
             },
             event
