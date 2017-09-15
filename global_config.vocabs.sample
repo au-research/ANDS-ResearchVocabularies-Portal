@@ -99,9 +99,9 @@ $environment_directives['portal'] = array(
 // Definitely _do_ need to make modifications below; at least,
 // to auth_url.
 $ENV['vocab_config'] = array(
-	// This must resolve to the Vocabs Registry. Use web server
+	// This must resolve to the Vocabs Registry API. Use web server
 	// configuration to proxy, if necessary.
-	'registry_url' => 'http://localhost/repository/api/registry/',
+	'registry_api_url' => 'http://localhost/repository/api/registry/',
 	// This must resolve to the Vocabs toolkit. Use web server
 	// configuration to proxy, if necessary.
 	'toolkit_url' => 'http://localhost/repository/api/toolkit/',

@@ -1794,7 +1794,7 @@ class Vocabs extends MX_Controller
         $this->load->model('vocabularies', 'vocab');
         $this->load->library('blade');
         ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()->setHost(
-            get_vocab_config('registry_url'));
+            get_vocab_config('registry_api_url'));
          ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()
              ->setDebug(true)
          ->setDebugFile('/var/www/html/workareas/richard/vocabs-new/engine/logs/error/richardvocabsnewphpdebug.txt');
