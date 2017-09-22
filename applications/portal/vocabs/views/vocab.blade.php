@@ -10,7 +10,7 @@ $cc=$vocab->getLicence();
 $versions = $vocab->getVersion();
 $current_version = null;
 foreach ($versions as $version) {
-    if ($version->getStatus() == Version::STATUS_CURRENT) {
+    if ($version->getStatus() === Version::STATUS_CURRENT) {
         $current_version = $version;
         break;
     }
@@ -22,7 +22,7 @@ $related_service = array();
 
 foreach ($vocab->getRelatedEntityRef() as $relatedRef) {
     $related = $relatedRef->getRelatedEntity();
-    if ($related->getType() == RelatedEntity::TYPE_PARTY) {
+    if ($related->getType() === RelatedEntity::TYPE_PARTY) {
         $relationships = implode($relatedRef->getRelation(), ',');
         if(strpos($relationships,
             RelatedEntityRef::RELATION_PUBLISHED_BY)
@@ -32,10 +32,10 @@ foreach ($vocab->getRelatedEntityRef() as $relatedRef) {
                 $related_people[] =$relatedRef;
             }
     }
-    elseif ($related->getType()== RelatedEntity::TYPE_SERVICE) {
+    elseif ($related->getType() === RelatedEntity::TYPE_SERVICE) {
         $related_service[]=$relatedRef;
     }
-    elseif ($related->getType() == RelatedEntity::TYPE_VOCABULARY) {
+    elseif ($related->getType() === RelatedEntity::TYPE_VOCABULARY) {
             $related_vocabs[]=$relatedRef;
     }
 }
@@ -52,7 +52,7 @@ foreach ($vocab->getRelatedEntityRef() as $relatedRef) {
 // Determine whether or not to show the widgetableness.
 // Set $sissvocEndPoint if it is to be shown.
 foreach ($vocab->getVersion() as $version) {
-    if ($version->getStatus() == Version::STATUS_CURRENT
+    if ($version->getStatus() === Version::STATUS_CURRENT
         && !empty($version->getAccessPoint())) {
             foreach ($version->getAccessPoint() as $ap)
             {

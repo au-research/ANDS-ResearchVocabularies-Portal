@@ -15,9 +15,9 @@ $publisher = array();
 
 foreach($vocab->getRelatedEntityRef() as $relatedRef) {
     $related = $relatedRef->getRelatedEntity();
-    if ($related->getType() == RelatedEntity::TYPE_PARTY) {
+    if ($related->getType() === RelatedEntity::TYPE_PARTY) {
         foreach ($relatedRef->getRelation() as $relationship) {
-            if ($relationship == RelatedEntityRef::RELATION_PUBLISHED_BY) {
+            if ($relationship === RelatedEntityRef::RELATION_PUBLISHED_BY) {
                 $publisher[]=$related;
             }
         }
@@ -37,7 +37,7 @@ $title = rawurlencode(substr($vocab->getTitle(), 0, 200)) ;
 
                         <div class="panel panel-primary swatch-white panel-content">
                             <div class="panel-body">
-                                @if($vocab->getStatus()==Vocabulary::STATUS_DEPRECATED)
+                                @if($vocab->getStatus() === Vocabulary::STATUS_DEPRECATED)
                                 <span class="label label-default pull-right" style="margin-left:5px">{{ htmlspecialchars($vocab->getStatus()) }}</span>
                                 @endif
                                 <a id="widget-link" class="pull-right" href="" tip="&lt;b>Widgetable&lt;/b>&lt;br/>This vocabulary can be readily used for resource description or discovery in your system using our vocabulary widget.&lt;br/>&lt;a id='widget-link2' target='_blank' href='{{portal_url('vocabs/page/widget_explorer')}}'>Learn more&lt;/a>">

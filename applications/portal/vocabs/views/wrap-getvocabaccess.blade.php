@@ -26,11 +26,11 @@
     $hasSesameDownloads = false;
     $fileCounter = 0;
     foreach ($current_version->getAccessPoint() as $ap) {
-        if ($ap->getDiscriminator() == AP_FILE) {
+        if ($ap->getDiscriminator() === AP_FILE) {
             $hasFile = true;
             $fileCounter ++;
         }
-        if ($ap->getDiscriminator() == AP_SESAME_DOWNLOAD)
+        if ($ap->getDiscriminator() === AP_SESAME_DOWNLOAD)
             $hasSesameDownloads = true;
     }
 
@@ -43,7 +43,7 @@
     // check if there's not current version
     $hasNotCurrentVersion = false;
     foreach ($vocab->getVersion() as $version) {
-        if ($version->getStatus() != ANDS\VocabsRegistry\Model\Version::STATUS_CURRENT && ! empty($version->getAccessPoint())) {
+        if ($version->getStatus() !== ANDS\VocabsRegistry\Model\Version::STATUS_CURRENT && ! empty($version->getAccessPoint())) {
             $hasNotCurrentVersion = true;
         }
     }
@@ -64,7 +64,7 @@
     <div class="box-content">
 
       @foreach($current_version->getAccessPoint() as $ap)
-        @if(($ap->getDiscriminator() == AP_FILE && !$singleFile) || ($hasSesameDownloads))
+        @if(($ap->getDiscriminator() === AP_FILE && !$singleFile) || ($hasSesameDownloads))
         <a class="btn btn-lg btn-block btn-primary download-chooser"><i
           class="fa fa-download"></i> Download <i
           class="fa fa-chevron-right"></i></a>
@@ -74,7 +74,7 @@
 
       @if($singleFile)
         @foreach($current_version->getAccessPoint() as $ap)
-          @if($ap->getDiscriminator() == AP_FILE)
+          @if($ap->getDiscriminator() === AP_FILE)
             <a class="btn btn-lg btn-block btn-primary"
                href="{{ $ap->getApFile()->getUrl() }}"><i class="fa fa-download"></i>
                Download ({{ htmlspecialchars($ap->getApFile()->getFormat()) }})</a>
@@ -82,7 +82,7 @@
         @endforeach
       @endif
       @foreach($current_version->getAccessPoint() as $ap)
-        @if($ap->getDiscriminator() == AP_WEB_PAGE)
+        @if($ap->getDiscriminator() === AP_WEB_PAGE)
           <div
             class="btn-group btn-group-justified element element-no-bottom element-no-top"
             role="group" aria-label="...">
@@ -94,7 +94,7 @@
         @endif
       @endforeach
       @foreach($current_version->getAccessPoint() as $ap)
-        @if($ap->getDiscriminator() == AP_SISSVOC)
+        @if($ap->getDiscriminator() === AP_SISSVOC)
           <div
             class="btn-group btn-group-justified element element-no-bottom element-no-top"
             role="group" aria-label="...">
@@ -106,7 +106,7 @@
         @endif
       @endforeach
       @foreach($current_version->getAccessPoint() as $ap)
-        @if($ap->getDiscriminator() == AP_API_SPARQL)
+        @if($ap->getDiscriminator() === AP_API_SPARQL)
           <div class="text-center">
             {{--  href not in play, as click event overridden due to showsp --}}
             <small><a class="showsp" href="javascript:;">Show SPARQL Endpoint</a></small>
@@ -131,13 +131,13 @@
         @endif
         <ul>
           @foreach($current_version->getAccessPoint() as $ap)
-            @if($ap->getDiscriminator() == AP_FILE)
+            @if($ap->getDiscriminator() === AP_FILE)
               <li><a href="{{ $ap->getApFile()->getUrl() }}">{{ htmlspecialchars($ap->getApFile()->getFormat()) }}</a></li>
             @endif
           @endforeach
         </ul>
         @foreach($current_version->getAccessPoint() as $ap)
-          @if($ap->getDiscriminator() == AP_SESAME_DOWNLOAD)
+          @if($ap->getDiscriminator() === AP_SESAME_DOWNLOAD)
             @if($hasFile && $hasSesameDownloads)
               Other Formats:
             @endif
@@ -169,17 +169,17 @@
 
 
 @foreach($vocab->getVersion() as $version)
-  @if($version->getStatus() != ANDS\VocabsRegistry\Model\Version::STATUS_CURRENT && !empty($version->getAccessPoint()))
+  @if($version->getStatus() !== ANDS\VocabsRegistry\Model\Version::STATUS_CURRENT && !empty($version->getAccessPoint()))
     <?php
       $hasFile = false;
       $hasSesameDownloads = false;
       $fileCounter = 0;
       foreach ($version->getAccessPoint() as $ap) {
-        if ($ap->getDiscriminator() == AP_FILE) {
+        if ($ap->getDiscriminator() === AP_FILE) {
           $hasFile = true;
           $fileCounter++;
         }
-        if ($ap->getDiscriminator() == AP_SESAME_DOWNLOAD) $hasSesameDownloads = true;
+        if ($ap->getDiscriminator() === AP_SESAME_DOWNLOAD) $hasSesameDownloads = true;
       }
 
       //single file happens when there is only 1 download for a file and no other formats
@@ -205,14 +205,14 @@
 
         @if($singleFile)
           @foreach($version->getAccessPoint() as $ap)
-            @if($ap->getDiscriminator() == AP_FILE)
+            @if($ap->getDiscriminator() === AP_FILE)
               <a class="btn btn-lg btn-block btn-primary" href="{{ $ap->getApFile()->getUrl() }}"><i class="fa fa-download"></i> Download ({{ htmlspecialchars($ap->getApFile()->getFormat()) }})</a>
             @endif
           @endforeach
         @endif
 
         @foreach($version->getAccessPoint() as $ap)
-          @if($ap->getDiscriminator() == AP_WEB_PAGE)
+          @if($ap->getDiscriminator() === AP_WEB_PAGE)
             <div class="btn-group btn-group-justified element element-no-bottom element-no-top" role="group" aria-label="...">
                 <a target="_blank" class="btn btn-sm btn-default {{htmlspecialchars($ap->getDiscriminator())}}" href="{{ $ap->getApWebPage()->getUrl() }}"><i class="fa fa-external-link"></i> Access Web Page</a>
             </div>
@@ -220,7 +220,7 @@
         @endforeach
 
         @foreach($version->getAccessPoint() as $ap)
-          @if($ap->getDiscriminator() == AP_SISSVOC)
+          @if($ap->getDiscriminator() === AP_SISSVOC)
             <div class="btn-group btn-group-justified element element-no-bottom element-no-top" role="group" aria-label="...">
               <a target="_blank" class="btn btn-sm btn-default {{htmlspecialchars($ap->getDiscriminator())}}" href="{{ $ap->getApSissvoc()->getUrlPrefix() }}/concept"><i class="fa fa-external-link"></i> Access Linked Data API</a>
             </div>
@@ -228,7 +228,7 @@
         @endforeach
 
         @foreach($version->getAccessPoint() as $ap)
-          @if($ap->getDiscriminator() == AP_API_SPARQL)
+          @if($ap->getDiscriminator() === AP_API_SPARQL)
             <div class="text-center">
               {{--  href not in play, as click event overridden due to showsp --}}
               <small><a class="showsp" href="{{ $ap->getApApiSparql()->getUrl() }}">Show SPARQL Endpoint</a></small>
@@ -249,7 +249,7 @@
         </div>
         <div class="download-content hidden">
           @foreach($version->getAccessPoint() as $ap)
-            @if($ap->getDiscriminator() == AP_FILE)
+            @if($ap->getDiscriminator() === AP_FILE)
               @if($hasFile && $hasSesameDownloads)
                 Original:
               @endif
@@ -259,7 +259,7 @@
             @endif
           @endforeach
           @foreach($version->getAccessPoint() as $ap)
-            @if($ap->getDiscriminator() == AP_SESAME_DOWNLOAD)
+            @if($ap->getDiscriminator() === AP_SESAME_DOWNLOAD)
               @if($hasFile && $hasSesameDownloads)
                 Other Formats:
               @endif
