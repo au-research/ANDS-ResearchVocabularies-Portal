@@ -5,8 +5,13 @@
         .module('app')
         .controller('versionCtrl', versionCtrl);
 
-    function versionCtrl($scope, $timeout, $modalInstance, $log, $upload, version, action, vocab, confluenceTip) {
+    function versionCtrl($scope, $timeout, $modalInstance, $log, Upload, version, action, vocab, confluenceTip) {
         $log.debug(action);
+        // Make the modal dialog (at least, temporarily) movable,
+        // as per request in SD-11572, CC-2050.
+        $timeout(function(){
+            $('.modal-content').draggable({ revert: true });
+        });
         $scope.versionStatuses = ['current', 'superseded'];
         $scope.vocab = vocab;
         $scope.confluenceTip = confluenceTip;

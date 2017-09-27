@@ -5,7 +5,15 @@
         .module('app')
         .controller('relatedCtrl', relatedCtrl);
 
-    function relatedCtrl($scope, $modalInstance, $log, $timeout, entity, type, vocabs_factory, confluenceTip) {
+    function relatedCtrl($scope, $modalInstance, $log, $timeout,
+                         entity, type, vocabs_factory, confluenceTip) {
+
+        // Make the modal dialog (at least, temporarily) movable,
+        // to be consistent with the version modal (which was
+        // as per request in SD-11572, CC-2050).
+        $timeout(function(){
+            $('.modal-content').draggable({ revert: true });
+        });
 
         /* Define all the relationships, per type. The "types" value
            is an array of the types for which this relation is valid.
