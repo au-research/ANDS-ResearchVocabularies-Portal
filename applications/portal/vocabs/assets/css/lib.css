@@ -13386,14 +13386,7 @@ p.stars span a.star-5.active:after, p.stars span a.star-5:hover:after, p.stars s
 .qtipmodal-ie6fix{
 	position: absolute !important;
 }
-/*! 
- * angular-loading-bar v0.7.1
- * https://chieffancypants.github.io/angular-loading-bar
- * Copyright (c) 2015 Wes Cruver
- * License: MIT
- */
-
-#loading-bar,#loading-bar-spinner{pointer-events:none;-webkit-pointer-events:none;-webkit-transition:350ms linear all;-moz-transition:350ms linear all;-o-transition:350ms linear all;transition:350ms linear all}#loading-bar.ng-enter,#loading-bar.ng-leave.ng-leave-active,#loading-bar-spinner.ng-enter,#loading-bar-spinner.ng-leave.ng-leave-active{opacity:0}#loading-bar.ng-enter.ng-enter-active,#loading-bar.ng-leave,#loading-bar-spinner.ng-enter.ng-enter-active,#loading-bar-spinner.ng-leave{opacity:1}#loading-bar .bar{-webkit-transition:width 350ms;-moz-transition:width 350ms;-o-transition:width 350ms;transition:width 350ms;background:#29d;position:fixed;z-index:10002;top:0;left:0;width:100%;height:2px;border-bottom-right-radius:1px;border-top-right-radius:1px}#loading-bar .peg{position:absolute;width:70px;right:0;top:0;height:2px;opacity:.45;-moz-box-shadow:#29d 1px 0 6px 1px;-ms-box-shadow:#29d 1px 0 6px 1px;-webkit-box-shadow:#29d 1px 0 6px 1px;box-shadow:#29d 1px 0 6px 1px;-moz-border-radius:100%;-webkit-border-radius:100%;border-radius:100%}#loading-bar-spinner{display:block;position:fixed;z-index:10002;top:10px;left:10px}#loading-bar-spinner .spinner-icon{width:14px;height:14px;border:solid 2px transparent;border-top-color:#29d;border-left-color:#29d;border-radius:10px;-webkit-animation:loading-bar-spinner 400ms linear infinite;-moz-animation:loading-bar-spinner 400ms linear infinite;-ms-animation:loading-bar-spinner 400ms linear infinite;-o-animation:loading-bar-spinner 400ms linear infinite;animation:loading-bar-spinner 400ms linear infinite}@-webkit-keyframes loading-bar-spinner{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@-moz-keyframes loading-bar-spinner{0%{-moz-transform:rotate(0deg);transform:rotate(0deg)}100%{-moz-transform:rotate(360deg);transform:rotate(360deg)}}@-o-keyframes loading-bar-spinner{0%{-o-transform:rotate(0deg);transform:rotate(0deg)}100%{-o-transform:rotate(360deg);transform:rotate(360deg)}}@-ms-keyframes loading-bar-spinner{0%{-ms-transform:rotate(0deg);transform:rotate(0deg)}100%{-ms-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes loading-bar-spinner{0%{transform:rotate(0deg);transform:rotate(0deg)}100%{transform:rotate(360deg);transform:rotate(360deg)}}/* Just the Lozenge CSS, extracted from minified AUI CSS.
+#loading-bar,#loading-bar-spinner{pointer-events:none;-webkit-pointer-events:none;-webkit-transition:350ms linear all;-moz-transition:350ms linear all;-o-transition:350ms linear all;transition:350ms linear all}#loading-bar-spinner.ng-enter,#loading-bar-spinner.ng-leave.ng-leave-active,#loading-bar.ng-enter,#loading-bar.ng-leave.ng-leave-active{opacity:0}#loading-bar-spinner.ng-enter.ng-enter-active,#loading-bar-spinner.ng-leave,#loading-bar.ng-enter.ng-enter-active,#loading-bar.ng-leave{opacity:1}#loading-bar .bar{-webkit-transition:width 350ms;-moz-transition:width 350ms;-o-transition:width 350ms;transition:width 350ms;background:#29d;position:fixed;z-index:10002;top:0;left:0;width:100%;height:2px;border-bottom-right-radius:1px;border-top-right-radius:1px}#loading-bar .peg{position:absolute;width:70px;right:0;top:0;height:2px;opacity:.45;-moz-box-shadow:#29d 1px 0 6px 1px;-ms-box-shadow:#29d 1px 0 6px 1px;-webkit-box-shadow:#29d 1px 0 6px 1px;box-shadow:#29d 1px 0 6px 1px;-moz-border-radius:100%;-webkit-border-radius:100%;border-radius:100%}#loading-bar-spinner{display:block;position:fixed;z-index:10002;top:10px;left:10px}#loading-bar-spinner .spinner-icon{width:14px;height:14px;border:2px solid transparent;border-top-color:#29d;border-left-color:#29d;border-radius:50%;-webkit-animation:loading-bar-spinner 400ms linear infinite;-moz-animation:loading-bar-spinner 400ms linear infinite;-ms-animation:loading-bar-spinner 400ms linear infinite;-o-animation:loading-bar-spinner 400ms linear infinite;animation:loading-bar-spinner 400ms linear infinite}@-webkit-keyframes loading-bar-spinner{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@-moz-keyframes loading-bar-spinner{0%{-moz-transform:rotate(0);transform:rotate(0)}100%{-moz-transform:rotate(360deg);transform:rotate(360deg)}}@-o-keyframes loading-bar-spinner{0%{-o-transform:rotate(0);transform:rotate(0)}100%{-o-transform:rotate(360deg);transform:rotate(360deg)}}@-ms-keyframes loading-bar-spinner{0%{-ms-transform:rotate(0);transform:rotate(0)}100%{-ms-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes loading-bar-spinner{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}/* Just the Lozenge CSS, extracted from minified AUI CSS.
 The following is Copyright © 2009 - 2015 Atlassian Corporation Pty Ltd.
 Licensed under the Apache License, Version 2.0 (the "License"). */
 /*! AUI Lozenge */.aui-lozenge{background:#ccc;border:1px solid #ccc;border-radius:3px;color:#333;display:inline-block;font-size:11px;font-weight:700;line-height:99%;margin:0;padding:2px 5px;text-align:center;text-decoration:none;text-transform:uppercase}.aui-lozenge.aui-lozenge-subtle{background-color:#fff;border-color:#ccc;color:#333}.aui-lozenge-success{background-color:#14892c;border-color:#14892c;color:#fff}.aui-lozenge-success.aui-lozenge-subtle{background-color:#fff;border-color:#60b070;color:#14892c}.aui-lozenge-error{background-color:#d04437;border-color:#d04437;color:#fff}.aui-lozenge-error.aui-lozenge-subtle{background-color:#fff;border-color:#e8a29b;color:#d04437}.aui-lozenge-current{background-color:#f6c342;border-color:#f6c342;color:#594300}.aui-lozenge-current.aui-lozenge-subtle{background-color:#fff;border-color:#ffe9a8;color:#594300}.aui-lozenge-complete{background-color:#4a6785;border-color:#4a6785;color:#fff}.aui-lozenge-complete.aui-lozenge-subtle{background-color:#fff;border-color:#a5b3c2;color:#4a6785}.aui-lozenge-moved{background-color:#815b3a;border-color:#815b3a;color:#fff}.aui-lozenge-moved.aui-lozenge-subtle{background-color:#fff;border-color:#c0ad9d;color:#815b3a}
@@ -13401,7 +13394,7 @@ Licensed under the Apache License, Version 2.0 (the "License"). */
 /*!
  * ui-select
  * http://github.com/angular-ui/ui-select
- * Version: 0.16.0 - 2016-03-23T20:51:56.678Z
+ * Version: 0.19.7 - 2017-04-15T14:28:36.790Z
  * License: MIT
  */
 
@@ -13454,12 +13447,14 @@ body > .select2-container.open {
 }
 
 /* Handle up direction Select2 */
-.ui-select-container[theme="select2"].direction-up .ui-select-match {
+.ui-select-container[theme="select2"].direction-up .ui-select-match,
+.ui-select-container.select2.direction-up .ui-select-match {
     border-radius: 4px; /* FIXME hardcoded value :-/ */
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
-.ui-select-container[theme="select2"].direction-up .ui-select-dropdown {
+.ui-select-container[theme="select2"].direction-up .ui-select-dropdown,
+.ui-select-container.select2.direction-up .ui-select-dropdown {
     border-radius: 4px; /* FIXME hardcoded value :-/ */
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
@@ -13471,11 +13466,23 @@ body > .select2-container.open {
 
     margin-top: -4px; /* FIXME hardcoded value :-/ */
 }
-.ui-select-container[theme="select2"].direction-up .ui-select-dropdown .select2-search {
+.ui-select-container[theme="select2"].direction-up .ui-select-dropdown .select2-search,
+.ui-select-container.select2.direction-up .ui-select-dropdown .select2-search {
     margin-top: 4px; /* FIXME hardcoded value :-/ */
 }
-.ui-select-container[theme="select2"].direction-up.select2-dropdown-open .ui-select-match {
+.ui-select-container[theme="select2"].direction-up.select2-dropdown-open .ui-select-match,
+.ui-select-container.select2.direction-up.select2-dropdown-open .ui-select-match {
     border-bottom-color: #5897fb;
+}
+
+.ui-select-container[theme="select2"] .ui-select-dropdown .ui-select-search-hidden,
+.ui-select-container[theme="select2"] .ui-select-dropdown .ui-select-search-hidden input{
+    opacity: 0;
+    height: 0;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    border:0;
 }
 
 /* Selectize theme */
@@ -13486,8 +13493,13 @@ body > .select2-container.open {
 }
 
 /* Fix input width for Selectize theme */
-.selectize-control > .selectize-input > input {
+.selectize-control.single > .selectize-input > input {
   width: 100%;
+}
+
+/* Fix line break when there's at least one item selected with the Selectize theme */
+.selectize-control.multi > .selectize-input > input {
+  margin: 0 !important;
 }
 
 /* Fix dropdown width for Selectize theme */
@@ -13503,8 +13515,17 @@ body > .select2-container.open {
 /* Handle up direction Selectize */
 .ui-select-container[theme="selectize"].direction-up .ui-select-dropdown {
     box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.25);
-
     margin-top: -2px; /* FIXME hardcoded value :-/ */
+}
+
+.ui-select-container[theme="selectize"] input.ui-select-search-hidden{
+    opacity: 0;
+    height: 0;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    border:0;
+    width: 0;
 }
 
 /* Bootstrap theme */
@@ -13549,6 +13570,15 @@ body > .select2-container.open {
   border-bottom-right-radius: 0 !important;
 }
 
+.ui-select-bootstrap .ui-select-search-hidden{
+    opacity: 0;
+    height: 0;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    border:0;
+}
+
 .ui-select-bootstrap > .ui-select-match > .btn{
   /* Instead of center because of .btn */
   text-align: left !important;
@@ -13561,7 +13591,7 @@ body > .select2-container.open {
 }
 
 /* See Scrollable Menu with Bootstrap 3 http://stackoverflow.com/questions/19227496 */
-.ui-select-bootstrap > .ui-select-choices {
+.ui-select-bootstrap > .ui-select-choices ,.ui-select-bootstrap > .ui-select-no-choice {
   width: 100%;
   height: auto;
   max-height: 200px;
@@ -13600,7 +13630,11 @@ body > .ui-select-bootstrap.open {
   position: relative;
 }
 
-.ui-select-multiple .ui-select-match-item.dropping-before:before {
+.ui-select-multiple .ui-select-match-item.dropping .ui-select-match-close {
+  pointer-events: none;
+}
+
+.ui-select-multiple:hover .ui-select-match-item.dropping-before:before {
   content: "";
   position: absolute;
   top: 0;
@@ -13610,7 +13644,7 @@ body > .ui-select-bootstrap.open {
   border-left: 1px solid #428bca;
 }
 
-.ui-select-multiple .ui-select-match-item.dropping-after:after {
+.ui-select-multiple:hover .ui-select-match-item.dropping-after:after {
   content: "";
   position: absolute;
   top: 0;
@@ -13620,7 +13654,8 @@ body > .ui-select-bootstrap.open {
   border-right: 1px solid #428bca;
 }
 
-.ui-select-bootstrap .ui-select-choices-row>a {
+.ui-select-bootstrap .ui-select-choices-row>span {
+    cursor: pointer;
     display: block;
     padding: 3px 20px;
     clear: both;
@@ -13630,21 +13665,21 @@ body > .ui-select-bootstrap.open {
     white-space: nowrap;
 }
 
-.ui-select-bootstrap .ui-select-choices-row>a:hover, .ui-select-bootstrap .ui-select-choices-row>a:focus {
+.ui-select-bootstrap .ui-select-choices-row>span:hover, .ui-select-bootstrap .ui-select-choices-row>span:focus {
     text-decoration: none;
     color: #262626;
     background-color: #f5f5f5;
 }
 
-.ui-select-bootstrap .ui-select-choices-row.active>a {
+.ui-select-bootstrap .ui-select-choices-row.active>span {
     color: #fff;
     text-decoration: none;
     outline: 0;
     background-color: #428bca;
 }
 
-.ui-select-bootstrap .ui-select-choices-row.disabled>a,
-.ui-select-bootstrap .ui-select-choices-row.active.disabled>a {
+.ui-select-bootstrap .ui-select-choices-row.disabled>span,
+.ui-select-bootstrap .ui-select-choices-row.active.disabled>span {
     color: #777;
     cursor: not-allowed;
     background-color: #fff;
@@ -13664,4 +13699,57 @@ body > .ui-select-bootstrap.open {
 /* Handle up direction Bootstrap */
 .ui-select-container[theme="bootstrap"].direction-up .ui-select-dropdown {
     box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.ui-select-bootstrap .ui-select-match-text {
+    width: 100%;
+    padding-right: 1em;
+}
+.ui-select-bootstrap .ui-select-match-text span {
+    display: inline-block;
+    width: 100%;
+    overflow: hidden;
+}
+.ui-select-bootstrap .ui-select-toggle > a.btn {
+  position: absolute;
+  height: 10px;
+  right: 10px;
+  margin-top: -2px;
+}
+
+/* Spinner */
+.ui-select-refreshing.glyphicon {
+    position: absolute;
+    right: 0;
+    padding: 8px 27px;
+ }
+
+@-webkit-keyframes ui-select-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@keyframes ui-select-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+.ui-select-spin {
+  -webkit-animation: ui-select-spin 2s infinite linear;
+  animation: ui-select-spin 2s infinite linear;
+}
+
+.ui-select-refreshing.ng-animate {
+  -webkit-animation: none 0s;
 }

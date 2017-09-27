@@ -39,7 +39,7 @@
     <script src="{{ asset_url('js/lib/angular-bootstrap/ui-bootstrap.min.js') }}"></script>
     <script src="{{ asset_url('js/lib/angular-bootstrap/ui-bootstrap-tpls.min.js' )}}"></script>
     <script src="{{ asset_url('js/lib/angular-loading-bar/build/loading-bar.min.js')}}"></script>
-    <script type="text/javascript" src="{{ asset_url('js/lib/ng-file-upload/angular-file-upload-all.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset_url('js/lib/ng-file-upload/ng-file-upload-all.min.js') }}"></script>
     <script src="{{ asset_url('ands-green/js/packages.min.js','templates') }}"></script>
     <script src="{{ asset_url('js/modified-ui-bootstrap-tpls-0.10.0.js') }}"></script>
 @else
@@ -47,6 +47,8 @@
 @endif
 
 <script src='//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.js'></script>
+<!-- JQuery UI used for draggable modal dialogs on CMS. -->
+<script src='//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
 <script src="{{asset_url('lib/qtip2/jquery.qtip.js', 'core')}}"></script>
 <script type="text/javascript" src="{{ base_url() }}apps/assets/vocab_widget/js/vocab_widget_v2.js"></script>
 
