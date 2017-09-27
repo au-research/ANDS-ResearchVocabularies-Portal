@@ -137,7 +137,12 @@
             }
         };
 
+        // This can be called when apForm is undefined, so return true
+        // in that case.
         $scope.validateAP = function () {
+            if (!$scope.form.apForm) {
+                return true;
+            }
             delete $scope.ap_error_message;
             if (!$scope.form.apForm.$valid) {
                 $scope.ap_error_message = 'Form Validation Failed';
@@ -247,21 +252,29 @@
                     var file = files[i];
                     $scope.uploading = true;
                     delete $scope.error_upload_msg;
-                    $upload.upload({
+                    Upload.upload({
                         url: base_url + 'vocabs/upload',
-                        file: file
-                    }).progress(function (evt) {
-                        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                        $log.debug('progress: ' + progressPercentage + '% ' + evt.config.file.name);
-                        $scope.uploadPercentage = progressPercentage;
-                    }).success(function (data, status, headers, config) {
-                        $log.debug(config);
+                        data: {file: file}
+                    }).then(function (resp) {
+                        // success
+                        // data, status, headers, config
+                        $log.debug(resp.config);
                         $scope.uploading = false;
-                        if (data.status == 'OK' && data.url) {
-                            ap.uri = data.url;
-                        } else if (data.status == 'ERROR') {
-                            $scope.error_upload_msg = data.message;
+                        if (resp.data.status == 'OK' && resp.data.url) {
+                            ap.uri = resp.data.url;
+                        } else if (resp.data.status == 'ERROR') {
+                            $scope.error_upload_msg = resp.data.message;
                         }
+                    },
+                    function (resp) {
+                        // error
+                        $scope.error_upload_msg = resp.data.message;
+                    },
+                    function (evt) {
+                        // progress
+                        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                        $log.debug('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+                        $scope.uploadPercentage = progressPercentage;
                     });
                 }
             }
