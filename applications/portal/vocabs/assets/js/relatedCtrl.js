@@ -14,6 +14,9 @@
         $timeout(function(){
             $('.modal-content').draggable({ revert: true });
         });
+        // Set up access to the Registry API.
+        var VocabularyRegistryApi = require('vocabulary_registry_api');
+        var api = new VocabularyRegistryApi.ResourcesApi();
 
         /* Define all the relationships, per type. The "types" value
            is an array of the types for which this relation is valid.
@@ -22,16 +25,67 @@
         $scope.allRelatedEntityRelations = [
             {"value": "publishedBy", "text": "Publisher", "types": ["party"]},
             {"value": "hasAuthor", "text": "Author", "types": ["party"]},
-            {"value": "hasContributor", "text": "Contributor", "types": ["party"]},
-            {"value": "pointOfContact", "text": "Point of contact", "types": ["party"]},
-            {"value": "implementedBy", "text": "Implementer", "types": ["party"]},
+            {"value": "hasContributor", "text": "Contributor",
+             "types": ["party"]},
+            {"value": "pointOfContact", "text": "Point of contact",
+             "types": ["party"]},
+            {"value": "implementedBy", "text": "Implementer",
+             "types": ["party"]},
             {"value": "consumerOf", "text": "Consumer", "types": ["party"]},
-            {"value": "hasAssociationWith", "text": "Associated with", "types": ["service", "vocabulary"]},
-            {"value": "isPresentedBy", "text": "Presented by", "types": ["service"]},
+            {"value": "hasAssociationWith", "text": "Associated with",
+             "types": ["service", "vocabulary"]},
+            {"value": "isPresentedBy", "text": "Presented by",
+             "types": ["service"]},
             {"value": "isUsedBy", "text": "Used by", "types": ["service"]},
-            {"value": "isDerivedFrom", "text": "Derived from", "types": ["vocabulary"]},
+            {"value": "isDerivedFrom", "text": "Derived from",
+             "types": ["vocabulary"]},
             {"value": "enriches", "text": "Enriches", "types": ["vocabulary"]},
             {"value": "isPartOf", "text": "Part of", "types": ["vocabulary"]}
+        ];
+
+        /* Define all the related entity identifier types.
+         *
+         */
+        var ite = VocabularyRegistryApi.RelatedEntityIdentifier.
+            IdentifierTypeEnum;
+        $scope.rei_types = [
+            {"id": ite["AU-ANL:PEAU"], "label": "AU-ANL:PEAU",
+             "placeholder": "nla.party-12345",
+             "validate": /^nla\.party-\d+$/},
+            {"id": ite.doi, "label": "DOI",
+             "placeholder": "10.12345",
+             "validate": /^10\../},
+            {"id": ite.handle, "label": "Handle",
+             "placeholder": "123.456/abc",
+             "validate": /^\d.*\/./},
+            {"id": ite.infouri, "label": "InfoURI",
+             "placeholder": "info:abc",
+             "validate": /^info:./},
+            {"id": ite.isil, "label": "ISIL",
+             "placeholder": "DK-710100",
+             "validate":
+               /^([A-Z]{2}|[A-Za-z]|[A-Za-z]{3,4})-[A-Za-z0-9:/-]{1,11}$/},
+            {"id": ite.isni, "label": "ISNI",
+             "placeholder": "000000012150090X",
+             "validate": /^\d{15}[\dX]$/},
+            {"id": ite.local, "label": "Local",
+             "placeholder": "ABC 123",
+             "validate": /^/},
+            {"id": ite.orcid, "label": "OrcID",
+             "placeholder": "0000-0002-1825-0097",
+             "validate": /^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$/},
+            {"id": ite.purl, "label": "Purl",
+             "placeholder": "http://purl.org/my-identifier",
+             "validate": /^https?:\/\/purl.org\/./},
+            {"id": ite.researcherID, "label": "Researcher ID",
+             "placeholder": "A-1009-2008",
+             "validate": /^[A-Z]{1,3}-[1-9][0-9]{3}-[0-9]{4}$/},
+            {"id": ite.uri, "label": "URI",
+             "placeholder": "http://my.url/123",
+             "validate": /^/},
+            {"id": ite.viaf, "label": "VIAF",
+             "placeholder": "49224511",
+             "validate": /^[1-9]\d(\d{0,7}|\d{17,20})$/}
         ];
 
         $scope.relatedEntityTypes = ['publisher', 'vocabulary', 'service'];
@@ -84,12 +138,23 @@
 
         $scope.populate = function (item, model, label) {
             $log.debug(item,model,label);
-            $scope.entity.email = item.email;
-            $scope.entity.phone = item.phone;
-            $scope.entity.id = item.id;
+            $scope.entity.email = item.getEmail();
+            $scope.entity.phone = item.getPhone();
+            $scope.entity.id = item.getId();
 
-            if (!$scope.entity.urls || $scope.entity.urls.length == 0) $scope.entity.urls = item.urls;
-            if (!$scope.entity.identifiers || $scope.entity.identifiers.length == 0) $scope.entity.identifiers = item.identifiers;
+//            if (!$scope.entity.urls || $scope.entity.urls.length == 0) $scope.entity.urls = item.urls;
+            $scope.entity.urls = [];
+            angular.forEach(item.getUrl(), function(url) {
+                $scope.entity.urls.push({'url' : url});
+            });
+
+            api.getRelatedEntityById(item.getId()).
+            then(function (data) {
+                // FIXME
+                $scope.entity.identifiers = angular.copy(data.identifiers);
+            });
+
+//            if (!$scope.entity.identifiers || $scope.entity.identifiers.length == 0) $scope.entity.identifiers = item.identifiers;
         };
 
         $scope.list_add = function (type, obj) {
@@ -231,10 +296,12 @@
             $modalInstance.dismiss();
         };
 
-        vocabs_factory.suggest(type).then(function (data) {
-            if (data.status == 'OK') {
-                $scope.suggestions = data.message;
-            }
+        // Get all existing related entities of the same type, in order
+        // to be able to provide suggestions.
+        api.getRelatedEntities({"relatedEntityType" : type}).
+        then(function (data) {
+            var suggestions = data.getRelatedEntity();
+            $scope.suggestions = angular.copy(suggestions);
         });
 
     }

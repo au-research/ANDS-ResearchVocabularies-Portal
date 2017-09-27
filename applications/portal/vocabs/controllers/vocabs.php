@@ -1544,7 +1544,7 @@ class Vocabs extends MX_Controller
             }
             // var_dump($vocab);
             // throw new Exception($vocab->prop['status']);
-            if ($vocab->getStatus() == Vocabulary::STATUS_PUBLISHED) {
+            if ($vocab->getStatus() === Vocabulary::STATUS_PUBLISHED) {
                 // throw new Exception('This is published');
                 $hasDraft = $this->RegistryAPI->hasDraftVocabularyById($id);
                 if ($hasDraft) {
@@ -1567,8 +1567,9 @@ class Vocabs extends MX_Controller
             $this->blade
                 ->set(
                 'scripts',
-                array('vocabs_cms', 'versionCtrl', 'relatedCtrl',
-                    'subjectDirective')
+                array('vocabs-registry-client-bundle',
+                    'vocabs_cms', 'versionCtrl', 'relatedCtrl',
+                    'subjectDirective', 'relatedEntityIdentifierDirective')
                 )
                 ->set('vocab', $vocab)
                 ->set('title', 'Edit - '
@@ -1639,7 +1640,7 @@ class Vocabs extends MX_Controller
         $versions = $this->RegistryAPI->getVersionsForVocabularyById($id);
         $current_version = null;
         foreach ($versions as $version) {
-            if ($version->getStatus() == Version::STATUS_CURRENT) {
+            if ($version->getStatus() === Version::STATUS_CURRENT) {
                 $current_version = $version;
                 break;
             }
@@ -1672,7 +1673,7 @@ class Vocabs extends MX_Controller
         $sissvoc_end_point = "";
 
         foreach ($aps->getAccessPoint() as $ap) {
-            if ($ap->getDiscriminator() ==
+            if ($ap->getDiscriminator() ===
                 AccessPoint::DISCRIMINATOR_AP_SISSVOC) {
                     $sissvoc_end_point = $ap->getApSissvoc()->getUrlPrefix();
                 }
@@ -1752,8 +1753,9 @@ class Vocabs extends MX_Controller
      *         pass in a value for this parameter. The presence
      *         of this parameter is (for now) specifically to support
      *         unit testing of this method.
-     * @return true if and only the user is logged in
-     * and has ownership of the vocabulary.
+     * @return bool true if and only the user is logged in
+     *         and has ownership of the vocabulary (having taken
+     *         superuser privileges into account, if requested).
      */
     public function isOwner($id, $allowSuperuser = true)
     {
@@ -1795,9 +1797,9 @@ class Vocabs extends MX_Controller
         $this->load->library('blade');
         ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()->setHost(
             get_vocab_config('registry_api_url'));
-         ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()
-             ->setDebug(true)
-         ->setDebugFile('/var/www/html/workareas/richard/vocabs-new/engine/logs/error/richardvocabsnewphpdebug.txt');
+//          ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()
+//              ->setDebug(true)
+//          ->setDebugFile('/var/www/html/workareas/richard/vocabs-new/engine/logs/error/richardvocabsnewphpdebug.txt');
 
         $cookie_name = $this->session->sess_cookie_name;
         $cookie = $this->input->cookie($cookie_name);

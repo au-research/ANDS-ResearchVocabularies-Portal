@@ -1,9 +1,14 @@
+<?php
+
+use ANDS\VocabsRegistry\Model\Vocabulary;
+
+?>
 @extends('layout/vocab_layout')
 
 @section('og-description')
-@if(gettype($vocab) == "object" && isset($vocab->prop))
+@if(is_object($vocab) && (!empty($vocab->getDescription())))
 	<?php
-		$clean_description = htmlspecialchars(substr(str_replace(array('"','[[',']]'), '', $vocab->prop['description']), 0, 200));
+		$clean_description = htmlspecialchars(substr(str_replace(array('"','[[',']]'), '', $vocab->getDescription()), 0, 200));
 	?>
 @endif
 @if(isset($clean_description))
@@ -15,6 +20,7 @@
 @section('script')
   var vocab_resolving_services = {{json_encode(get_config_item('vocab_resolving_services'))}};
   var subject_vocab_proxy = {{json_encode(get_config_item('subject_vocab_proxy'))}};
+  var registry_api_url = {{json_encode(get_config_item('vocab_config')['registry_api_url'])}};
 @stop
 @section('content')
 <section ng-controller="addVocabsCtrl" class="section swatch-white">
@@ -24,7 +30,7 @@
 				<header class="section-text-shadow section-innder-shadow element-short-top element-short-bottom">
 					<h1 class="hairline bordered-normal break" ng-non-bindable>
 						@if($vocab)
-						{{ htmlspecialchars($vocab->title) }}
+						{{ htmlspecialchars($vocab->getTitle()) }}
 						@else
 						Add a new Vocabulary
 						@endif
@@ -35,8 +41,8 @@
 	</div>
 
 	@if($vocab)
-	<input type="hidden" type="text" value="{{ $vocab->id }}" id="vocab_id"/>
-	<input type="hidden" type="text" value="{{ $vocab->slug }}" id="vocab_slug"/>
+	<input type="hidden" type="text" value="{{ $vocab->getId() }}" id="vocab_id"/>
+	<input type="hidden" type="text" value="{{ $vocab->getSlug() }}" id="vocab_slug"/>
 	@endif
 	<div class="container" ng-if="!decide">
 		<div class="row">
@@ -303,7 +309,7 @@
 						<div class="panel-body" ng-if="status=='idle'">
 							<a href="" class="btn btn-large btn-primary" ng-click="save('draft')" ng-disabled="form.cms.$invalid">Save to draft</a>
 							<a href="" class="btn btn-large btn-primary" ng-click="save('published')" ng-disabled="form.cms.$invalid">Publish</a>
-							@if($vocab && $vocab->prop['status']=='published')
+							@if($vocab && $vocab->getStatus() === Vocabulary::STATUS_PUBLISHED)
 							<a href="" class="btn btn-large btn-primary" ng-click="save('deprecated')">Deprecate</a>
 							@endif
 							<div class="alert alert-danger element-short-top os-animation animated fadeInUp" data-os-animation="fadeInUp" ng-if="error_message">[[ error_message ]]</div>
