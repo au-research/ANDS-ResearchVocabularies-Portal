@@ -5,7 +5,7 @@
         .module('app')
         .controller('versionCtrl', versionCtrl);
 
-    function versionCtrl($scope, $timeout, $modalInstance, $log, Upload, version, action, vocab, confluenceTip) {
+    function versionCtrl($scope, $timeout, $uibModalInstance, $log, Upload, version, action, vocab, confluenceTip) {
         $log.debug(action);
         // Make the modal dialog (at least, temporarily) movable,
         // as per request in SD-11572, CC-2050.
@@ -211,7 +211,7 @@
                     'intent': $scope.action,
                     'data': $scope.version
                 };
-                $modalInstance.close(ret);
+                $uibModalInstance.close(ret);
             } else return false;
         };
 
@@ -289,7 +289,7 @@
         };
 
         $scope.dismiss = function () {
-            $modalInstance.dismiss();
+            $uibModalInstance.dismiss();
         }
 
         $scope.$watch('newValue.ap.type', function(newVal, oldVal){

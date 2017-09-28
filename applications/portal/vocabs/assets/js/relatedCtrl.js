@@ -5,7 +5,7 @@
         .module('app')
         .controller('relatedCtrl', relatedCtrl);
 
-    function relatedCtrl($scope, $modalInstance, $log, $timeout,
+    function relatedCtrl($scope, $uibModalInstance, $log, $timeout,
                          entity, type, vocabs_factory, confluenceTip) {
 
         // Make the modal dialog (at least, temporarily) movable,
@@ -256,7 +256,7 @@
                     'intent': $scope.intent,
                     'data': $scope.entity
                 };
-                $modalInstance.close(ret);
+                $uibModalInstance.close(ret);
             } else {
                 // Put back the multi-value lists ready for more editing.
                 $scope.ensure_all_minimal_lists();
@@ -293,7 +293,7 @@
         };
 
         $scope.dismiss = function () {
-            $modalInstance.dismiss();
+            $uibModalInstance.dismiss();
         };
 
         // Get all existing related entities of the same type, in order

@@ -24,7 +24,7 @@
     };
 
     function addVocabsCtrl($log, $scope, $sce, $timeout,
-                           $location, $modal, vocabs_factory) {
+                           $location, $uibModal, vocabs_factory) {
 
         // Initialise Registry API access.
         var VocabularyRegistryApi = require('vocabulary_registry_api');
@@ -788,7 +788,7 @@
         // copy of the related entity to the modal, and then need to
         // copy it back into the correct place after a Save.
         $scope.relatedmodal = function (action, type, index) {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: base_url + 'assets/vocabs/templates/relatedModal.html',
                 controller: 'relatedCtrl',
                 windowClass: 'modal-center',
@@ -830,7 +830,7 @@
         // to the modal, and then need to copy it back into the correct place
         // after a Save.
         $scope.versionmodal = function (action, index) {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: base_url + 'assets/vocabs/templates/versionModal.html',
                 controller: 'versionCtrl',
                 windowClass: 'modal-center',
