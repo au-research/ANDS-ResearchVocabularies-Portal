@@ -888,7 +888,9 @@ class _vocabulary
             array_push($task_array, $transform_task);
 
             if ($this->determineAction($version, 'import')) {
-                $import_task = array('type' => 'IMPORT', 'provider_type' => 'Sesame');
+                $import_task = array('type' => 'IMPORT',
+                                     'provider_type' => 'Sesame',
+                                     'clear' => true);
                 array_push($task_array, $import_task);
             }
 
