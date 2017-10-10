@@ -86,7 +86,10 @@
 
         $scope.list_add = function (type, obj) {
             if (type == 'identifiers') {
-                obj = {id: ''};
+                // Yes, it's the wrong name. It should be 'id',
+                // but the CMS page's ng-model value already
+                // had 'url'.
+                obj = {url: ''};
             } else if (type == 'urls') {
                 obj = {url: ''};
             }
