@@ -14,8 +14,10 @@
                 scope.treeclass = 'classic-tree';
                 $http.get(base_url + 'vocabs/servicesnew/vocabs/' + scope.versionid + '/tree')
                     .then(function (response) {
-                        scope.tree = response.data.message;
-                        if(scope.tree.length>1){$("#concept").hide();}
+                        if (response.data.status === 'OK') {
+                            scope.tree = response.data.message;
+                            if(scope.tree.length>1){$("#concept").hide();}
+                        }
                     });
             }
         }
