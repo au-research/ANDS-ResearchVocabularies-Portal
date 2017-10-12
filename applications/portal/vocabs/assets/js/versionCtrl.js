@@ -5,14 +5,34 @@
         .module('app')
         .controller('versionCtrl', versionCtrl);
 
-    function versionCtrl($scope, $timeout, $uibModalInstance, $log, Upload, version, action, vocab, confluenceTip) {
+    function versionCtrl($scope, $timeout, $uibModalInstance, $log, Upload,
+                         version, action, vocab, confluenceTip) {
         $log.debug(action);
         // Make the modal dialog (at least, temporarily) movable,
         // as per request in SD-11572, CC-2050.
         $timeout(function(){
             $('.modal-content').draggable({ revert: true });
         });
-        $scope.versionStatuses = ['current', 'superseded'];
+
+        // Set up access to the Registry API.
+        var VocabularyRegistryApi = require('vocabulary_registry_api');
+        var api = new VocabularyRegistryApi.ResourcesApi();
+
+        // Old-style hard coding.
+//        $scope.versionStatuses = ['current', 'superseded'];
+
+        /* Define visible labels for all the defined version statuses.
+         * At least for now, the labels exactly match the names of
+         * the statuses.
+         * So this looks stupid (and in the end, it might be), but that's
+         * at least partially because JavaScript doesn't have true
+         * enums.  */
+        var statusTypeEnum = VocabularyRegistryApi.Version.StatusEnum;
+        $scope.versionStatuses = [
+            {id: statusTypeEnum.current, label: 'current'},
+            {id: statusTypeEnum.superseded, label: 'superseded'}
+            ];
+
         $scope.vocab = vocab;
         $scope.confluenceTip = confluenceTip;
         // Preserve the original data for later. We need this
@@ -20,7 +40,10 @@
         $scope.original_version = angular.copy(version);
         $scope.version = version ? version : {provider_type: false};
         $scope.action = version ? 'save' : 'add';
-        $scope.formats = ['RDF/XML', 'TTL', 'N-Triples', 'JSON', 'TriG', 'TriX', 'N3', 'CSV', 'TSV', 'XLS', 'XLSX', 'BinaryRDF', 'ODS', 'ZIP', 'XML', 'TXT', 'ODT', 'PDF'];
+        $scope.formats = ['RDF/XML', 'TTL', 'N-Triples', 'JSON', 'TriG',
+                          'TriX', 'N3', 'CSV', 'TSV', 'XLS', 'XLSX',
+                          'BinaryRDF', 'ODS', 'ZIP', 'XML', 'TXT', 'ODT',
+                          'PDF'];
         $scope.types = [{"value": "webPage", "text": "Web page"},
             {"value": "apiSparql", "text": "API/SPARQL endpoint"},
             {"value": "file", "text": "File"}
@@ -36,13 +59,8 @@
         };
         $scope.uploadPercentage = 0;
 
-        //calendar operation
+        // is the datepicker popup open?
         $scope.opened = false;
-        $scope.open = function ($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-            $scope.opened = !$scope.opened;
-        };
 
         // Now follows all the code for special treatment of the release date.
         // See also vocabs_cms.js, which has a modified version of all of
@@ -62,7 +80,8 @@
             // into the Unix epoch. But Date.parse() seems to cope better,
             // so pass the date field through Date.parse() first. If that
             // succeeds, it can then go through the Date constructor.
-            var dateValParsed = Date.parse($scope.original_version.release_date);
+            var dateValParsed =
+                Date.parse($scope.original_version.release_date);
             if (!isNaN(dateValParsed)) {
                 var dateVal = new Date(dateValParsed);
                 $scope.version.release_date = dateVal;
@@ -98,9 +117,11 @@
 
 
         $scope.addformat = function (obj) {
-            if ($scope.validateAP() || $scope.version.provider_type == 'poolparty') {
+            if ($scope.validateAP() ||
+                    $scope.version.provider_type == 'poolparty') {
                 if (!$scope.version) $scope.version = {};
-                if (!$scope.version['access_points'] || $scope.version['access_points'] == undefined) {
+                if (!$scope.version['access_points'] ||
+                        $scope.version['access_points'] == undefined) {
                     $scope.version['access_points'] = [];
                 }
                 var newobj = {};
@@ -171,7 +192,10 @@
                     if (vocab.versions) {
                         var vocabhascurrent = false;
                         angular.forEach(vocab.versions, function (ver) {
-                            if (ver.status == 'current' && ver.id != $scope.version.id) vocabhascurrent = true;
+                            if (ver.status == 'current' &&
+                                    ver.id != $scope.version.id) {
+                                vocabhascurrent = true;
+                            }
                         });
                         if (vocabhascurrent) {
                             $scope.error_message = 'Vocabulary already has a current version';
@@ -181,7 +205,8 @@
                 }
 
                 //at least 1 access point require
-                if ($scope.version && $scope.version.access_points && $scope.version.access_points.length > 0) {
+                if ($scope.version && $scope.version.access_points &&
+                        $scope.version.access_points.length > 0) {
                     return true;
                 } else {
                     $scope.error_message = 'At least 1 access point is required';
@@ -206,7 +231,11 @@
             if ($scope.validateVersion()) {
                 // Save the date as it actually is in the input's textarea, not
                 // as it is in the model.
-                $scope.version.release_date = $('#release_date').val();
+                // FIXME: don't do this now ...
+//                $scope.version.release_date = $('#release_date').val();
+                // ... but, instead, extract $('#creation_date').val() when
+                // constructing the Version object to send back to the
+                // top level.
                 var ret = {
                     'intent': $scope.action,
                     'data': $scope.version
@@ -242,7 +271,8 @@
                 for (var i = 0; i < files.length; i++) {
                     var file = files[i];
                     if(file.size > 50000000){
-                        alert("The file '" + file.name + "' size:(" + file.size + ") byte exceeds the limit (50MB) allowed and cannot be saved");
+                        alert("The file '" + file.name + "' size:(" +
+                                file.size + ") byte exceeds the limit (50MB) allowed and cannot be saved");
                         allowContinue = false;
                     }
                 }

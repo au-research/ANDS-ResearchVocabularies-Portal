@@ -1,6 +1,7 @@
 <?php
 
 use ANDS\VocabsRegistry\Model\AccessPoint;
+use ANDS\VocabsRegistry\Model\RelatedEntityRef;
 use ANDS\VocabsRegistry\Model\Version;
 use ANDS\VocabsRegistry\Model\Vocabulary;
 use ANDS\VocabsRegistry\ApiException;
@@ -1508,6 +1509,128 @@ class Vocabs extends MX_Controller
     }
 
     /**
+     * Previewing a related entity or related vocabulary
+     * @return view/html
+     */
+    public function related_previewnew()
+    {
+
+        $relatedParam = json_decode($this->input->get('related'));
+        $v_id = $this->input->get('v_id');
+        $sub_type = $this->input->get('sub_type');
+
+        $related = [];
+
+        if (isset($relatedParam->{"related-entity"})) {
+            $isVocab = false;
+            $reRef = $this->RegistryAPIClient->getSerializer()->
+            deserialize($relatedParam,
+                    '\ANDS\VocabsRegistry\Model\RelatedEntityRef');
+            $re = $reRef->getRelatedEntity();
+            $related['type'] = $re->getType();
+            $related['title'] = $re->getTitle();
+            $related['relationship'] = $reRef->getRelation();
+            $temp = $re->getRelatedEntityIdentifier();
+            if ($temp) {
+                $related['identifiers'] = $temp;
+            }
+            $related['email'] = $re->getEmail();
+//             $related['address'] = $reRef->getRelatedEntity()->getA();
+            $related['phone'] = $re->getPhone();
+            $temp = $re->getUrl();
+            if ($temp) {
+                $related['urls'] = $temp;
+            }
+//             $related[''] = $reRef->getRelatedEntity()->get();
+            $related_vocabs = $this->RegistryAPI->getVocabulariesRelatedToRelatedEntityById($reRef->getRelatedEntity()->getId());
+        } else {
+            $isVocab = true;
+            $rvRef = $this->RegistryAPIClient->getSerializer()->
+            deserialize($relatedParam,
+                    '\ANDS\VocabsRegistry\Model\RelatedVocabularyRef');
+            $rv = $rvRef->getRelatedVocabulary();
+            $related['title'] = $rv->getTitle();
+            $related['type'] = 'internal_vocabulary';
+            $related['relationship'] = $rvRef->getRelation();
+            $related['description'] = $rv->getDescription();
+            $related['vocab_id'] = $rv->getId();
+            $related_vocabs = $this->RegistryAPI->getVocabulariesRelatedToVocabularyById($rvRef->getRelatedVocabulary()->getId());
+            // Filter out _this_ vocabulary
+        }
+//         echo(json_encode($related));
+// return;
+//         echo(json_encode($related_vocabs));
+//         return;
+
+        $others = array();
+
+        foreach ($related_vocabs->getReverseRelatedVocabulary()
+            as $reverse_related_vocab) {
+            $related_vocab = $reverse_related_vocab->getRelatedVocabulary();
+            // If we got a vocabulary to start with, exclude ourself from
+            // the related vocabularies.
+            if ($reverse_related_vocab->getRelatedVocabulary()->getId() ==
+                $v_id) {
+//                 echo('excluded ourself');
+                continue;
+            }
+            $others[] = $related_vocab;
+            if (!$isVocab) {
+                foreach ($reverse_related_vocab->getRelatedEntityRelation() as $rel) {
+                    if ($rel === RelatedEntityRef::RELATION_PUBLISHED_BY) {
+//                         echo('found publisher');
+                        $related['sub_type'] = 'publisher';
+                    }
+                }
+            }
+        }
+
+
+//         $others = array_unique($others, true);
+
+        $related['other_vocabs'] = $others;
+        $this->blade
+        ->set('related', $related)
+        ->set('sub_type', $sub_type)
+        ->render('related_preview');
+
+    }
+
+
+    /**
+     * Adding a vocabulary
+     * Displaying a view for adding a vocabulary
+     * Using the same CMS as edit
+     * If not logged in, redirect to login page, then My Vocabs.
+     * We could have done a redirect from login page back to this method,
+     * except that the CMS page relies on the use of a URL fragment
+     * (#!/?skip=true) to distinguish between "normal" and add from PoolParty,
+     * and because fragments are only visible client-side, we can't
+     * pass that on.
+     * @return view
+     * @author  Minh Duc Nguyen <minh.nguyen@ands.org.au>
+     */
+    public function addnew()
+    {
+        if (!$this->user->isLoggedIn()) {
+            // throw new Exception('User not logged in');
+            redirect(get_vocab_config('auth_url')
+                . 'login#?redirect=' . portal_url('vocabs/myvocabs'));
+        }
+        $event = array(
+            'event' => 'pageview',
+            'page' => 'add',
+        );
+        vocab_log_terms($event);
+        $this->blade
+        ->set('scripts', array('vocabs-registry-client-bundle',
+            'vocabs_cms', 'versionCtrl', 'relatedCtrl',
+            'subjectDirective', 'relatedEntityIdentifierDirective'))
+            ->set('vocab', false)
+            ->render('cms');
+    }
+
+    /**
      * Edit a vocabulary in the Registry.
      * Displaying a view for editing a vocabulary
      * Using the same CMS as add but directed towards a vocabulary
@@ -1569,6 +1692,7 @@ class Vocabs extends MX_Controller
                 'scripts',
                 array('vocabs-registry-client-bundle',
                     'vocabs_cms', 'versionCtrl', 'relatedCtrl',
+                    'relatedVocabularyCtrl',
                     'subjectDirective', 'relatedEntityIdentifierDirective')
                 )
                 ->set('vocab', $vocab)
@@ -1807,6 +1931,7 @@ class Vocabs extends MX_Controller
             ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()
                 ->setApiKey($cookie_name, $cookie);
         }
+        $this->RegistryAPIClient = new ANDS\VocabsRegistry\ApiClient();
         $this->RegistryAPI = new ANDS\VocabsRegistry\Api\ResourcesApi();
 
     }

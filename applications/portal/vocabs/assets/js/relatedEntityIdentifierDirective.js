@@ -19,6 +19,7 @@
             scope: {
                 // Isolated scope. The following are visible in
                 // the local scope.
+                editingDisabled: '=ngDisabled',
                 reiType: '=',
                 reiValue: '=',
                 index: '=',

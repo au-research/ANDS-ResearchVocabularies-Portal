@@ -54,7 +54,7 @@
                     subject_notation: ""
                 }
             ],
-            language: [""]
+            language: [null]
         };
         /**
          * Collect all the user roles, for vocab.owner value
@@ -126,7 +126,10 @@
             $scope.subject_sources.push(vo);
         }
 
+        // Is the datepicker popup open?
         $scope.opened = false;
+        // When adding a new voabulary, has the user chosen whether
+        // to add from PoolParty or not?
         $scope.decide = false;
 
         $scope.creation_date = '';
@@ -134,59 +137,29 @@
 
         $scope.status = 'idle';
 
-        $scope.open = function ($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-            $scope.opened = !$scope.opened;
-        };
-
         /**
          * If there is a slug available, this is an edit view for the CMS
          * Proceed to overwrite the vocab object with the one fetched
          * from the vocabs_factory.get()
          * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
          */
-//        if ($('#vocab_slug').val()) {
-//            vocabs_factory.get($('#vocab_id').val()).then(function (data) {
-//                $log.debug('Editing ', data.message);
-//                // Preserve the original data for later. We need this
-//                // specifically for the creation_date value.
-//                $scope.original_data = data.message;
-//                // Make a deep copy. This used to be
-//                //    $scope.vocab = data.message;
-//                // But that is a copy by reference ... subsequent changes
-//                // to $scope.vocab affect data.message too, making
-//                // it impossible to refer to the original values.
-//                $scope.vocab = angular.copy(data.message);
-//                $scope.mode = 'edit';
-//                $scope.decide = true;
-//                // Special handling for creation date.
-//                $scope.set_creation_date_textfield($scope);
-//                $log.debug($scope.form.cms);
-//            });
-//        }
-
         if ($('#vocab_id').val()) {
             api.getVocabularyById($('#vocab_id').val(),
                     {"includeVersions" : true,
                      "includeAccessPoints" : true,
-                     "includeRelatedEntities" : true}).then(function (data) {
-                $log.debug('Editing ', data);
+                     "includeRelatedEntitiesAndVocabularies" : true}).then(
+                             function (data) {
+//                $log.debug('Editing ', data);
                 // Preserve the original data for later. We need this
                 // specifically for the creation_date value.
                 $scope.original_data = data;
-                // Make a deep copy. This used to be
-                //    $scope.vocab = data.message;
-                // But that is a copy by reference ... subsequent changes
-                // to $scope.vocab affect data.message too, making
-                // it impossible to refer to the original values.
-//                $scope.vocab = angular.copy(data);
+                // Copy the values into the form.
                 $scope.copy_incoming_vocab_to_scope(data);
                 $scope.mode = 'edit';
                 $scope.decide = true;
                 // Special handling for creation date.
                 $scope.set_creation_date_textfield($scope);
-                $log.debug($scope.form.cms);
+//                $log.debug($scope.form.cms);
             });
         }
 
@@ -203,6 +176,7 @@
             $scope.vocab['note'] = data.getNote();
             $scope.vocab['owner'] = data.getOwner();
             $scope.vocab['top_concept'] = angular.copy(data.getTopConcept());
+            // Special handling for creation_date done elsewhere.
             $scope.vocab['language'] = [ data.getPrimaryLanguage() ];
             angular.forEach(data.getOtherLanguage(), function(lang) {
                 $scope.vocab['language'].push(lang);
@@ -226,9 +200,6 @@
                         'title': re.getTitle(),
                         'relationship' : angular.copy(reRef.getRelation())
                     };
-//                angular.forEach(reRef.getRelation(), function(rel) {
-//                    reForForm['relationship'].push(rel);
-//                });
                 if (re.getEmail()) {
                     reForForm['email'] = re.getEmail();
                 }
@@ -239,7 +210,8 @@
                 reForForm['identifiers'] = [];
                 angular.forEach(re.getRelatedEntityIdentifier(), function(id) {
                     reForForm['identifiers'].push(
-                            {'rei_type' : id.getIdentifierType(),
+                            {'id': id.getId(),
+                             'rei_type' : id.getIdentifierType(),
                              'rei_value' : id.getIdentifierValue()});
                 });
                 // URLs
@@ -249,7 +221,34 @@
                 });
                 $scope.vocab['related_entity'].push(reForForm);
             });
-            // Versions
+            // Related internal vocabularies
+            $scope.vocab['related_vocabulary'] = [];
+            angular.forEach(data.getRelatedVocabularyRef(), function(rvRef) {
+                var rv = rvRef.getRelatedVocabulary();
+                var rvForForm = {
+                        'id': rvRef.getId(),
+                        'type': 'internal',
+                        'title': rv.getTitle(),
+                        'relationship' : angular.copy(rvRef.getRelation())
+                    };
+                $scope.vocab['related_vocabulary'].push(rvForForm);
+            });
+            // FIXME TODO Versions
+            $scope.vocab['versions'] = [];
+            angular.forEach(data.getVersion(), function(ver) {
+                var versionForForm = {
+                        'id': ver.getId(),
+                        'status': ver.getStatus(),
+                        'title': ver.getTitle(),
+                        'slug': ver.getSlug(),
+                        'release_date': ver.getReleaseDate(),
+                        'note': ver.getNote(),
+                        'import': ver.getDoImport(),
+                        'publish': ver.getDoPublish(),
+//                        '': ver.get(),
+                };
+                $scope.vocab['versions'].push(versionForForm);
+            });
         }
 
         // Create a Registry API model object based on the form values.
@@ -266,6 +265,9 @@
             vocab.setNote($scope.vocab['note']);
             vocab.setOwner($scope.vocab['owner']);
             vocab.setTopConcept(angular.copy($scope.vocab['top_concept']));
+            // Extract creation date directly from the input text field, not
+            // from the model value.
+            vocab.setCreationDate($('#creation_date').val());
             var languages = angular.copy($scope.vocab['language']);
             vocab.setPrimaryLanguage(languages.shift());
             vocab.setOtherLanguage(languages);
@@ -638,7 +640,10 @@
 
             // Save the date as it actually is in the input's textarea, not
             // as it is in the model.
-            $scope.vocab.creation_date = $('#creation_date').val();
+            // FIXME: don't do this now ...
+            // $scope.vocab.creation_date = $('#creation_date').val();
+            // ... but, instead, extract $('#creation_date').val() when
+            // constructing the Vocabulary object to send back to the API.
 
             if ($scope.mode == 'add' ||
                 ($scope.vocab.status == 'published' && status == 'draft')) {
@@ -804,6 +809,9 @@
                     type: function () {
                         return type;
                     },
+                    user_orgs: function() {
+                        return $scope.user_orgs;
+                    },
                     confluenceTip: function () {
                         return $scope.confluenceTip;
                     }
@@ -825,6 +833,40 @@
                 //dismiss
             });
         };
+
+        $scope.relatedvocabularymodal = function (action, index) {
+            var modalInstance = $uibModal.open({
+                templateUrl: base_url + 'assets/vocabs/templates/relatedVocabularyModal.html',
+                controller: 'relatedVocabularyCtrl',
+                windowClass: 'modal-center',
+                resolve: {
+                    entity: function () {
+                        if (action == 'edit') {
+                            // CC-1518 Operate on a copy of the related vocabulary.
+                            return angular.copy($scope.vocab.related_vocabulary[index]);
+                        } else {
+                            return false;
+                        }
+                    },
+                    confluenceTip: function () {
+                        return $scope.confluenceTip;
+                    }
+                }
+            });
+            modalInstance.result.then(function (obj) {
+                //close
+                if (obj.intent == 'add') {
+                    var newObj = obj.data;
+                    if (!$scope.vocab.related_vocabulary) $scope.vocab.related_vocabulary = [];
+                    $scope.vocab.related_vocabulary.push(newObj);
+                } else if (obj.intent == 'save') {
+                    $scope.vocab.related_vocabulary[index] = obj.data;
+                }
+            }, function () {
+                //dismiss
+            });
+        };
+
 
         // CC-1518 Need the version index, because we send a copy of the version
         // to the modal, and then need to copy it back into the correct place
@@ -891,7 +933,7 @@
                             subject_notation: ''};
             } else {
                 // Otherwise ('language' and 'top_concept') ...
-                newValue = '';
+                newValue = null;
             }
 
             // Add new blank item to list.
@@ -925,7 +967,7 @@
                 // Now an empty list. Do we put back a placeholder?
                 switch (type) {
                 case 'language':
-                    $scope.vocab[type] = [""];
+                    $scope.vocab[type] = [null];
                     break;
                 case 'subjects':
                     $scope.vocab[type] = [{

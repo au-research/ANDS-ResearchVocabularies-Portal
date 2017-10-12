@@ -17,7 +17,7 @@
                                 <span ng-bind-html="confluenceTip('Status')"></span>
                             </label>
                             <select required name="status" id="" class="form-control caret-for-select"
-                                    ng-options="status for status in versionStatuses"
+                                    ng-options="status.id as status.label for status in versionStatuses"
                                     ng-model="version.status"><option value="">Select
                                     a version status</option></select>
 
@@ -45,9 +45,10 @@
                             <p class="input-group">
                                 <input required type="text" id="release_date" name="release_date" class="form-control"
                                        ng-model="version.release_date" placeholder="Release Date (supported formats: YYYY-MM-DD, YYYY-MM, YYYY)"
-                                       datepicker-popup="yyyy-MM-dd" is-open="$parent.opened">
+                                       uib-datepicker-popup="yyyy-MM-dd" alt-input-formats="['yyyy-MM', 'yyyy']"
+                                       is-open="opened" on-open-focus="false" ng-focus="opened = true">
                                 <span class="input-group-btn">
-                                  <button type="button" class="btn btn-default" ng-click="open($event)"><i
+                                  <button type="button" class="btn btn-default" ng-click="opened = !opened"><i
                                                 class="glyphicon glyphicon-calendar"></i></button>
                                 </span>
                             </p>

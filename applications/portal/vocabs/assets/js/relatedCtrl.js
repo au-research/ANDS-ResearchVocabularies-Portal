@@ -6,12 +6,13 @@
         .controller('relatedCtrl', relatedCtrl);
 
     function relatedCtrl($scope, $uibModalInstance, $log, $timeout,
-                         entity, type, vocabs_factory, confluenceTip) {
+                         $templateCache,
+                         entity, type, user_orgs, confluenceTip) {
 
         // Make the modal dialog (at least, temporarily) movable,
         // to be consistent with the version modal (which was
         // as per request in SD-11572, CC-2050).
-        $timeout(function(){
+        $timeout(function() {
             $('.modal-content').draggable({ revert: true });
         });
         // Set up access to the Registry API.
@@ -88,18 +89,80 @@
              "validate": /^[1-9]\d(\d{0,7}|\d{17,20})$/}
         ];
 
+        /** A list of the multi-valued elements that are the elements
+            of $scope.entity. Useful when iterating over all of these. */
+        $scope.multi_valued_lists = [ 'relationship', 'identifiers', 'urls' ];
+
+        // Some utility functions used by initialization (and by save).
+        /** Ensure that a multi-value field has a minimal content, ready
+            for editing. For some types, this could be an empty list;
+            for others, a list with one (blank) element. */
+        $scope.ensure_minimal_list = function (type) {
+            if ((!(type in $scope.entity)) ||
+                    ($scope.entity[type].length == 0)) {
+                // Now an empty list. Do we put back a placeholder?
+                switch (type) {
+                case 'relationship':
+                    $scope.entity[type] = [null];
+                    break;
+                default:
+                    $scope.entity[type] = [];
+                }
+            }
+        }
+
+        /** Ensure that all multi-value fields have minimal content, ready
+            for editing. For some types, this could be an empty list;
+            for others, a list with one (blank) element. */
+        $scope.ensure_all_minimal_lists = function () {
+            angular.forEach($scope.multi_valued_lists, function (type) {
+                $scope.ensure_minimal_list(type);
+            });
+        }
+
+        // Initialization proper starts here.
+
         $scope.relatedEntityTypes = ['publisher', 'vocabulary', 'service'];
         $scope.entity = false;
+        // "Intent" is derived from what the user did on the main CMS page.
+        // If they clicked "Add", then the intent is "add".
+        // If they clicked a related entity title already in the list
+        // in the "Related" section of the CMS page, then the intent is "save".
         $scope.intent = 'add';
         $scope.type = type;
+        // Maybe comment-out next line for production; uncomment as needed
+        // for debugging.
+        $scope.user_orgs = user_orgs;
         $scope.confluenceTip = confluenceTip;
 
+        /* True, if we are allowing the user to edit the email, phone
+         * etc. metadata, because this user "owns" the related entity.
+         * False, if we are using a related entity "owned" by someone
+         * else. */
+
         if (entity) {
-            $scope.entity = entity;
+            // Note that we make a copy. This is because the existing item
+            // will appear as the first entry in the Title dropdown.
+            // If the user makes a different selection from the dropdown,
+            // then comes back to the dropdown and clicks the first item,
+            // we can restore the original values. (See the other instance
+            // of angular.copy(entity) in the populate() method below.)
+            $scope.entity = angular.copy(entity);
             $scope.intent = 'save';
+            // This is an edit operation, so work out if edits should
+            // be enabled. They should be enabled if either:
+            // (a) this RE was newly-created in the same edit session
+            // (in which case, there is no owner defined), or (b) this
+            // is an existing RE, and our organisational roles give us
+            // permission to modify it.
+            $scope.allowEdits = !('owner' in $scope.entity) ||
+                    $scope.entity.owner in $scope.user_orgs;
         } else {
-            // Add a placeholder for one relationship.
-            $scope.entity = {'relationship':['']};
+            // Ensure minimum details to enable the form to work.
+            $scope.entity = {};
+            $scope.ensure_all_minimal_lists();
+            // This is a new entity, so enable editing.
+            $scope.allowEdits = true;
         }
 
         /* Please note behaviour here. Magic value for type
@@ -136,13 +199,53 @@
             });
           };
 
-        $scope.populate = function (item, model, label) {
-            $log.debug(item,model,label);
+        $scope.populate = function (item) {
+            if (item === undefined) {
+                // Type-in name. In this case, leave the fields,
+                // but _do_ remove the owner, and allow editing.
+                // Hmm, this code was in play during early development, but
+                // now I'm not sure if it can be reached.
+                if ($scope.entity instanceof
+                        VocabularyRegistryApi.RelatedEntity) {
+                    $scope.entity.setId(null);
+                    $scope.entity.setOwner(null);
+                } else {
+                    delete $scope.entity.id;
+                    delete $scope.entity.owner;
+                }
+                return;
+            }
+            if (!('id' in item)) {
+                // User has confirmed a title they typed in, rather
+                // than selecting from the dropdown.
+                $scope.entity.title = item.title;
+                delete $scope.entity.id;
+                delete $scope.entity.owner;
+                $scope.allowEdits = true;
+                return;
+            }
+            if (item.id === undefined) {
+                // We are coming back to editing an RE that the user
+                // has created/saved in this edit session.
+                // The user has now clicked on the title of this RE,
+                // as it appears as the first item
+                // in the dropdown. Restore the original values.
+                $scope.entity = angular.copy(entity);
+                $scope.allowEdits = true;
+                return;
+            }
+            $scope.entity.owner = item.getOwner();
+            // Use owner to determine if edits are allowed.
+            $scope.allowEdits = !('owner' in $scope.entity) ||
+                $scope.user_orgs.indexOf($scope.entity.owner) != -1;
+
+            $scope.entity.title = item.getTitle();
             $scope.entity.email = item.getEmail();
             $scope.entity.phone = item.getPhone();
+            // This is a pre-existing RE, so we have an ID. Keep track of it.
+            // (We also do this for identifiers below.)
             $scope.entity.id = item.getId();
 
-//            if (!$scope.entity.urls || $scope.entity.urls.length == 0) $scope.entity.urls = item.urls;
             $scope.entity.urls = [];
             angular.forEach(item.getUrl(), function(url) {
                 $scope.entity.urls.push({'url' : url});
@@ -150,16 +253,47 @@
 
             api.getRelatedEntityById(item.getId()).
             then(function (data) {
-                // FIXME
-                $scope.entity.identifiers = angular.copy(data.identifiers);
+                $scope.entity.identifiers = [];
+                angular.forEach(data.getRelatedEntityIdentifier(),
+                        function(rei) {
+                            $scope.entity.identifiers.push({
+                                'id': rei.getId(),
+                                'rei_type': rei.getIdentifierType(),
+                                'rei_value': rei.getIdentifierValue()
+                            });
+                });
+                // Having added identifiers, need to cause a refresh of the
+                // form.
+                $scope.$apply();
             });
-
-//            if (!$scope.entity.identifiers || $scope.entity.identifiers.length == 0) $scope.entity.identifiers = item.identifiers;
         };
+
+        // Callback from ui-select, when the user has confirmed a title, but
+        // not selected from the dropdown, thus requesting the creation
+        // of a new related entity.
+        $scope.addNew = function (title) {
+            // Preserve any fields the user has already filled in ...
+            var entity = angular.copy($scope.entity);
+            // except for id and owner.
+            delete entity.id;
+            delete entity.owner;
+            entity.title = title;
+            return entity;
+        }
+
+        // Unlock to allow editing. This will mean the creation of a
+        // new related entity. To force this to happen, remove the
+        // id and owner settings.
+        $scope.unlock = function() {
+            $scope.allowEdits = true;
+            delete $scope.entity.id;
+            delete $scope.entity.owner;
+        }
+
 
         $scope.list_add = function (type, obj) {
             if (type == 'identifiers') {
-                obj = {id: ''};
+                obj = {};
             } else if (type == 'urls') {
                 obj = {url: ''};
             }
@@ -170,12 +304,6 @@
             }
         };
 
-        /** A list of the multi-valued elements that are the elements
-            of $scope.vocab. Useful when iterating over all of these. */
-        $scope.multi_valued_lists = [ 'relationship' ];
-        // For future work:
-        // $scope.multi_valued_lists = [ 'relationship', 'identifiers', 'urls' ];
-
         /**
          * Add an item to a multi-valued list.
          * @param name of list: for now, should be 'relationship'.
@@ -184,7 +312,7 @@
             if (!$scope.entity[list]) $scope.entity[list] = [];
 
             var newValue;
-            newValue = '';
+            newValue = null;
 
             // Add new blank item to list.
             $scope.entity[list].push(newValue);
@@ -208,30 +336,6 @@
             $scope.ensure_minimal_list(type);
         };
 
-        /** Ensure that a multi-value field has a minimal content, ready
-            for editing. For some types, this could be an empty list;
-            for others, a list with one (blank) element. */
-        $scope.ensure_minimal_list = function (type) {
-            if ($scope.entity[type].length == 0) {
-                // Now an empty list. Do we put back a placeholder?
-                switch (type) {
-                case 'relationship':
-                    $scope.entity[type] = [""];
-                    break;
-                default:
-                }
-            }
-        }
-
-        /** Ensure that all multi-value fields have minimal content, ready
-            for editing. For some types, this could be an empty list;
-            for others, a list with one (blank) element. */
-        $scope.ensure_all_minimal_lists = function () {
-            angular.forEach($scope.multi_valued_lists, function (type) {
-                $scope.ensure_minimal_list(type);
-            });
-        }
-
         /** Utility function for validation of fields that can have
             multiple entries. The list is supposed to have at least one
             element that is a non-empty string. This method returns true
@@ -245,9 +349,13 @@
          */
         $scope.tidy_empty = function() {
             $scope.entity.relationship = $scope.entity.relationship.filter(Boolean);
-            // For future work:
-            // $scope.entity.identifiers = $scope.entity.identifiers.filter(Boolean);
-            // $scope.entity.urls = $scope.entity.urls.filter(Boolean);
+            $scope.entity.identifiers = $scope.entity.identifiers.filter(
+                    function(ident) {
+                        return (ident != null) && (ident.rei_type);
+                    });
+            $scope.entity.urls = $scope.entity.urls.filter(function(url) {
+                return (url != null) && (url.url);
+            });
         }
 
         $scope.save = function () {
@@ -268,14 +376,20 @@
             delete $scope.error_message;
 
             // Tidy up empty fields before validation.
+            $scope.ensure_all_minimal_lists();
             $scope.tidy_empty();
 
             if ($scope.form.reForm.$valid) {
 
+                if (!$scope.entity || !$scope.entity.title ) {
+                    $scope.error_message = 'Title is required';
+                    return false;
+                }
+
                 //at least 1 relationship
                 if (!$scope.entity || !$scope.entity.relationship || $scope.entity.relationship.length == 0) {
                     $scope.error_message = 'At least 1 relationship is required';
-                    return false
+                    return false;
                 }
 
                 //at least 1 identifier, changed CC-1257, identifier no longer required
@@ -298,11 +412,54 @@
 
         // Get all existing related entities of the same type, in order
         // to be able to provide suggestions.
-        api.getRelatedEntities({"relatedEntityType" : type}).
+        api.getRelatedEntities({"relatedEntityType" : $scope.type}).
         then(function (data) {
             var suggestions = data.getRelatedEntity();
             $scope.suggestions = angular.copy(suggestions);
+            // Results come back from the API unsorted, so sort
+            // them by title.
+            // Need $scope.$apply() to force an update if the dialog
+            // appears before the API call returns.
+            $scope.suggestions.sort(function(a,b) {
+                return a.getTitle().localeCompare(b.getTitle());});
+            if (('title' in $scope.entity) && !('id' in $scope.entity)) {
+                // We are now coming back to editing something that the user
+                // has created in the same edit session. Create a
+                // dummy RelatedEntity object and stick it at the front
+                // of the suggestions.
+                var entity = new VocabularyRegistryApi.RelatedEntity();
+                entity.setTitle($scope.entity.title);
+                entity.setOwner("You");
+//                entity.setEmail(entity.email);
+//                entity.setPhone(entity.phone);
+                $scope.suggestions.unshift(entity);
+                $scope.selected = entity;
+//                alert('Id: ' + $scope.entity.id);
+            } else if ('id' in $scope.entity) {
+                // We are editing an existing RE. Find the selected
+                // RE among the suggestions.
+                $scope.selected = $scope.suggestions.find(
+                        function(element) {
+                            return element.id == $scope.entity.id;
+                        });
+            }
         });
+
+        // Override the Bootstrap templates defined
+        // at the end of assets/js/lib/ui-select/dist/select.js.
+
+        // In select.tpl.html,
+        // <div class="ui-select-container ... dropdown"
+        // is changed to
+        // <div class="ui-select-container ... dropdown swatch-white"
+        $templateCache.put("bootstrap/select.tpl.html","<div class=\"ui-select-container ui-select-bootstrap dropdown swatch-white\" ng-class=\"{open: $select.open}\"><div class=\"ui-select-match\"></div><span ng-show=\"$select.open && $select.refreshing && $select.spinnerEnabled\" class=\"ui-select-refreshing {{$select.spinnerClass}}\"></span> <input type=\"search\" autocomplete=\"off\" tabindex=\"-1\" aria-expanded=\"true\" aria-label=\"{{ $select.baseTitle }}\" aria-owns=\"ui-select-choices-{{ $select.generatedId }}\" class=\"form-control ui-select-search\" ng-class=\"{ \'ui-select-search-hidden\' : !$select.searchEnabled }\" placeholder=\"{{$select.placeholder}}\" ng-model=\"$select.search\" ng-show=\"$select.open\"><div class=\"ui-select-choices\"></div><div class=\"ui-select-no-choice\"></div></div>");
+
+        // In match.tpl.html,
+        // <span ... class="btn btn-default..."
+        // is changed to
+        // <span ... class="btn btn-primary..."
+        $templateCache.put("bootstrap/match.tpl.html","<div class=\"ui-select-match\" ng-hide=\"$select.open && $select.searchEnabled\" ng-disabled=\"$select.disabled\" ng-class=\"{\'btn-default-focus\':$select.focus}\"><span tabindex=\"-1\" class=\"btn btn-primary form-control ui-select-toggle\" aria-label=\"{{ $select.baseTitle }} activate\" ng-disabled=\"$select.disabled\" ng-click=\"$select.activate()\" style=\"outline: 0;\"><span ng-show=\"$select.isEmpty()\" class=\"ui-select-placeholder text-muted\">{{$select.placeholder}}</span> <span ng-hide=\"$select.isEmpty()\" class=\"ui-select-match-text pull-left\" ng-class=\"{\'ui-select-allow-clear\': $select.allowClear && !$select.isEmpty()}\" ng-transclude=\"\"></span> <i class=\"caret pull-right\" ng-click=\"$select.toggle($event)\"></i> <a ng-show=\"$select.allowClear && !$select.isEmpty() && ($select.disabled !== true)\" aria-label=\"{{ $select.baseTitle }} clear\" style=\"margin-right: 10px\" ng-click=\"$select.clear($event)\" class=\"btn btn-xs btn-link pull-right\"><i class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\"></i></a></span></div>");
+
 
     }
 

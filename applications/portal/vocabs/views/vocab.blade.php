@@ -1,7 +1,5 @@
 <?php
 
-// There are FIXMEs in this file! Fix them!
-
 use ANDS\VocabsRegistry\Model\Version;
 use ANDS\VocabsRegistry\Model\RelatedEntity;
 use ANDS\VocabsRegistry\Model\RelatedEntityRef;
@@ -19,6 +17,7 @@ $publisher = array();
 $related_people = array();
 $related_vocabs = array();
 $related_service = array();
+$related_internal_vocabs = array();
 
 foreach ($vocab->getRelatedEntityRef() as $relatedRef) {
     $related = $relatedRef->getRelatedEntity();
@@ -36,18 +35,13 @@ foreach ($vocab->getRelatedEntityRef() as $relatedRef) {
         $related_service[]=$relatedRef;
     }
     elseif ($related->getType() === RelatedEntity::TYPE_VOCABULARY) {
-            $related_vocabs[]=$relatedRef;
+        $related_vocabs[]=$relatedRef;
     }
 }
 
-// FIXME To be done? related internal vocabularies.
-
-//     foreach ($vocab->getRelatedVocabularyRef() as $relatedVocabRef) {
-//         $relatedVocab = $relatedVocabRef->get;
-//                 $related_vocabs[]=$related;
-//     }
-
-
+foreach ($vocab->getRelatedVocabularyRef() as $relatedVocabRef) {
+    $related_internal_vocabs[]=$relatedVocabRef;
+}
 
 // Determine whether or not to show the widgetableness.
 // Set $sissvocEndPoint if it is to be shown.
@@ -226,13 +220,13 @@ foreach ($vocab->getVersion() as $version) {
                 <?php
                     echo implode(array_map('readable', $serviceRef->getRelation()), ', ');
                 ?>
-            </small> <a href="" class="re_preview"  related='FIXME {{$serviceRef}}' v_id="{{ $vocab->getId() }}">{{htmlspecialchars($serviceRef->getRelatedEntity()->getTitle())}}</a></p>
+            </small> <a href="" class="re_preview"  related='{{$serviceRef}}' v_id="{{ $vocab->getId() }}">{{htmlspecialchars($serviceRef->getRelatedEntity()->getTitle())}}</a></p>
             @endforeach
 
     </div>
 </div>
 @endif
-@if($related_people||$related_vocabs)
+@if($related_people||$related_vocabs||$related_internal_vocabs)
 <div class="panel swatch-white  panel-primary element-no-top element-short-bottom panel-content">
     <div class="panel-heading">Related</div>
     <div class="panel-body">
@@ -247,11 +241,11 @@ foreach ($vocab->getVersion() as $version) {
                 <?php
                     echo implode(array_map('readable', $relatedRef->getRelation()), ', ');
                 ?>
-            </small> <a href="" class="re_preview"  related='FIXME {{$relatedRef}}' v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
+            </small> <a href="" class="re_preview"  related='{{$relatedRef}}' v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
         </p>
         @endforeach
         @endif
-        @if($related_vocabs)
+        @if($related_vocabs||$related_internal_vocabs)
         <h4>Related vocabularies</h4>
         @foreach($related_vocabs as $relatedRef)
         <p>
@@ -259,7 +253,16 @@ foreach ($vocab->getVersion() as $version) {
                 <?php
                     echo implode(array_map('readable', $relatedRef->getRelation()), ', ');
                 ?>
-            </small> <a href="" class="re_preview"  related='FIXME {{$relatedRef}}' v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
+            </small> <a href="" class="re_preview"  related='{{$relatedRef}}' v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
+        </p>
+        @endforeach
+        @foreach($related_internal_vocabs as $relatedRef)
+        <p>
+            <small>
+                <?php
+                    echo implode(array_map('readable', $relatedRef->getRelation()), ', ');
+                ?>
+            </small> <a href="" class="re_preview"  related='{{$relatedRef}}' v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedVocabulary()->getTitle())}}</a>
         </p>
         @endforeach
         @endif

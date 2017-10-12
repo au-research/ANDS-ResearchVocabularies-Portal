@@ -2,6 +2,7 @@
 <td style="border:none;width:35%">
   <select
      id="[['identifier_type_'+index]]"
+     ng-disabled="editingDisabled"
      class="form-control caret-for-select rei-type"
      placeholder="Type"
      ng-options="reit as reit.label for reit in rei_types track by reit.id"
@@ -18,6 +19,7 @@
   ng-show="reiType">
   <input
      id="[['identifier_value_'+index]]"
+     ng-disabled="editingDisabled"
      name="[['identifier_value_'+index]]"
      type="text" class="form-control rei-value"
      placeholder="e.g., [[selected.placeholder]]"
@@ -38,6 +40,7 @@
   <span>
     <button
        id="[['rei_close_'+index]]"
+       ng-disabled="editingDisabled"
        class="btn btn-primary btn-primary-warning"
        type="button"
        ng-click="close()"

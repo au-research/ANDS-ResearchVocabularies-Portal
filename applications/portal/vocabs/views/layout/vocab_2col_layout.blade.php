@@ -5,8 +5,6 @@
 @include('includes/top-menu')
 <?php
 
-// There are FIXMEs in this file! Fix them!
-
 use ANDS\VocabsRegistry\Model\Vocabulary;
 use ANDS\VocabsRegistry\Model\RelatedEntity;
 use ANDS\VocabsRegistry\Model\RelatedEntityRef;
@@ -18,7 +16,7 @@ foreach($vocab->getRelatedEntityRef() as $relatedRef) {
     if ($related->getType() === RelatedEntity::TYPE_PARTY) {
         foreach ($relatedRef->getRelation() as $relationship) {
             if ($relationship === RelatedEntityRef::RELATION_PUBLISHED_BY) {
-                $publisher[]=$related;
+                $publisher[]=$relatedRef;
             }
         }
     }
@@ -49,7 +47,7 @@ $title = rawurlencode(substr($vocab->getTitle(), 0, 200)) ;
                                 @endif
                                 @if(isset($publisher))
                                 @foreach($publisher as $apub)
-                                <small>Publisher </small>  <a class="re_preview" related='FIXME {{$apub}}' v_id="{{ $vocab->getId() }}" sub_type="publisher"> {{htmlspecialchars($apub->getTitle())}} </a>
+                                <small>Publisher </small>  <a class="re_preview" related='{{$apub}}' v_id="{{ $vocab->getId() }}" sub_type="publisher"> {{htmlspecialchars($apub->getRelatedEntity()->getTitle())}} </a>
                                 @endforeach
                                 @endif
                                 <div class="pull-right">

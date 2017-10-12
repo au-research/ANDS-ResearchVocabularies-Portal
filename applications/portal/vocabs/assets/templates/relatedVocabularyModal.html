@@ -1,0 +1,127 @@
+<!-- This is a simplified version of relatedModal.html. -->
+<div style="modal-center">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="dismiss()"><span
+      aria-hidden="true">&times;</span><span
+      class="sr-only">Close</span></button>
+    <h4 class="modal-title"><span ng-if="entity.title">Edit</span> <span
+     ng-if="!entity.title">Add a </span> related internal vocabulary</h4>
+  </div>
+  <div class="modal-body swatch-white" ng-cloak>
+    <form action="" class="form" name="form.reForm">
+      <div class="container-fluid">
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group"
+                 ng-class="{'has-error':form.reForm.title.$invalid}">
+              <label for="">Title
+                <span ng-bind-html="confluenceTip('RelatedTitle')"></span>
+              </label>
+              <ui-select required name="title"
+                append-to-body="false" ng-model="entity.id"
+                on-select="populate($select.selected)">
+                <!-- Truncate title to 65 chars, which seems to be the most that can fit -->
+                <ui-select-match placeholder="Select a vocabulary">[[$select.selected.title | limitTo:65]][[$select.selected.title.length > 65 ? '...' : '']]</ui-select-match>
+                <ui-select-choices
+                   repeat="suggest.getId() as suggest in suggestions | filter: $select.search ">
+                  <div>
+                    [[ suggest.getTitle() ]]
+                    <br />
+                    <!-- small>[[ suggest.getOwner() ]]</small>-->
+                    <!-- br /> -->
+                    [[ suggest.getDescription() ]]
+                  </div>
+                </ui-select-choices>
+                <ui-select-no-choice>
+                  &nbsp;&nbsp;<i>No matches</i>
+                </ui-select-no-choice>
+             </ui-select>
+
+              <p class="help-block"
+                 ng-show="form.reForm.title.$invalid">Vocabulary is required</p>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="">Relationship
+                <span ng-bind-html="confluenceTip('Relation')"></span>
+              </label>
+
+              <!-- Show one relationship field. Doesn't use input-group. -->
+              <div ng-repeat="relationship in entity.relationship
+                              track by $index"
+                   ng-show="entity.relationship.length == 1">
+                <select name="rel" id="rel"
+                        class="form-control caret-for-select"
+                        placeholder="Select a relationship"
+                        ng-options="rel.value as
+                                    rel.text for rel in
+                                    relatedEntityRelations"
+                        options-disabled="rel.value as
+                                          rel.text for rel in
+                                          relatedEntityRelations"
+                        ng-model="entity.relationship[$index]"
+                        >
+                  <option value="">Select a relationship</option>
+                </select>
+              </div>
+
+              <!-- Show more than one relationship field.
+              Does use input-group. -->
+              <div class="input-group"
+                   ng-repeat="relationship in entity.relationship
+                              track by $index"
+                   ng-show="entity.relationship.length > 1">
+                <select name="rel" id="rel"
+                        class="form-control caret-for-select"
+                        placeholder="Select a relationship"
+                        ng-options="rel.value as
+                                    rel.text for rel in
+                                    relatedEntityRelations"
+                        ng-model="entity.relationship[$index]"
+                        >
+                  <option value="">Select a relationship</option>
+                </select>
+                <span class="input-group-btn">
+                  <button class="btn btn-primary btn-primary-warning"
+                          type="button"
+                          ng-click="list_remove('relationship',
+                                    $index)"><i
+                                              class="fa fa-remove"></i></button>
+                </span>
+              </div>
+
+              <p></p>
+              <button class="btn btn-primary" type="button"
+                      ng-click="addtolist('relationship')"><i
+                           class="fa fa-plus"></i> Add Relationship</button>
+
+              <div class="form-group has-error"
+                   ng-show="entity.relationship === undefined ||
+                            array_has_no_nonempty_strings(entity.relationship)">
+                <p class="help-block">At least one
+                  relationship must be provided.</p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer swatch-white">
+    <div class="alert alert-danger"
+         ng-if="error_message">[[error_message]]</div>
+    <button class="btn btn-link"
+            type="button" ng-click="dismiss()">Cancel</button>
+    <button class="btn btn-primary"
+            type="button" ng-if="intent=='add'"
+            ng-click="save()">Add this Related Internal Vocabulary
+    </button>
+    <button class="btn btn-primary" type="button"
+            ng-if="intent=='save'" ng-click="save()">Save</button>
+  </div>
+</div>
