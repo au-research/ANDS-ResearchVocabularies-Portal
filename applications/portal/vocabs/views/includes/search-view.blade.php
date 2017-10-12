@@ -115,7 +115,7 @@
                        <span class="label label-default pull-right"><img class="widget-icon" height="16" width="16"src="{{asset_url('images/cogwheels_white.png', 'core')}}"/> widgetable</span>
                     </a>
 
-                    <h3 class="break"><a href="[[ base_url ]][[ doc.slug ]]">[[ doc.title ]]</a></h3>
+                    <h3 class="break"><a href="[[ base_url ]]vocabs/viewById/[[ doc.id ]]">[[ doc.title ]]</a></h3>
 
                    	<p ng-if="doc.acronym">
 						<small>Acronym: [[ doc.acronym ]]</small>
