@@ -240,14 +240,14 @@ function getResolvedLinkForIdentifier($type, $value) {
         case RelatedEntityIdentifier::IDENTIFIER_TYPE_PURL:
             return 'PURL : <a class="identifier" href="' .
                 $value . '" title="Resolve this PURL" target="_blank">' . $value .
-                '<img src="' . asset_url('assets/core/images/icons/external_link.png',
+                ' <img src="' . asset_url('assets/core/images/icons/external_link.png',
                 'base_path') . '" alt="PURL icon"></a>';
             break;
         case RelatedEntityIdentifier::IDENTIFIER_TYPE_RESEARCHER_ID:
-// TODO identifier logo
             return 'ResearcherID: <a class="identifier" href="http://www.researcherid.com/rid/' .
                 $value .'" title="Resolve this ResearcherID" target="_blank">' . $value .
-                '</a>';
+                ' <img src="' . asset_url('assets/core/images/icons/thomsonreuters.png',
+                'base_path') . '" alt="ResearcherID icon"></a>';
             break;
         case RelatedEntityIdentifier::IDENTIFIER_TYPE_URI:
             return 'URI: <a class="identifier" href="' .
