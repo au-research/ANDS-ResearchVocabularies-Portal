@@ -428,14 +428,14 @@
                 //if selection was made
                 //otherwise assume the pooplParty ID is still in the field unprocessed!!!
                 if(typeof project.id != 'undefined'){
-                    $scope.vocab.pool_party_id = project.id;
+                    $scope.vocab.poolparty_id = project.id;
                 } else {
-                    $scope.vocab.pool_party_id = project;
+                    $scope.vocab.poolparty_id = project;
                 }
 
                 $scope.decide = true;
                 //populate with metadata from toolkit, overwrite the previous data where need be
-                vocabs_factory.getMetadata($scope.vocab.pool_party_id).then(function (data) {
+                vocabs_factory.getMetadata($scope.vocab.poolparty_id).then(function (data) {
                     if (data) {
 
                         // CC-1447. Provide some feedback, if the Toolkit

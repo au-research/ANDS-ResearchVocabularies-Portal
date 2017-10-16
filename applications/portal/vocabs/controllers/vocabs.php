@@ -384,7 +384,14 @@ class Vocabs extends MX_Controller
         $data = json_decode(file_get_contents("php://input"), true);
         $filters = isset($data['filters']) ? $data['filters'] : false;
         $this->load->library('solr');
-        $this->solr->init()->setCore('vocabs');
+        $vocab_config = get_config_item('vocab_config');
+        if (!$vocab_config['solr_url']) {
+            throw new Exception('Indexer URL for Vocabulary '
+                . 'module is not configured correctly');
+        }
+
+        $this->solr->setUrl($vocab_config['solr_url']);
+//         $this->solr->init()->setCore('vocabs');
 
         $pp = array_key_exists('pp', $filters) ? $filters['pp'] : 10;
         $start = 0;
@@ -420,13 +427,13 @@ class Vocabs extends MX_Controller
                 // (2) assets/templates/widgetDirective.html and
                 // assets/js/vocabDisplayDirective.js for the
                 // fields needed for the Widget Explorer.
-                // The Widget Explorer's needs add "sissvoc_end_point"
+                // The Widget Explorer needs "sissvoc_endpoint" added
                 // to the list required by the "main" search.
                 // NB: highlighting can/does also return snippets
                 // from other fields not listed in fl (which is good!).
                  ->setOpt('fl',
                      'id,slug,status,title,acronym,publisher,'
-                          . 'description,widgetable,sissvoc_end_point')
+                          . 'description,widgetable,sissvoc_endpoint')
                  ->setOpt(
                      'qf',
                      'title_search^1 subject_search^0.5 '
@@ -472,7 +479,8 @@ class Vocabs extends MX_Controller
             }
         }
 
-        //CC-1298 If there's no search term, order search result by title asc
+        // CC-1298 If there's no search term, order search result by
+        // title_sort asc
         if (!$filters || !isset($filters['q']) || trim($filters['q']) == '') {
             $this->solr
                 ->setOpt('sort', 'title_sort asc')
@@ -1794,12 +1802,12 @@ class Vocabs extends MX_Controller
 
         $aps = $this->RegistryAPI->getAccessPointsForVersionById($id);
 
-        $sissvoc_end_point = "";
+        $sissvoc_endpoint = "";
 
         foreach ($aps->getAccessPoint() as $ap) {
             if ($ap->getDiscriminator() ===
                 AccessPoint::DISCRIMINATOR_AP_SISSVOC) {
-                    $sissvoc_end_point = $ap->getApSissvoc()->getUrlPrefix();
+                    $sissvoc_endpoint = $ap->getApSissvoc()->getUrlPrefix();
                 }
         }
 
@@ -1818,7 +1826,7 @@ class Vocabs extends MX_Controller
         if ($raw) return $tree_data;
 
         //build a tree a little bit nicer
-        $this->buildTree($tree_data, $sissvoc_end_point);
+        $this->buildTree($tree_data, $sissvoc_endpoint);
 
         return $tree_data;
     }
@@ -1831,7 +1839,7 @@ class Vocabs extends MX_Controller
      * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
      * @param  array $treeData
      */
-    private function buildTree(&$treeData, $sissvoc_end_point = '')
+    private function buildTree(&$treeData, $sissvoc_endpoint = '')
     {
         if (is_array($treeData)) {
             foreach ($treeData as &$concept) {
@@ -1845,13 +1853,13 @@ class Vocabs extends MX_Controller
                         . $concept['definition'];
                         if(isset($concept['notation']))
                             $tipText .= '<br/><b>Notation: </b>' .$concept['notation'];
-                            if($sissvoc_end_point != '')
-                                $tipText .= '<br/><a class="pull-right" target="_blank" href="' .$sissvoc_end_point . '/resource?uri=' . $uri . '">View as linked data</a>';
+                            if($sissvoc_endpoint != '')
+                                $tipText .= '<br/><a class="pull-right" target="_blank" href="' .$sissvoc_endpoint . '/resource?uri=' . $uri . '">View as linked data</a>';
                                 $concept['value'] = $title;
                                 $concept['tip'] = $tipText. '</p>';
                                 if (isset($concept['narrower'])) {
                                     $this->buildTree($concept['narrower'],
-                                        $sissvoc_end_point);
+                                        $sissvoc_endpoint);
                                     $concept['num_child'] = sizeof($concept['narrower']);
                                 } else {
                                     $concept['num_child'] = 0;

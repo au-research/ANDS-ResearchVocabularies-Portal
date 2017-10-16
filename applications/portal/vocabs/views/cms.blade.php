@@ -304,12 +304,12 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
           </div>
           <div class="col-md-4">
 
-            <div class="panel swatch-gray" ng-if="vocab.pool_party_id">
+            <div class="panel swatch-gray" ng-if="vocab.poolparty_id">
               <div class="panel-heading">PoolParty Project Info</div>
               <div class="panel-body">
                 <dl>
                   <dt>PoolParty Project ID</dt>
-                  <dd>[[ vocab.pool_party_id ]]</dd>
+                  <dd>[[ vocab.poolparty_id ]]</dd>
                 </dl>
               </div>
             </div>
