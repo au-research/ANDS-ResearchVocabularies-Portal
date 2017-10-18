@@ -14,10 +14,24 @@
             templateUrl: base_url + 'assets/vocabs/templates/widgetDirective.html',
             link: function (scope, elem) {
 
+                // Initialise Registry API access.
+                var VocabularyRegistryApi = require('vocabulary_registry_api');
+                var defaultClient = VocabularyRegistryApi.ApiClient.instance;
+                defaultClient.basePath = registry_api_url;
+                var api = new VocabularyRegistryApi.ServicesApi();
+
                 scope.vocabList = [];
                 scope.base_url = base_url;
 
-                vocabs_factory.getAllWidgetable().then(function (data) {
+                // For now, do a filtered search to get the widgetable
+                // vocabularies. The Solr documentation says don't do this
+                // (i.e., using "pp":-1 here to have the API method ask for
+                // a "ridiculously large" number of result rows).
+                // So, we should look to implement an API method that does
+                // a database query instead of a Solr query.
+                api.search({"filtersJson":
+                    "{\"pp\": -1, \"widgetable\":true}"}).
+                then(function (data) {
                     scope.vocabList = data.response.docs;
                     // If desired, uncomment the following to
                     // preset the dropdown to the first vocab in the list (if any).
