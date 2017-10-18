@@ -23,8 +23,6 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
   {{json_encode(get_config_item('vocab_resolving_services'))}};
   var subject_vocab_proxy =
   {{json_encode(get_config_item('subject_vocab_proxy'))}};
-  var registry_api_url =
-  {{json_encode(get_config_item('vocab_config')['registry_api_url'])}};
 @stop
 @section('content')
   <section ng-controller="addVocabsCtrl" class="section swatch-white">

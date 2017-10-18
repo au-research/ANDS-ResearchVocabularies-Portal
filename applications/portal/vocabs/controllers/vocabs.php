@@ -222,9 +222,6 @@ class Vocabs extends MX_Controller
         vocab_log_terms($event);
         $this->blade
              ->set('search_app', true)
-             ->set(
-                 'scripts',
-                 array('vocabs-registry-client-bundle'))
              ->set('title', 'Research Vocabularies Australia')
              ->render('index');
     }
@@ -362,7 +359,9 @@ class Vocabs extends MX_Controller
                 break;
             case 'widget_explorer':
                 $title = 'Vocab Widget Explorer';
-                $this->blade->set('scripts', array('widgetDirective', 'vocabDisplayDirective', 'conceptDisplayDirective'));
+                $this->blade->set('scripts',
+                    array('widgetDirective',
+                        'vocabDisplayDirective', 'conceptDisplayDirective'));
                 break;
         }
         $this->blade
@@ -1634,8 +1633,7 @@ class Vocabs extends MX_Controller
         );
         vocab_log_terms($event);
         $this->blade
-        ->set('scripts', array('vocabs-registry-client-bundle',
-            'vocabs_cms', 'versionCtrl', 'relatedCtrl',
+        ->set('scripts', array('vocabs_cms', 'versionCtrl', 'relatedCtrl',
             'subjectDirective', 'relatedEntityIdentifierDirective'))
             ->set('vocab', false)
             ->render('cms');
@@ -1701,8 +1699,7 @@ class Vocabs extends MX_Controller
             $this->blade
                 ->set(
                 'scripts',
-                array('vocabs-registry-client-bundle',
-                    'vocabs_cms', 'versionCtrl', 'relatedCtrl',
+                array('vocabs_cms', 'versionCtrl', 'relatedCtrl',
                     'relatedVocabularyCtrl',
                     'subjectDirective', 'relatedEntityIdentifierDirective')
                 )

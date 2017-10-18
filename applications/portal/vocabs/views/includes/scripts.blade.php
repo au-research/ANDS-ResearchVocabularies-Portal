@@ -1,6 +1,7 @@
 <script>
-	var base_url = "{{base_url()}}";
-	var registry_url = "{{registry_url()}}";
+    var base_url = "{{base_url()}}";
+    var registry_url = "{{registry_url()}}";
+    var registry_api_url = {{json_encode(get_config_item('vocab_config')['registry_api_url'])}};
 @yield('script')
 </script>
 
@@ -65,6 +66,7 @@
     <script type="text/javascript" src="{{ asset_url('js/scripts.js').'?'.getReleaseVersion() }}"></script>
 @endif
 
+<script type="text/javascript" src="{{ asset_url('js/vocabs-registry-client-bundle.js') }}"></script>
 
 
 @if(isset($scripts))
