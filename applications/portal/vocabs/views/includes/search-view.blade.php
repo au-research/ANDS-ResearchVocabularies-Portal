@@ -4,7 +4,7 @@
 
 			<div class="col-md-4 col-lg-3 sidebar search-sidebar">
 
-				<div ng-if="facets.subject_labels">
+				<div ng-if="facets.subject_labels.length > 0">
 				<h3>Subject</h3>
 					<ul class="list-unstyled">
 						<li ng-repeat="facet in facets.subject_labels.slice(0,8)">
@@ -28,7 +28,7 @@
                         </a>
                     </ul>
 				</div>
-				<div ng-if="facets.publisher">
+				<div ng-if="facets.publisher.length > 0">
 				<h3>Publisher</h3>
    					<ul class="list-unstyled">
 						<li ng-repeat="facet in facets.publisher.slice(0,8)">
@@ -49,7 +49,7 @@
                         </a>
 					</ul>
 				</div>
-				<div ng-if="facets.language">
+				<div ng-if="facets.language.length > 0">
 				<h3>Language</h3>
 					<ul class="list-unstyled">
 						<li ng-repeat="facet in facets.language.slice(0,8)">
@@ -70,7 +70,7 @@
                         </a>
                     </ul>
 				</div>
-				<div ng-if="facets.format">
+				<div ng-if="facets.format.length > 0">
 				<h3>Format</h3>
 					<ul class="list-unstyled">
 						<li ng-repeat="facet in facets.format">
@@ -79,7 +79,7 @@
 						</li>
 					</ul>
 				</div>
-				<div ng-if="facets.access">
+				<div ng-if="facets.access.length > 0">
 				<h3>Access</h3>
 					<ul class="list-unstyled">
 						<li ng-repeat="facet in facets.access">
@@ -88,7 +88,7 @@
 						</li>
 					</ul>
 				</div>
-				<div ng-if="facets.licence">
+				<div ng-if="facets.licence.length > 0">
 				<h3>Licence</h3>
 					<ul class="list-unstyled">
 						<li ng-repeat="facet in facets.licence">

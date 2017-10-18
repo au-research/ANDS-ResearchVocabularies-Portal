@@ -222,6 +222,9 @@ class Vocabs extends MX_Controller
         vocab_log_terms($event);
         $this->blade
              ->set('search_app', true)
+             ->set(
+                 'scripts',
+                 array('vocabs-registry-client-bundle'))
              ->set('title', 'Research Vocabularies Australia')
              ->render('index');
     }
@@ -438,7 +441,7 @@ class Vocabs extends MX_Controller
                      'qf',
                      'title_search^1 subject_search^0.5 '
                           . 'description^0.01 fulltext^0.001 '
-                     . 'concept_search^0.02 publisher^0.5'
+                     . 'concept_search^0.02 publisher_search^0.5'
                  );
 
             foreach ($filters as $key => $value) {
