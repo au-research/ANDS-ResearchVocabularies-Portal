@@ -28,7 +28,6 @@
 
         // Initialise Registry API access.
         var VocabularyRegistryApi = require('vocabulary_registry_api');
-
         var defaultClient = VocabularyRegistryApi.ApiClient.instance;
         defaultClient.basePath = registry_api_url;
         // Configure API key authorization: apiKeyAuth
