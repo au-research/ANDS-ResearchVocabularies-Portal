@@ -50,7 +50,7 @@
         var ite = VocabularyRegistryApi.RelatedEntityIdentifier.
             IdentifierTypeEnum;
         $scope.rei_types = [
-            {"id": ite["AU-ANL:PEAU"], "label": "AU-ANL:PEAU",
+            {"id": ite.auAnlPeau, "label": "AU-ANL:PEAU",
              "placeholder": "nla.party-12345",
              "validate": /^nla\.party-\d+$/},
             {"id": ite.doi, "label": "DOI",

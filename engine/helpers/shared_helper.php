@@ -195,7 +195,7 @@ function getReverseRelationshipString($relation) {
  */
 function getResolvedLinkForIdentifier($type, $value) {
     switch ($type) {
-        case RelatedEntityIdentifier::IDENTIFIER_TYPE_AU_ANLPEAU:
+        case RelatedEntityIdentifier::IDENTIFIER_TYPE_AU_ANL_PEAU:
             return 'NLA: <a class="identifier" href="http://nla.gov.au/' .
                 $value . '" title="View the record for this party in Trove" target="_blank">' .
                 $value . ' <img src="' . asset_url('assets/core/images/icons/nla_icon.png',
