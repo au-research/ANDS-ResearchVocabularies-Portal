@@ -262,9 +262,11 @@
                                 'rei_value': rei.getIdentifierValue()
                             });
                 });
-                // Having added identifiers, need to cause a refresh of the
-                // form.
-                $scope.$apply();
+                // Having added identifiers, need to inform AngularJS
+                // that we changed the model. In this case, only need
+                // to refresh _this_ scope; no need to go to $rootScope().
+                // This can be done with $digest().
+                $scope.$digest();
             });
         };
 
