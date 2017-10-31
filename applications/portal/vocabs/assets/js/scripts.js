@@ -2738,8 +2738,8 @@ $(document).on(
                         if ($(this).attr('related')) {
                             // return "we have some text for re "+$(this).attr('re_id');
                             var url = (base_url
-                                       + 'vocabs/related_preview/?related='
-                                       + $(this).attr('related')
+                                       + 'vocabs/related_previewnew/?related='
+                                       + encodeURIComponent($(this).attr('related'))
                                        + '&v_id=' + $(this).attr('v_id')
                                        + '&sub_type='
                                        + $(this).attr('sub_type'));
@@ -2913,6 +2913,55 @@ function readCookie(name) {
     }
     return null;
 }
+
+// Polyfill Array find() method from
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
+// Needed for IE (sigh).
+// Used in relatedCtrl.js.
+//https://tc39.github.io/ecma262/#sec-array.prototype.find
+if (!Array.prototype.find) {
+  Object.defineProperty(Array.prototype, 'find', {
+    value: function(predicate) {
+     // 1. Let O be ? ToObject(this value).
+      if (this == null) {
+        throw new TypeError('"this" is null or not defined');
+      }
+
+      var o = Object(this);
+
+      // 2. Let len be ? ToLength(? Get(O, "length")).
+      var len = o.length >>> 0;
+
+      // 3. If IsCallable(predicate) is false, throw a TypeError exception.
+      if (typeof predicate !== 'function') {
+        throw new TypeError('predicate must be a function');
+      }
+
+      // 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
+      var thisArg = arguments[1];
+
+      // 5. Let k be 0.
+      var k = 0;
+
+      // 6. Repeat, while k < len
+      while (k < len) {
+        // a. Let Pk be ! ToString(k).
+        // b. Let kValue be ? Get(O, Pk).
+        // c. Let testResult be ToBoolean(? Call(predicate, T, « kValue, k, O »)).
+        // d. If testResult is true, return kValue.
+        var kValue = o[k];
+        if (predicate.call(thisArg, kValue, k, o)) {
+          return kValue;
+        }
+        // e. Increase k by 1.
+        k++;
+      }
+
+      // 7. Return undefined.
+      return undefined;
+    }
+  });
+}
 ;(function () {
     'use strict';
 
@@ -3061,6 +3110,12 @@ function readCookie(name) {
 
     function searchController($scope, $timeout, $log, $location, vocabs_factory) {
 
+        // Initialise Registry API access.
+        var VocabularyRegistryApi = require('vocabulary_registry_api');
+        var defaultClient = VocabularyRegistryApi.ApiClient.instance;
+        defaultClient.basePath = registry_api_url;
+        var api = new VocabularyRegistryApi.ServicesApi();
+
         $scope.vocabs = [];
         $scope.filters = {};
         $scope.base_url = base_url;
@@ -3078,7 +3133,8 @@ function readCookie(name) {
             } else {
                 $location.path('/').replace();
                 window.history.pushState($scope.filters, 'ANDS Research Vocabulary', $location.absUrl());
-                vocabs_factory.search($scope.filters).then(function (data) {
+                api.search({"filtersJson": JSON.stringify($scope.filters)}).
+                then(function (data) {
                     $log.debug(data);
                     $scope.result = data;
                     var facets = [];
@@ -3106,6 +3162,9 @@ function readCookie(name) {
                             $scope.page.pages.push(x);
                         }
                     }
+                    // We changed the model outside AngularJS's notice, so we
+                    // need to cause a refresh of the form.
+                    $scope.$apply();
                 });
             }
         };
@@ -3120,6 +3179,9 @@ function readCookie(name) {
             return $('#search_app').length <= 0;
         };
 
+        // Seems to be necessary to get started. Unfortunately, the $watch
+        // defined below also then kicks in, so the initial search is done
+        // twice.
         if (!$scope.searchRedirect()) {
             $scope.search();
         }
@@ -3186,18 +3248,10 @@ function readCookie(name) {
 
         $scope.clearFilter = function (type, value, execute) {
             if (typeof $scope.filters[type] != 'object') {
-                if (type == 'q') {
-                    $scope.query = '';
-                    search_factory.update('query', '');
-                    $scope.filters['q'] = '';
-                } else if (type == 'description' || type == 'title' || type == 'identifier' || type == 'related_people' || type == 'related_organisations' || type == 'institution' || type == 'researcher') {
-                    $scope.query = '';
-                    search_factory.update('query', '');
-                    delete $scope.filters[type];
-                    delete $scope.filters['q'];
-                }
+                // It's a string.
                 delete $scope.filters[type];
             } else if (typeof $scope.filters[type] == 'object') {
+                // It's an array.
                 var index = $scope.filters[type].indexOf(value);
                 $scope.filters[type].splice(index, 1);
             }
@@ -3239,8 +3293,10 @@ function readCookie(name) {
                 scope.treeclass = 'classic-tree';
                 $http.get(base_url + 'vocabs/servicesnew/vocabs/' + scope.versionid + '/tree')
                     .then(function (response) {
-                        scope.tree = response.data.message;
-                        if(scope.tree.length>1){$("#concept").hide();}
+                        if (response.data.status === 'OK') {
+                            scope.tree = response.data.message;
+                            if(scope.tree.length>1){$("#concept").hide();}
+                        }
                     });
             }
         }
