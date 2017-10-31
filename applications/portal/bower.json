@@ -1,7 +1,7 @@
 {
-  "name": "ANDS Portal",
+  "name": "vocabs-portal",
   "version": "15",
-  "homepage": "https://github.com/au-research/ANDS-Registry-Core",
+  "homepage": "https://github.com/au-research/ANDS-ResearchVocabularies-Portal",
   "authors": [
     "Minh Duc Nguyen <minh.nguyen@ands.org.au>"
   ],
