@@ -227,38 +227,6 @@ class Vocabs extends MX_Controller
     }
 
     /**
-     * Adding a vocabulary
-     * Displaying a view for adding a vocabulary
-     * Using the same CMS as edit
-     * If not logged in, redirect to login page, then My Vocabs.
-     * We could have done a redirect from login page back to this method,
-     * except that the CMS page relies on the use of a URL fragment
-     * (#!/?skip=true) to distinguish between "normal" and add from PoolParty,
-     * and because fragments are only visible client-side, we can't
-     * pass that on.
-     * @return view
-     * @author  Minh Duc Nguyen <minh.nguyen@ands.org.au>
-     */
-    public function add()
-    {
-        if (!$this->user->isLoggedIn()) {
-            // throw new Exception('User not logged in');
-            redirect(get_vocab_config('auth_url')
-                     . 'login#?redirect=' . portal_url('vocabs/myvocabs'));
-        }
-        $event = array(
-            'event' => 'pageview',
-            'page' => 'add',
-        );
-        vocab_log_terms($event);
-        $this->blade
-             ->set('scripts', array('vocabs_cms', 'versionCtrl', 'relatedCtrl',
-                                    'subjectDirective'))
-             ->set('vocab', false)
-             ->render('cms');
-    }
-
-    /**
      * Edit a vocabulary
      * Displaying a view for editing a vocabulary
      * Using the same CMS as add but directed towards a vocabulary
@@ -379,6 +347,12 @@ class Vocabs extends MX_Controller
      */
     public function filter()
     {
+        // This should not now be called! It has been replaced with calls
+        // to the Registry API.
+        // Remove this method during final cleanup.
+        throw new Exception('Oops, the controller filter() method was called');
+        return;
+
         //header
         header('Cache-Control: no-cache, must-revalidate');
         header('Content-type: application/json');
@@ -1620,7 +1594,7 @@ class Vocabs extends MX_Controller
      * @return view
      * @author  Minh Duc Nguyen <minh.nguyen@ands.org.au>
      */
-    public function addnew()
+    public function add()
     {
         if (!$this->user->isLoggedIn()) {
             // throw new Exception('User not logged in');
