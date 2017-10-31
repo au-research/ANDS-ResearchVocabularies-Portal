@@ -173,6 +173,7 @@
             $scope.entity = {
                 'relationship': ['publishedBy']
             }
+            $scope.ensure_all_minimal_lists();
         }
 
         /* Filter the entity relations based on type. */
