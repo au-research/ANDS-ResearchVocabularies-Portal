@@ -238,6 +238,15 @@ class Vocabs extends MX_Controller
      */
     public function edit($id = false)
     {
+        // This should not now be called! See editnew().
+        // This code is still here because there is still stuff here
+        // that needs to be migrated into editnew(), e.g.,
+        // the handling of drafts.
+        // When editnew is finished, remove this method and
+        // rename editnew -> edit.
+        throw new Exception('Oops, the controller edit() method was called');
+        return;
+
         if (!$this->user->isLoggedIn()) {
             // throw new Exception('User not logged in');
             redirect(get_vocab_config('auth_url')
@@ -1636,30 +1645,9 @@ class Vocabs extends MX_Controller
         }
 
         try {
-            $vocab = $this->RegistryAPI->getVocabularyById($id,
-                'true', 'true', 'true');
-
-            // First, check existence
-            if (!$vocab) {
-                throw new Exception('Vocab ID ' . $id . ' not found');
-            }
-
-            // Then, check authorization.
-            if (!$this->isOwner($id)) {
-                throw new Exception('Not authorised to edit Vocab ID ' . $id);
-            }
-            // var_dump($vocab);
-            // throw new Exception($vocab->prop['status']);
-            if ($vocab->getStatus() === Vocabulary::STATUS_PUBLISHED) {
-                // throw new Exception('This is published');
-                $hasDraft = $this->RegistryAPI->hasDraftVocabularyById($id);
-                if ($hasDraft) {
-                    // FIXME
-//                     $draft_vocab = $this->vocab->getDraftBySlug($vocab->prop['slug']);
-//                     redirect(portal_url('vocabs/editnew/') . $draft_vocab->id);
-                    //throw new Exception($vocab->id);
-                }
-            }
+            // If the vocab is not found, or the user is not
+            // authorized, there will be an exception.
+            $vocab = $this->RegistryAPI->getVocabularyByIdEdit($id);
 
             $event = array(
                 'event' => 'pageview',
@@ -1682,11 +1670,17 @@ class Vocabs extends MX_Controller
                     . $vocab->getTitle() . ' - Research Vocabularies Australia')
                     ->render('cms');
         } catch (Exception $e) {
-            // No longer throw an exception, like this:
-            // throw new Exception('No Record found with slug: ' . $slug);
-            // But instead, show the soft 404 page.
-//             $message = 'Vocab ID ' . $id . ' not found';
-            $message = $e->getMessage();
+            switch ($e->getCode()) {
+            case 400:
+                $message = "No such vocabulary.";
+                break;
+            case 403:
+                $message = "Not authorised to edit this vocabulary.";
+                break;
+            default:
+                $message = $e->getMessage();
+                break;
+            }
             $this->blade
             ->set('message', $message)
             ->render('soft_404');

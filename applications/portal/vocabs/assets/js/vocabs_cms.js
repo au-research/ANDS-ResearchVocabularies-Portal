@@ -143,10 +143,7 @@
          * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
          */
         if ($('#vocab_id').val()) {
-            api.getVocabularyById($('#vocab_id').val(),
-                    {"includeVersions" : true,
-                     "includeAccessPoints" : true,
-                     "includeRelatedEntitiesAndVocabularies" : true}).then(
+            api.getVocabularyByIdEdit($('#vocab_id').val()).then(
                              function (data) {
 //                $log.debug('Editing ', data);
                 // Preserve the original data for later. We need this
@@ -167,6 +164,7 @@
         $scope.copy_incoming_vocab_to_scope = function (data) {
             $scope.vocab = [];
             // Top-level metadata
+            $scope.vocab.status = data.getStatus();
             $scope.vocab['title'] = data.getTitle();
             $scope.vocab['acronym'] = data.getAcronym();
             $scope.vocab['description'] = data.getDescription();
@@ -608,7 +606,9 @@
         };
 
         /**
-         * Saving a vocabulary
+         * Saving a vocabulary.
+         * Possible status values:
+         *  'draft', 'published', 'deprecated', 'discard'.
          * Based on the mode, add and edit will call different service point
          * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
          */
@@ -644,8 +644,20 @@
             // ... but, instead, extract $('#creation_date').val() when
             // constructing the Vocabulary object to send back to the API.
 
+            // The following test could be changed to:
+//          if ($scope.mode == 'add' ||
+//            (($scope.vocab.status == 'published') ||
+//              ($scope.vocab.status == 'deprecated') && status == 'draft')) {
+            // in order to support adding a draft to an existing, deprecated
+            // vocabulary.
+
             if ($scope.mode == 'add' ||
                 ($scope.vocab.status == 'published' && status == 'draft')) {
+                // Adding a new vocabulary, or adding a draft to an
+                // already-published vocabulary (i.e., which does not _already_
+                // have a draft). In each case, this _adds_
+                // a row to the vocabularies table.
+                // NB: vocabs_factory.add() method called: _no_ id passed in.
                 $scope.vocab.status = status;
                 $scope.status = 'saving';
                 $log.debug('Adding Vocab', $scope.vocab);
@@ -678,6 +690,16 @@
                     }
                 });
             } else if ($scope.mode == 'edit') {
+                // Existing vocabulary. Either:
+                // draft -> draft
+                // draft -> published
+                // published and draft -> save updated draft
+                // published -> published
+                // published -> deprecated
+                // deprecated -> draft or published or deprecated
+                // Whatever this is becomes "the" one row of the vocabulary
+                // in the vocabularies table.
+                // NB: vocabs_factory.modify() method called: id is passed in.
                 $scope.vocab.status = status;
                 $scope.status = 'saving';
                 $log.debug('Saving Vocab', $scope.vocab);
