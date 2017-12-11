@@ -1897,10 +1897,13 @@ class Vocabs extends MX_Controller
         $this->load->library('blade');
         ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()->setHost(
             get_vocab_config('registry_api_url'));
+        // If debugging required, uncomment and adjust filename.
 //          ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()
 //              ->setDebug(true)
 //          ->setDebugFile('/var/www/html/workareas/richard/vocabs-new/engine/logs/error/richardvocabsnewphpdebug.txt');
 
+        // The user's authentication cookie is used as
+        // an API key to authenticate with the Registry.
         $cookie_name = $this->session->sess_cookie_name;
         $cookie = $this->input->cookie($cookie_name);
         if ($cookie) {
