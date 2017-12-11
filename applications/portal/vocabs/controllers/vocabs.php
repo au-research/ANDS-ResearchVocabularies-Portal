@@ -227,80 +227,6 @@ class Vocabs extends MX_Controller
     }
 
     /**
-     * Edit a vocabulary
-     * Displaying a view for editing a vocabulary
-     * Using the same CMS as add but directed towards a vocabulary
-     * Authorization is checked.
-     * @param  string $id ID of the vocabulary, unique for a vocabulary
-     * @return view
-     * @throws Exception
-     * @author  Minh Duc Nguyen <minh.nguyen@ands.org.au>
-     */
-    public function edit($id = false)
-    {
-        // This should not now be called! See editnew().
-        // This code is still here because there is still stuff here
-        // that needs to be migrated into editnew(), e.g.,
-        // the handling of drafts.
-        // When editnew is finished, remove this method and
-        // rename editnew -> edit.
-        throw new Exception('Oops, the controller edit() method was called');
-        return;
-
-        if (!$this->user->isLoggedIn()) {
-            // throw new Exception('User not logged in');
-            redirect(get_vocab_config('auth_url')
-                     . 'login#?redirect='
-                     . portal_url('vocabs/edit/' . $id));
-        }
-        if (!$id) {
-            throw new Exception('Require a Vocabulary ID to edit');
-        }
-
-        $vocab = $this->vocab->getByID($id);
-
-        // First, check existence
-        if (!$vocab) {
-            throw new Exception('Vocab ID ' . $id . ' not found');
-        }
-
-        // Then, check authorization.
-        if (!$this->vocab->isOwner($id)) {
-            throw new Exception('Not authorised to edit Vocab ID ' . $id);
-        }
-        // var_dump($vocab);
-        // throw new Exception($vocab->prop['status']);
-        if ($vocab->prop['status'] == 'published') {
-            // throw new Exception('This is published');
-            $draft_vocab = $this->vocab->getDraftBySlug($vocab->prop['slug']);
-            if ($draft_vocab) {
-                redirect(portal_url('vocabs/edit/') . $draft_vocab->id);
-                //throw new Exception($vocab->id);
-            }
-        }
-
-        $event = array(
-            'event' => 'pageview',
-            'page' => 'edit',
-            'vocab' => $vocab->title,
-            'slug' => $vocab->slug,
-            'id' => $vocab->id,
-        );
-        vocab_log_terms($event);
-
-        $this->blade
-             ->set(
-                 'scripts',
-                 array('vocabs_cms', 'versionCtrl', 'relatedCtrl',
-                       'subjectDirective')
-             )
-             ->set('vocab', $vocab)
-             ->set('title', 'Edit - '
-                   . $vocab->title . ' - Research Vocabularies Australia')
-             ->render('cms');
-    }
-
-    /**
      * Page Controller
      * For displaying static pages that belongs to the vocabs module
      * @author  Minh Duc Nguyen <minh.nguyen@ands.org.au>
@@ -1632,7 +1558,7 @@ class Vocabs extends MX_Controller
      * @throws Exception
      * @author  Minh Duc Nguyen <minh.nguyen@ands.org.au>
      */
-    public function editnew($id = false)
+    public function edit($id = false)
     {
         if (!$this->user->isLoggedIn()) {
             // throw new Exception('User not logged in');
