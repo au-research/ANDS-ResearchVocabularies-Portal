@@ -6,7 +6,7 @@ use ANDS\VocabsRegistry\Model\Version;
 use ANDS\VocabsRegistry\Model\Vocabulary;
 use ANDS\VocabsRegistry\ApiException;
 
-require_once('vocabs-registry-client/autoload.php');
+// require_once('vocabs-registry-client/autoload.php');
 
 /**
  * Vocabs controller

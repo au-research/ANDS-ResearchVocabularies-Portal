@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "94382195f6e7eea06f0cbe942a51eb5c",
+    "content-hash": "4a02442c4c0d011e9957c2d352fed75e",
     "packages": [
         {
             "name": "au-research/ands-doi-service",
@@ -44,6 +44,58 @@
                 }
             ],
             "time": "2017-01-25T03:28:34+00:00"
+        },
+        {
+            "name": "au-research/vocabs-php-client",
+            "version": "dev-registry",
+            "dist": {
+                "type": "path",
+                "url": "/Users/minhd/dev/ands/vocabs-toolkit/php-client/vocabs-registry-client",
+                "reference": "f6ffcffe6bb591a14e3b9202c412d7c4ed1e1883",
+                "shasum": null
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "~1.12",
+                "phpunit/phpunit": "~4.8",
+                "satooshi/php-coveralls": "~1.0",
+                "squizlabs/php_codesniffer": "~2.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ANDS\\VocabsRegistry\\": "lib/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "ANDS\\VocabsRegistry\\": "test/"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "Swagger and contributors",
+                    "homepage": "https://github.com/swagger-api/swagger-codegen"
+                }
+            ],
+            "homepage": "http://swagger.io",
+            "keywords": [
+                "api",
+                "php",
+                "sdk",
+                "swagger"
+            ],
+            "transport-options": {
+                "symlink": false
+            }
         },
         {
             "name": "doctrine/inflector",
@@ -1978,7 +2030,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "au-research/vocabs-php-client": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
