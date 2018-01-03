@@ -48,7 +48,10 @@
     "repositories": [
         {
             "type": "path",
-            "url": "/opt/ands/vocabs-clients/php"
+            "url": "/opt/ands/vocabs-clients/php",
+            "options": {
+                "symlink": false
+            }
         }
     ],
 
