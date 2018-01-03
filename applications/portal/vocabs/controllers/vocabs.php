@@ -1700,7 +1700,7 @@ class Vocabs extends MX_Controller
 
         foreach ($aps->getAccessPoint() as $ap) {
             if ($ap->getDiscriminator() ===
-                AccessPoint::DISCRIMINATOR_AP_SISSVOC) {
+                AccessPoint::DISCRIMINATOR_SISSVOC) {
                     $sissvoc_endpoint = $ap->getApSissvoc()->getUrlPrefix();
                 }
         }

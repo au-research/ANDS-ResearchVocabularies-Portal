@@ -5,15 +5,15 @@
     //   use ANDS\VocabsRegistry\Model\AccessPoint;
     // So define constants instead.
     define("AP_API_SPARQL",
-      ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_AP_API_SPARQL);
+      ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_API_SPARQL);
     define("AP_FILE",
-      ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_AP_FILE);
+      ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_FILE);
     define("AP_SESAME_DOWNLOAD",
-      ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_AP_SESAME_DOWNLOAD);
+      ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_SESAME_DOWNLOAD);
     define("AP_SISSVOC",
-      ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_AP_SISSVOC);
+      ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_SISSVOC);
     define("AP_WEB_PAGE",
-      ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_AP_WEB_PAGE);
+      ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_WEB_PAGE);
     $aps = array();
     // get file
     foreach ($current_version->getAccessPoint() as $ap) {
