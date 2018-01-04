@@ -1,6 +1,7 @@
 <?php
 
 use ANDS\VocabsRegistry\Model\AccessPoint;
+use ANDS\VocabsRegistry\Model\OwnedVocabulary;
 use ANDS\VocabsRegistry\Model\RelatedEntityRef;
 use ANDS\VocabsRegistry\Model\Version;
 use ANDS\VocabsRegistry\Model\Vocabulary;
@@ -539,17 +540,39 @@ class Vocabs extends MX_Controller
             redirect(get_vocab_config('auth_url')
                      . 'login#?redirect=' . portal_url('vocabs/myvocabs'));
         }
-        $owned = $this->vocab->getOwned();
 
-        $event = array(
+        $ownedVocabulariesList = $this->RegistryAPI->getOwnedVocabularies();
+        $ownedVocabularies = $ownedVocabulariesList->getOwnedVocabulary();
+
+        $published = collect($ownedVocabularies)
+            ->filter(function(OwnedVocabulary $vocab) {
+                return $vocab->getStatus() === Vocabulary::STATUS_PUBLISHED;
+            })->toArray();
+
+        $draft = collect($ownedVocabularies)
+            ->filter(function(OwnedVocabulary $vocab) {
+                return $vocab->getStatus() === Vocabulary::STATUS_DRAFT;
+            })->toArray();
+
+        $deprecated = collect($ownedVocabularies)
+            ->filter(function(OwnedVocabulary $vocab) {
+                return $vocab->getStatus() === Vocabulary::STATUS_DEPRECATED;
+            })->toArray();
+
+        vocab_log_terms([
             'event' => 'pageview',
-            'page' => 'myvocabs',
-        );
-        vocab_log_terms($event);
-        $this->blade
-             ->set('owned_vocabs', $owned)
-             ->set('title', 'My Vocabs - Research Vocabularies Australia')
-             ->render('myvocabs');
+            'page' => 'myvocabs'
+        ]);
+
+        $this
+            ->blade
+//            ->set('owned_vocabs', $owned)
+            ->set('draft', $draft)
+            ->set('published', $published)
+            ->set('deprecated', $deprecated)
+            ->set('ownedCount', count($ownedVocabularies))
+            ->set('title', 'My Vocabs - Research Vocabularies Australia')
+            ->render('myvocabs');
     }
 
     /**
