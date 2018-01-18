@@ -1587,7 +1587,7 @@ class Vocabs extends MX_Controller
             // throw new Exception('User not logged in');
             redirect(get_vocab_config('auth_url')
                 . 'login#?redirect='
-                . portal_url('vocabs/editnew/' . $id));
+                . portal_url('vocabs/edit/' . $id));
         }
         if (!$id) {
             throw new Exception('Require a Vocabulary ID to edit');
