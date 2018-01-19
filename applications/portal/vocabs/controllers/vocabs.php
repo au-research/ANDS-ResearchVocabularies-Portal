@@ -1566,6 +1566,7 @@ class Vocabs extends MX_Controller
         vocab_log_terms($event);
         $this->blade
         ->set('scripts', array('vocabs_cms', 'versionCtrl', 'relatedCtrl',
+            'relatedVocabularyCtrl',
             'subjectDirective', 'relatedEntityIdentifierDirective'))
             ->set('vocab', false)
             ->render('cms');
