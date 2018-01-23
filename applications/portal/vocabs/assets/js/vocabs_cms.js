@@ -888,6 +888,8 @@
             });
         };
 
+        $scope.testbool = false;
+        $scope.testbool2 = true;
 
         // CC-1518 Need the version index, because we send a copy of the version
         // to the modal, and then need to copy it back into the correct place
