@@ -80,13 +80,13 @@
             <hr>
 
             <!-- Hidden form for validation outside of the table -->
-            <form name="form.apForm">
+            <form name="form.apForm" class="hidden">
                 <input type="hidden" name="type" required
                        ng-model="newValue.ap.type">
                 <input type="hidden" name="format" required
                        ng-model="newValue.ap.format"
                        ng-if="newValue.ap.type === 'file'">
-                <input type="hidden" name="uri" required
+                <input type="url" name="uri" required
                        ng-model="newValue.ap.uri">
             </form>
 
