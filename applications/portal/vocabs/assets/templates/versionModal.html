@@ -96,7 +96,7 @@
                     <table class="table">
                         <thead>
                             <th>Type</th>
-                            <th>Location</th>
+                            <th>Resource</th>
                             <th>&nbsp;</th>
                         </thead>
                         <tbody>
@@ -177,8 +177,9 @@
                             </td>
                             <td>
                                 <a href="" class="btn btn-primary"
+                                   ng-disabled="form.apForm.$invalid"
                                    ng-click="addformatform(newValue.ap)">
-                                    <i class="fa fa-check"></i>
+                                    <i class="fa fa-check"></i> Add
                                 </a>
                                 <a href="" class="btn btn-primary btn-primary-warning"
                                    ng-click="resetAPForm()">
