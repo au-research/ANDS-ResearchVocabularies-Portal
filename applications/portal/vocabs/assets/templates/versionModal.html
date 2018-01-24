@@ -74,8 +74,6 @@
 
             <a href="" class="btn btn-primary btn-block" ng-click="importPP()"
                ng-if="version.provider_type!='poolparty' && vocab.poolparty_id">Import Version from PoolParty</a>
-            <a href="" class="btn btn-default btn-block" ng-click="version.provider_type='manual'"
-               ng-show="version.provider_type!='manual'">Input Access Points Manually</a>
 
             <hr>
 
@@ -112,8 +110,10 @@
                         <tr ng-repeat="ap in version.access_points track by $index">
                             <td>[[ ap.type === 'file' ? 'File - ' + ap.format : ap.type ]]</td>
                             <td>
-                                <a href="[[ ap.uri ]]" title="[[ ap.uri ]]" ng-if="ap.uri!='TBD'">URI</a>
-                                <span ng-if="ap.uri=='TBD'">[[ ap.uri ]]</span>
+                                <a href="[[ ap.uri ]]" title="[[ ap.uri ]]">
+                                    <span ng-if="!ap.name">URI</span>
+                                    <span ng-if="ap.name">[[ ap.name ]]</span>
+                                </a>
                             </td>
                             <td>
                                 <a href=""
@@ -140,7 +140,7 @@
                                 <div class="form-group"
                                      ng-class="{ 'has-error' : form.apForm.uri.$invalid && form.apForm.$submitted  }"
                                      ng-if="newValue.ap.type && newValue.ap.type != 'file'">
-                                    <input type="text" required name="uri"
+                                    <input type="url" required name="uri"
                                            class="form-control"
                                            placeholder="URI"
                                            ng-model="newValue.ap.uri">
@@ -154,14 +154,18 @@
                                                     class="btn btn-default form-control"
                                                     ngf-select
                                                     ngf-change="upload($files, newValue.ap)"><i
-                                                    class="fa fa-upload"></i> Upload File
+                                                    class="fa fa-upload"></i>
+                                                    <span ng-if="!newValue.ap.name">Upload File</span>
+                                                    <span ng-if="newValue.ap.name"><i class="fa fa-ok"></i> [[ newValue.ap.name ]]</span>
                                             </button>
                                         </span>
                                     </div>
+
                                     <div class="alert alert-danger alert-important"
                                          ng-if="error_upload_msg">
                                         <span ng-bind-html="error_upload_msg"></span>
                                     </div>
+
                                     <progressbar
                                             ng-if="newValue.ap.type=='file' && uploadPercentage != 0"
                                             animate="true"

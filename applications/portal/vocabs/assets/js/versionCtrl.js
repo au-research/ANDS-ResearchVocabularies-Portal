@@ -346,8 +346,11 @@
 
 
 
+
         $scope.upload = function (files, ap) {
             if (!ap) ap = {};
+
+            var uploadEndpoint = registry_api_url + "/api/resource/uploads/?owner=" + vocab.owner + "&format=" + ap.format;
 
             // debug
             // ap.uri = files[0].name;
@@ -365,25 +368,35 @@
                     }
                 }
             }
+
+            function getCookie(name) {
+                var value = "; " + document.cookie;
+                var parts = value.split("; " + name + "=");
+                if (parts.length == 2) return parts.pop().split(";").shift();
+            }
+
             if (allowContinue) {
                 for (var i = 0; i < files.length; i++) {
                     var file = files[i];
                     $scope.uploading = true;
                     delete $scope.error_upload_msg;
                     Upload.upload({
-                        url: base_url + 'vocabs/upload',
-                        data: {file: file}
-                    }).then(function (resp) {
+                        // url: base_url + 'vocabs/upload' + '?owner=' + vocab.owner + '&format=' + ap.format,
+                        url: uploadEndpoint,
+                        data: {file: file},
+                        headers: {
+                            'ands_authentication': getCookie('ands_authentication')
+                        }
+
+                    }).then(function (resp, status, xhr) {
                         // success
                         // data, status, headers, config
-                        $log.debug(resp.config);
+                        // $log.debug(resp.config);
+
                         $scope.uploading = false;
-                        if (resp.data.status == 'OK' && resp.data.url) {
-                            ap.uri = resp.data.url;
-                        } else if (resp.data.status == 'ERROR') {
-                            //$scope.error_upload_msg = resp.data.message;
-                            alert(resp.data.message);
-                        }
+                        ap.id = resp.data.integerValue;
+                        ap.name = resp.data.stringValue;
+                        ap.uri = resp.headers('Location');
                     },
                     function (resp) {
                         // error
