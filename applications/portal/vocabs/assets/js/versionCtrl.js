@@ -3,16 +3,39 @@
 
     angular
         .module('app')
+        .directive('andsSwitch', function() {
+            return {
+                scope: {
+                    model : '=',
+                    name: '@'
+                },
+                link: function($scope, elem, attrs) {
+                    // console.log("Binding ands-switch", $scope, elem, attrs);
+                },
+                template: "<div class='ands-switch'>" +
+                "      <input type='checkbox' id='{{name}}' class='ands-switch-checkbox' id='{{name}}' ng-click='model = !model' ng-checked='model'>\n" +
+                "      <label class='ands-switch-label' for='{{name}}'>" +
+                "        <span class='ands-switch-inner'></span>" +
+                "        <span class='ands-switch-switch'></span>" +
+                "      </label>" +
+                "    </div>"
+            }
+        });
+
+    angular
+        .module('app')
         .controller('versionCtrl', versionCtrl);
 
     function versionCtrl($scope, $timeout, $uibModalInstance, $log, Upload,
                          version, action, vocab, confluenceTip) {
-        $log.debug(action);
+
         // Make the modal dialog (at least, temporarily) movable,
         // as per request in SD-11572, CC-2050.
         $timeout(function(){
             $('.modal-content').draggable({ revert: true });
         });
+
+        $scope.showNewAPForm = false;
 
         // Set up access to the Registry API.
         var VocabularyRegistryApi = require('vocabulary_registry_api');
@@ -49,13 +72,51 @@
             {"value": "file", "text": "File"}
         ];
 
+        $scope.typeFormatOptions = [
+            { name:'Web page', value: 'webPage'},
+            { name:'API/SPARQL endpoint', value: 'apiSparql'},
+            { name: 'RDF/XML', value:'RDF/XML', group: 'File Upload'},
+            { name: 'TTL', value:'TTL', group: 'File Upload'},
+            { name: 'N-Triples', value:'N-Triples', group: 'File Upload'},
+            { name: 'JSON', value:'JSON', group: 'File Upload'},
+            { name: 'TriG', value:'TriG', group: 'File Upload'},
+            { name: 'TriX', value:'TriX', group: 'File Upload'},
+            { name: 'N3', value:'N3', group: 'File Upload'},
+            { name: 'CSV', value:'CSV', group: 'File Upload'},
+            { name: 'TSV', value:'TSV', group: 'File Upload'},
+            { name: 'XLS', value:'XLS', group: 'File Upload'},
+            { name: 'XLSX', value:'XLSX', group: 'File Upload'},
+            { name: 'BinaryRDF', value:'BinaryRDF', group: 'File Upload'},
+            { name: 'ODS', value:'ODS', group: 'File Upload'},
+            { name: 'ZIP', value:'ZIP', group: 'File Upload'},
+            { name: 'XML', value:'XML', group: 'File Upload'},
+            { name: 'TXT', value:'TXT', group: 'File Upload'},
+            { name: 'ODT', value:'ODT', group: 'File Upload'},
+            { name: 'PDF', value:'PDF', group: 'File Upload'}
+        ];
+
+        $scope.updateNewAPTypeFormat = function(option) {
+
+            if (option === 'webPage' || option === 'apiSparql') {
+                $scope.newValue.ap.type = option;
+                delete $scope.newValue.ap.format;
+                return;
+            }
+
+            // it's a file
+            $scope.newValue.ap.type = 'file';
+            $scope.newValue.ap.format = option;
+        };
+
+        // intialize the forms for validation
         $scope.form = {
             apForm:{},
             versionForm:{}
-        }
+        };
 
+        // Used for new access points
         $scope.newValue = {
-            ap: {format:''}
+            ap: {}
         };
         $scope.uploadPercentage = 0;
 
@@ -115,7 +176,8 @@
         // Now invoke the special handling for release date.
         $scope.set_release_date_textfield($scope);
 
-
+        // add format to the version.access_points
+        // helper method for addformatform
         $scope.addformat = function (obj) {
             if ($scope.validateAP() ||
                     $scope.version.provider_type == 'poolparty') {
@@ -128,17 +190,34 @@
                 angular.copy(obj, newobj);
                 $scope.version.access_points.push(newobj);
 
-                // Clear out existing values.
-                // If new fields are added to the form, please
-                // add appropriate delete/reset statements here.
-                obj.type = '';
-                obj.format = '';
-                obj.uri = '';
+                $scope.resetAPForm();
+
             } else return false;
         };
 
+        // completely reset the new Access Point form
+        //
+        $scope.resetAPForm = function () {
+            $scope.newValue.ap = {};
+            $scope.selectedOption = null;
+            $scope.form.apForm.$setPristine();
+            $scope.showNewAPForm = false;
+        };
+
+        // Add new access point format button clicked
         $scope.addformatform = function (obj) {
+
+            // show errors
+            $scope.form.apForm.$setSubmitted();
+            if (!$scope.validateAP()) {
+                return;
+            }
+
+            // TODO: consider inline this function
             $scope.addformat(obj);
+
+            // legacy workflow
+            // TODO: check if we still need to do this
             $log.debug(obj.import, obj.publish);
             if (obj.import) {
                 //add empty apiSparql endpoint
@@ -156,6 +235,8 @@
                     uri: 'TBD'
                 });
             }
+
+            $scope.showNewAPForm = false;
         };
 
         // This can be called when apForm is undefined, so return true
@@ -263,8 +344,18 @@
             });
         };
 
+
+
+
         $scope.upload = function (files, ap) {
             if (!ap) ap = {};
+
+            var uploadEndpoint = registry_api_url + "/api/resource/uploads/?owner=" + vocab.owner + "&format=" + ap.format;
+
+            // debug
+            // ap.uri = files[0].name;
+            // return;
+
             var allowContinue = false;
             if (files && files.length) {
                 allowContinue = true;
@@ -277,24 +368,35 @@
                     }
                 }
             }
+
+            function getCookie(name) {
+                var value = "; " + document.cookie;
+                var parts = value.split("; " + name + "=");
+                if (parts.length == 2) return parts.pop().split(";").shift();
+            }
+
             if (allowContinue) {
                 for (var i = 0; i < files.length; i++) {
                     var file = files[i];
                     $scope.uploading = true;
                     delete $scope.error_upload_msg;
                     Upload.upload({
-                        url: base_url + 'vocabs/upload',
-                        data: {file: file}
-                    }).then(function (resp) {
+                        // url: base_url + 'vocabs/upload' + '?owner=' + vocab.owner + '&format=' + ap.format,
+                        url: uploadEndpoint,
+                        data: {file: file},
+                        headers: {
+                            'ands_authentication': getCookie('ands_authentication')
+                        }
+
+                    }).then(function (resp, status, xhr) {
                         // success
                         // data, status, headers, config
-                        $log.debug(resp.config);
+                        // $log.debug(resp.config);
+
                         $scope.uploading = false;
-                        if (resp.data.status == 'OK' && resp.data.url) {
-                            ap.uri = resp.data.url;
-                        } else if (resp.data.status == 'ERROR') {
-                            $scope.error_upload_msg = resp.data.message;
-                        }
+                        ap.id = resp.data.integerValue;
+                        ap.name = resp.data.stringValue;
+                        ap.uri = resp.headers('Location');
                     },
                     function (resp) {
                         // error
@@ -322,31 +424,32 @@
             $uibModalInstance.dismiss();
         }
 
-        $scope.$watch('newValue.ap.type', function(newVal, oldVal){
+        // $scope.$watch('newValue.ap.type', function(newVal, oldVal){
+        //
+        //     if(newVal == 'file'){
+        //         $('#ap_upload').show();
+        //         $('#ap_uri').hide();
+        //         $('#ap_uri_label').hide();
+        //     }
+        //     else if(newVal == 'apiSparql'){
+        //         $('#ap_upload').hide();
+        //         $('#ap_uri').show();
+        //         $('#ap_uri_label').show();
+        //         $('#ap_uri_label').html("SPARQL endpoint URI");
+        //     }
+        //     else if(newVal == 'webPage'){
+        //         $('#ap_upload').hide();
+        //         $('#ap_uri').show();
+        //         $('#ap_uri_label').show()
+        //         $('#ap_uri_label').html("Webpage URL");
+        //     }
+        //     else{
+        //         $('#ap_upload').hide();
+        //         $('#ap_uri').hide();
+        //         $('#ap_uri_label').hide();
+        //     }
+        // });
 
-            if(newVal == 'file'){
-                $('#ap_upload').show();
-                $('#ap_uri').hide();
-                $('#ap_uri_label').hide();
-            }
-            else if(newVal == 'apiSparql'){
-                $('#ap_upload').hide();
-                $('#ap_uri').show();
-                $('#ap_uri_label').show();
-                $('#ap_uri_label').html("SPARQL endpoint URI");
-            }
-            else if(newVal == 'webPage'){
-                $('#ap_upload').hide();
-                $('#ap_uri').show();
-                $('#ap_uri_label').show()
-                $('#ap_uri_label').html("Webpage URL");
-            }
-            else{
-                $('#ap_upload').hide();
-                $('#ap_uri').hide();
-                $('#ap_uri_label').hide();
-            }
-        });
         $scope.setImPubcheckboxes = function (elem) {
 
             if(elem == 'import'){
@@ -372,4 +475,6 @@
             }
         }
     }
+
+
 })();
