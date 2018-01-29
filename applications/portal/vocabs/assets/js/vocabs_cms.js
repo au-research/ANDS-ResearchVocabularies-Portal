@@ -723,11 +723,16 @@
                     .then(function(resp){
                         $log.debug("Success", resp);
                         $scope.showServerSuccessMessage(resp.response.body);
-                        $scope.status = 'idle';
                     }, function(resp) {
                         $log.error("Error", resp.status, resp.response.body);
                         $scope.showServerValidationErrors(resp.response.body);
-                        $scope.status = 'idle';
+                    })
+                    .finally(function(){
+                        // sometimes the scope is not updating after xhr
+                        // blame old angularjs
+                        $scope.$apply(function () {
+                            $scope.status = "idle";
+                        });
                     });
 
                 // $log.debug('Saving Vocab', data);
