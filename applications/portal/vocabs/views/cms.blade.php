@@ -396,6 +396,13 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                     <li ng-repeat="msg in success_message" ng-bind-html="msg">[[ msg ]]</li>
                   </ul>
                 </div>
+
+                <div class="alert alert-danger element-short-top os-animation animated fadeInUp"
+                     data-os-animation="fadeInUp"
+                     ng-repeat="error in errors">
+                  [[ error ]]
+                </div>
+
                 <a href="" class="btn btn-large btn-primary btn-discard" ng-click="save('discard')">Exit Without Saving</a>
               </div>
               <div class="panel-body" ng-if="status=='saving'">

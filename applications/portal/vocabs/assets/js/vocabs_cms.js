@@ -718,42 +718,67 @@
                 data.slug = $("#vocab_slug").val();
                 data['creation-date'] = $("#creation_date").val();
 
-                // $log.debug('Saving Vocab', data);
-                vocabs_factory.save(data).then(function (data) {
+                // uses api to update instead of using vocabs_factory
+                api.updateVocabularyWithHttpInfo(data.id, data)
+                    .then(function(resp){
+                        $log.debug("Success", resp);
+                        $scope.showServerSuccessMessage(resp.response.body);
+                        $scope.status = 'idle';
+                    }, function(resp) {
+                        $log.error("Error", resp.status, resp.response.body);
+                        $scope.showServerValidationErrors(resp.response.body);
+                        $scope.status = 'idle';
+                    });
 
-                    $scope.status = 'idle';
-                    $log.debug('Data Response from saving vocab (edit)', data);
-                    if (data.status == 'ERROR') {
-                        $scope.error_message = data.message;
-                    } else {//success
-                        $scope.success_message = data.message.import_log;
-                        $scope.success_message = [
-                            'Successfully saved Vocabulary.'
-                        ];
-                        if ($scope.vocab.status=='published') {
-                            $scope.success_message.push(
-                                '<a href="'+base_url+$scope.vocab.slug+'">View Vocabulary</a>'
-                            )
-                        }
-                        if (status == 'draft') {
-                            vocabs_factory.get($scope.vocab.id).then(function (data) {
-                                $scope.vocab = data.message;
-                            });
-                        } else if(status == 'deprecated'){
-                            $scope.show_alert_after_save(data, function() {
-                                window.location.replace(base_url +
-                                                        'vocabs/myvocabs');
-                            });
-                        }
-                        else{
-                            $scope.show_alert_after_save(data, function() {
-                                window.location.replace(base_url +
-                                                        $scope.vocab.slug);
-                            });
-                        }
-                    }
-                });
+                // $log.debug('Saving Vocab', data);
+                // vocabs_factory.save(data).then(function (data) {
+                //
+                //     $scope.status = 'idle';
+                //     $log.debug('Data Response from saving vocab (edit)', data);
+                //     if (data.status == 'ERROR') {
+                //         $scope.error_message = data.message;
+                //     } else {//success
+                //         $scope.success_message = data.message.import_log;
+                //         $scope.success_message = [
+                //             'Successfully saved Vocabulary.'
+                //         ];
+                //         if ($scope.vocab.status=='published') {
+                //             $scope.success_message.push(
+                //                 '<a href="'+base_url+$scope.vocab.slug+'">View Vocabulary</a>'
+                //             )
+                //         }
+                //         if (status == 'draft') {
+                //             vocabs_factory.get($scope.vocab.id).then(function (data) {
+                //                 $scope.vocab = data.message;
+                //             });
+                //         } else if(status == 'deprecated'){
+                //             $scope.show_alert_after_save(data, function() {
+                //                 window.location.replace(base_url +
+                //                                         'vocabs/myvocabs');
+                //             });
+                //         }
+                //         else{
+                //             $scope.show_alert_after_save(data, function() {
+                //                 window.location.replace(base_url +
+                //                                         $scope.vocab.slug);
+                //             });
+                //         }
+                //     }
+                // });
             }
+        };
+
+        $scope.showServerValidationErrors = function (payload) {
+            $log.debug("Showing validation errors", payload);
+            $scope.errors = [];
+            $scope.errors = payload.constraintViolation.map(function(item) {
+               return item.message;
+            });
+        };
+
+        $scope.showServerSuccessMessage = function (payload) {
+            $scope.success_message = [ 'Successfully saved Vocabulary.' ];
+            // TODO: handle status
         };
 
         $scope.validate = function () {
