@@ -38,6 +38,7 @@
         }
         var api = new VocabularyRegistryApi.ResourcesApi();
 
+
         $scope.form = {};
 
         // Initialize sections that can have multiple instances.
@@ -55,19 +56,25 @@
             ],
             language: [null]
         };
+
         /**
          * Collect all the user roles, for vocab.owner value
          */
         vocabs_factory.user().then(function (data) {
             $scope.user_orgs = data.message['affiliations'];
             $scope.user_orgs_names = [];
-            for (var i=0; i<data.message['affiliations'].length; ++i)
-            {
+            for (var i = 0; i < data.message['affiliations'].length; ++i) {
                 // Use the affiliation as the 'id', and then use the affiliation
                 // to look up the full name, and use that as the 'name'.
-                $scope.user_orgs_names.push({'id':data.message['affiliations'][i],'name': data.message['affiliationsNames'][ data.message['affiliations'][i] ]});
+                $scope.user_orgs_names.push({
+                    'id': data.message['affiliations'][i],
+                    'name': data.message['affiliationsNames'][data.message['affiliations'][i]]
+                });
             }
         });
+
+        $scope.vocab.user_owner = $scope.user_owner;
+
         $scope.mode = 'add'; // [add|edit]
         $scope.langs = [
             {"value": "zh", "text": "Chinese"},
@@ -142,10 +149,12 @@
          * from the vocabs_factory.get()
          * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
          */
+
         if ($('#vocab_id').val()) {
             api.getVocabularyByIdEdit($('#vocab_id').val()).then(
                              function (data) {
-//                $log.debug('Editing ', data);
+               $log.debug('Editing ', data);
+
                 // Preserve the original data for later. We need this
                 // specifically for the creation_date value.
                 $scope.original_data = data;
@@ -614,6 +623,7 @@
          */
         $scope.save = function (status) {
 
+
             $scope.error_message = false;
             $scope.success_message = false;
             if(status == 'discard'){
@@ -702,8 +712,15 @@
                 // NB: vocabs_factory.modify() method called: id is passed in.
                 $scope.vocab.status = status;
                 $scope.status = 'saving';
-                $log.debug('Saving Vocab', $scope.vocab);
-                vocabs_factory.modify($scope.vocab.id, $scope.vocab).then(function (data) {
+
+                var data = vocabs_factory.pack($scope.vocab);
+                data.id = $("#vocab_id").val();
+                data.slug = $("#vocab_slug").val();
+                data['creation-date'] = $("#creation_date").val();
+
+                // $log.debug('Saving Vocab', data);
+                vocabs_factory.save(data).then(function (data) {
+
                     $scope.status = 'idle';
                     $log.debug('Data Response from saving vocab (edit)', data);
                     if (data.status == 'ERROR') {

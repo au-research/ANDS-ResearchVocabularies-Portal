@@ -369,12 +369,6 @@
                 }
             }
 
-            function getCookie(name) {
-                var value = "; " + document.cookie;
-                var parts = value.split("; " + name + "=");
-                if (parts.length == 2) return parts.pop().split(";").shift();
-            }
-
             if (allowContinue) {
                 for (var i = 0; i < files.length; i++) {
                     var file = files[i];
@@ -385,7 +379,7 @@
                         url: uploadEndpoint,
                         data: {file: file},
                         headers: {
-                            'ands_authentication': getCookie('ands_authentication')
+                            'ands_authentication': readCookie('ands_authentication')
                         }
 
                     }).then(function (resp, status, xhr) {
