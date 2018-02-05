@@ -1089,7 +1089,10 @@ class Vocabs extends MX_Controller
             ]);
         }
 
-        $this->RegistryAPI->deleteVocabulary($vocab->getId());
+        $deleteCurrent = $vocab->getStatus() === Vocabulary::STATUS_PUBLISHED ? 'true' : 'false';
+        $deleteDraft = $vocab->getStatus() === Vocabulary::STATUS_DRAFT ? 'true' : 'false';
+
+        $this->RegistryAPI->deleteVocabulary($vocab->getId(), $deleteCurrent, $deleteDraft);
 
         return json_encode([
             'status' => 'success',
