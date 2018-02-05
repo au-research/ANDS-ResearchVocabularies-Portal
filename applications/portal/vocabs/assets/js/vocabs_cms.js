@@ -170,6 +170,7 @@
 
         // Copy existing vocabulary data provided by the Registry API
         // into the scope for the form.
+        // TODO: move this to another factory/service, this does not really belong in a controller
         $scope.copy_incoming_vocab_to_scope = function (data) {
             $scope.vocab = [];
             // Top-level metadata
@@ -255,13 +256,17 @@
                 };
                 $scope.vocab['versions'].push(versionForForm);
             });
-        }
+        };
 
         // Create a Registry API model object based on the form values.
+        // TODO: migrate this outside of controller, this is not a controller method
         $scope.create_vocab_from_scope = function () {
             var vocab = new VocabularyRegistryApi.Vocabulary();
             if ($('#vocab_id').val()) {
                 vocab.setId($('#vocab_id').val());
+            }
+            if ($('#vocab_slug').val()) {
+                vocab.setSlug($('#vocab_slug').val());
             }
             vocab.setTitle($scope.vocab['title']);
             vocab.setAcronym($scope.vocab['acronym']);
@@ -277,28 +282,36 @@
             var languages = angular.copy($scope.vocab['language']);
             vocab.setPrimaryLanguage(languages.shift());
             vocab.setOtherLanguage(languages);
-            var subjects = [];
-            angular.forEach($scope.vocab['subjects'] , function(subject) {
+
+            // subjects
+            var subjects = $scope.vocab['subjects'].map(function(subject) {
                 var subjectModel = new VocabularyRegistryApi.Subject();
                 subjectModel.setSource(subject['subject_source']);
                 subjectModel.setLabel(subject['subject_label']);
                 subjectModel.setIri(subject['subject_iri']);
                 subjectModel.setNotation(subject['subject_notation']);
-                subjects.push(subjectModel);
+                return subjectModel;
             });
             vocab.setSubject(subjects);
-            // Related entities
-            var relatedEntities = [];
-            angular.forEach($scope.vocab['related_entity'] , function(re) {
-                var reModel = new VocabularyRegistryApi.RelatedEntity();
-                // ID?
-                reModel.setTitle(re['title']);
-                // etc.
-                // RE Identifiers, URLs
+
+            // related-entities
+            var relatedEntitiesRefs = $scope.vocab['related_entity'].map(function (re) {
+                var refModel = new VocabularyRegistryApi.RelatedEntityRef();
+                refModel.setId(re['id']);
+                refModel.setRelation(re['relationship']);
+
+                var reEntity = new VocabularyRegistryApi.RelatedEntity();
+                reEntity.setTitle(re['title']);
+                refModel.setRelatedEntity(reEntity);
+
+                // TODO: related-entity-identifier[]
+                return refModel;
             });
-            // Versions
-            // FIXME Work in progress!
-            // FIXME Don't forget about status!
+            vocab.setRelatedEntityRef(relatedEntitiesRefs);
+
+            // TODO: versions
+
+            // Set status upon $scope.save
             return vocab;
         }
 
@@ -614,14 +627,101 @@
             }
         };
 
+        // targetStatus: [draft, published, deprecated]
+        $scope.save = function (targetStatus) {
+
+            if (targetStatus === 'discard'){
+                window.location.replace(base_url + 'vocabs/myvocabs');
+                return false;
+            }
+            // TODO check targetStatus is valid
+
+            $scope.tidy_empty();
+
+            // Validation.
+            // First, rely on Angular's error handling.
+            if ($scope.form.cms.$invalid) {
+                // Put back the multi-value lists ready for more editing.
+                $scope.ensure_all_minimal_lists();
+                $log.error("Form Validation Failed");
+                return false;
+            }
+
+            // Then, do our own validation.
+            if (!$scope.validate()) {
+                // Put back the multi-value lists ready for more editing.
+                $scope.ensure_all_minimal_lists();
+                $log.error("Client Validation Failed");
+                return false;
+            }
+
+            // packing up the vocab for transporting
+            var vocab = $scope.create_vocab_from_scope();
+            $log.debug('packed to', vocab);
+
+            vocab.setStatus(targetStatus);
+
+            // TODO: test publish
+
+            if ($scope.mode === "add") {
+                api.createVocabulary(vocab)
+                    .then(
+                        $scope.handleSuccessResponse,
+                        $scope.handleErrorResponse
+                    ).finally( function() {
+                        $scope.$apply(function () {
+                            $scope.status = "idle";
+                        });
+                    });
+            } else if ($scope.mode === "edit") {
+                api.updateVocabulary(vocab.getId(), vocab)
+                    .then(
+                        $scope.handleSuccessResponse,
+                        $scope.handleErrorResponse
+                    ).finally( function() {
+                        $scope.$apply(function () {
+                            $scope.status = "idle";
+                        });
+                    });
+            }
+        };
+
+        $scope.handleSuccessResponse = function (resp) {
+            $log.debug("Success", resp);
+            $scope.showServerSuccessMessage(resp);
+
+            if ($scope.mode === "add") {
+                // relocate to the new edit page with an id now
+            }
+        };
+
+        $scope.handleErrorResponse = function (resp) {
+            $log.error("Error", resp.status, resp.response.body);
+            $scope.showServerValidationErrors(resp.response.body);
+        };
+
+        $scope.showServerValidationErrors = function (payload) {
+            $log.debug("Showing validation errors", payload);
+            $scope.errors = [];
+            $scope.errors = payload.constraintViolation.map(function(item) {
+                return item.message;
+            });
+        };
+
+        $scope.showServerSuccessMessage = function (payload) {
+            $scope.success_message = [ 'Successfully saved Vocabulary.' ];
+            // TODO: handle status
+        };
+
         /**
          * Saving a vocabulary.
+         * TODO: remove once migrated everything over to save function
          * Possible status values:
          *  'draft', 'published', 'deprecated', 'discard'.
          * Based on the mode, add and edit will call different service point
          * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
          */
-        $scope.save = function (status) {
+        $scope.save2 = function (status) {
 
 
             $scope.error_message = false;
@@ -647,19 +747,8 @@
                 return false;
             }
 
-            // Save the date as it actually is in the input's textarea, not
-            // as it is in the model.
-            // FIXME: don't do this now ...
-            // $scope.vocab.creation_date = $('#creation_date').val();
-            // ... but, instead, extract $('#creation_date').val() when
-            // constructing the Vocabulary object to send back to the API.
-
-            // The following test could be changed to:
-//          if ($scope.mode == 'add' ||
-//            (($scope.vocab.status == 'published') ||
-//              ($scope.vocab.status == 'deprecated') && status == 'draft')) {
-            // in order to support adding a draft to an existing, deprecated
-            // vocabulary.
+            var vocab = $scope.create_vocab_from_scope();
+            console.log('packed to', vocab);
 
             if ($scope.mode == 'add' ||
                 ($scope.vocab.status == 'published' && status == 'draft')) {
@@ -668,37 +757,56 @@
                 // have a draft). In each case, this _adds_
                 // a row to the vocabularies table.
                 // NB: vocabs_factory.add() method called: _no_ id passed in.
-                $scope.vocab.status = status;
+
                 $scope.status = 'saving';
                 $log.debug('Adding Vocab', $scope.vocab);
-                vocabs_factory.add($scope.vocab).then(function (data) {
-                    $scope.status = 'idle';
-                    $log.debug('Data Response from saving vocab', data);
-                    if (data.status == 'ERROR') {
-                        $scope.error_message = data.message;
-                    } else {//success
-                        //navigate to the edit form if on the add form
-                        if (status == 'published') {
-                            $scope.show_alert_after_save(data,
-                                function() {
-                                    window.location.replace(base_url +
-                                        data.message.prop.slug);
-                                });
-                        }
-                        else{
-                        // $log.debug(data.message.prop[0].slug);
-                            $scope.success_message = data.message.import_log;
-                            $scope.success_message.push('Successfully saved to a Draft. <a href="' + base_url + "vocabs/edit/" + data.message.prop.id + '">Click Here edit the draft</a>');
-                            $scope.show_alert_after_save(data,
-                                function() {
-                                    window.location.replace(base_url +
-                                        "vocabs/edit/" +
-                                        data.message.prop.id +
-                                        '/#!/?message=saved_draft');
-                                });
-                        }
-                    }
-                });
+
+                vocab.setStatus(VocabularyRegistryApi.Vocabulary.StatusEnum.draft);
+                api.updateVocabulary(vocab.getId(), vocab)
+                    .then(function(resp){
+                        $log.debug("Success", resp);
+                        $scope.showServerSuccessMessage(resp.response.body);
+                    }, function(resp) {
+                        $log.error("Error", resp.status, resp.response.body);
+                        $scope.showServerValidationErrors(resp.response.body);
+                    })
+                    .finally(function(){
+                        // sometimes the scope is not updating after xhr
+                        // blame old angularjs
+                        $scope.$apply(function () {
+                            $scope.status = "idle";
+                        });
+                    });
+                return;
+
+                // vocabs_factory.add($scope.vocab).then(function (data) {
+                //     $scope.status = 'idle';
+                //     $log.debug('Data Response from saving vocab', data);
+                //     if (data.status == 'ERROR') {
+                //         $scope.error_message = data.message;
+                //     } else {//success
+                //         //navigate to the edit form if on the add form
+                //         if (status == 'published') {
+                //             $scope.show_alert_after_save(data,
+                //                 function() {
+                //                     window.location.replace(base_url +
+                //                         data.message.prop.slug);
+                //                 });
+                //         }
+                //         else{
+                //         // $log.debug(data.message.prop[0].slug);
+                //             $scope.success_message = data.message.import_log;
+                //             $scope.success_message.push('Successfully saved to a Draft. <a href="' + base_url + "vocabs/edit/" + data.message.prop.id + '">Click Here edit the draft</a>');
+                //             $scope.show_alert_after_save(data,
+                //                 function() {
+                //                     window.location.replace(base_url +
+                //                         "vocabs/edit/" +
+                //                         data.message.prop.id +
+                //                         '/#!/?message=saved_draft');
+                //                 });
+                //         }
+                //     }
+                // });
             } else if ($scope.mode == 'edit') {
                 // Existing vocabulary. Either:
                 // draft -> draft
@@ -713,13 +821,8 @@
                 $scope.vocab.status = status;
                 $scope.status = 'saving';
 
-                var data = vocabs_factory.pack($scope.vocab);
-                data.id = $("#vocab_id").val();
-                data.slug = $("#vocab_slug").val();
-                data['creation-date'] = $("#creation_date").val();
-
-                // uses api to update instead of using vocabs_factory
-                api.updateVocabularyWithHttpInfo(data.id, data)
+                vocab.setStatus(VocabularyRegistryApi.Vocabulary.StatusEnum.draft);
+                api.updateVocabularyWithHttpInfo(vocab.getId(), vocab)
                     .then(function(resp){
                         $log.debug("Success", resp);
                         $scope.showServerSuccessMessage(resp.response.body);
@@ -773,22 +876,11 @@
             }
         };
 
-        $scope.showServerValidationErrors = function (payload) {
-            $log.debug("Showing validation errors", payload);
-            $scope.errors = [];
-            $scope.errors = payload.constraintViolation.map(function(item) {
-               return item.message;
-            });
-        };
 
-        $scope.showServerSuccessMessage = function (payload) {
-            $scope.success_message = [ 'Successfully saved Vocabulary.' ];
-            // TODO: handle status
-        };
 
         $scope.validate = function () {
-
-            $log.debug($scope.form.cms);
+            // $log.debug($scope.form.cms);
+            $scope.error_message = false;
             if ($scope.form.cms.$valid) {
 
                 //language validation
@@ -820,10 +912,9 @@
                         $scope.error_message = 'There must be a publisher related to this vocabulary';
                     }
                 }
-
             }
 
-            return $scope.error_message == false;
+            return $scope.error_message === false;
         };
 
         /**

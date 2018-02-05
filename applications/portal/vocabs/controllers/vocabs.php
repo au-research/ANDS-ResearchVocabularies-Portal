@@ -1067,25 +1067,34 @@ class Vocabs extends MX_Controller
      */
     public function delete()
     {
-        $response = array();
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Content-type: application/json');
+        set_exception_handler('json_exception_handler');
 
-        if (!$this->input->post('id')) {
-            $response['status'] = 'error';
-            $response['message'] = 'No ID specified.';
-        } elseif ($this->vocab->getByID($this->input->post('id')) === false) {
-            $response['status'] = 'error';
-            $response['message'] = 'No such vocabulary.';
-        } elseif ($this->vocab->isOwner($this->input->post('id'))) {
-            $this->vocab->delete($this->input->post('id'));
-            $response['status'] = 'success';
-            $response['message'] = 'OK';
-        } else {
-            $response['status'] = 'error';
-            $response['message'] =
-                'You are not authorized to delete this vocabulary.';
+        $id = $this->input->post('id');
+        if (!$id) {
+            return json_encode([
+                'status' => 'error',
+                'message' => 'No ID specified.'
+            ]);
         }
 
-        echo(json_encode($response));
+        // TODO: check permissions
+
+        $vocab = $this->RegistryAPI->getVocabularyByIdEdit($id);
+        if (!$vocab) {
+            return json_encode([
+                'status' => 'error',
+                'message' => 'No such vocabulary.'
+            ]);
+        }
+
+        $this->RegistryAPI->deleteVocabulary($vocab->getId());
+
+        return json_encode([
+            'status' => 'success',
+            'message' => 'OK.'
+        ]);
     }
 
 
