@@ -205,6 +205,7 @@
                         'id': reRef.getId(),
                         'type': re.getType(),
                         'title': re.getTitle(),
+                        'owner' : re.getOwner(),
                         'relationship' : angular.copy(reRef.getRelation())
                     };
                 if (re.getEmail()) {
@@ -302,9 +303,20 @@
 
                 var reEntity = new VocabularyRegistryApi.RelatedEntity();
                 reEntity.setTitle(re['title']);
-                refModel.setRelatedEntity(reEntity);
+                reEntity.setType(re['type']);
 
-                // TODO: related-entity-identifier[]
+                // related-entity-identifier[]
+                var relatedEntityIdentifiers = re['identifiers'].map(function(rei) {
+                    var relatedEntityIdentifier = new VocabularyRegistryApi.RelatedEntityIdentifier();
+                    relatedEntityIdentifier.setIdentifierType(rei.rei_type);
+                    relatedEntityIdentifier.setIdentifierValue(rei.rei_value);
+                    return relatedEntityIdentifier;
+                });
+                reEntity.setRelatedEntityIdentifier(relatedEntityIdentifiers);
+
+                // url
+
+                refModel.setRelatedEntity(reEntity);
                 return refModel;
             });
             vocab.setRelatedEntityRef(relatedEntitiesRefs);
@@ -656,6 +668,7 @@
             }
 
             // packing up the vocab for transporting
+            $log.debug('packing', $scope.vocab);
             var vocab = $scope.create_vocab_from_scope();
             $log.debug('packed to', vocab);
 
@@ -978,19 +991,79 @@
             });
             modalInstance.result.then(function (obj) {
                 //close
-                if (obj.intent == 'add') {
+                // TODO: Migrate over to relatedCtrl instead, handle validation there
+                if (obj.intent === 'add') {
                     var newObj = obj.data;
                     newObj['type'] = type;
-                    if (newObj['type'] == 'publisher') newObj['type'] = 'party';
+                    if (newObj['type'] === 'publisher') newObj['type'] = 'party';
                     if (!$scope.vocab.related_entity) $scope.vocab.related_entity = [];
-                    $scope.vocab.related_entity.push(newObj);
-                } else if (obj.intent == 'save') {
+
+                    // create the related entity
+                    $log.debug("packing related entity", newObj);
+                    var relatedEntity = $scope.packRelatedEntityFromData(newObj);
+                    $log.debug("packed to", relatedEntity);
+
+                    // persist
+                    $log.debug("Creating related entity", relatedEntity);
+                    api.createRelatedEntity(relatedEntity)
+                        .then(function(resp) {
+                            $log.debug("Success creating related entity", resp);
+                            newObj['id'] = resp['id'];
+                            $log.debug("Adding to form", newObj);
+                            $scope.$apply(function() {
+                                $scope.vocab.related_entity.push(newObj);
+                            });
+                        }, function(resp){
+                            $log.error("Failed creating related entity", resp)
+                        });
+
+                } else if (obj.intent === 'save') {
                     // CC-1518 Copy the modified related entity back into place.
                     $scope.vocab.related_entity[index] = obj.data;
+
+                    // pack the related entity
+                    $log.debug("packing related entity", obj.data);
+                    var relatedEntity = $scope.packRelatedEntityFromData(obj.data);
+                    relatedEntity.setId(obj.data['id']);
+                    $log.debug("packed to", relatedEntity);
+
+                    $log.debug("Updating related entity", relatedEntity);
+                    api.updateRelatedEntity(relatedEntity.getId(), relatedEntity)
+                        .then(function(resp) {
+                            $log.debug("Success updating related entity", resp)
+                        }, function(resp){
+                            $log.error("Failed updating related entity", resp)
+                        });
                 }
             }, function () {
                 //dismiss
             });
+        };
+
+        $scope.packRelatedEntityFromData = function(data) {
+            var relatedEntity =  new VocabularyRegistryApi.RelatedEntity();
+            relatedEntity.setTitle(data['title']);
+            relatedEntity.setType(data['type']);
+            relatedEntity.setEmail(data['email']);
+            relatedEntity.setPhone(data['phone']);
+            relatedEntity.setOwner(data['owner']);
+
+            // identifiers
+            var identifiers = data['identifiers'].map(function(id) {
+                var identifier = new VocabularyRegistryApi.RelatedEntityIdentifier();
+                identifier.setIdentifierType(id.rei_type);
+                identifier.setIdentifierValue(id.rei_value);
+                return identifier;
+            });
+            relatedEntity.setRelatedEntityIdentifier(identifiers);
+
+            // urls
+            var urls = data['urls'].map(function(url) {
+                 return url.url;
+            });
+            relatedEntity.setUrl(urls);
+
+            return relatedEntity;
         };
 
         $scope.relatedvocabularymodal = function (action, index) {

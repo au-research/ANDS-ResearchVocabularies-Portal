@@ -8,7 +8,7 @@
     function relatedCtrl($scope, $uibModalInstance, $log, $timeout,
                          $templateCache,
                          entity, type, user_orgs, confluenceTip) {
-
+        $log.debug("Related Modal", entity, user_orgs);
         // Make the modal dialog (at least, temporarily) movable,
         // to be consistent with the version modal (which was
         // as per request in SD-11572, CC-2050).
@@ -156,7 +156,7 @@
             // is an existing RE, and our organisational roles give us
             // permission to modify it.
             $scope.allowEdits = !('owner' in $scope.entity) ||
-                    $scope.entity.owner in $scope.user_orgs;
+                    $scope.user_orgs.indexOf($scope.entity.owner) >= 0;
         } else {
             // Ensure minimum details to enable the form to work.
             $scope.entity = {};
@@ -367,6 +367,8 @@
                     'intent': $scope.intent,
                     'data': $scope.entity
                 };
+                // TODO: handle related entity update and creation before closing
+                // TODO: Migrate creation and updating of re here
                 $uibModalInstance.close(ret);
             } else {
                 // Put back the multi-value lists ready for more editing.
