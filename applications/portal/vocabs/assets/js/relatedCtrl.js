@@ -359,7 +359,7 @@
             $scope.entity.urls = $scope.entity.urls.filter(function(url) {
                 return (url != null) && (url.url);
             });
-        }
+        };
 
         $scope.save = function () {
             if ($scope.validateEntity()) {

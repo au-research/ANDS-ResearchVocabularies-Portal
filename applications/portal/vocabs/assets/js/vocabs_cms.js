@@ -285,47 +285,32 @@
             vocab.setOtherLanguage(languages);
 
             // subjects
-            var subjects = $scope.vocab['subjects'].map(function(subject) {
-                var subjectModel = new VocabularyRegistryApi.Subject();
-                subjectModel.setSource(subject['subject_source']);
-                subjectModel.setLabel(subject['subject_label']);
-                subjectModel.setIri(subject['subject_iri']);
-                subjectModel.setNotation(subject['subject_notation']);
-                return subjectModel;
-            });
-            vocab.setSubject(subjects);
+            if ($scope.vocab['subjects'].length) {
+                var subjects = $scope.vocab['subjects'].map(function(subject) {
+                    var subjectModel = new VocabularyRegistryApi.Subject();
+                    subjectModel.setSource(subject['subject_source']);
+                    subjectModel.setLabel(subject['subject_label']);
+                    subjectModel.setIri(subject['subject_iri']);
+                    subjectModel.setNotation(subject['subject_notation']);
+                    return subjectModel;
+                });
+                vocab.setSubject(subjects);
+            }
 
             // related-entities
-            var relatedEntitiesRefs = $scope.vocab['related_entity'].map(function (re) {
-                var refModel = new VocabularyRegistryApi.RelatedEntityRef();
-                refModel.setId(re['id']);
-                refModel.setRelation(re['relationship']);
-
-                var reEntity = new VocabularyRegistryApi.RelatedEntity();
-                reEntity.setTitle(re['title']);
-                reEntity.setType(re['type']);
-
-                // related-entity-identifier[]
-                var relatedEntityIdentifiers = re['identifiers'].map(function(rei) {
-                    var relatedEntityIdentifier = new VocabularyRegistryApi.RelatedEntityIdentifier();
-                    relatedEntityIdentifier.setIdentifierType(rei.rei_type);
-                    relatedEntityIdentifier.setIdentifierValue(rei.rei_value);
-                    return relatedEntityIdentifier;
+            if ($scope.vocab['related_entity'].length) {
+                var relatedEntitiesRefs = $scope.vocab['related_entity'].map(function (re) {
+                    var relatedEntity =  $scope.packRelatedEntityFromData(re);
+                    relatedEntity.setId(re['id']);
+                    return relatedEntity;
                 });
-                reEntity.setRelatedEntityIdentifier(relatedEntityIdentifiers);
-
-                // url
-
-                refModel.setRelatedEntity(reEntity);
-                return refModel;
-            });
-            vocab.setRelatedEntityRef(relatedEntitiesRefs);
+                vocab.setRelatedEntityRef(relatedEntitiesRefs);
+            }
 
             // TODO: versions
 
-            // Set status upon $scope.save
             return vocab;
-        }
+        };
 
 
         // Now follows all the code for special treatment of the creation date.
