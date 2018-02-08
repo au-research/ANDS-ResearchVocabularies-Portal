@@ -245,14 +245,34 @@
             $scope.vocab['versions'] = [];
             angular.forEach(data.getVersion(), function(ver) {
                 var versionForForm = {
-                        'id': ver.getId(),
-                        'status': ver.getStatus(),
-                        'title': ver.getTitle(),
-                        'slug': ver.getSlug(),
-                        'release_date': ver.getReleaseDate(),
-                        'note': ver.getNote(),
-                        'import': ver.getDoImport(),
-                        'publish': ver.getDoPublish(),
+                    'id': ver.getId(),
+                    'status': ver.getStatus(),
+                    'title': ver.getTitle(),
+                    'slug': ver.getSlug(),
+                    'release_date': ver.getReleaseDate(),
+                    'note': ver.getNote(),
+                    'import': ver.getDoImport(),
+                    'publish': ver.getDoPublish(),
+                    'access_points': ver.getAccessPoint().map(function (ap) {
+                        var APForm = {
+                            type: ap.getDiscriminator()
+                        };
+                        switch (ap.getDiscriminator()) {
+                            case "webPage":
+                                APForm.uri = ap.getApWebPage().getUrl();
+                                break;
+                            case "apiSparql":
+                                APForm.uri = ap.getApApiSparql().getUrl();
+                                break;
+                            case "file":
+                                APForm.uri = ap.getApFile().getUrl();
+                                APForm.format = ap.getApFile().getFormat();
+                                APForm.upload_id = ap.getApFile().getUploadId();
+                                break;
+                        }
+
+                        return APForm;
+                    })
 //                        '': ver.get(),
                 };
                 $scope.vocab['versions'].push(versionForForm);
@@ -300,16 +320,67 @@
             // related-entities
             if ($scope.vocab['related_entity'].length) {
                 var relatedEntitiesRefs = $scope.vocab['related_entity'].map(function (re) {
-                    var relatedEntity =  $scope.packRelatedEntityFromData(re);
+                    var relatedEntity =  new VocabularyRegistryApi.RelatedEntityRef();
                     relatedEntity.setId(re['id']);
+                    relatedEntity.setRelation(re['relationship']);
                     return relatedEntity;
                 });
                 vocab.setRelatedEntityRef(relatedEntitiesRefs);
             }
 
             // TODO: versions
+            if ($scope.vocab['versions'].length) {
+                var versions = $scope.vocab['versions'].map(function(version) {
+                    var versionEntity = new VocabularyRegistryApi.Version();
+                    versionEntity.setTitle(version['title']);
+                    versionEntity.setNote(version['note']);
+                    versionEntity.setReleaseDate(version['release_date_val']);
+                    versionEntity.setStatus(version['status']);
+
+                    // access points
+                    var accessPoints = version['access_points'].map(function(ap) {
+                        return $scope.packAccessPoint(ap);
+                    });
+                    versionEntity.setAccessPoint(accessPoints);
+
+                    return versionEntity;
+                });
+                vocab.setVersion(versions);
+            }
 
             return vocab;
+        };
+
+        // packing access points into the right format for delivery
+        $scope.packAccessPoint = function (ap) {
+            var APEntity = new VocabularyRegistryApi.AccessPoint();
+            APEntity.setDiscriminator(ap['type']);
+            APEntity.setSource(VocabularyRegistryApi.AccessPoint.SourceEnum.user);
+            switch (ap['type']) {
+                case "webPage":
+                    APEntity.setDiscriminator(VocabularyRegistryApi.AccessPoint.DiscriminatorEnum.webPage);
+                    var APWebPage = new VocabularyRegistryApi.ApWebPage;
+                    APWebPage.setUrl(ap['uri']);
+                    APEntity.setApWebPage(APWebPage);
+                    break;
+                case "apiSparql":
+                    APEntity.setDiscriminator(VocabularyRegistryApi.AccessPoint.DiscriminatorEnum.apiSparql);
+                    var APapiSparql = new VocabularyRegistryApi.ApApiSparql();
+                    APapiSparql.setUrl(ap['uri']);
+                    APEntity.setApApiSparql(APapiSparql);
+                    break;
+                case "file":
+                    // TODO get the upload_id and form an ApFile
+                    break;
+                default:
+                    $log.error("Unknown AP type: ", ap['type']);
+                    break;
+            }
+            // if (ap['type'] === VocabularyRegistryApi.AccessPoint.DiscriminatorEnum.webPage)
+            // APEntity.setUrl(ap['url']);
+            //APEntity.setUploadID(ap['upload_id']);
+            $log.debug("Packed AP ", ap, APEntity);
+            return APEntity;
         };
 
 
@@ -699,11 +770,18 @@
         };
 
         $scope.showServerValidationErrors = function (payload) {
+            if (!payload) {
+                $log.error("Server Response unreadable");
+                return;
+            }
             $log.debug("Showing validation errors", payload);
             $scope.errors = [];
-            $scope.errors = payload.constraintViolation.map(function(item) {
-                return item.message;
-            });
+            if ("constraintViolation" in payload) {
+                $scope.errors = payload.constraintViolation.map(function (item) {
+                    return item.message;
+                });
+            }
+            $log.debug("No constraintViolation found in ", payload);
         };
 
         $scope.showServerSuccessMessage = function (payload) {
@@ -820,7 +898,7 @@
                 $scope.status = 'saving';
 
                 vocab.setStatus(VocabularyRegistryApi.Vocabulary.StatusEnum.draft);
-                api.updateVocabularyWithHttpInfo(vocab.getId(), vocab)
+                api.updateVocabulary(vocab.getId(), vocab)
                     .then(function(resp){
                         $log.debug("Success", resp);
                         $scope.showServerSuccessMessage(resp.response.body);
@@ -977,51 +1055,39 @@
             modalInstance.result.then(function (obj) {
                 //close
                 // TODO: Migrate over to relatedCtrl instead, handle validation there
-                if (obj.intent === 'add') {
-                    var newObj = obj.data;
-                    newObj['type'] = type;
-                    if (newObj['type'] === 'publisher') newObj['type'] = 'party';
-                    if (!$scope.vocab.related_entity) $scope.vocab.related_entity = [];
-
-                    // create the related entity
-                    $log.debug("packing related entity", newObj);
-                    var relatedEntity = $scope.packRelatedEntityFromData(newObj);
-                    $log.debug("packed to", relatedEntity);
-
-                    // persist
+                var relatedEntity = $scope.packRelatedEntityFromData(obj.data);
+                $log.debug("packed related entity to", relatedEntity, obj);
+                if ("id" in obj.data) {
+                    // has ID, update
+                    relatedEntity.setId(obj.data['id']);
+                    $log.debug("Updating related entity", relatedEntity);
+                    api.updateRelatedEntity(relatedEntity.getId(), relatedEntity)
+                        .then(function(resp) {
+                            $log.debug("Success updating related entity", resp);
+                            $scope.$apply(function() {
+                                $scope.vocab.related_entity.push(obj.data);
+                            });
+                        }, function(resp){
+                            $log.error("Failed updating related entity", resp)
+                        });
+                } else {
+                    // does not have ID, create
                     $log.debug("Creating related entity", relatedEntity);
                     api.createRelatedEntity(relatedEntity)
                         .then(function(resp) {
                             $log.debug("Success creating related entity", resp);
-                            newObj['id'] = resp['id'];
-                            $log.debug("Adding to form", newObj);
+                            obj.data['id'] = resp['id'];
+                            //$log.debug("Adding to form", newObj);
                             $scope.$apply(function() {
-                                $scope.vocab.related_entity.push(newObj);
+                                $scope.vocab.related_entity.push(obj.data);
                             });
                         }, function(resp){
                             $log.error("Failed creating related entity", resp)
                         });
-
-                } else if (obj.intent === 'save') {
-                    // CC-1518 Copy the modified related entity back into place.
-                    $scope.vocab.related_entity[index] = obj.data;
-
-                    // pack the related entity
-                    $log.debug("packing related entity", obj.data);
-                    var relatedEntity = $scope.packRelatedEntityFromData(obj.data);
-                    relatedEntity.setId(obj.data['id']);
-                    $log.debug("packed to", relatedEntity);
-
-                    $log.debug("Updating related entity", relatedEntity);
-                    api.updateRelatedEntity(relatedEntity.getId(), relatedEntity)
-                        .then(function(resp) {
-                            $log.debug("Success updating related entity", resp)
-                        }, function(resp){
-                            $log.error("Failed updating related entity", resp)
-                        });
                 }
+
             }, function () {
-                //dismiss
+                // dismiss, do nothing?
             });
         };
 

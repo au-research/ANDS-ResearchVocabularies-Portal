@@ -264,6 +264,32 @@
             return false;
         };
 
+        // used in determining if we'll show the import/publish checkbox
+        $scope.canImportPublish = function () {
+
+            // When the user opts to harvest the version from PP
+            // the Import and Publish buttons should be shown/enabled
+            if ($scope.newValue.ap.harvest) {
+                return true;
+            }
+
+            // Where a vocabulary is NOT linked to PP,
+            // the import and Publish buttons shall only be shown/enabled
+            // when an existing or added supported file exists
+            // TODO: supported file exists
+
+            return false;
+
+        };
+
+        // Where the user is editing a previously published version
+        // which has the 'Harvest Version From PoolParty' option enabled,
+        // an additonal version settings option shall be displayed
+        // 'Reapply version settings on publish'
+        $scope.canReapplyVersion = function () {
+            return $scope.mode === "edit" && $scope.version.status === "current";
+        };
+
         $scope.validateVersion = function () {
             delete $scope.error_message;
             if ($scope.form.versionForm.$valid) {
@@ -317,35 +343,15 @@
                 // ... but, instead, extract $('#creation_date').val() when
                 // constructing the Version object to send back to the
                 // top level.
+                $scope.version['release_date_val'] = $('#release_date').val();
                 var ret = {
                     'intent': $scope.action,
                     'data': $scope.version
                 };
+                $log.debug("Saving version", ret);
                 $uibModalInstance.close(ret);
             } else return false;
         };
-
-        //Import version from PoolParty
-        $scope.importPP = function () {
-            $scope.version.provider_type = 'poolparty';
-
-            //add empty apiSparql endpoint
-            $scope.addformat({
-                format: 'RDF/XML',
-                type: 'apiSparql',
-                uri: 'TBD'
-            });
-
-            //add empty sissvoc endpoint
-            $scope.addformat({
-                format: 'RDF/XML',
-                type: 'webPage',
-                uri: 'TBD'
-            });
-        };
-
-
-
 
         $scope.upload = function (files, ap) {
             if (!ap) ap = {};
@@ -416,33 +422,7 @@
 
         $scope.dismiss = function () {
             $uibModalInstance.dismiss();
-        }
-
-        // $scope.$watch('newValue.ap.type', function(newVal, oldVal){
-        //
-        //     if(newVal == 'file'){
-        //         $('#ap_upload').show();
-        //         $('#ap_uri').hide();
-        //         $('#ap_uri_label').hide();
-        //     }
-        //     else if(newVal == 'apiSparql'){
-        //         $('#ap_upload').hide();
-        //         $('#ap_uri').show();
-        //         $('#ap_uri_label').show();
-        //         $('#ap_uri_label').html("SPARQL endpoint URI");
-        //     }
-        //     else if(newVal == 'webPage'){
-        //         $('#ap_upload').hide();
-        //         $('#ap_uri').show();
-        //         $('#ap_uri_label').show()
-        //         $('#ap_uri_label').html("Webpage URL");
-        //     }
-        //     else{
-        //         $('#ap_upload').hide();
-        //         $('#ap_uri').hide();
-        //         $('#ap_uri_label').hide();
-        //     }
-        // });
+        };
 
         $scope.setImPubcheckboxes = function (elem) {
 

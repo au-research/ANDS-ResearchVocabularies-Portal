@@ -363,10 +363,12 @@
 
         $scope.save = function () {
             if ($scope.validateEntity()) {
+                $scope.entity.type = $scope.type;
                 var ret = {
                     'intent': $scope.intent,
                     'data': $scope.entity
                 };
+
                 // TODO: handle related entity update and creation before closing
                 // TODO: Migrate creation and updating of re here
                 $uibModalInstance.close(ret);
