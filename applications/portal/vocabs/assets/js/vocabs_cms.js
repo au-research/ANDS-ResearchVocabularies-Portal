@@ -267,7 +267,7 @@
                             case "file":
                                 APForm.uri = ap.getApFile().getUrl();
                                 APForm.format = ap.getApFile().getFormat();
-                                APForm.upload_id = ap.getApFile().getUploadId();
+                                APForm.id = ap.getApFile().getUploadId();
                                 break;
                         }
 
@@ -334,7 +334,10 @@
                     var versionEntity = new VocabularyRegistryApi.Version();
                     versionEntity.setTitle(version['title']);
                     versionEntity.setNote(version['note']);
-                    versionEntity.setReleaseDate(version['release_date_val']);
+                    var release_date = 'release_date_val' in version ?
+                        version['release_date_val'] : version['release_date'];
+                    versionEntity.setReleaseDate(release_date);
+                    
                     versionEntity.setStatus(version['status']);
 
                     // access points
@@ -370,7 +373,12 @@
                     APEntity.setApApiSparql(APapiSparql);
                     break;
                 case "file":
-                    // TODO get the upload_id and form an ApFile
+                    APEntity.setDiscriminator(VocabularyRegistryApi.AccessPoint.DiscriminatorEnum.file);
+                    var APFile = new VocabularyRegistryApi.ApFile();
+                    APFile.setFormat(ap['format']);
+                    APFile.setUploadId(ap['id']);
+                    APFile.setUrl(ap['uri']);
+                    APEntity.setApFile(APFile);
                     break;
                 default:
                     $log.error("Unknown AP type: ", ap['type']);
