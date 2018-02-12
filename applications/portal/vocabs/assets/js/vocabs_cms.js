@@ -54,7 +54,9 @@
                     subject_notation: ""
                 }
             ],
-            language: [null]
+            language: [null],
+            related_entity: [],
+            versions: []
         };
 
         /**
@@ -328,7 +330,6 @@
                 vocab.setRelatedEntityRef(relatedEntitiesRefs);
             }
 
-            // TODO: versions
             if ($scope.vocab['versions'].length) {
                 var versions = $scope.vocab['versions'].map(function(version) {
                     var versionEntity = new VocabularyRegistryApi.Version();
@@ -337,7 +338,7 @@
                     var release_date = 'release_date_val' in version ?
                         version['release_date_val'] : version['release_date'];
                     versionEntity.setReleaseDate(release_date);
-                    
+
                     versionEntity.setStatus(version['status']);
 
                     // access points
@@ -703,14 +704,20 @@
             }
         };
 
+        $scope.validStatuses = ['draft', 'published', 'deprecated', 'discard'];
+
         // targetStatus: [draft, published, deprecated]
         $scope.save = function (targetStatus) {
+
+            if ($scope.validStatuses.indexOf(targetStatus) < 0) {
+                $log.error("Target Status " + targetStatus + " is not valid");
+                return false;
+            }
 
             if (targetStatus === 'discard'){
                 window.location.replace(base_url + 'vocabs/myvocabs');
                 return false;
             }
-            // TODO check targetStatus is valid
 
             $scope.tidy_empty();
 
@@ -737,8 +744,6 @@
             $log.debug('packed to', vocab);
 
             vocab.setStatus(targetStatus);
-
-            // TODO: test publish
 
             if ($scope.mode === "add") {
                 api.createVocabulary(vocab)
@@ -769,6 +774,7 @@
 
             if ($scope.mode === "add") {
                 // relocate to the new edit page with an id now
+                window.location.replace(base_url + 'vocabs/edit/' + resp.id);
             }
         };
 
