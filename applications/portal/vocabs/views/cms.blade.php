@@ -52,9 +52,12 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
     <div class="container" ng-if="!decide">
       <div class="row">
         <div class="col-md-12">
-          <div class="panel swatch-gray">
+          <div class="alert alert-info" ng-show="fetchingPP">
+            Loading Poolparty Projects... Please wait...
+          </div>
+          <div class="panel swatch-gray" ng-show="!fetchingPP">
             <div class="panel-heading">PoolParty Integration</div>
-            <div class="panel-body">
+            <div class="panel-body" >
               <div class="form-group">
                 <label for="">PoolParty Search</label>
                 <input type="text" class="form-control"

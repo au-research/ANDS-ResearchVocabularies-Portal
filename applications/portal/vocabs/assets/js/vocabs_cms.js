@@ -37,6 +37,10 @@
             apiKeyAuth.apiKey = cookie;
         }
         var api = new VocabularyRegistryApi.ResourcesApi();
+        var ServicesAPI = new VocabularyRegistryApi.ServicesApi();
+
+        // TODO: Move to config
+        $scope.PPServerID = 1;
 
 
         $scope.form = {};
@@ -243,7 +247,7 @@
                     };
                 $scope.vocab['related_vocabulary'].push(rvForForm);
             });
-            // FIXME TODO Versions
+
             $scope.vocab['versions'] = [];
             angular.forEach(data.getVersion(), function(ver) {
                 var versionForForm = {
@@ -454,11 +458,16 @@
          */
         $scope.projects = [];
         $scope.ppid = {};
-        vocabs_factory.toolkit('listPoolPartyProjects').then(function (data) {
-            $scope.projects = data;
-        });
 
-
+        $scope.fetchingPP = true;
+        ServicesAPI.getPoolPartyProjects($scope.PPServerID)
+            .then(function(data){
+                $log.debug("All PP Project fetched", data);
+                $scope.$apply(function() {
+                    $scope.fetchingPP = false;
+                    $scope.projects = data;
+                });
+            });
 
         $scope.projectSearch = function (q) {
             return function (item) {
@@ -530,94 +539,102 @@
                 }
 
                 $scope.decide = true;
+
+                // TODO: Migrate this over to use the Registry API. still works though because
+                // the PHP side uses the Registry API
                 //populate with metadata from toolkit, overwrite the previous data where need be
-                vocabs_factory.getMetadata($scope.vocab.poolparty_id).then(function (data) {
-                    if (data) {
 
-                        // CC-1447. Provide some feedback, if the Toolkit
-                        // returned with either an error or an exception.
-                        // This can happen, e.g., if the PP project does
-                        // not exist, or if the RDF data is invalid (and
-                        // therefore can not be parsed to extract metadata).
-                        if (("error" in data) || ("exception" in data)) {
-                            alert("Unable to get project metadata from PoolParty. Fields will not be pre-filled.");
-                            return;
-                        }
+                ServicesAPI.getPoolPartyProjectMetadata($scope.PPServerID, $scope.vocab.poolparty_id).then(function(data) {
+                    if (!data) {
+                        return;
+                    }
 
-                        if (data['dcterms:title']) {
-                            $scope.vocab.title = $scope.choose(data['dcterms:title']);
-                            if (angular.isArray($scope.vocab.title)) $scope.vocab.title = $scope.vocab.title[0];
-                        }
+                    $log.debug("Fetched PP Project", data);
 
-                        if (data['dcterms:description']) {
-                            $scope.vocab.description = $scope.choose(data['dcterms:description']);
-                            if (angular.isArray($scope.vocab.description)) $scope.vocab.description = $scope.vocab.description[0];
-                        }
+                    // CC-1447. Provide some feedback, if the Toolkit
+                    // returned with either an error or an exception.
+                    // This can happen, e.g., if the PP project does
+                    // not exist, or if the RDF data is invalid (and
+                    // therefore can not be parsed to extract metadata).
+                    if (("error" in data) || ("exception" in data)) {
+                        alert("Unable to get project metadata from PoolParty. Fields will not be pre-filled.");
+                        return;
+                    }
 
-                        if (data['dcterms:subject']) {
-                            //overwrite the previous ones
-                            var chosen = $scope.choose(data['dcterms:subject']);
+                    if (data['dcterms:title']) {
+                        $scope.vocab.title = $scope.choose(data['dcterms:title']);
+                        if (angular.isArray($scope.vocab.title)) $scope.vocab.title = $scope.vocab.title[0];
+                    }
 
-                            $scope.vocab.subjects = [];
-                            angular.forEach(chosen, function (theone) {
-                                $scope.vocab.subjects.push(
-                                    {subject_source: 'local',
-                                     subject_label: theone,
-                                     subject_iri: '',
-                                     subject_notation: ''
-                                     });
-                            });
-                        }
-                        if (data['dcterms:language']) {
-                            var chosen = $scope.choose(data['dcterms:language']);
-                            $scope.vocab.language = [];
-                            angular.forEach(chosen, function (lang) {
-                                $scope.vocab.language.push(lang);
-                            });
-                        }
-                      //related entity population
-                        if (!$scope.vocab.related_entity) $scope.vocab.related_entity = [];
+                    if (data['dcterms:description']) {
+                        $scope.vocab.description = $scope.choose(data['dcterms:description']);
+                        if (angular.isArray($scope.vocab.description)) $scope.vocab.description = $scope.vocab.description[0];
+                    }
 
-                        //Go through the list to determine the related entities to add
-                        var rel_ent = [
-                            {field: 'dcterms:publisher', relationship: 'publishedBy'},
-                            {field: 'dcterms:contributor', relationship: 'hasContributor'},
-                            {field: 'dcterms:creator', relationship: 'hasAuthor'}
-                        ];
-                        angular.forEach(rel_ent, function (rel) {
-                            if (data[rel.field]) {
-                                var chosen = $scope.choose(data[rel.field]);
-                                var list = [];
-                                if (angular.isString(chosen)) {
-                                    list.push(chosen);
+                    if (data['dcterms:subject']) {
+                        //overwrite the previous ones
+                        var chosen = $scope.choose(data['dcterms:subject']);
+
+                        $scope.vocab.subjects = [];
+                        angular.forEach(chosen, function (theone) {
+                            $scope.vocab.subjects.push(
+                                {subject_source: 'local',
+                                 subject_label: theone,
+                                 subject_iri: '',
+                                 subject_notation: ''
+                                 });
+                        });
+                    }
+                    if (data['dcterms:language']) {
+                        var chosen = $scope.choose(data['dcterms:language']);
+                        $scope.vocab.language = [];
+                        angular.forEach(chosen, function (lang) {
+                            $scope.vocab.language.push(lang);
+                        });
+                    }
+                  //related entity population
+                    if (!$scope.vocab.related_entity) $scope.vocab.related_entity = [];
+
+                    //Go through the list to determine the related entities to add
+                    var rel_ent = [
+                        {field: 'dcterms:publisher', relationship: 'publishedBy'},
+                        {field: 'dcterms:contributor', relationship: 'hasContributor'},
+                        {field: 'dcterms:creator', relationship: 'hasAuthor'}
+                    ];
+                    angular.forEach(rel_ent, function (rel) {
+                        if (data[rel.field]) {
+                            var chosen = $scope.choose(data[rel.field]);
+                            var list = [];
+                            if (angular.isString(chosen)) {
+                                list.push(chosen);
+                            } else {
+                                angular.forEach(chosen, function (item) {
+                                    list.push(item);
+                                });
+                            }
+                            angular.forEach(list, function (item) {
+
+                                //check if same item exist
+                                var exist = false;
+                                angular.forEach($scope.vocab.related_entity, function (entity) {
+                                    if (entity.title == item) exist = entity;
+                                });
+
+                                if (exist) {
+                                    exist.relationship.push(rel.relationship);
                                 } else {
-                                    angular.forEach(chosen, function (item) {
-                                        list.push(item);
+                                    $scope.vocab.related_entity.push({
+                                        title: item,
+                                        type: 'party',
+                                        relationship: [rel.relationship]
                                     });
                                 }
-                                angular.forEach(list, function (item) {
 
-                                    //check if same item exist
-                                    var exist = false;
-                                    angular.forEach($scope.vocab.related_entity, function (entity) {
-                                        if (entity.title == item) exist = entity;
-                                    });
+                            })
+                        }
+                    });
 
-                                    if (exist) {
-                                        exist.relationship.push(rel.relationship);
-                                    } else {
-                                        $scope.vocab.related_entity.push({
-                                            title: item,
-                                            type: 'party',
-                                            relationship: [rel.relationship]
-                                        });
-                                    }
 
-                                })
-                            }
-                        });
-
-                    }
                 });
             } else {
                 console.log('no project to decide');
@@ -800,173 +817,7 @@
 
         $scope.showServerSuccessMessage = function (payload) {
             $scope.success_message = [ 'Successfully saved Vocabulary.' ];
-            // TODO: handle status
         };
-
-        /**
-         * Saving a vocabulary.
-         * TODO: remove once migrated everything over to save function
-         * Possible status values:
-         *  'draft', 'published', 'deprecated', 'discard'.
-         * Based on the mode, add and edit will call different service point
-         * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
-         */
-        $scope.save2 = function (status) {
-
-
-            $scope.error_message = false;
-            $scope.success_message = false;
-            if(status == 'discard'){
-                window.location.replace(base_url + 'vocabs/myvocabs');
-                return false;
-            }
-            // Tidy up empty fields before validation.
-            $scope.tidy_empty();
-
-            // Validation.
-            // First, rely on Angular's error handling.
-            if ($scope.form.cms.$invalid) {
-                // Put back the multi-value lists ready for more editing.
-                $scope.ensure_all_minimal_lists();
-                return false;
-            }
-            // Then, do our own validation.
-            if (!$scope.validate()) {
-                // Put back the multi-value lists ready for more editing.
-                $scope.ensure_all_minimal_lists();
-                return false;
-            }
-
-            var vocab = $scope.create_vocab_from_scope();
-            console.log('packed to', vocab);
-
-            if ($scope.mode == 'add' ||
-                ($scope.vocab.status == 'published' && status == 'draft')) {
-                // Adding a new vocabulary, or adding a draft to an
-                // already-published vocabulary (i.e., which does not _already_
-                // have a draft). In each case, this _adds_
-                // a row to the vocabularies table.
-                // NB: vocabs_factory.add() method called: _no_ id passed in.
-
-                $scope.status = 'saving';
-                $log.debug('Adding Vocab', $scope.vocab);
-
-                vocab.setStatus(VocabularyRegistryApi.Vocabulary.StatusEnum.draft);
-                api.updateVocabulary(vocab.getId(), vocab)
-                    .then(function(resp){
-                        $log.debug("Success", resp);
-                        $scope.showServerSuccessMessage(resp.response.body);
-                    }, function(resp) {
-                        $log.error("Error", resp.status, resp.response.body);
-                        $scope.showServerValidationErrors(resp.response.body);
-                    })
-                    .finally(function(){
-                        // sometimes the scope is not updating after xhr
-                        // blame old angularjs
-                        $scope.$apply(function () {
-                            $scope.status = "idle";
-                        });
-                    });
-                return;
-
-                // vocabs_factory.add($scope.vocab).then(function (data) {
-                //     $scope.status = 'idle';
-                //     $log.debug('Data Response from saving vocab', data);
-                //     if (data.status == 'ERROR') {
-                //         $scope.error_message = data.message;
-                //     } else {//success
-                //         //navigate to the edit form if on the add form
-                //         if (status == 'published') {
-                //             $scope.show_alert_after_save(data,
-                //                 function() {
-                //                     window.location.replace(base_url +
-                //                         data.message.prop.slug);
-                //                 });
-                //         }
-                //         else{
-                //         // $log.debug(data.message.prop[0].slug);
-                //             $scope.success_message = data.message.import_log;
-                //             $scope.success_message.push('Successfully saved to a Draft. <a href="' + base_url + "vocabs/edit/" + data.message.prop.id + '">Click Here edit the draft</a>');
-                //             $scope.show_alert_after_save(data,
-                //                 function() {
-                //                     window.location.replace(base_url +
-                //                         "vocabs/edit/" +
-                //                         data.message.prop.id +
-                //                         '/#!/?message=saved_draft');
-                //                 });
-                //         }
-                //     }
-                // });
-            } else if ($scope.mode == 'edit') {
-                // Existing vocabulary. Either:
-                // draft -> draft
-                // draft -> published
-                // published and draft -> save updated draft
-                // published -> published
-                // published -> deprecated
-                // deprecated -> draft or published or deprecated
-                // Whatever this is becomes "the" one row of the vocabulary
-                // in the vocabularies table.
-                // NB: vocabs_factory.modify() method called: id is passed in.
-                $scope.vocab.status = status;
-                $scope.status = 'saving';
-
-                vocab.setStatus(VocabularyRegistryApi.Vocabulary.StatusEnum.draft);
-                api.updateVocabulary(vocab.getId(), vocab)
-                    .then(function(resp){
-                        $log.debug("Success", resp);
-                        $scope.showServerSuccessMessage(resp.response.body);
-                    }, function(resp) {
-                        $log.error("Error", resp.status, resp.response.body);
-                        $scope.showServerValidationErrors(resp.response.body);
-                    })
-                    .finally(function(){
-                        // sometimes the scope is not updating after xhr
-                        // blame old angularjs
-                        $scope.$apply(function () {
-                            $scope.status = "idle";
-                        });
-                    });
-
-                // $log.debug('Saving Vocab', data);
-                // vocabs_factory.save(data).then(function (data) {
-                //
-                //     $scope.status = 'idle';
-                //     $log.debug('Data Response from saving vocab (edit)', data);
-                //     if (data.status == 'ERROR') {
-                //         $scope.error_message = data.message;
-                //     } else {//success
-                //         $scope.success_message = data.message.import_log;
-                //         $scope.success_message = [
-                //             'Successfully saved Vocabulary.'
-                //         ];
-                //         if ($scope.vocab.status=='published') {
-                //             $scope.success_message.push(
-                //                 '<a href="'+base_url+$scope.vocab.slug+'">View Vocabulary</a>'
-                //             )
-                //         }
-                //         if (status == 'draft') {
-                //             vocabs_factory.get($scope.vocab.id).then(function (data) {
-                //                 $scope.vocab = data.message;
-                //             });
-                //         } else if(status == 'deprecated'){
-                //             $scope.show_alert_after_save(data, function() {
-                //                 window.location.replace(base_url +
-                //                                         'vocabs/myvocabs');
-                //             });
-                //         }
-                //         else{
-                //             $scope.show_alert_after_save(data, function() {
-                //                 window.location.replace(base_url +
-                //                                         $scope.vocab.slug);
-                //             });
-                //         }
-                //     }
-                // });
-            }
-        };
-
-
 
         $scope.validate = function () {
             // $log.debug($scope.form.cms);
