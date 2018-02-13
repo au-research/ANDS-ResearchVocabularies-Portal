@@ -65,19 +65,32 @@
 
         /**
          * Collect all the user roles, for vocab.owner value
+         * FIXME have to use getUserDataWithHttpdInfo because getUserData does not offer parentRoles
          */
-        vocabs_factory.user().then(function (data) {
-            $scope.user_orgs = data.message['affiliations'];
-            $scope.user_orgs_names = [];
-            for (var i = 0; i < data.message['affiliations'].length; ++i) {
-                // Use the affiliation as the 'id', and then use the affiliation
-                // to look up the full name, and use that as the 'name'.
-                $scope.user_orgs_names.push({
-                    'id': data.message['affiliations'][i],
-                    'name': data.message['affiliationsNames'][data.message['affiliations'][i]]
-                });
-            }
-        });
+        ServicesAPI.getUserDataWithHttpInfo()
+            .then(function(resp) {
+                var data = resp.response.body;
+                $log.debug("User Data fetched", data);
+                $scope.user_orgs = [];
+                $scope.user_orgs_names = [];
+                if ('parentRoles' in data) {
+                    $scope.user_orgs_names = data['parentRoles'].filter(function(role){
+                        return role.typeId === "ROLE_ORGANISATIONAL";
+                    }).map(function(role) {
+                        return {
+                            id: role.id,
+                            name: role.fullName
+                        }
+                    });
+                    $scope.user_orgs = data['parentRoles'].filter(function(role){
+                        return role.typeId === "ROLE_ORGANISATIONAL";
+                    }).map(function(role) {
+                        return role.fullName;
+                    });
+                } else {
+                    $log.debug("user has no role", data['parentRoles']);
+                }
+            });
 
         $scope.vocab.user_owner = $scope.user_owner;
 
@@ -152,10 +165,9 @@
         /**
          * If there is a slug available, this is an edit view for the CMS
          * Proceed to overwrite the vocab object with the one fetched
-         * from the vocabs_factory.get()
+         * from the Registry API
          * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
          */
-
         if ($('#vocab_id').val()) {
             api.getVocabularyByIdEdit($('#vocab_id').val()).then(
                              function (data) {
