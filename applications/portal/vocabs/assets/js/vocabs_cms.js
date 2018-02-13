@@ -346,6 +346,17 @@
                 vocab.setRelatedEntityRef(relatedEntitiesRefs);
             }
 
+            // related-vocabularies
+            if ('related_vocabulary' in $scope.vocab && $scope.vocab['related_vocabulary'].length) {
+                var relatedVocabulariesRef = $scope.vocab['related_vocabulary'].map(function(re){
+                   var relatedEntity = new VocabularyRegistryApi.RelatedVocabularyRef();
+                   relatedEntity.setId(re['id']);
+                   relatedEntity.setRelation(re['relationship']);
+                   return relatedEntity;
+                });
+                vocab.setRelatedVocabularyRef(relatedVocabulariesRef);
+            }
+
             if ($scope.vocab['versions'].length) {
                 var versions = $scope.vocab['versions'].map(function(version) {
                     var versionEntity = new VocabularyRegistryApi.Version();
