@@ -312,7 +312,7 @@ $(document).on(
                         if ($(this).attr('related')) {
                             // return "we have some text for re "+$(this).attr('re_id');
                             var url = (base_url
-                                       + 'vocabs/related_previewnew/?related='
+                                       + 'vocabs/related_preview/?related='
                                        + encodeURIComponent($(this).attr('related'))
                                        + '&v_id=' + $(this).attr('v_id')
                                        + '&sub_type='
@@ -368,6 +368,7 @@ window.ATL_JQ_PAGE_PROPS = {
     }
 };
 
+// TODO: Remove this once we are sure that there is no call to this binding anymore
 $(document).on(
     'click',
     '.ver_preview',
