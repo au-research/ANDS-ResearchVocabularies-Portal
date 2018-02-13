@@ -56,49 +56,13 @@ class Vocabs extends MX_Controller
      * The top-level global_config.php routes requests by default
      * to applications/portal/core/controllers/dispatcher.php,
      * which in turn routes slug-like requests to this method.
-     *
+     * // TODO: implement view by slug, probably not needed
      * @return view/html
      * @author  Minh Duc Nguyen <minh.nguyen@ands.org.au>
      */
-    public function view()
+    public function view($id)
     {
-        //use test records for now
-        $slug = $this->input->get('any');
-        if ($slug) {
-            $record = $this->vocab->getBySlug($slug);
-        }
-        // Be careful; $record not necessarily set yet.
-        if ((!isset($record)) || (!$record)) {
-            $record = $this->vocab->getByID($slug);
-        }
-
-        if ($record) {
-            $vocab = $record->display_array();
-
-            $event = array(
-                'event' => 'vocabview',
-                'vocab' => $vocab['title'],
-                'slug' => $vocab['slug'],
-                'id' => $vocab['id'],
-            );
-            vocab_log_terms($event);
-
-            $vocab['current_version'] = $record->current_version();
-
-            $this->blade
-                 ->set('vocab', $vocab)
-                 ->set('title', $vocab['title']
-                       . ' - Research Vocabularies Australia')
-                 ->render('vocab');
-        } else {
-            // No longer throw an exception, like this:
-            // throw new Exception('No Record found with slug: ' . $slug);
-            // But instead, show the soft 404 page.
-            $message = '';
-            $this->blade
-                 ->set('message', $message)
-                 ->render('soft_404');
-        }
+        $this->viewById($id);
     }
 
     /**
