@@ -785,6 +785,9 @@
 
             vocab.setStatus(targetStatus);
 
+            $scope.errors = [];
+            $scope.success_message = [];
+            
             if ($scope.mode === "add") {
                 api.createVocabulary(vocab)
                     .then(
