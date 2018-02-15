@@ -65,32 +65,46 @@
 
         /**
          * Collect all the user roles, for vocab.owner value
-         * FIXME have to use getUserDataWithHttpdInfo because getUserData does not offer parentRoles
          */
-        ServicesAPI.getUserDataWithHttpInfo()
-            .then(function(resp) {
-                var data = resp.response.body;
-                $log.debug("User Data fetched", data);
-                $scope.user_orgs = [];
-                $scope.user_orgs_names = [];
-                if ('parentRoles' in data) {
-                    $scope.user_orgs_names = data['parentRoles'].filter(function(role){
-                        return role.typeId === "ROLE_ORGANISATIONAL";
-                    }).map(function(role) {
-                        return {
-                            id: role.id,
-                            name: role.fullName
+        ServicesAPI.getUserData().then(function(data) {
+            $log.debug("User Data fetched", data);
+            $scope.user_orgs = [];
+            $scope.user_orgs_names = [];
+            var parentRoles = data.getParentRole();
+            if (parentRoles !== null) {
+                // Filter organisational roles and sort by full name.
+                var orgRoles = parentRoles.filter(function(role) {
+                    return role.getTypeId() ==
+                        VocabularyRegistryApi.Role.TypeIdEnum.ORGANISATIONAL;}).
+                    sort(function (a, b) {
+                        // Case-insensitive sort of full names, based
+                        // on https://developer.mozilla.org/en-US/docs/Web/
+                        //    JavaScript/Reference/Global_Objects/Array/sort
+                        var nameA = a.getFullName().toUpperCase();
+                        var nameB = b.getFullName().toUpperCase();
+                        if (nameA < nameB) {
+                            return -1;
                         }
+                        if (nameA > nameB) {
+                            return 1;
+                        }
+                        return 0;
                     });
-                    $scope.user_orgs = data['parentRoles'].filter(function(role){
-                        return role.typeId === "ROLE_ORGANISATIONAL";
-                    }).map(function(role) {
-                        return role.fullName;
-                    });
-                } else {
-                    $log.debug("user has no role", data['parentRoles']);
-                }
-            });
+
+                $scope.user_orgs_names = orgRoles.map(function(role) {
+                    return {
+                        id: role.getId(),
+                        name: role.getFullName()
+                    }
+                });
+                $scope.user_orgs = orgRoles.map(function(role) {
+                    return role.getFullName();
+                });
+            } else {
+                $log.debug("user has no role", data['parentRole']);
+            }
+        });
+
 
         $scope.vocab.user_owner = $scope.user_owner;
 
