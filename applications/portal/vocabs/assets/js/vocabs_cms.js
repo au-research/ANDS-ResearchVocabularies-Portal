@@ -42,6 +42,9 @@
         // TODO: Move to config
         $scope.PPServerID = 1;
 
+        // model for the owner select
+        // upon Continue vocab.owner will be set to this value
+        $scope.commitVocabOwner = false;
 
         $scope.form = {};
 
@@ -183,10 +186,11 @@
          * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
          */
         if ($('#vocab_id').val()) {
+
             api.getVocabularyByIdEdit($('#vocab_id').val()).then(
                              function (data) {
                $log.debug('Editing ', data);
-
+               $scope.commitVocabOwner = true;
                 // Preserve the original data for later. We need this
                 // specifically for the creation_date value.
                 $scope.original_data = data;

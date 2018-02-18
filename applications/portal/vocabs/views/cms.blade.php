@@ -109,24 +109,31 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                     <select name="owner" id="owner" required
                             class="form-control caret-for-select"
                             placeholder="vocab Owner"
+                            ng-disabled="commitVocabOwner"
                             ng-options="owner.id as owner.name for owner in user_orgs_names"
                             ng-model="vocab.owner" ng-if="user_orgs.length>1"></select>
                     <select name="owner" id="owner" required
                             class="form-control" placeholder="vocab Owner"
                             ng-if="user_orgs.length==1 && !vocab.owner"
                             ng-model="vocab.owner"
+                            ng-disabled="commitVocabOwner"
                             ng-options="owner.id as owner.name for owner in user_orgs_names"
                             ng-init="vocab.owner=user_orgs[0]"> </select>
                     <select name="owner" id="owner" required
                             class="form-control" placeholder="vocab Owner"
                             ng-options="owner.id as owner.name for owner in user_orgs_names"
                             ng-if="user_orgs.length==1 && vocab.owner.length > 0"
+                            ng-disabled="commitVocabOwner"
                             ng-model="vocab.owner"></select>
                     <p ng-show="form.cms.owner.$invalid"
                        class="help-block">To give editing rights to others in
                       your organisation, please select the appropriate
                       organisational Owner.</p>
                   </div>
+                  <a href="javascript:;"
+                     class="btn btn-primary"
+                     ng-show="!commitVocabOwner"
+                     ng-click="commitVocabOwner = true">Continue [[ tmp_owner ]]</a>
                 @endif
               </div>
             </div>
@@ -135,7 +142,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
 
         <!-- Because of custom handling of the Enter key for Top Concepts, do
              not use _any_ buttons with type="submit" in this form. -->
-        <div class="row" ng-show="vocab.owner">
+        <div class="row" ng-show="vocab.owner && commitVocabOwner">
           <div class="col-md-8">
             <div class="panel swatch-gray">
               <!-- <div class="panel-heading">Vocabulary Metadata</div> -->
@@ -395,7 +402,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
           </div>
         </div>
 
-        <div class="row" ng-show="vocab.owner">
+        <div class="row" ng-show="vocab.owner && commitVocabOwner">
           <div class="col-md-12">
             <div class="panel swatch-gray">
               <div class="panel-body" ng-if="status=='idle'">
