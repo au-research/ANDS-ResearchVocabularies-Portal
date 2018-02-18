@@ -1002,7 +1002,10 @@
             relatedEntity.setType(data['type']);
             relatedEntity.setEmail(data['email']);
             relatedEntity.setPhone(data['phone']);
-            relatedEntity.setOwner(data['owner']);
+
+            // owner is set by the vocab.owner exclusively
+            // it must be already set by this point
+            relatedEntity.setOwner($scope.vocab.owner);
 
             // identifiers
             var identifiers = data['identifiers'].map(function(id) {
