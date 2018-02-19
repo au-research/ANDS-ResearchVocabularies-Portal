@@ -110,18 +110,18 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                             class="form-control caret-for-select"
                             placeholder="vocab Owner"
                             ng-disabled="commitVocabOwner"
-                            ng-options="owner.id as owner.name for owner in user_orgs_names"
+                            ng-options="owner.id as (owner.name + ' ('+owner.id+')') for owner in user_orgs_names"
                             ng-model="vocab.owner" ng-if="user_orgs.length>1"></select>
                     <select name="owner" id="owner" required
                             class="form-control" placeholder="vocab Owner"
                             ng-if="user_orgs.length==1 && !vocab.owner"
                             ng-model="vocab.owner"
                             ng-disabled="commitVocabOwner"
-                            ng-options="owner.id as owner.name for owner in user_orgs_names"
+                            ng-options="owner.id as (owner.name + ' ('+owner.id+')') for owner in user_orgs_names"
                             ng-init="vocab.owner=user_orgs[0]"> </select>
                     <select name="owner" id="owner" required
                             class="form-control" placeholder="vocab Owner"
-                            ng-options="owner.id as owner.name for owner in user_orgs_names"
+                            ng-options="owner.id as (owner.name + ' ('+owner.id+')') for owner in user_orgs_names"
                             ng-if="user_orgs.length==1 && vocab.owner.length > 0"
                             ng-disabled="commitVocabOwner"
                             ng-model="vocab.owner"></select>
