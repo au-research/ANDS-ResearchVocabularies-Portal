@@ -45,6 +45,9 @@
                         </div>
                     </div>
                 </div>
+                <div class="alert alert-warning" ng-if="version.status == 'current' && currentVersion">
+                    Note: The status of version [[ currentVersion.title ]] will be set to superseded upon adding this version.
+                </div>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group" ng-class="{ 'has-error' : form.versionForm.title.$invalid }">

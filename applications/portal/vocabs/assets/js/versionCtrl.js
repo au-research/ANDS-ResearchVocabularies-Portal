@@ -108,6 +108,13 @@
             $scope.newValue.ap.format = option;
         };
 
+        $scope.currentVersion = $scope.vocab['versions'].find(function(version){
+           return version.status === statusTypeEnum.current && version.id !== $scope.version.id;
+        });
+        if ($scope.currentVersion) {
+            $log.debug("There is an existing current version", $scope.currentVersion);
+        }
+
         // intialize the forms for validation
         $scope.form = {
             apForm:{},
@@ -294,23 +301,6 @@
             delete $scope.error_message;
             if ($scope.form.versionForm.$valid) {
 
-                //if there's already a current version, this one shouldn't be
-                if ($scope.version.status == 'current') {
-                    if (vocab.versions) {
-                        var vocabhascurrent = false;
-                        angular.forEach(vocab.versions, function (ver) {
-                            if (ver.status == 'current' &&
-                                    ver.id != $scope.version.id) {
-                                vocabhascurrent = true;
-                            }
-                        });
-                        if (vocabhascurrent) {
-                            $scope.error_message = 'Vocabulary already has a current version';
-                            return false;
-                        }
-                    }
-                }
-
                 //at least 1 access point require
                 if ($scope.version && $scope.version.access_points &&
                         $scope.version.access_points.length > 0) {
@@ -349,6 +339,10 @@
                     'data': $scope.version
                 };
                 $log.debug("Saving version", ret);
+                if ($scope.currentVersion) {
+                    $log.debug("Setting existing currentVersion to superseded", $scope.currentVersion);
+                    $scope.currentVersion.status = statusTypeEnum.superseded;
+                }
                 $uibModalInstance.close(ret);
             } else return false;
         };

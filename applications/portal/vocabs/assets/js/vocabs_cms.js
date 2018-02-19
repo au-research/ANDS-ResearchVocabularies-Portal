@@ -313,6 +313,7 @@
                 };
                 $scope.vocab['versions'].push(versionForForm);
             });
+            $log.debug("Local vocab scope", $scope.vocab);
         };
 
         // Create a Registry API model object based on the form values.
