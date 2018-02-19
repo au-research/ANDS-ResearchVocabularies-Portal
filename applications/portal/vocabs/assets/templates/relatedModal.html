@@ -16,7 +16,7 @@
         <div class="row">
           <div class="col-md-12">
             <div class="form-group"
-                 ng-class="{'has-error':form.reForm.title.$invalid}">
+                 ng-class="{'has-error':entity.title === undefined || entity.title == ''}">
               <label for="">Title
                 <span ng-bind-html="confluenceTip('RelatedTitle')"></span>
               </label>
