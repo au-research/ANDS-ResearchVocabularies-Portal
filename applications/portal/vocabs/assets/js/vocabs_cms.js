@@ -562,6 +562,7 @@
             return chosen;
         };
 
+        $scope.populatingPP = false;
         /**
          * Populate the vocab with data
          * @author  Minh Duc Nguyen <minh.nguyen@ands.org.au>
@@ -569,27 +570,30 @@
          * @param project
          */
         $scope.populate = function (project) {
-            if (project) {
+            if (!project) {
+                $log.debug("No project to populate")
+                return;
+            }
 
-                //populate data from the PP API first
-                //if selection was made
-                //otherwise assume the pooplParty ID is still in the field unprocessed!!!
-                if(typeof project.id != 'undefined'){
-                    $scope.vocab.poolparty_id = project.id;
-                } else {
-                    $scope.vocab.poolparty_id = project;
+            //populate data from the PP API first
+            //if selection was made
+            //otherwise assume the pooplParty ID is still in the field unprocessed!!!
+            if(typeof project.id != 'undefined'){
+                $scope.vocab.poolparty_id = project.id;
+            } else {
+                $scope.vocab.poolparty_id = project;
+            }
+
+            $scope.decide = true;
+
+            $scope.populatingPP = true;
+            ServicesAPI.getPoolPartyProjectMetadata($scope.PPServerID, $scope.vocab.poolparty_id).then(function(data) {
+                if (!data) {
+                    return;
                 }
 
-                $scope.decide = true;
-
-                // TODO: Migrate this over to use the Registry API. still works though because
-                // the PHP side uses the Registry API
-                //populate with metadata from toolkit, overwrite the previous data where need be
-
-                ServicesAPI.getPoolPartyProjectMetadata($scope.PPServerID, $scope.vocab.poolparty_id).then(function(data) {
-                    if (!data) {
-                        return;
-                    }
+                $scope.$apply(function() {
+                    $scope.populatingPP = false;
 
                     $log.debug("Fetched PP Project", data);
 
@@ -621,10 +625,10 @@
                         angular.forEach(chosen, function (theone) {
                             $scope.vocab.subjects.push(
                                 {subject_source: 'local',
-                                 subject_label: theone,
-                                 subject_iri: '',
-                                 subject_notation: ''
-                                 });
+                                    subject_label: theone,
+                                    subject_iri: '',
+                                    subject_notation: ''
+                                });
                         });
                     }
                     if (data['dcterms:language']) {
@@ -634,7 +638,7 @@
                             $scope.vocab.language.push(lang);
                         });
                     }
-                  //related entity population
+                    //related entity population
                     if (!$scope.vocab.related_entity) $scope.vocab.related_entity = [];
 
                     //Go through the list to determine the related entities to add
@@ -675,12 +679,14 @@
                             })
                         }
                     });
-
-
                 });
-            } else {
-                console.log('no project to decide');
-            }
+
+
+
+
+
+            });
+
         };
 
         /**

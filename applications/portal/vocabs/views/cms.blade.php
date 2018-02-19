@@ -133,6 +133,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                   <a href="javascript:;"
                      class="btn btn-primary"
                      ng-show="!commitVocabOwner"
+                     ng-disabled="!vocab.owner"
                      ng-click="commitVocabOwner = true">Continue [[ tmp_owner ]]</a>
                 @endif
               </div>
@@ -140,9 +141,13 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
           </div>
         </div>
 
+        <div class="alert alert-info" ng-show="vocab.owner && commitVocabOwner && populatingPP">
+          Populating Vocabulary... Please Wait...
+        </div>
+
         <!-- Because of custom handling of the Enter key for Top Concepts, do
              not use _any_ buttons with type="submit" in this form. -->
-        <div class="row" ng-show="vocab.owner && commitVocabOwner">
+        <div class="row" ng-show="vocab.owner && commitVocabOwner && !populatingPP">
           <div class="col-md-8">
             <div class="panel swatch-gray">
               <!-- <div class="panel-heading">Vocabulary Metadata</div> -->
@@ -402,7 +407,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
           </div>
         </div>
 
-        <div class="row" ng-show="vocab.owner && commitVocabOwner">
+        <div class="row" ng-show="vocab.owner && commitVocabOwner && !populatingPP">
           <div class="col-md-12">
             <div class="panel swatch-gray">
               <div class="panel-body" ng-if="status=='idle'">
