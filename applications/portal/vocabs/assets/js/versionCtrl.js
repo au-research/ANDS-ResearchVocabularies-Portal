@@ -107,9 +107,9 @@
             $scope.newValue.ap.type = 'file';
             $scope.newValue.ap.format = option;
         };
-
-        $scope.currentVersion = $scope.vocab['versions'].find(function(version){
-           return version.status === statusTypeEnum.current && version.id !== $scope.version.id;
+        
+        $scope.currentVersion = $scope.vocab['versions'].find(function (version) {
+            return version.title !== $scope.version.title && version.status === statusTypeEnum.current;
         });
         if ($scope.currentVersion) {
             $log.debug("There is an existing current version", $scope.currentVersion);
@@ -238,26 +238,6 @@
 
             // TODO: consider inline this function
             $scope.addformat(obj);
-
-            // legacy workflow
-            // TODO: check if we still need to do this
-            $log.debug(obj.import, obj.publish);
-            if (obj.import) {
-                //add empty apiSparql endpoint
-                $scope.addformat({
-                    format: 'RDF/XML',
-                    type: 'apiSparql',
-                    uri: 'TBD'
-                });
-            }
-            if (obj.publish) {
-                //add empty sissvoc endpoint
-                $scope.addformat({
-                    format: 'RDF/XML',
-                    type: 'webPage',
-                    uri: 'TBD'
-                });
-            }
 
             $scope.showNewAPForm = false;
         };

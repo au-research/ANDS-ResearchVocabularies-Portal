@@ -473,7 +473,7 @@
            the value we got from the database. */
         $scope.do_restore_creation_date = function() {
             $('#creation_date').val($scope.original_data.getCreationDate());
-        }
+        };
 
         /* Watcher for the vocab.creation_data field. If we got notification
            (via the restore_creation_date_value flag) to reset the text
@@ -594,99 +594,101 @@
 
                 $scope.$apply(function() {
                     $scope.populatingPP = false;
-
                     $log.debug("Fetched PP Project", data);
-
-                    // CC-1447. Provide some feedback, if the Toolkit
-                    // returned with either an error or an exception.
-                    // This can happen, e.g., if the PP project does
-                    // not exist, or if the RDF data is invalid (and
-                    // therefore can not be parsed to extract metadata).
-                    if (("error" in data) || ("exception" in data)) {
-                        alert("Unable to get project metadata from PoolParty. Fields will not be pre-filled.");
-                        return;
-                    }
-
-                    if (data['dcterms:title']) {
-                        $scope.vocab.title = $scope.choose(data['dcterms:title']);
-                        if (angular.isArray($scope.vocab.title)) $scope.vocab.title = $scope.vocab.title[0];
-                    }
-
-                    if (data['dcterms:description']) {
-                        $scope.vocab.description = $scope.choose(data['dcterms:description']);
-                        if (angular.isArray($scope.vocab.description)) $scope.vocab.description = $scope.vocab.description[0];
-                    }
-
-                    if (data['dcterms:subject']) {
-                        //overwrite the previous ones
-                        var chosen = $scope.choose(data['dcterms:subject']);
-
-                        $scope.vocab.subjects = [];
-                        angular.forEach(chosen, function (theone) {
-                            $scope.vocab.subjects.push(
-                                {subject_source: 'local',
-                                    subject_label: theone,
-                                    subject_iri: '',
-                                    subject_notation: ''
-                                });
-                        });
-                    }
-                    if (data['dcterms:language']) {
-                        var chosen = $scope.choose(data['dcterms:language']);
-                        $scope.vocab.language = [];
-                        angular.forEach(chosen, function (lang) {
-                            $scope.vocab.language.push(lang);
-                        });
-                    }
-                    //related entity population
-                    if (!$scope.vocab.related_entity) $scope.vocab.related_entity = [];
-
-                    //Go through the list to determine the related entities to add
-                    var rel_ent = [
-                        {field: 'dcterms:publisher', relationship: 'publishedBy'},
-                        {field: 'dcterms:contributor', relationship: 'hasContributor'},
-                        {field: 'dcterms:creator', relationship: 'hasAuthor'}
-                    ];
-                    angular.forEach(rel_ent, function (rel) {
-                        if (data[rel.field]) {
-                            var chosen = $scope.choose(data[rel.field]);
-                            var list = [];
-                            if (angular.isString(chosen)) {
-                                list.push(chosen);
-                            } else {
-                                angular.forEach(chosen, function (item) {
-                                    list.push(item);
-                                });
-                            }
-                            angular.forEach(list, function (item) {
-
-                                //check if same item exist
-                                var exist = false;
-                                angular.forEach($scope.vocab.related_entity, function (entity) {
-                                    if (entity.title == item) exist = entity;
-                                });
-
-                                if (exist) {
-                                    exist.relationship.push(rel.relationship);
-                                } else {
-                                    $scope.vocab.related_entity.push({
-                                        title: item,
-                                        type: 'party',
-                                        relationship: [rel.relationship]
-                                    });
-                                }
-
-                            })
-                        }
-                    });
+                    $scope.applyPPData(data);
                 });
-
-
-
-
-
             });
 
+        };
+
+        $scope.applyPPData = function(data) {
+
+            // CC-1447. Provide some feedback, if the Toolkit
+            // returned with either an error or an exception.
+            // This can happen, e.g., if the PP project does
+            // not exist, or if the RDF data is invalid (and
+            // therefore can not be parsed to extract metadata).
+            if (("error" in data) || ("exception" in data)) {
+                alert("Unable to get project metadata from PoolParty. Fields will not be pre-filled.");
+                return;
+            }
+
+            if (data['dcterms:title']) {
+                $scope.vocab.title = $scope.choose(data['dcterms:title']);
+                if (angular.isArray($scope.vocab.title)) $scope.vocab.title = $scope.vocab.title[0];
+            }
+
+            if (data['dcterms:description']) {
+                $scope.vocab.description = $scope.choose(data['dcterms:description']);
+                if (angular.isArray($scope.vocab.description)) $scope.vocab.description = $scope.vocab.description[0];
+            }
+
+            if (data['dcterms:subject']) {
+                //overwrite the previous ones
+                var chosen = $scope.choose(data['dcterms:subject']);
+
+                $scope.vocab.subjects = [];
+                angular.forEach(chosen, function (theone) {
+                    $scope.vocab.subjects.push(
+                        {subject_source: 'local',
+                            subject_label: theone,
+                            subject_iri: '',
+                            subject_notation: ''
+                        });
+                });
+            }
+
+            if (data['dcterms:language']) {
+                var chosen = $scope.choose(data['dcterms:language']);
+                $scope.vocab.language = [];
+                angular.forEach(chosen, function (lang) {
+                    $scope.vocab.language.push(lang);
+                });
+            }
+
+            //related entity population
+            if (!$scope.vocab.related_entity) $scope.vocab.related_entity = [];
+
+            //Go through the list to determine the related entities to add
+            var rel_ent = [
+                {field: 'dcterms:publisher', relationship: 'publishedBy'},
+                {field: 'dcterms:contributor', relationship: 'hasContributor'},
+                {field: 'dcterms:creator', relationship: 'hasAuthor'}
+            ];
+
+            angular.forEach(rel_ent, function (rel) {
+                if (data[rel.field]) {
+                    var chosen = $scope.choose(data[rel.field]);
+                    var list = [];
+                    if (angular.isString(chosen)) {
+                        list.push(chosen);
+                    } else {
+                        angular.forEach(chosen, function (item) {
+                            list.push(item);
+                        });
+                    }
+                    angular.forEach(list, function (item) {
+
+                        //check if same item exist
+                        var exist = false;
+                        angular.forEach($scope.vocab.related_entity, function (entity) {
+                            if (entity.title == item) exist = entity;
+                        });
+
+                        if (exist) {
+                            exist.relationship.push(rel.relationship);
+                        } else {
+                            $scope.vocab.related_entity.push({
+                                title: item,
+                                type: 'party',
+                                relationship: [rel.relationship]
+                            });
+                        }
+                    })
+                }
+            });
+
+            // TODO: create the Related Entities upon obtaining
         };
 
         /**
@@ -1090,7 +1092,7 @@
                         }
                     },
                     vocab: function () {
-                        return $scope.vocab
+                        return $scope.vocab;
                     },
                     action: function () {
                         return action;
@@ -1161,7 +1163,7 @@
                 $scope.vocab[type].splice(0, 1);
             }
             $scope.ensure_minimal_list(type);
-        }
+        };
 
         /** Ensure that a multi-value field has a minimal content, ready
             for editing. For some types, this could be an empty list;
@@ -1184,7 +1186,7 @@
                 default:
                 }
             }
-        }
+        };
 
         /** Ensure that all multi-value fields have minimal content, ready
             for editing. For some types, this could be an empty list;
@@ -1193,7 +1195,7 @@
             angular.forEach($scope.multi_valued_lists, function (type) {
                 $scope.ensure_minimal_list(type);
             });
-        }
+        };
 
         /** Tidy up all empty fields. To be used before saving.
             Note that this does not guarantee validity.
@@ -1204,7 +1206,7 @@
             $scope.vocab.top_concept = $scope.vocab.top_concept.filter(Boolean);
             $scope.vocab.language = $scope.vocab.language.filter(Boolean);
             $scope.vocab.subjects = $scope.vocab.subjects.filter($scope.partially_valid_subject_filter);
-        }
+        };
 
         /** Utility function for validation of fields that can have
             multiple entries. The list is supposed to have at least one
