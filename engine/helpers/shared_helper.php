@@ -197,19 +197,25 @@ function getResolvedLinkForIdentifier($type, $value) {
     switch ($type) {
         case RelatedEntityIdentifier::IDENTIFIER_TYPE_AU_ANL_PEAU:
             return 'NLA: <a class="identifier" href="http://nla.gov.au/' .
-                $value . '" title="View the record for this party in Trove" target="_blank">' .
-                $value . ' <img src="' . asset_url('assets/core/images/icons/nla_icon.png',
+                $value .
+                '" title="View the record for this party in Trove" target="_blank">' .
+                $value .
+                ' <img src="' . asset_url('assets/core/images/icons/nla_icon.png',
                 'base_path') . '" alt="NLA icon"></a>';
             break;
         case RelatedEntityIdentifier::IDENTIFIER_TYPE_DOI:
             return 'DOI: <a class="identifier" href="http://dx.doi.org/' .
-                $value . '" title="Resolve this DOI" target="_blank">' . $value .
+                rawurlencode($value) .
+                '" title="Resolve this DOI" target="_blank">' .
+                htmlspecialchars($value) .
                 ' <img src="' . asset_url('assets/core/images/icons/doi_icon.png',
                 'base_path') . '" alt="DOI icon"></a>';
             break;
         case RelatedEntityIdentifier::IDENTIFIER_TYPE_HANDLE:
             return 'Handle : <a class="identifier" href="http://hdl.handle.net/' .
-                $value . '" title="Resolve this Handle" target="_blank">' . $value .
+                rawurlencode($value) .
+                '" title="Resolve this Handle" target="_blank">' .
+                htmlspecialchars($value) .
                 ' <img src="' . asset_url('assets/core/images/icons/handle_icon.png',
                 'base_path') . '" alt="Handle icon"></a>';
             break;
@@ -224,7 +230,9 @@ function getResolvedLinkForIdentifier($type, $value) {
         case RelatedEntityIdentifier::IDENTIFIER_TYPE_ISNI:
 // TODO identifier logo
             return 'ISNI: <a class="identifier" href="http://www.isni.org/isni/' .
-                $value . '" title="Resolve this ISNI" target="_blank">' . $value .
+                $value .
+                '" title="Resolve this ISNI" target="_blank">' .
+                $value .
                 ' <img src="' . asset_url('assets/core/images/icons/external_link.png',
                 'base_path') . '" alt="URI icon"></a>';
             break;
@@ -233,32 +241,42 @@ function getResolvedLinkForIdentifier($type, $value) {
             break;
         case RelatedEntityIdentifier::IDENTIFIER_TYPE_ORCID:
             return 'ORCID: <a class="identifier" href="http://orcid.org/' .
-                $value . '" title="Resolve this ORCID" target="_blank">' . $value .
+                $value .
+                '" title="Resolve this ORCID" target="_blank">' .
+                $value .
                 ' <img src="' . asset_url('assets/core/images/icons/orcid_icon.png',
                 'base_path') . '" alt="ORCID icon"></a>';
             break;
         case RelatedEntityIdentifier::IDENTIFIER_TYPE_PURL:
             return 'PURL : <a class="identifier" href="' .
-                $value . '" title="Resolve this PURL" target="_blank">' . $value .
+                urlEncodeForHref($value) .
+                '" title="Resolve this PURL" target="_blank">' .
+                htmlspecialchars($value) .
                 ' <img src="' . asset_url('assets/core/images/icons/external_link.png',
                 'base_path') . '" alt="PURL icon"></a>';
             break;
         case RelatedEntityIdentifier::IDENTIFIER_TYPE_RESEARCHER_ID:
             return 'ResearcherID: <a class="identifier" href="http://www.researcherid.com/rid/' .
-                $value .'" title="Resolve this ResearcherID" target="_blank">' . $value .
+                $value .
+                '" title="Resolve this ResearcherID" target="_blank">' .
+                $value .
                 ' <img src="' . asset_url('assets/core/images/icons/thomsonreuters.png',
                 'base_path') . '" alt="ResearcherID icon"></a>';
             break;
         case RelatedEntityIdentifier::IDENTIFIER_TYPE_URI:
             return 'URI: <a class="identifier" href="' .
-                $value . '" title="Resolve this URI" target="_blank">' .
-                $value . ' <img src="' . asset_url('assets/core/images/icons/external_link.png',
+                urlEncodeForHref($value) .
+                '" title="Resolve this URI" target="_blank">' .
+                htmlspecialchars($value) .
+                ' <img src="' . asset_url('assets/core/images/icons/external_link.png',
                 'base_path') . '" alt="URI icon"></a>';
             break;
         case RelatedEntityIdentifier::IDENTIFIER_TYPE_VIAF:
 // TODO identifier logo
             return 'VIAF: <a class="identifier" href="http://viaf.org/viaf/' .
-                $value .'" title="Resolve this VIAF" target="_blank">' . $value .
+                $value .
+                '" title="Resolve this VIAF" target="_blank">' .
+                $value .
                 ' <img src="' . asset_url('assets/core/images/icons/external_link.png',
                 'base_path') . '" alt="URI icon"></a>';
             break;
@@ -280,3 +298,9 @@ function from_camel_case($str) {
     }
 	else return '';
   }
+
+/** Escape a URL for use in an href attribute.
+*/
+function urlEncodeForHref($url) {
+    return str_replace("\"", "%22", $url);
+}
