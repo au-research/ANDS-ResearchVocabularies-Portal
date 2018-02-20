@@ -69,7 +69,7 @@
                             <label for="">Notes
                                 <span ng-bind-html="confluenceTip('Notes')"></span>
                             </label>
-                            <textarea ng-model="version.note" class="form-control"></textarea>
+                            <textarea ui-tinymce="tinymceOptions" ng-model="version.note" class="form-control"></textarea>
                         </div>
                     </div>
                 </div>

@@ -27,13 +27,16 @@
         .controller('versionCtrl', versionCtrl);
 
     function versionCtrl($scope, $timeout, $uibModalInstance, $log, Upload,
-                         version, action, vocab, confluenceTip) {
+                         version, action, vocab, confluenceTip,
+                         tinymceOptions) {
 
         // Make the modal dialog (at least, temporarily) movable,
         // as per request in SD-11572, CC-2050.
         $timeout(function(){
             $('.modal-content').draggable({ revert: true });
         });
+
+        $scope.tinymceOptions = tinymceOptions;
 
         $scope.showNewAPForm = false;
 

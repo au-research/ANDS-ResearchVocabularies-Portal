@@ -2431,7 +2431,7 @@ $templateCache.put("selectize/select.tpl.html","<div class=\"ui-select-container
     angular
         .module('app', ['ngRoute', 'ngSanitize', 'ui.bootstrap',
                         'ui.utils', 'angular-loading-bar', 'ngFileUpload',
-                        'ui.select'
+                        'ui.select', 'ui.tinymce'
                        ])
         .config(
             function ($interpolateProvider, $locationProvider, $logProvider) {

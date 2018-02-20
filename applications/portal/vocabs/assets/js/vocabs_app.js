@@ -5,7 +5,7 @@
     angular
         .module('app', ['ngRoute', 'ngSanitize', 'ui.bootstrap',
                         'ui.utils', 'angular-loading-bar', 'ngFileUpload',
-                        'ui.select'
+                        'ui.select', 'ui.tinymce'
                        ])
         .config(
             function ($interpolateProvider, $locationProvider, $logProvider) {

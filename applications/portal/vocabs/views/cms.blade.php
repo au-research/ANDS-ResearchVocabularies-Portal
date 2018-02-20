@@ -176,7 +176,8 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                   <label for="">Vocabulary Description
                     <span ng-bind-html="confluenceTip('VocabularyDescription')"></span>
                   </label>
-                  <textarea class="form-control" ng-model="vocab.description"
+                  <textarea ui-tinymce="tinymceOptions"
+                            class="form-control edit-html" ng-model="vocab.description"
                             placeholder="Vocabulary Description" rows="10"
                             required name="description"></textarea>
                   <p ng-show="form.cms.description.$invalid"
@@ -227,7 +228,8 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                   <label for="">Note
                     <span ng-bind-html="confluenceTip('Note')"></span>
                   </label>
-                  <textarea class="form-control" ng-model="vocab.note"
+                  <textarea ui-tinymce="tinymceOptions"
+                            class="form-control" ng-model="vocab.note"
                             placeholder="Notes" rows="10"></textarea>
                 </div>
 

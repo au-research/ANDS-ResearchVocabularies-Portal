@@ -42,6 +42,8 @@
     <script src="{{ asset_url('js/lib/angular-loading-bar/build/loading-bar.min.js')}}"></script>
     <script type="text/javascript" src="{{ asset_url('js/lib/ng-file-upload/ng-file-upload-all.min.js') }}"></script>
     <script src="{{ asset_url('ands-green/js/packages.min.js','templates') }}"></script>
+    <script src="{{ asset_url('js/lib/tinymce/tinymce.min.js')}}"></script>
+    <script src="{{ asset_url('js/lib/angular-ui-tinymce/dist/tinymce.min.js')}}"></script>
 @else
     <script src="{{ asset_url('js/lib.js').'?'.getReleaseVersion() }}"></script>
 @endif

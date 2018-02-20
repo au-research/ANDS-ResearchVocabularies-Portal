@@ -66,6 +66,26 @@
             versions: []
         };
 
+        $scope.tinymceOptions = {
+            plugins: 'link lists code',
+            toolbar: 'undo redo | styleselect | bold italic underline strikethrough superscript subscript | bullist numlist outdent indent blockquote codeformat | link | code',
+            menubar: false,
+            style_formats: [
+                {
+                    title: 'Blocks',
+                    items: [
+                        { title: 'Paragraph', format: 'p' },
+                        { title: 'Blockquote', format: 'blockquote' },
+                        { title: 'Pre', format: 'pre' }
+                    ]
+                }
+            ],
+            forced_root_block: false,
+            link_title: false,
+            target_list: false,
+            valid_elements: 'a[href|target:_blank|rel:nofollow],b,blockquote,br,cite,code,dd,dl,dt,em,i,li,ol,p,pre,q,small,span,strike,strong,sub,sup,u,ul'
+        };
+
         /**
          * Collect all the user roles, for vocab.owner value
          */
@@ -1081,6 +1101,7 @@
             var modalInstance = $uibModal.open({
                 templateUrl: base_url + 'assets/vocabs/templates/versionModal.html',
                 controller: 'versionCtrl',
+                size: 'lg',
                 windowClass: 'modal-center',
                 resolve: {
                     version: function () {
@@ -1099,6 +1120,9 @@
                     },
                     confluenceTip: function () {
                         return $scope.confluenceTip;
+                    },
+                    tinymceOptions: function () {
+                        return $scope.tinymceOptions;
                     }
                 }
             });
