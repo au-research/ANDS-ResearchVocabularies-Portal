@@ -42,8 +42,6 @@
     <script src="{{ asset_url('js/lib/angular-loading-bar/build/loading-bar.min.js')}}"></script>
     <script type="text/javascript" src="{{ asset_url('js/lib/ng-file-upload/ng-file-upload-all.min.js') }}"></script>
     <script src="{{ asset_url('ands-green/js/packages.min.js','templates') }}"></script>
-    <script src="{{ asset_url('js/lib/tinymce/tinymce.min.js')}}"></script>
-    <script src="{{ asset_url('js/lib/angular-ui-tinymce/dist/tinymce.min.js')}}"></script>
 @else
     <script src="{{ asset_url('js/lib.js').'?'.getReleaseVersion() }}"></script>
 @endif
@@ -53,6 +51,10 @@
 <script src='//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
 <script src="{{asset_url('lib/qtip2/jquery.qtip.js', 'core')}}"></script>
 <script type="text/javascript" src="{{ base_url() }}apps/assets/vocab_widget/js/vocab_widget_v2.js"></script>
+
+<!-- TinyMCE wants to load other things, so let it. -->
+<script src="{{ asset_url('js/lib/tinymce/tinymce.min.js')}}"></script>
+<script src="{{ asset_url('js/lib/angular-ui-tinymce/dist/tinymce.min.js')}}"></script>
 
 
 @if(is_dev())
