@@ -57,9 +57,9 @@
                 scope.setSelected();
 
 
-                // The model for the subject source dropdown
-                // is "selected", not "subjectType".
-                // So we need to set the subject type explicitly after making
+                // The model for the type dropdown
+                // is "selected", not "reiType".
+                // So we need to set the type explicitly after making
                 // a selection from the dropdown.
                 scope.setType = function() {
                     if (scope.selected == null) {
@@ -72,7 +72,7 @@
                     }
                 }
 
-                // And conversely, set a watch on the subjectType value
+                // And conversely, set a watch on the reiType value
                 // to update scope.selected.
                 scope.$watch('reiType', function(newValue, oldValue) {
                     if (newValue !== oldValue) {
