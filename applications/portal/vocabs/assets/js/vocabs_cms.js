@@ -1004,7 +1004,7 @@
                         .then(function(resp) {
                             $log.debug("Success updating related entity", resp);
                             $scope.$apply(function() {
-                                $scope.vocab.related_entity.push(obj.data);
+                                $scope.vocab.related_entity[index] = obj.data;
                             });
                         }, function(resp){
                             $log.error("Failed updating related entity", resp)
