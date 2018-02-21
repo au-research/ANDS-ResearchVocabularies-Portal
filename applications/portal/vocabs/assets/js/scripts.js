@@ -2989,6 +2989,19 @@ if (!Array.prototype.find) {
                 return text.replace("_search", "");
             }
         })
+        .filter('trim', function () {
+           return function(text, length) {
+               var trimmedString = text.substring(0, length);
+               var extension = /(?:.([^.]+))?$/.exec(text)[1];
+
+               if (trimmedString !== text) {
+                   trimmedString += ' ...';
+                   trimmedString += extension;
+               }
+
+               return trimmedString;
+           }
+        });
     ;
 })();;(function () {
     'use strict';
