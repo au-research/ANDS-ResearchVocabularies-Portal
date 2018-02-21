@@ -418,6 +418,10 @@ ul.pagi li a.active {
 .has-error .form-control {
   border: 1px solid #a94442;
 }
+.mce-panel button {
+  background-color: inherit !important;
+  color: inherit !important;
+}
 .classic-tree ul {
   margin-left: 20px;
 }
