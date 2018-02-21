@@ -44,9 +44,11 @@
             {"value": "isPartOf", "text": "Part of", "types": ["vocabulary"]}
         ];
 
-        /* Define all the related entity identifier types.
-         *
-         */
+        /* Regular expression for URLs and PURLs. Based on what comes with AngularJS. */
+        var URL_REGEXP = /^[a-z][a-z\d.+-]*:\/*(?:[^:@]+(?::[^@]+)?@)?(?:[^\s:/?#]+|\[[a-f\d:]+])(?::\d+)?(?:\/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$/i;
+        var PURL_REGEXP = /^https?:\/\/purl.org\/(?:[^:@]+(?::[^@]+)?@)?(?:[^\s:/?#]+|\[[a-f\d:]+])(?::\d+)?(?:\/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$/i;
+
+        /* Define all the related entity identifier types. */
         var ite = VocabularyRegistryApi.RelatedEntityIdentifier.
             IdentifierTypeEnum;
         $scope.rei_types = [
@@ -77,13 +79,13 @@
              "validate": /^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$/},
             {"id": ite.purl, "label": "Purl",
              "placeholder": "http://purl.org/my-identifier",
-             "validate": /^https?:\/\/purl.org\/./},
+             "validate": PURL_REGEXP},
             {"id": ite.researcherID, "label": "Researcher ID",
              "placeholder": "A-1009-2008",
              "validate": /^[A-Z]{1,3}-[1-9][0-9]{3}-[0-9]{4}$/},
             {"id": ite.uri, "label": "URI",
              "placeholder": "http://my.url/123",
-             "validate": /^/},
+             "validate": URL_REGEXP},
             {"id": ite.viaf, "label": "VIAF",
              "placeholder": "49224511",
              "validate": /^[1-9]\d(\d{0,7}|\d{17,20})$/}
