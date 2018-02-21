@@ -206,7 +206,7 @@
          * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
          */
         if ($('#vocab_id').val()) {
-
+            $scope.decide = true;
             api.getVocabularyByIdEdit($('#vocab_id').val()).then(
                              function (data) {
                $log.debug('Editing ', data);
@@ -217,11 +217,26 @@
                 // Copy the values into the form.
                 $scope.copy_incoming_vocab_to_scope(data);
                 $scope.mode = 'edit';
-                $scope.decide = true;
                 // Special handling for creation date.
                 $scope.set_creation_date_textfield($scope);
 //                $log.debug($scope.form.cms);
             });
+        } else {
+            /**
+             * Collect All PoolParty Project
+             * For adding
+             */
+            $scope.projects = [];
+            $scope.ppid = {};
+            $scope.fetchingPP = true;
+            ServicesAPI.getPoolPartyProjects($scope.PPServerID)
+                .then(function(data){
+                    $log.debug("All PP Project fetched", data);
+                    $scope.$apply(function() {
+                        $scope.fetchingPP = false;
+                        $scope.projects = data;
+                    });
+                });
         }
 
         // Copy existing vocabulary data provided by the Registry API
@@ -515,21 +530,7 @@
             $scope.success_message.push('Successfully saved to a Draft.');
         }
 
-        /**
-         * Collect All PoolParty Project
-         */
-        $scope.projects = [];
-        $scope.ppid = {};
 
-        $scope.fetchingPP = true;
-        ServicesAPI.getPoolPartyProjects($scope.PPServerID)
-            .then(function(data){
-                $log.debug("All PP Project fetched", data);
-                $scope.$apply(function() {
-                    $scope.fetchingPP = false;
-                    $scope.projects = data;
-                });
-            });
 
         $scope.projectSearch = function (q) {
             return function (item) {
