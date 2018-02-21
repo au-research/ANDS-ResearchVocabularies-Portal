@@ -67,7 +67,7 @@
         };
 
         $scope.tinymceOptions = {
-            plugins: 'link lists code',
+            plugins: 'legacyoutput link lists code',
             toolbar: 'undo redo | styleselect | bold italic underline strikethrough superscript subscript | bullist numlist outdent indent blockquote codeformat | link | code',
             menubar: false,
             style_formats: [
