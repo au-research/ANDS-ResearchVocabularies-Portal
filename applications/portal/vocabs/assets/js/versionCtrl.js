@@ -228,6 +228,8 @@
             $scope.selectedOption = null;
             $scope.form.apForm.$setPristine();
             $scope.showNewAPForm = false;
+            $scope.error_upload_msg = false;
+            $scope.uploadPercentage = 0;
         };
 
         // Add new access point format button clicked
