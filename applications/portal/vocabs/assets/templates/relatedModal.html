@@ -64,15 +64,16 @@
             <input type="hidden" value="publishedBy"
                    name="relationship"
                    ng-if="type=='publisher'"/>
-            <div class="form-group">
+            <div class="form-group" ng-class="{'has-error': form.reForm.email.$invalid}">
               <label for=""><i class="fa fa-lock"
                 ng-if="!allowEdits">&nbsp;</i>Email
                 <span ng-bind-html="confluenceTip('Email')"></span>
               </label>
-              <input type="text" name="email" class="form-control"
+              <input type="email" name="email" class="form-control"
                      placeholder="entity Email"
                      ng-model="entity.email"
                      ng-disabled="!allowEdits">
+              <p ng-show="form.reForm.email.$invalid" class="help-block">Valid Email is required</p>
             </div>
           </div>
           <div class="col-md-6" ng-if="type!='service' && type!='vocabulary'">
@@ -137,19 +138,30 @@
                 <span ng-bind-html="confluenceTip('Websites')"></span>
               </label>
 
-              <div class="input-group"
-                   ng-repeat="url in entity.urls track by $index">
-                <input type="text" class="form-control"
-                       placeholder="URL" ng-model="url.url"
-                       ng-disabled="!allowEdits">
-                <span class="input-group-btn">
-                  <button class="btn btn-primary btn-primary-warning"
-                          type="button"
-                          ng-click="list_remove('urls', $index)"
-                          ng-disabled="!allowEdits"><i
-                              class="fa fa-remove"></i></button>
-                </span>
-              </div>
+              <table class="table table-condensed">
+                <tbody>
+                  <tr ng-repeat="url in entity.urls track by $index">
+                    <td style="border:none;width:100%"
+                        ng-class="{'has-error': form.reForm.[['website_'+$index]].$invalid}">
+                      <input id="[['website_'+$index]]" type="url"
+                             required="true" class="form-control"
+                             name="[['website_'+$index]]"
+                             placeholder="URL" ng-model="url.url"
+                             ng-disabled="!allowEdits"
+                             >
+                      <p ng-show="form.reForm.[['website_'+$index]].$invalid" class="help-block">Valid URL is required</p>
+                    </td>
+                    <td>
+                      <button class="btn btn-primary btn-primary-warning
+                              align-top"
+                              type="button"
+                              ng-click="list_remove('urls', $index)"
+                              ng-disabled="!allowEdits"><i
+                                  class="fa fa-remove"></i></button>
+                    </td>
+                  </tr>
+                <tbody>
+              </table>
               <p></p>
               <button class="btn btn-primary" type="button"
                       ng-click="list_add('urls')"
