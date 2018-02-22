@@ -322,8 +322,12 @@
                     'slug': ver.getSlug(),
                     'release_date': ver.getReleaseDate(),
                     'note': ver.getNote(),
-                    'import': ver.getDoImport(),
-                    'publish': ver.getDoPublish(),
+                    // 'import': ver.getDoImport(),
+                    // 'publish': ver.getDoPublish(),
+                    'doImport': ver.getDoImport(),
+                    'doPublish': ver.getDoPublish(),
+                    'doPoolpartyHarvest': ver.getDoPoolpartyHarvest(),
+                    'forceWorkflow': ver.getForceWorkflow(),
                     'access_points': ver.getAccessPoint().map(function (ap) {
                         var APForm = {
                             type: ap.getDiscriminator()
@@ -421,6 +425,22 @@
                     versionEntity.setReleaseDate(release_date);
 
                     versionEntity.setStatus(version['status']);
+
+                    if (version['doImport']) {
+                        versionEntity.setDoImport(true);
+                    }
+
+                    if (version['doPublish']) {
+                        versionEntity.setDoPublish(true);
+                    }
+
+                    if (version['doPoolpartyHarvest']) {
+                        versionEntity.setDoPoolpartyHarvest(true);
+                    }
+
+                    if (version['forceWorkflow']) {
+                        versionEntity.setForceWorkflow(true);
+                    }
 
                     // access points
                     var accessPoints = version['access_points'].map(function(ap) {
@@ -919,8 +939,18 @@
                 $log.error("Server Response unreadable");
                 return;
             }
-            $log.debug("Showing validation errors", payload);
+            $log.debug("Showing errors", payload);
+
             $scope.errors = [];
+
+            // show servers errores
+            if ("message" in payload) {
+                $scope.errors = [ payload.message ];
+            } else {
+                $log.debug("No message found in ", payload);
+            }
+
+            // show constraints violation
             if ("constraintViolation" in payload) {
                 $scope.errors = payload.constraintViolation.map(function (item) {
                     return item.message;
@@ -928,13 +958,6 @@
             } else {
                 $log.debug("No constraintViolation found in ", payload);
             }
-
-            if ("message" in payload) {
-                $scope.errors = [ payload.message ];
-            } else {
-                $log.debug("No message found in ", payload);
-            }
-
 
         };
 

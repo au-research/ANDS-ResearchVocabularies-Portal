@@ -90,7 +90,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
 
     <div class="container" ng-if="decide">
       <div class="alert alert-success element-short-top os-animation animated fadeInUp"
-           data-os-animation="fadeInUp" ng-if="success_message">
+           data-os-animation="fadeInUp" ng-if="success_message && success_message.length > 0">
         <ul> <li ng-repeat="msg in success_message"
                  ng-bind-html="msg">[[ msg ]]</li> </ul>
       </div>

@@ -64,7 +64,13 @@
         // Preserve the original data for later. We need this
         // specifically for the release_date value.
         $scope.original_version = angular.copy(version);
-        $scope.version = version ? version : {provider_type: false};
+        $scope.version = version ? version : {
+            provider_type: false,
+            access_points: []
+        };
+
+        $log.debug("Editing Version", $scope.version);
+
         $scope.action = version ? 'save' : 'add';
         $scope.formats = ['RDF/XML', 'TTL', 'N-Triples', 'JSON', 'TriG',
                           'TriX', 'N3', 'CSV', 'TSV', 'XLS', 'XLSX',
@@ -293,22 +299,19 @@
         // an additonal version settings option shall be displayed
         // 'Reapply version settings on publish'
         $scope.canReapplyVersion = false;
-
         $scope.canImportPublish = false;
-        $scope.doPoolpartyHarvest = false;
 
         $scope.evaluateVersionSettings = function() {
 
             // reset
             $scope.canReapplyVersion = false;
             $scope.canImportPublish = false;
-            $scope.doPoolpartyHarvest = false;
 
             $log.debug("Evaluating version settings");
 
             // When the user opts to harvest the version from PP
             // the Import and Publish buttons should be shown/enabled
-            if (version.doPoolpartyHarvest) {
+            if ($scope.version.doPoolpartyHarvest) {
                 $scope.canImportPublish = true;
             }
 
@@ -329,27 +332,40 @@
         };
         $scope.evaluateVersionSettings();
 
+
         $scope.$watch('version.access_points', function() {
             $scope.evaluateVersionSettings();
         }, true);
 
+        $scope.$watch('version.doPoolpartyHarvest', function() {
+            $scope.evaluateVersionSettings();
+        });
+
         $scope.validateVersion = function () {
             delete $scope.error_message;
-            if ($scope.form.versionForm.$valid) {
 
-                //at least 1 access point require
-                if ($scope.version && $scope.version.access_points &&
-                        $scope.version.access_points.length > 0) {
-                    return true;
-                } else {
-                    $scope.error_message = 'At least 1 access point is required';
-                    return false;
-                }
-
-            } else {
+            if (!$scope.form.versionForm.$valid) {
                 $scope.error_message = 'Form Validation Failed';
                 return false;
             }
+
+            if (!$scope.isPP()) {
+                // at least 1 AP is required
+                if ($scope.version.access_points.length === 0) {
+                    $scope.error_message = 'At least 1 access point is required';
+                    return false;
+                }
+            }
+
+            if ($scope.isPP()) {
+                if ($scope.version.access_points.length === 0 && !$scope.version.doPoolpartyHarvest) {
+                    $scope.error_message = "At least 1 access point or PoolParty harvest is required";
+                    return false;
+                }
+            }
+
+            return true;
+
         };
 
         $scope.save = function () {
