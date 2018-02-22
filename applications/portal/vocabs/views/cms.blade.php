@@ -420,7 +420,10 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                 @endif
                 <div class="alert alert-danger element-short-top os-animation animated fadeInUp" data-os-animation="fadeInUp" ng-if="error_message">[[ error_message ]]</div>
                 <div class="alert alert-danger element-short-top os-animation animated fadeInUp" data-os-animation="fadeInUp" ng-show="form.cms.$invalid">There are validation errors in the form.</div>
-                <div class="alert alert-success element-short-top os-animation animated fadeInUp" data-os-animation="fadeInUp" ng-if="success_message">
+
+                <div class="alert alert-success element-short-top os-animation animated fadeInUp"
+                     data-os-animation="fadeInUp"
+                     ng-if="success_message && success_message.length > 0">
                   <ul>
                     <li ng-repeat="msg in success_message" ng-bind-html="msg">[[ msg ]]</li>
                   </ul>
