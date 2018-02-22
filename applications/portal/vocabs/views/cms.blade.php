@@ -413,11 +413,26 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
           <div class="col-md-12">
             <div class="panel swatch-gray">
               <div class="panel-body" ng-if="status=='idle'">
-                <a href="" class="btn btn-large btn-primary" ng-click="save('draft')" ng-disabled="form.cms.$invalid">Save to draft</a>
-                <a href="" class="btn btn-large btn-primary" ng-click="save('published')" ng-disabled="form.cms.$invalid">Publish</a>
-                @if($vocab && $vocab->getStatus() === Vocabulary::STATUS_PUBLISHED)
-                  <a href="" class="btn btn-large btn-primary" ng-click="save('deprecated')">Deprecate</a>
-                @endif
+
+                <a href=""
+                   class="btn btn-large btn-primary"
+                   ng-click="save('draft')"
+                   ng-disabled="form.cms.$invalid || loading">Save
+                  to draft</a>
+
+                <a href=""
+                   class="btn btn-large btn-primary"
+                   ng-click="save('published')"
+                   ng-disabled="form.cms.$invalid || loading">Publish</a>
+
+                <a href=""
+                   class="btn btn-large btn-primary"
+                   ng-click="save('deprecated')"
+                   ng-if="vocab.status == 'published'"
+                   ng-disabled="form.cms.$invalid || loading">Deprecate</a>
+
+                <span ng-if="loading"><i class="fa fa-refresh fa-spin"></i></span>
+
                 <div class="alert alert-danger element-short-top os-animation animated fadeInUp" data-os-animation="fadeInUp" ng-if="error_message">[[ error_message ]]</div>
                 <div class="alert alert-danger element-short-top os-animation animated fadeInUp" data-os-animation="fadeInUp" ng-show="form.cms.$invalid">There are validation errors in the form.</div>
 

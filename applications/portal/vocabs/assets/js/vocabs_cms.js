@@ -875,8 +875,9 @@
         $scope.validStatuses = ['draft', 'published', 'deprecated', 'discard'];
 
         // targetStatus: [draft, published, deprecated]
+        $scope.loading = false;
         $scope.save = function (targetStatus) {
-
+            $scope.loading = true;
             if ($scope.validStatuses.indexOf(targetStatus) < 0) {
                 $log.error("Target Status " + targetStatus + " is not valid");
                 return false;
@@ -940,6 +941,7 @@
         };
 
         $scope.handleSuccessResponse = function (resp) {
+            $scope.loading = false;
             $log.debug("Success", resp);
             $scope.showServerSuccessMessage(resp);
 
@@ -950,6 +952,7 @@
         };
 
         $scope.handleErrorResponse = function (resp) {
+            $scope.loading = false;
             $log.error("Error", resp.status, resp.response.body);
             $scope.showServerValidationErrors(resp.response.body);
         };
