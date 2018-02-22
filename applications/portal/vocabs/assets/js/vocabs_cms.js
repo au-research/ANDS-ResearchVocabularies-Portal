@@ -365,6 +365,15 @@
             if ($('#vocab_slug').val()) {
                 vocab.setSlug($('#vocab_slug').val());
             }
+
+            // set PP
+            if ($scope['poolparty_id']) {
+                var PPProject = new VocabularyRegistryApi.PoolpartyProject();
+                PPProject.setServerId(1);
+                PPProject.setProjectId($scope['poolparty_id']);
+                vocab.setPoolpartyProject(PPProject);
+            }
+
             vocab.setTitle($scope.vocab['title']);
             vocab.setAcronym($scope.vocab['acronym']);
             vocab.setDescription($scope.vocab['description']);
