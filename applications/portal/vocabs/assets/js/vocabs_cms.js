@@ -75,9 +75,16 @@
           plugins: legacyoutput to get <u> and <strike>.
           force_root_block to avoid <p> tag around the content.
           link_title and target_list: lock down supported link attributes.
+            content_css: '../assets/vocabs/css/lib.css',
+
          */
         $scope.tinymceOptions = {
-            content_css: '../assets/vocabs/css/lib.css',
+            content_css: [
+                '../assets/templates/ands-green/css/bootstrap.min.css',
+                '../assets/templates/ands-green/css/fonts.min.css',
+                '../assets/templates/ands-green/css/swatch-gray.css',
+                '../assets/templates/ands-green/css/theme.css',
+            ],
             body_class: 'vocabs_tinymce',
             content_style: '.vocabs_tinymce {margin: 8px;}',
             plugins: 'legacyoutput link lists code',
