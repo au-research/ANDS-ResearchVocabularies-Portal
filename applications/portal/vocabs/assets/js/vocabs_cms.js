@@ -885,8 +885,17 @@
                 $scope.errors = payload.constraintViolation.map(function (item) {
                     return item.message;
                 });
+            } else {
+                $log.debug("No constraintViolation found in ", payload);
             }
-            $log.debug("No constraintViolation found in ", payload);
+
+            if ("message" in payload) {
+                $scope.errors = [ payload.message ];
+            } else {
+                $log.debug("No message found in ", payload);
+            }
+
+
         };
 
         $scope.showServerSuccessMessage = function (payload) {
