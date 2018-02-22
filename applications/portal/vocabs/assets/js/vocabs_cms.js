@@ -677,6 +677,8 @@
                 {field: 'dcterms:creator', relationship: 'hasAuthor'}
             ];
 
+            var relatedEntities = [];
+
             angular.forEach(rel_ent, function (rel) {
                 if (data[rel.field]) {
                     var chosen = $scope.choose(data[rel.field]);
@@ -692,24 +694,62 @@
 
                         //check if same item exist
                         var exist = false;
-                        angular.forEach($scope.vocab.related_entity, function (entity) {
+                        angular.forEach(relatedEntities, function (entity) {
                             if (entity.title == item) exist = entity;
                         });
 
                         if (exist) {
                             exist.relationship.push(rel.relationship);
                         } else {
-                            $scope.vocab.related_entity.push({
+                            relatedEntities.push({
                                 title: item,
                                 type: 'party',
-                                relationship: [rel.relationship]
+                                relationship: [rel.relationship],
+                                urls: [],
+                                identifiers: []
                             });
                         }
                     })
                 }
             });
 
-            // TODO: create the Related Entities upon obtaining
+            // resolve related entities
+            // all related entities upon entering the form must have an id
+            api.getRelatedEntities("party").then(function(entities) {
+                $log.debug("Fetched all related parties", entities);
+                var titles = entities['related-entity'].map(function(re) {
+                    return re.title;
+                });
+                angular.forEach(relatedEntities, function(re){
+                    if (titles.indexOf(re.title) >= 0) {
+                        // it exists, grab it
+                        $log.debug("Related Entity " + re.title + " exists");
+                        var entity = entities['related-entity'].find(function(x) {
+                             return x.title === re.title;
+                        });
+                        $log.debug("Found", entity);
+                        re.id = entity.id;
+                        $scope.$apply(function() {
+                            $scope.vocab.related_entity.push(re);
+                        });
+                    } else {
+                        // it doesn't exist, create it
+                        $log.debug("Related Entity " + re.title + " doesn't exist");
+                        var relatedEntity = $scope.packRelatedEntityFromData(re);
+                        $log.debug("Creating related entity", relatedEntity);
+                        api.createRelatedEntity(relatedEntity)
+                            .then(function(resp) {
+                                $log.debug("Success creating related entity", resp);
+                                re.id = resp.id;
+                                $scope.$apply(function() {
+                                    $scope.vocab.related_entity.push(re);
+                                });
+                            }, function(resp) {
+                                $log.error("Failed to create related entity", resp);
+                            });
+                    }
+                });
+            });
         };
 
         /**
@@ -1006,7 +1046,7 @@
                 var relatedEntity = $scope.packRelatedEntityFromData(obj.data);
                 $log.debug("packed related entity to", relatedEntity, obj);
                 if ("id" in obj.data) {
-                    // has ID, update
+                    // has ID, update if the owner is the same
                     relatedEntity.setId(obj.data['id']);
                     $log.debug("Updating related entity", relatedEntity);
                     api.updateRelatedEntity(relatedEntity.getId(), relatedEntity)
