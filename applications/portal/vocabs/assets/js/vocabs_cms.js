@@ -66,7 +66,20 @@
             versions: []
         };
 
+        /* TinyMCE options.
+          content_css: ensure that we get the same font and size as
+          the rest of the form.
+          body_class and content_style: using the content_css setting means
+          we include lib.css, which sets body margin to 0. So need these
+          to settings to get back the nice 8 pixel margin.
+          plugins: legacyoutput to get <u> and <strike>.
+          force_root_block to avoid <p> tag around the content.
+          link_title and target_list: lock down supported link attributes.
+         */
         $scope.tinymceOptions = {
+            content_css: '../assets/vocabs/css/lib.css',
+            body_class: 'vocabs_tinymce',
+            content_style: '.vocabs_tinymce {margin: 8px;}',
             plugins: 'legacyoutput link lists code',
             toolbar: 'undo redo | styleselect | bold italic underline strikethrough superscript subscript | bullist numlist outdent indent blockquote codeformat | link | code',
             menubar: false,
