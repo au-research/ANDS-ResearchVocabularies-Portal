@@ -202,27 +202,27 @@
 
         <hr>
 
-        <div class="container-fluid">
+        <div class="container-fluid" ng-if="isPP() || canImportPublish || canReapplyVersion">
             <label>Version Settings</label>
 
-            <div class="clearfix" ng-if="vocab.poolparty_id">
+            <div class="clearfix" ng-if="isPP()">
                 <b>Harvest version from Poolparty</b>
-                <ands-switch model="newValue.ap.harvest" name="harvestChkbx" class="pull-right"></ands-switch>
+                <ands-switch model="version.doPoolpartyHarvest" name="harvestChkbx" class="pull-right"></ands-switch>
             </div>
 
-            <div class="clearfix" ng-if="canImportPublish()">
+            <div class="clearfix" ng-if="canImportPublish">
                 <b>Import version into the ANDS Vocabulary Repository</b>
-                <ands-switch model="newValue.ap.import" name="importChkbx" class="pull-right"></ands-switch>
+                <ands-switch model="version.doImport" name="importChkbx" class="pull-right"></ands-switch>
             </div>
 
-            <div class="clearfix" ng-if="canImportPublish()">
+            <div class="clearfix" ng-if="canImportPublish">
                 <b>Publish version via the ANDS Linked Data API</b>
-                <ands-switch model="newValue.ap.publish" name="publishChkbx" class="pull-right"></ands-switch>
+                <ands-switch model="version.doPublish" name="publishChkbx" class="pull-right"></ands-switch>
             </div>
 
-            <div class="clearfix" ng-if="canReapplyVersion()">
+            <div class="clearfix" ng-if="canReapplyVersion">
                 <b>Reapply version settings on publish</b>
-                <ands-switch model="newValue.ap.reapply" name="reapplyChkbx" class="pull-right"></ands-switch>
+                <ands-switch model="version.forceWorkflow" name="reapplyChkbx" class="pull-right"></ands-switch>
             </div>
 
         </div>

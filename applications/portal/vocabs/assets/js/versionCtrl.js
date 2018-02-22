@@ -260,6 +260,7 @@
             return !!$scope.form.apForm.$valid;
         };
 
+        $scope.validFormats = ['TTL', 'TriG', 'Trix', 'N3', 'RDF/XML'];
         $scope.validFormat = function () {
             var validFormats = ['TTL', 'TriG', 'Trix', 'N3', 'RDF/XML'];
             if ($scope.newValue.ap.format && $scope.newValue.ap.type == 'file') {
@@ -272,31 +273,65 @@
             return false;
         };
 
-        // used in determining if we'll show the import/publish checkbox
-        $scope.canImportPublish = function () {
+        $scope.isPP = function() {
+            return 'poolparty_id' in $scope.vocab;
+        };
 
-            // When the user opts to harvest the version from PP
-            // the Import and Publish buttons should be shown/enabled
-            if ($scope.newValue.ap.harvest) {
-                return true;
-            }
-
-            // Where a vocabulary is NOT linked to PP,
-            // the import and Publish buttons shall only be shown/enabled
-            // when an existing or added supported file exists
-            // TODO: supported file exists
-
-            return false;
-
+        $scope.hasSupportedFiles = function() {
+            var hasSupportedFiles = false;
+            angular.forEach(version.access_points, function(ap) {
+                if ($scope.validFormats.indexOf(ap.format) >= 0) {
+                    $log.debug("Has supported file", ap, ap.format, $scope.validFormats);
+                    hasSupportedFiles = true;
+                }
+            });
+            return hasSupportedFiles;
         };
 
         // Where the user is editing a previously published version
         // which has the 'Harvest Version From PoolParty' option enabled,
         // an additonal version settings option shall be displayed
         // 'Reapply version settings on publish'
-        $scope.canReapplyVersion = function () {
-            return $scope.mode === "edit" && $scope.version.status === "current";
+        $scope.canReapplyVersion = false;
+
+        $scope.canImportPublish = false;
+        $scope.doPoolpartyHarvest = false;
+
+        $scope.evaluateVersionSettings = function() {
+
+            // reset
+            $scope.canReapplyVersion = false;
+            $scope.canImportPublish = false;
+            $scope.doPoolpartyHarvest = false;
+
+            $log.debug("Evaluating version settings");
+
+            // When the user opts to harvest the version from PP
+            // the Import and Publish buttons should be shown/enabled
+            if (version.doPoolpartyHarvest) {
+                $scope.canImportPublish = true;
+            }
+
+            // Where a vocabulary is NOT linked to PP,
+            // the import and Publish buttons shall only be shown/enabled
+            // when an existing or added supported file exists
+            if (!$scope.isPP() && $scope.hasSupportedFiles()) {
+                $scope.canImportPublish = true;
+            }
+
+            // Where the user is editing a previously published version
+            // which has the 'Harvest Version From PoolParty' option enabled,
+            // an additonal version settings option shall be displayed
+            // 'Reapply version settings on publish'.
+            if (version.status === "current" && $scope.vocab.status === "published") {
+                $scope.canReapplyVersion = true;
+            }
         };
+        $scope.evaluateVersionSettings();
+
+        $scope.$watch('version.access_points', function() {
+            $scope.evaluateVersionSettings();
+        }, true);
 
         $scope.validateVersion = function () {
             delete $scope.error_message;
