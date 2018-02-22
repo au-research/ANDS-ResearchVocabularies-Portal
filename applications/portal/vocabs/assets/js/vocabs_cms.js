@@ -367,10 +367,10 @@
             }
 
             // set PP
-            if ($scope['poolparty_id']) {
+            if ($scope.vocab['poolparty_id']) {
                 var PPProject = new VocabularyRegistryApi.PoolpartyProject();
                 PPProject.setServerId(1);
-                PPProject.setProjectId($scope['poolparty_id']);
+                PPProject.setProjectId($scope.vocab['poolparty_id']);
                 vocab.setPoolpartyProject(PPProject);
             }
 
