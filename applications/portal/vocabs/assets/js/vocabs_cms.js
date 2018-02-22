@@ -418,6 +418,11 @@
             if ($scope.vocab['versions'].length) {
                 var versions = $scope.vocab['versions'].map(function(version) {
                     var versionEntity = new VocabularyRegistryApi.Version();
+
+                    if (version['id']) {
+                        versionEntity.setId(version['id']);
+                    }
+
                     versionEntity.setTitle(version['title']);
                     versionEntity.setNote(version['note']);
                     var release_date = 'release_date_val' in version ?
