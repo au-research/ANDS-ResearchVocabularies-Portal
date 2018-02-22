@@ -260,6 +260,12 @@
                 $scope.vocab['language'].push(lang);
             });
             $scope.vocab['subjects'] = [];
+
+            var PPProject = data.getPoolpartyProject();
+            if (PPProject) {
+                $scope.vocab['poolparty_id'] = PPProject.getProjectId();
+            }
+
             angular.forEach(data.getSubject(), function(subject) {
                 $scope.vocab['subjects'].push({
                     subject_source: subject.getSource(),
