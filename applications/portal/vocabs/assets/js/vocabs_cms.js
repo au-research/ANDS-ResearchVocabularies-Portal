@@ -80,10 +80,10 @@
          */
         $scope.tinymceOptions = {
             content_css: [
-                '../assets/templates/ands-green/css/bootstrap.min.css',
-                '../assets/templates/ands-green/css/fonts.min.css',
-                '../assets/templates/ands-green/css/swatch-gray.css',
-                '../assets/templates/ands-green/css/theme.css',
+                base_url + 'assets/templates/ands-green/css/bootstrap.min.css',
+                base_url + 'assets/templates/ands-green/css/fonts.min.css',
+                base_url + 'assets/templates/ands-green/css/swatch-gray.css',
+                base_url + 'assets/templates/ands-green/css/theme.css',
             ],
             body_class: 'vocabs_tinymce',
             content_style: '.vocabs_tinymce {margin: 8px;}',
