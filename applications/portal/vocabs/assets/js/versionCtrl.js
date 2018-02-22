@@ -287,7 +287,7 @@
             var hasSupportedFiles = false;
             angular.forEach(version.access_points, function(ap) {
                 if ($scope.validFormats.indexOf(ap.format) >= 0) {
-                    $log.debug("Has supported file", ap, ap.format, $scope.validFormats);
+                    //$log.debug("Has supported file", ap, ap.format, $scope.validFormats);
                     hasSupportedFiles = true;
                 }
             });
@@ -391,7 +391,7 @@
                     'data': $scope.version
                 };
                 $log.debug("Saving version", ret);
-                if ($scope.currentVersion) {
+                if ($scope.currentVersion && $scope.version.status === "current") {
                     $log.debug("Setting existing currentVersion to superseded", $scope.currentVersion);
                     $scope.currentVersion.status = statusTypeEnum.superseded;
                 }
