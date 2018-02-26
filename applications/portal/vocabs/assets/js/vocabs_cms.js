@@ -1120,7 +1120,15 @@
                         .then(function(resp) {
                             $log.debug("Success updating related entity", resp);
                             $scope.$apply(function() {
-                                $scope.vocab.related_entity[index] = obj.data;
+                                // if this id exists in vocab.related_entity, update, else, add
+                                var exist = $scope.vocab.related_entity.find(function(re) {
+                                    return re.id === obj.data.id;
+                                });
+                                if (exist) {
+                                    $scope.vocab.related_entity[index] = obj.data;
+                                } else {
+                                    $scope.vocab.related_entity.push(obj.data);
+                                }
                             });
                         }, function(resp){
                             $log.error("Failed updating related entity", resp)
