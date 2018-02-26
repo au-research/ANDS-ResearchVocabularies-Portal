@@ -337,7 +337,11 @@
             $scope.evaluateVersionSettings();
         }, true);
 
-        $scope.$watch('version.doPoolpartyHarvest', function() {
+        $scope.$watch('version.doPoolpartyHarvest', function(newv, oldv) {
+            if (oldv === true && newv === false) {
+                $scope.version.doImport = false;
+                $scope.version.doPublish = false;
+            }
             $scope.evaluateVersionSettings();
         });
 
