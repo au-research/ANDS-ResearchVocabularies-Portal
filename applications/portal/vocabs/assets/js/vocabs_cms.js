@@ -80,6 +80,7 @@
          */
         $scope.tinymceOptions = {
             content_css: [
+                'https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900,300italic,400italic,600italic',
                 base_url + 'assets/templates/ands-green/css/bootstrap.min.css',
                 base_url + 'assets/templates/ands-green/css/fonts.min.css',
                 base_url + 'assets/templates/ands-green/css/swatch-gray.css',
