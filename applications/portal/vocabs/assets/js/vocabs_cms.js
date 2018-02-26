@@ -901,11 +901,13 @@
             $scope.loading = true;
             if ($scope.validStatuses.indexOf(targetStatus) < 0) {
                 $log.error("Target Status " + targetStatus + " is not valid");
+                $scope.loading = false;
                 return false;
             }
 
             if (targetStatus === 'discard'){
                 window.location.replace(base_url + 'vocabs/myvocabs');
+                $scope.loading = false;
                 return false;
             }
 
@@ -917,6 +919,7 @@
                 // Put back the multi-value lists ready for more editing.
                 $scope.ensure_all_minimal_lists();
                 $log.error("Form Validation Failed");
+                $scope.loading = false;
                 return false;
             }
 
@@ -925,6 +928,7 @@
                 // Put back the multi-value lists ready for more editing.
                 $scope.ensure_all_minimal_lists();
                 $log.error("Client Validation Failed");
+                $scope.loading = false;
                 return false;
             }
 
