@@ -431,7 +431,7 @@ class Vocabs extends MX_Controller
 
         $draft = collect($ownedVocabularies)
             ->filter(function(OwnedVocabulary $vocab) {
-                return $vocab->getStatus() === Vocabulary::STATUS_DRAFT;
+                return $vocab->getStatus() === Vocabulary::STATUS_DRAFT || $vocab->getHasDraft();
             })->toArray();
 
         $deprecated = collect($ownedVocabularies)
