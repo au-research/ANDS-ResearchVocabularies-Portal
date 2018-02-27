@@ -334,6 +334,12 @@
             if (version.status === "current" && $scope.vocab.status === "published") {
                 $scope.canReapplyVersion = true;
             }
+
+            // when we change the hasSupported condition, the underlying data needs changing
+            if (!$scope.hasSupportedFiles() && !$scope.isPP()) {
+                $scope.version.doImport = false;
+                $scope.version.doPublish = false;
+            }
         };
         $scope.evaluateVersionSettings();
 
