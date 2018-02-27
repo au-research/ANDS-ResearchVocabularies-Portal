@@ -24,6 +24,7 @@
                 append-to-body="false" ng-model="selected"
                 reset-search-input="false"
                 tagging="addNew"
+                         ng-show="!inputReady"
                 tagging-label="false"
                 on-select="populate($select.selected)">
                 <!-- Truncate title to 65 chars, which seems to be the most that can fit -->
@@ -42,6 +43,17 @@
                   &nbsp;&nbsp;<i>No matches</i>
                 </ui-select-no-choice>
              </ui-select>
+
+              <p class="input-group" ng-show="inputReady">
+                <input type="text"
+                       class="form-control"
+                       ng-model="entity.title">
+                <span class="input-group-btn">
+                      <button type="button" class="btn btn-default"
+                              ng-click="inputReady = !inputReady">
+                        <i class="glyphicon glyphicon-search"></i> Search</button>
+                    </span>
+              </p>
 
               <p class="help-block"
                  ng-show="entity.title === undefined || entity.title == ''">Title is required</p>

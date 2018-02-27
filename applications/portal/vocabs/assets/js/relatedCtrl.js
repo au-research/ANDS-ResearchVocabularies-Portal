@@ -178,6 +178,8 @@
             $scope.ensure_all_minimal_lists();
         }
 
+        $scope.inputReady = true;
+
         /* Filter the entity relations based on type. */
         $scope.getRelation = function() {
             return $scope.allRelatedEntityRelations.filter(
@@ -203,6 +205,10 @@
           };
 
         $scope.populate = function (item) {
+            $scope.inputReady = !$scope.inputReady;
+
+            $log.debug("Populating with", item);
+
             if (item === undefined) {
                 // Type-in name. In this case, leave the fields,
                 // but _do_ remove the owner, and allow editing.

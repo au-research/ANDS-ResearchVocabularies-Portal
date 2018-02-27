@@ -344,10 +344,19 @@
 
         // If doing PoolpartyHarvest, enable import and publish but set them to false
         $scope.$watch('version.doPoolpartyHarvest', function(newv, oldv) {
+
+            // prevents import and publish switch carry over
             if (oldv === true && newv === false) {
                 $scope.version.doImport = false;
                 $scope.version.doPublish = false;
             }
+
+            // Users should be forced to import if they choose to harvest from PP
+            if (newv === true) {
+                $scope.version.doImport = true;
+                // TODO: disable doImport switch so it can't be changed
+            }
+
             $scope.evaluateVersionSettings();
         });
 
