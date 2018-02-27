@@ -342,6 +342,7 @@
             $scope.evaluateVersionSettings();
         }, true);
 
+        // If doing PoolpartyHarvest, enable import and publish but set them to false
         $scope.$watch('version.doPoolpartyHarvest', function(newv, oldv) {
             if (oldv === true && newv === false) {
                 $scope.version.doImport = false;
@@ -349,6 +350,21 @@
             }
             $scope.evaluateVersionSettings();
         });
+
+        // If import is off publish is off
+        $scope.$watch('version.doImport', function(newv, oldv){
+            if (oldv === true && newv === false) {
+                $scope.version.doPublish = false;
+            }
+        });
+
+        // If publish is on import is on
+        $scope.$watch('version.doPublish', function(newv, oldv) {
+            if (oldv === false && newv === true) {
+                $scope.version.doImport = true;
+            }
+        });
+
 
         $scope.validateVersion = function () {
             delete $scope.error_message;
