@@ -898,8 +898,12 @@
 
         // targetStatus: [draft, published, deprecated]
         $scope.loading = false;
+        $scope.targetStatus = null;
         $scope.save = function (targetStatus) {
+
             $scope.loading = true;
+            $scope.targetStatus = targetStatus;
+
             if ($scope.validStatuses.indexOf(targetStatus) < 0) {
                 $log.error("Target Status " + targetStatus + " is not valid");
                 $scope.loading = false;
@@ -971,9 +975,15 @@
             $log.debug("Success", resp);
             $scope.showServerSuccessMessage(resp);
 
+            if ($scope.targetStatus === "published") {
+                window.location.replace(base_url + "vocabs/viewById/" + resp.id);
+                return;
+            }
+
             if ($scope.mode === "add") {
                 // relocate to the new edit page with an id now
                 window.location.replace(base_url + 'vocabs/edit/' + resp.id);
+                return;
             }
         };
 
