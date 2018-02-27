@@ -252,7 +252,13 @@
     <div class="modal-footer swatch-white">
         <div class="alert alert-danger" ng-show="error_message">[[error_message]]</div>
         <button class="btn btn-link" type="button" ng-click="dismiss()">Cancel</button>
-        <button class="btn btn-primary" type="button" ng-if="action=='add'" ng-click="save()">Add this Version</button>
-        <button class="btn btn-primary" type="button" ng-if="action=='save'" ng-click="save()">Save</button>
+        <button class="btn btn-primary"
+                type="button" ng-if="action=='add'"
+                ng-click="save()"
+                ng-disabled="!validated">Add this Version</button>
+        <button class="btn btn-primary"
+                type="button" ng-if="action=='save'"
+                ng-click="save()"
+                ng-disabled="!validated">Save</button>
     </div>
 </div>

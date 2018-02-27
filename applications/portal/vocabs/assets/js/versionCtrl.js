@@ -402,6 +402,11 @@
 
         };
 
+        $scope.validated = false;
+        $scope.$watch('version', function(){
+            $scope.validated = $scope.validateVersion();
+        }, true);
+
         $scope.save = function () {
             // CC-1267 "Work in progress".
             // If the access point details are filled out
@@ -411,26 +416,29 @@
                 $scope.addformatform($scope.newValue.ap);
             }
 
-            if ($scope.validateVersion()) {
-                // Save the date as it actually is in the input's textarea, not
-                // as it is in the model.
-                // FIXME: don't do this now ...
+            if (!$scope.validateVersion()) {
+                return false;
+            }
+
+            // Save the date as it actually is in the input's textarea, not
+            // as it is in the model.
+            // FIXME: don't do this now ...
 //                $scope.version.release_date = $('#release_date').val();
-                // ... but, instead, extract $('#creation_date').val() when
-                // constructing the Version object to send back to the
-                // top level.
-                $scope.version['release_date_val'] = $('#release_date').val();
-                var ret = {
-                    'intent': $scope.action,
-                    'data': $scope.version
-                };
-                $log.debug("Saving version", ret);
-                if ($scope.currentVersion && $scope.version.status === "current") {
-                    $log.debug("Setting existing currentVersion to superseded", $scope.currentVersion);
-                    $scope.currentVersion.status = statusTypeEnum.superseded;
-                }
-                $uibModalInstance.close(ret);
-            } else return false;
+            // ... but, instead, extract $('#creation_date').val() when
+            // constructing the Version object to send back to the
+            // top level.
+            $scope.version['release_date_val'] = $('#release_date').val();
+            var ret = {
+                'intent': $scope.action,
+                'data': $scope.version
+            };
+            $log.debug("Saving version", ret);
+            if ($scope.currentVersion && $scope.version.status === "current") {
+                $log.debug("Setting existing currentVersion to superseded", $scope.currentVersion);
+                $scope.currentVersion.status = statusTypeEnum.superseded;
+            }
+            $uibModalInstance.close(ret);
+
         };
 
         $scope.upload = function (files, ap) {
