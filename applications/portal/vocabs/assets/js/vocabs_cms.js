@@ -142,7 +142,7 @@
                     }
                 });
                 $scope.user_orgs = orgRoles.map(function(role) {
-                    return role.getFullName();
+                    return role.getId();
                 });
             } else {
                 $log.debug("user has no role", data['parentRole']);
@@ -790,6 +790,7 @@
                         });
                         $log.debug("Found", entity);
                         re.id = entity.id;
+                        re.owner = entity.owner;
                         $scope.$apply(function() {
                             $scope.vocab.related_entity.push(re);
                         });
