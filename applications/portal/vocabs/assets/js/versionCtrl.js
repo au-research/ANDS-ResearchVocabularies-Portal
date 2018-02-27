@@ -285,7 +285,8 @@
 
         $scope.hasSupportedFiles = function() {
             var hasSupportedFiles = false;
-            angular.forEach(version.access_points, function(ap) {
+            // $log.debug("Valid Formats", $scope.validFormats);
+            angular.forEach($scope.version.access_points, function(ap) {
                 if ($scope.validFormats.indexOf(ap.format) >= 0) {
                     //$log.debug("Has supported file", ap, ap.format, $scope.validFormats);
                     hasSupportedFiles = true;
@@ -315,10 +316,14 @@
                 $scope.canImportPublish = true;
             }
 
+            // $log.debug("is PP", $scope.isPP());
+            // $log.debug("hasSupportedFiles, ", $scope.hasSupportedFiles());
+
             // Where a vocabulary is NOT linked to PP,
             // the import and Publish buttons shall only be shown/enabled
             // when an existing or added supported file exists
-            if (!$scope.isPP() && $scope.hasSupportedFiles()) {
+            if ((!$scope.isPP() || !$scope.version.doPoolpartyHarvest)
+                && $scope.hasSupportedFiles()) {
                 $scope.canImportPublish = true;
             }
 
