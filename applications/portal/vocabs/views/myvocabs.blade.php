@@ -33,7 +33,7 @@
 												<td style="width:90%"><div class="published_title"><a href="{{ portal_url('vocabs/edit/'.$vocab->getId()) }}" ng-non-bindable>{{ htmlspecialchars($vocab->getTitle()) }}</a></div></td>
 												<td>
 													<div class="btn-group" style="display:inline-flex">
-														<a href="{{ portal_url('vocabs/viewById/'.$vocab->getId()) }}"
+														<a href="{{ portal_url('viewById/'.$vocab->getId()) }}"
 														   class="btn btn-primary"
 														   style="float:none">
 															<i class="fa fa-search"></i> View

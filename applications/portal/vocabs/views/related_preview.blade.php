@@ -5,7 +5,7 @@
                 <div class="form-group">
                     <!-- -label for="">Title</label><br />{{htmlspecialchars($related['title'])}} -->
                   @if(isset($related['vocab_id']))
-                    <h3><a href="{{base_url().'vocabs/viewById/'.$related['vocab_id']}}" target="_blank">{{htmlspecialchars($related['title'])}}</a></h3>
+                    <h3><a href="{{base_url().'viewById/'.$related['vocab_id']}}" target="_blank">{{htmlspecialchars($related['title'])}}</a></h3>
                   @else
                     <h3>{{htmlspecialchars($related['title'])}}</h3>
                   @endif
@@ -55,13 +55,13 @@
                     <div class="form-group">
                         <label for="">More vocabularies related to {{htmlspecialchars($related['title'])}}</label><br />
                         @foreach($related['other_vocabs'] as $other_vocab)
-                            <a target="_blank" href="{{base_url().'vocabs/viewById/'.$other_vocab->getId()}}">{{htmlspecialchars($other_vocab->getTitle())}}</a><br />
+                            <a target="_blank" href="{{base_url().'viewById/'.$other_vocab->getId()}}">{{htmlspecialchars($other_vocab->getTitle())}}</a><br />
                         @endforeach
                     </div>
                 @endif
                 @if(isset($related['vocab_id']))
                   <div class="pull-right btn btn-link">
-                    <a href="{{base_url().'vocabs/viewById/'.$related['vocab_id']}}" target="_blank">View vocabulary</a>
+                    <a href="{{base_url().'viewById/'.$related['vocab_id']}}" target="_blank">View vocabulary</a>
                   </div>
                 @endif
             </div>

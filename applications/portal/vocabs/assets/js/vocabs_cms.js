@@ -976,7 +976,7 @@
             $scope.showServerSuccessMessage(resp);
 
             if ($scope.targetStatus === "published") {
-                window.location.replace(base_url + "vocabs/viewById/" + resp.id);
+                window.location.replace(base_url + "viewById/" + resp.id);
                 return;
             }
 
