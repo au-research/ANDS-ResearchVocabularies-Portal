@@ -52,17 +52,40 @@ class Vocabs extends MX_Controller
     }
 
     /**
-     * Viewing a vocabulary by slug.
+     * Legacy: "default" for viewing a vocabulary by slug.
      * The top-level global_config.php routes requests by default
      * to applications/portal/core/controllers/dispatcher.php,
      * which in turn routes slug-like requests to this method.
-     * // TODO: implement view by slug, probably not needed
      * @return view/html
      * @author  Minh Duc Nguyen <minh.nguyen@ands.org.au>
      */
-    public function view($id)
+    public function view($slug)
     {
-        $this->viewById($id);
+        try {
+            $vocab = $this->RegistryAPI->getVocabularyBySlug($slug,
+                'true', 'true', 'true');
+
+            redirect(portal_url('viewById/' . $vocab->getId()));
+
+            /* If we want to have a redirection page instead,
+               comment out the above redirect, and uncomment
+               the following: */
+            /*
+            $this->blade
+                ->set('slug', $slug)
+                ->set('id', $vocab->getId())
+                ->set('title', 'Research Vocabularies Australia')
+                ->render('slug_redirect');
+            */
+        } catch (Exception $e) {
+            // No longer throw an exception, like this:
+            // throw new Exception('No Record found with slug: ' . $slug);
+            // But instead, show the soft 404 page.
+            $message = '';
+            $this->blade
+                ->set('message', $message)
+                ->render('soft_404');
+        }
     }
 
     /**
@@ -1167,9 +1190,9 @@ class Vocabs extends MX_Controller
             vocab_log_terms($event);
 
             $this->blade
-            ->set('vocab', $vocab)
-            ->set('title', $vocab->getTitle()
-                . ' - Research Vocabularies Australia')
+                ->set('vocab', $vocab)
+                ->set('title', $vocab->getTitle()
+                      . ' - Research Vocabularies Australia')
                 ->render('vocab');
         } catch (Exception $e) {
             // No longer throw an exception, like this:
@@ -1177,8 +1200,42 @@ class Vocabs extends MX_Controller
             // But instead, show the soft 404 page.
             $message = '';
             $this->blade
-            ->set('message', $message)
-            ->render('soft_404');
+                ->set('message', $message)
+                ->render('soft_404');
+        }
+    }
+
+    /**
+     * Viewing a vocabulary by slug.
+     * @return view/html
+     */
+    public function viewBySlug($slug)
+    {
+        try {
+            $vocab = $this->RegistryAPI->getVocabularyBySlug($slug,
+                'true', 'true', 'true');
+
+            $event = array(
+                'event' => 'vocabview-new',
+                'vocab' => $vocab->getTitle(),
+                'slug' => $vocab->getSlug(),
+                'id' => $vocab->getId(),
+            );
+            vocab_log_terms($event);
+
+            $this->blade
+                ->set('vocab', $vocab)
+                ->set('title', $vocab->getTitle()
+                      . ' - Research Vocabularies Australia')
+                ->render('vocab');
+        } catch (Exception $e) {
+            // No longer throw an exception, like this:
+            // throw new Exception('No Record found with slug: ' . $slug);
+            // But instead, show the soft 404 page.
+            $message = '';
+            $this->blade
+                ->set('message', $message)
+                ->render('soft_404');
         }
     }
 

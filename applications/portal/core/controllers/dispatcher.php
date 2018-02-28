@@ -52,11 +52,21 @@ class Dispatcher extends MX_Controller {
 			$params = array($action_model);
 			echo Modules::run(implode("/",$params));
 			return;
-		}else if($params[0]=='subjects') {
-            $action_model = $this->config->item('default_model').'/subjects';
-            $params = array($action_model);
-            echo Modules::run(implode("/",$params));
-            return;
+		} else if($params[0]=='subjects') {
+			$action_model = $this->config->item('default_model').'/subjects';
+			$params = array($action_model);
+			echo Modules::run(implode("/",$params));
+			return;
+		} else if($params[0]=='viewById' && sizeof($params) > 1) {
+			$action_model = $this->config->item('default_model').'/viewById';
+			$params = array($action_model, $params[1]);
+			echo Modules::run(implode("/",$params));
+			return;
+		} else if($params[0]=='viewBySlug' && sizeof($params) > 1) {
+			$action_model = $this->config->item('default_model').'/viewBySlug';
+			$params = array($action_model, $params[1]);
+			echo Modules::run(implode("/",$params));
+			return;
         } else {
 
 			// If no match, assume it is a SLUG view request
@@ -77,7 +87,7 @@ class Dispatcher extends MX_Controller {
 			
 			//view
 			$action_model = $this->config->item('default_model').'/view';
-			$params = array($action_model);
+			$params = array($action_model, $params[0]);
 			echo Modules::run(implode("/",$params));
 			return;
 		}
