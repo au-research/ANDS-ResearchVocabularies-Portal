@@ -245,7 +245,7 @@
           @endif
         @endforeach
         <div class="text-center">
-          {{ !empty($version->getReleaseDate()) ? '<span class="small"><em>released: '. display_release_date($version->getReleaseDate())."</em></span>": '' }}{{ !empty($current_version->getNote()) ? '<span class="small"> <a href="" tip="'.htmlentities($version->getNote()).'">view notes</a></span>': '' }}
+          {{ !empty($version->getReleaseDate()) ? '<span class="small"><em>released: '. display_release_date($version->getReleaseDate())."</em></span>": '' }}{{ !empty($version->getNote()) ? '<span class="small"> <a href="" tip="'.htmlentities($version->getNote()).'">view notes</a></span>': '' }}
         </div>
         <div class="download-content hidden">
           @foreach($version->getAccessPoint() as $ap)
