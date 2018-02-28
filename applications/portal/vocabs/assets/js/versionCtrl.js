@@ -266,11 +266,12 @@
             return !!$scope.form.apForm.$valid;
         };
 
-        $scope.validFormats = ['TTL', 'TriG', 'Trix', 'N3', 'RDF/XML'];
+        $scope.validFormats = ['TTL', 'TriG', 'TriX', 'N3', 'RDF/XML', 'N-Triples', 'BinaryRDF'];
+
+        // TODO: verify usage of this function
         $scope.validFormat = function () {
-            var validFormats = ['TTL', 'TriG', 'Trix', 'N3', 'RDF/XML'];
             if ($scope.newValue.ap.format && $scope.newValue.ap.type == 'file') {
-                if (validFormats.indexOf($scope.newValue.ap.format) > -1) {
+                if ($scope.validFormats.indexOf($scope.newValue.ap.format) > -1) {
                     return true;
                 }
             }
