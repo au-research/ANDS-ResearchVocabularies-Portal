@@ -357,7 +357,8 @@
                     'forceWorkflow': ver.getForceWorkflow(),
                     'access_points': ver.getAccessPoint().map(function (ap) {
                         var APForm = {
-                            type: ap.getDiscriminator()
+                            type: ap.getDiscriminator(),
+                            id: ap.getId()
                         };
                         switch (ap.getDiscriminator()) {
                             case "webPage":
@@ -369,7 +370,7 @@
                             case "file":
                                 APForm.uri = ap.getApFile().getUrl();
                                 APForm.format = ap.getApFile().getFormat();
-                                APForm.id = ap.getApFile().getUploadId();
+                                APForm.upload_id = ap.getApFile().getUploadId();
                                 break;
                         }
 
@@ -500,6 +501,9 @@
         // packing access points into the right format for delivery
         $scope.packAccessPoint = function (ap) {
             var APEntity = new VocabularyRegistryApi.AccessPoint();
+            if ("id" in ap) {
+                APEntity.setId(ap['id']);
+            }
             APEntity.setDiscriminator(ap['type']);
             APEntity.setSource(VocabularyRegistryApi.AccessPoint.SourceEnum.user);
             switch (ap['type']) {
@@ -519,7 +523,7 @@
                     APEntity.setDiscriminator(VocabularyRegistryApi.AccessPoint.DiscriminatorEnum.file);
                     var APFile = new VocabularyRegistryApi.ApFile();
                     APFile.setFormat(ap['format']);
-                    APFile.setUploadId(ap['id']);
+                    APFile.setUploadId(ap['upload_id']);
                     APFile.setUrl(ap['uri']);
                     APEntity.setApFile(APFile);
                     break;
