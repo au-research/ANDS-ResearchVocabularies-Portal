@@ -960,6 +960,9 @@ class Vocabs extends MX_Controller
      * Delete a vocabulary.
      * There user must be logged in, and have ownership rights
      * on the vocabulary.
+     * Specify in the post: id: the vocabulary id, and
+     * mode: either 'current' (for the published or deprecated
+     * instance) or 'draft' (for the draft, natch).
      * The response is echoed as a JSON object.
      * There are two key/value pairs:
      * 'status': either 'success' or 'error'
@@ -982,20 +985,29 @@ class Vocabs extends MX_Controller
             ]);
         }
 
-        // TODO: check permissions
-
-        $vocab = $this->RegistryAPI->getVocabularyByIdEdit($id);
-        if (!$vocab) {
+        $mode = $this->input->post('mode');
+        if (!$mode) {
             return json_encode([
                 'status' => 'error',
-                'message' => 'No such vocabulary.'
+                'message' => 'No deletion mode specified.'
             ]);
         }
 
-        $deleteCurrent = $vocab->getStatus() === Vocabulary::STATUS_PUBLISHED ? 'true' : 'false';
-        $deleteDraft = $vocab->getStatus() === Vocabulary::STATUS_DRAFT ? 'true' : 'false';
+        if ($mode === 'current') {
+            $deleteCurrent = 'true';
+            $deleteDraft = 'false';
+        } elseif ($mode === 'draft') {
+            $deleteCurrent = 'false';
+            $deleteDraft = 'true';
+        } else {
+            return json_encode([
+                'status' => 'error',
+                'message' => 'Invalid deletion mode.'
+            ]);
+        }
 
-        $this->RegistryAPI->deleteVocabulary($vocab->getId(), $deleteCurrent, $deleteDraft);
+        $this->RegistryAPI->deleteVocabulary($id,
+                                             $deleteCurrent, $deleteDraft);
 
         return json_encode([
             'status' => 'success',

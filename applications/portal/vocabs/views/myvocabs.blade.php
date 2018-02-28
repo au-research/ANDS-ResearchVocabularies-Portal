@@ -47,6 +47,7 @@
 														   class="btn btn-primary btn-primary-warning deleteVocab"
 														   style="float:none"
 														   vocab_id="{{ $vocab->getId() }}"
+														   delete_mode="current"
 														   title="Delete this vocabulary">
 															<i class="fa fa-trash"></i>
 														</a>
@@ -73,7 +74,7 @@
                         						<td>
 													<div class="btn-group" style="display:inline-flex">
 														<a href="{{ portal_url('vocabs/edit/'.$vocab->getId()) }}" class="btn btn-primary" style="float:none"><i class="fa fa-edit"></i> Edit</a>
-														<a href="javascript:;" class="btn btn-primary btn-primary-warning deleteVocab" style="float:none" vocab_id="{{ $vocab->getId() }}" title="Delete this vocabulary"><i class="fa fa-trash"></i></a>
+														<a href="javascript:;" class="btn btn-primary btn-primary-warning deleteVocab" style="float:none" vocab_id="{{ $vocab->getId() }}" delete_mode="draft" title="Delete this vocabulary"><i class="fa fa-trash"></i></a>
 													</div>
 												</td>
 											</tr>
@@ -97,7 +98,7 @@
 												<td>
 													<div class="btn-group" style="display:inline-flex">
 														<a href="{{ portal_url('vocabs/edit/'.$vocab->getId()) }}" class="btn btn-primary" style="float:none"><i class="fa fa-edit"></i> Edit</a>
-														<a href="javascript:;" class="btn btn-primary btn-primary-warning deleteVocab" style="float:none" vocab_id="{{ $vocab->getId() }}" title="Delete this vocabulary"><i class="fa fa-trash"></i></a>
+														<a href="javascript:;" class="btn btn-primary btn-primary-warning deleteVocab" style="float:none" vocab_id="{{ $vocab->getId() }}" delete_mode="current" title="Delete this vocabulary"><i class="fa fa-trash"></i></a>
 													</div>
 												</td>
 											</tr>
