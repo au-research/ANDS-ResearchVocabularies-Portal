@@ -403,6 +403,12 @@
                     $scope.error_message = "At least 1 access point or PoolParty harvest is required";
                     return false;
                 }
+
+                if (!$scope.version.doImport) {
+                    $scope.error_message = "Import must be enabled for Poolparty harvested versions";
+                    return false;
+                }
+
             }
 
             return true;
