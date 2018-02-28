@@ -11,7 +11,7 @@
             <div class="row">
 
                 <div class="col-md-6">
-                    <form action="" ng-submit="search()" style="padding-top:55px">
+                    <form action="" ng-submit="$event.preventDefault();search()" style="padding-top:55px">
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Search for a vocabulary or a concept" ng-model="filters.q" ng-debounce="500">
                             <span class="input-group-btn">
