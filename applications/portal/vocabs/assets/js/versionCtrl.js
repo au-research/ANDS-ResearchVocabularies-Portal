@@ -495,7 +495,7 @@
                         // $log.debug(resp.config);
 
                         $scope.uploading = false;
-                        ap.id = resp.data.integerValue;
+                        ap.upload_id = resp.data.integerValue;
                         ap.name = resp.data.stringValue;
                         ap.uri = resp.headers('Location');
                     },
