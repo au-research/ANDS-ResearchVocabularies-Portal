@@ -341,6 +341,7 @@ $(document).on(
                 position: {
                     target: 'mouse',
                     adjust: {
+                        method: 'shift',
                         mouse: false
                     },
                     viewport: $(window)
