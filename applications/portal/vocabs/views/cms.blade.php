@@ -428,7 +428,6 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                 <a href=""
                    class="btn btn-large btn-primary"
                    ng-click="save('deprecated')"
-                   ng-if="vocab.status == 'published'"
                    ng-disabled="form.cms.$invalid || loading">Deprecate</a>
 
                 <span ng-if="loading"><i class="fa fa-refresh fa-spin"></i></span>
