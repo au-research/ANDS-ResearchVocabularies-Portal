@@ -290,7 +290,7 @@
             delete entity.owner;
             entity.title = title;
             return entity;
-        }
+        };
 
         // Unlock to allow editing. This will mean the creation of a
         // new related entity. To force this to happen, remove the
@@ -299,7 +299,7 @@
             $scope.allowEdits = true;
             delete $scope.entity.id;
             delete $scope.entity.owner;
-        }
+        };
 
 
         $scope.list_add = function (type, obj) {

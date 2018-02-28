@@ -1130,24 +1130,22 @@
                 if ("id" in obj.data) {
                     // has ID, update if the owner is the same
                     relatedEntity.setId(obj.data['id']);
-                    $log.debug("Updating related entity", relatedEntity);
-                    api.updateRelatedEntity(relatedEntity.getId(), relatedEntity)
-                        .then(function(resp) {
-                            $log.debug("Success updating related entity", resp);
-                            $scope.$apply(function() {
-                                // if this id exists in vocab.related_entity, update, else, add
-                                var exist = $scope.vocab.related_entity.find(function(re) {
-                                    return re.id === obj.data.id;
+
+                    // different owner
+                    if ($scope.vocab.owner !== obj.data.owner) {
+                        $scope.addRelatedEntity(obj.data);
+                    } else {
+                        $log.debug("Updating related entity", relatedEntity);
+                        api.updateRelatedEntity(relatedEntity.getId(), relatedEntity)
+                            .then(function(resp) {
+                                $log.debug("Success updating related entity", resp);
+                                $scope.$apply(function() {
+                                    $scope.addRelatedEntity(obj.data, index);
                                 });
-                                if (exist) {
-                                    $scope.vocab.related_entity[index] = obj.data;
-                                } else {
-                                    $scope.vocab.related_entity.push(obj.data);
-                                }
+                            }, function(resp){
+                                $log.error("Failed updating related entity", resp)
                             });
-                        }, function(resp){
-                            $log.error("Failed updating related entity", resp)
-                        });
+                    }
                 } else {
                     // does not have ID, create
                     $log.debug("Creating related entity", relatedEntity);
@@ -1155,9 +1153,8 @@
                         .then(function(resp) {
                             $log.debug("Success creating related entity", resp);
                             obj.data['id'] = resp['id'];
-                            //$log.debug("Adding to form", newObj);
                             $scope.$apply(function() {
-                                $scope.vocab.related_entity.push(obj.data);
+                                $scope.addRelatedEntity(obj.data);
                             });
                         }, function(resp){
                             $log.error("Failed creating related entity", resp)
@@ -1167,6 +1164,18 @@
             }, function () {
                 // dismiss, do nothing?
             });
+        };
+
+        $scope.addRelatedEntity = function(relatedEntity, index) {
+            var exist = $scope.vocab.related_entity.find(function(re) {
+                return re.id === relatedEntity.id;
+            });
+            if (exist && index) {
+                // $log.debug("Found existing related entity", exist);
+                $scope.vocab.related_entity[index] = relatedEntity;
+            } else {
+                $scope.vocab.related_entity.push(relatedEntity);
+            }
         };
 
         $scope.packRelatedEntityFromData = function(data) {
