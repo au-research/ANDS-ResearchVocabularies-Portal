@@ -820,31 +820,52 @@
 
         /**
          * Get any alert text to be displayed, after save/publish.
-         * Alert text is found by going through data.message.import_log,
-         * looking for values that begin with the string 'Alert: '.
+         * Alert text is found by going through data's workflow-outcome
+         * element, if there is one,
+         * looking for subtask results that have a key/value pair in
+         * which the key is 'alert-html'.
          * All such values are concatenated, separated by 'br' tags.
          * @param data Data returned from the save/publish service.
          * @return The alert message to be displayed.
          */
         $scope.get_alert_text_after_save = function (data) {
-            var alert_message = '';
-            if ((typeof data == 'object')
-                && (typeof data.message == 'object')
-                && (typeof data.message.import_log == 'object')
-                && (data.message.import_log.length > 0)) {
-                alert_message = data.message.import_log.reduce(
-                    function (previousValue, currentValue,
-                              currentIndex, array) {
-                        if (currentValue.startsWith('Alert: ')) {
-                            if (previousValue != '') {
-                                previousValue += '<br />';
-                            }
-                            return previousValue + currentValue;
-                        }
-                        return previousValue;
-                    }, '');
+            var workflowOutcome;
+            try {
+                workflowOutcome = data.getWorkflowOutcome();
+            } catch (err) {
+                return '';
             }
-            return alert_message;
+            var alerts = [];
+            if (workflowOutcome != null) {
+              // For each task outcome, each
+              // subtask outcome, each subtask result:
+              // see if it is an alert (has result-key 'alert-html').
+              var taskOutcomes = workflowOutcome.getTaskOutcome();
+              if (taskOutcomes != null) {
+                taskOutcomes.forEach(
+                  function (taskOutcome) {
+                    var subtaskOutcomes = taskOutcome.getSubtaskOutcome();
+                    if (subtaskOutcomes != null) {
+                      subtaskOutcomes.forEach(
+                        function (subtaskOutcome) {
+                          var subtaskResults = subtaskOutcome.
+                            getSubtaskResult();
+                          if (subtaskResults != null) {
+                            subtaskResults.forEach(
+                              function (subtaskResult) {
+                                if (subtaskResult.getResultKey() ===
+                                    'alert-html') {
+                                  alerts.push(subtaskResult.getResultValue());
+                                }
+                              });
+                          }
+                        });
+                    }
+                  });
+              }
+              return alerts.join('<br />');
+            }
+            return '';
         };
 
         /**
@@ -950,7 +971,7 @@
 
             $scope.errors = [];
             $scope.success_message = [];
-            
+
             if ($scope.mode === "add") {
                 api.createVocabulary(vocab)
                     .then(
@@ -979,16 +1000,19 @@
             $log.debug("Success", resp);
             $scope.showServerSuccessMessage(resp);
 
-            if ($scope.targetStatus === "published") {
-                window.location.replace(base_url + "viewById/" + resp.id);
-                return;
-            }
+            $scope.show_alert_after_save(resp, function() {
+                if ($scope.targetStatus === "published") {
+                    window.location.replace(base_url + "viewById/" + resp.id);
+                    return;
+                }
 
-            if ($scope.mode === "add") {
-                // relocate to the new edit page with an id now
-                window.location.replace(base_url + 'vocabs/edit/' + resp.id);
-                return;
-            }
+                if ($scope.mode === "add") {
+                    // relocate to the new edit page with an id now
+                    window.location.replace(base_url +
+                                            'vocabs/edit/' + resp.id);
+                    return;
+                }
+            });
         };
 
         $scope.handleErrorResponse = function (resp) {
