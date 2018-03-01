@@ -468,21 +468,21 @@
 
                     versionEntity.setStatus(version['status']);
 
-                    if (version['doImport']) {
+                    if (version['doImport'] && version['doImport'] === true) {
                         versionEntity.setDoImport(true);
-                    }
+                    } else versionEntity.setDoImport(false);
 
-                    if (version['doPublish']) {
+                    if (version['doPublish'] && version['doPublish'] === true) {
                         versionEntity.setDoPublish(true);
-                    }
+                    } else versionEntity.setDoPublish(false);
 
-                    if (version['doPoolpartyHarvest']) {
+                    if (version['doPoolpartyHarvest'] && version['doPoolpartyHarvest'] === true) {
                         versionEntity.setDoPoolpartyHarvest(true);
-                    }
+                    } else versionEntity.setDoPoolpartyHarvest(false);
 
-                    if (version['forceWorkflow']) {
+                    if (version['forceWorkflow'] && version['forceWorkflow'] === true) {
                         versionEntity.setForceWorkflow(true);
-                    }
+                    } else versionEntity.setForceWorkflow(false);
 
                     // access points
                     var accessPoints = version['access_points'].map(function(ap) {
