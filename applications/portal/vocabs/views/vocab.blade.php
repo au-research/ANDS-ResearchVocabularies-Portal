@@ -105,7 +105,7 @@ foreach ($vocab->getVersion() as $version) {
                             foreach($vocab->getOtherLanguage() as $language)
                             {
                                 echo " | ";
-                                echo(readable($vocab->getPrimaryLanguage()));
+                                echo(readable($language));
                             }
                             ?>
 
