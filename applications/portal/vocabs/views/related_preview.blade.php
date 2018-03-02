@@ -19,7 +19,7 @@
                     <label for="">Relation</label><br />
                     <?php
                         if (is_array($related['relationship'])) {
-                            echo implode(array_map('readable', $related['relationship']), '<br />');
+                            echo implode(array_map('trim', array_map('readable', $related['relationship'])), '<br />');
                         } else {
                             echo readable($related['relationship']);
                        }
