@@ -27,6 +27,11 @@ foreach ($vocab->getRelatedEntityRef() as $relatedRef) {
             RelatedEntityRef::RELATION_PUBLISHED_BY)
             !== false) {
                 $publisher[]=$relatedRef;
+                // And also add it to related people, if
+                // it is not _just_ a publisher.
+                if (count($relatedRef->getRelation()) > 1) {
+                    $related_people[] =$relatedRef;
+                }
             } else {
                 $related_people[] =$relatedRef;
             }
