@@ -104,7 +104,10 @@
             forced_root_block: false,
             link_title: false,
             target_list: false,
-            valid_elements: 'a[href|target:_blank|rel:nofollow],b,blockquote,br,cite,code,dd,dl,dt,em,i,li,ol,p,pre,q,small,span,strike,strong,sub,sup,u,ul'
+            valid_elements: 'a[href|target:_blank|rel:nofollow],b,blockquote,br,cite,code,dd,dl,dt,em,i,li,ol,p,pre,q,small,span,strike,strong,sub,sup,u,ul',
+            relative_urls: false,
+            document_base_url: base_url,
+            remove_script_host: false
         };
 
         /**
