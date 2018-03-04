@@ -48,7 +48,7 @@
     "repositories": [
         {
             "type": "path",
-            "url": "~/java-apps/vocabs-registry/php-client/vocabs-registry-client",
+            "url": "/opt/ands/vocabs-clients/php",
             "options": {
                 "symlink": false
             }
