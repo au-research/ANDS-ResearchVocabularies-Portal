@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "browserify": "^14.4.0",
-    "vocabulary_registry_api": "/opt/ands/vocabs-clients/js"
+    "vocabulary_registry_api": "/home/users/u3485947/java-apps/vocabs-registry/js-client"
+
   }
 }

@@ -1,19 +1,38 @@
-@if(isset($current_version))
-  <?php
+<?php
 
-    // Doesn't work due to scoping rules.
-    //   use ANDS\VocabsRegistry\Model\AccessPoint;
-    // So define constants instead.
-    define("AP_API_SPARQL",
-      ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_API_SPARQL);
-    define("AP_FILE",
-      ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_FILE);
-    define("AP_SESAME_DOWNLOAD",
-      ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_SESAME_DOWNLOAD);
-    define("AP_SISSVOC",
-      ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_SISSVOC);
-    define("AP_WEB_PAGE",
-      ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_WEB_PAGE);
+// check if there's not current version
+$hasNotCurrentVersion = false;
+foreach ($vocab->getVersion() as $version) {
+    if ($version->getStatus() !== ANDS\VocabsRegistry\Model\Version::STATUS_CURRENT && ! empty($version->getAccessPoint())) {
+        $hasNotCurrentVersion = true;
+    }
+}
+// Doesn't work due to scoping rules.
+//   use ANDS\VocabsRegistry\Model\AccessPoint;
+// So define constants instead.
+define("AP_API_SPARQL",
+        ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_API_SPARQL);
+define("AP_FILE",
+        ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_FILE);
+define("AP_SESAME_DOWNLOAD",
+        ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_SESAME_DOWNLOAD);
+define("AP_SISSVOC",
+        ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_SISSVOC);
+define("AP_WEB_PAGE",
+        ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_WEB_PAGE);
+
+// check if there's not current version
+$hasNotCurrentVersion = true;
+foreach ($vocab->getVersion() as $version) {
+    if ($version->getStatus() == ANDS\VocabsRegistry\Model\Version::STATUS_CURRENT && ! empty($version->getAccessPoint())) {
+        $hasNotCurrentVersion = false;
+        break;
+    }
+}
+?>
+@if(isset($current_version) && $current_version != '')
+
+  <?php
     $aps = array();
     // get file
     foreach ($current_version->getAccessPoint() as $ap) {
@@ -39,15 +58,6 @@
     if ($hasFile && ! $hasSesameDownloads && $fileCounter < 2) {
         $singleFile = true;
     }
-
-    // check if there's not current version
-    $hasNotCurrentVersion = false;
-    foreach ($vocab->getVersion() as $version) {
-        if ($version->getStatus() !== ANDS\VocabsRegistry\Model\Version::STATUS_CURRENT && ! empty($version->getAccessPoint())) {
-            $hasNotCurrentVersion = true;
-        }
-    }
-
   ?>
 
   <div class="box" ng-non-bindable>
@@ -166,10 +176,11 @@
   </div>
 @endif <!-- current_version -->
 
-
-
+<?php $first = true; ?>
 @foreach($vocab->getVersion() as $version)
+
   @if($version->getStatus() !== ANDS\VocabsRegistry\Model\Version::STATUS_CURRENT && !empty($version->getAccessPoint()))
+      <?php  ?>
     <?php
       $hasFile = false;
       $hasSesameDownloads = false;
@@ -194,8 +205,8 @@
         <span class="box-tag box-tag box-tag-{{ htmlspecialchars($version->getStatus()) }}"> {{htmlspecialchars($version->getStatus())}} </span>
       </div>
       <div class="clearfix"></div>
-      <div class="box-content collapse">
-
+      <?php  if($first && $hasNotCurrentVersion){$collapse = '';}else{$collapse="collapse";}?>
+      <div class="box-content <?=$collapse?>">
         @foreach($version->getAccessPoint() as $ap)
           @if(($ap->getDiscriminator() == AP_FILE && !$singleFile) || ($hasSesameDownloads))
             <a class="btn btn-lg btn-block btn-primary download-chooser"><i class="fa fa-download"></i> Download <i class="fa fa-chevron-right"></i></a>
@@ -288,4 +299,5 @@
       </div>
     </div>
   @endif
+    <?php $first = false; ?>
 @endforeach

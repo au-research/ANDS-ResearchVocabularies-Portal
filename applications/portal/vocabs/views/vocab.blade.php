@@ -7,10 +7,19 @@ use ANDS\VocabsRegistry\Model\RelatedEntityRef;
 $cc=$vocab->getLicence();
 $versions = $vocab->getVersion();
 $current_version = null;
+$superseded_version = null;
 foreach ($versions as $version) {
     if ($version->getStatus() === Version::STATUS_CURRENT) {
         $current_version = $version;
         break;
+    }
+}
+if(!isset($current_version)){
+    foreach ($versions as $version) {
+        if ($version->getStatus() === Version::STATUS_SUPERSEDED) {
+            $superseded_version = $version;
+            break;
+        }
     }
 }
 $publisher = array();
@@ -51,8 +60,9 @@ foreach ($vocab->getRelatedVocabularyRef() as $relatedVocabRef) {
 // Determine whether or not to show the widgetableness.
 // Set $sissvocEndPoint if it is to be shown.
 foreach ($vocab->getVersion() as $version) {
-    if ($version->getStatus() === Version::STATUS_CURRENT
-        && !empty($version->getAccessPoint())) {
+    if (($version->getStatus() === Version::STATUS_CURRENT
+        && !empty($version->getAccessPoint())) || ($version->getStatus() === Version::STATUS_SUPERSEDED
+                    && !empty($version->getAccessPoint()) && isset($superseded_version))) {
             foreach ($version->getAccessPoint() as $ap)
             {
                 if(is_object($ap->getApSissvoc())) {
@@ -90,12 +100,14 @@ foreach ($vocab->getVersion() as $version) {
 
             <div class="container-fluid" >
                 <div class="row">
-                    @if(isset($current_version))
+                    @if($current_version != null || $superseded_version!=null )
 
                     <div class="col-md-4 panel-body">
                         @include('wrap-getvocabaccess', [ 'current_version' => $current_version ])
                     </div>
                     @endif
+
+
                     <div class="col-md-8 panel-body">
                         {{ $vocab->getDescription() }}
                         <h4>Languages</h4>
