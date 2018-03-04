@@ -180,7 +180,6 @@ foreach ($vocab->getVersion() as $version) {
 @foreach($vocab->getVersion() as $version)
 
   @if($version->getStatus() !== ANDS\VocabsRegistry\Model\Version::STATUS_CURRENT && !empty($version->getAccessPoint()))
-      <?php  ?>
     <?php
       $hasFile = false;
       $hasSesameDownloads = false;

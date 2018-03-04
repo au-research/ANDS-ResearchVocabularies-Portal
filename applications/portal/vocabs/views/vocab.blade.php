@@ -36,11 +36,6 @@ foreach ($vocab->getRelatedEntityRef() as $relatedRef) {
             RelatedEntityRef::RELATION_PUBLISHED_BY)
             !== false) {
                 $publisher[]=$relatedRef;
-                // And also add it to related people, if
-                // it is not _just_ a publisher.
-                if (count($relatedRef->getRelation()) > 1) {
-                    $related_people[] =$relatedRef;
-                }
             } else {
                 $related_people[] =$relatedRef;
             }
@@ -117,7 +112,7 @@ foreach ($vocab->getVersion() as $version) {
                             foreach($vocab->getOtherLanguage() as $language)
                             {
                                 echo " | ";
-                                echo(readable($language));
+                                echo(readable($vocab->getPrimaryLanguage()));
                             }
                             ?>
 
@@ -235,7 +230,7 @@ foreach ($vocab->getVersion() as $version) {
             @foreach($related_service as $serviceRef)
             <p><small>
                 <?php
-                    echo implode(array_map('trim', array_map('readable', $serviceRef->getRelation())), ', ');
+                    echo implode(array_map('readable', $serviceRef->getRelation()), ', ');
                 ?>
             </small> <a href="" class="re_preview"  related='{{$serviceRef}}' v_id="{{ $vocab->getId() }}">{{htmlspecialchars($serviceRef->getRelatedEntity()->getTitle())}}</a></p>
             @endforeach
@@ -256,7 +251,7 @@ foreach ($vocab->getVersion() as $version) {
 
             <small>
                 <?php
-                    echo implode(array_map('trim', array_map('readable', $relatedRef->getRelation())), ', ');
+                    echo implode(array_map('readable', $relatedRef->getRelation()), ', ');
                 ?>
             </small> <a href="" class="re_preview"  related='{{$relatedRef}}' v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
         </p>
@@ -268,7 +263,7 @@ foreach ($vocab->getVersion() as $version) {
         <p>
             <small>
                 <?php
-                    echo implode(array_map('trim', array_map('readable', $relatedRef->getRelation())), ', ');
+                    echo implode(array_map('readable', $relatedRef->getRelation()), ', ');
                 ?>
             </small> <a href="" class="re_preview"  related='{{$relatedRef}}' v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
         </p>
@@ -277,7 +272,7 @@ foreach ($vocab->getVersion() as $version) {
         <p>
             <small>
                 <?php
-                    echo implode(array_map('trim', array_map('readable', $relatedRef->getRelation())), ', ');
+                    echo implode(array_map('readable', $relatedRef->getRelation()), ', ');
                 ?>
             </small> <a href="" class="re_preview"  related='{{$relatedRef}}' v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedVocabulary()->getTitle())}}</a>
         </p>
