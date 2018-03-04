@@ -847,6 +847,14 @@
               if (taskOutcomes != null) {
                 taskOutcomes.forEach(
                   function (taskOutcome) {
+                    if (taskOutcome.getStatus() === 'error') {
+                        alerts.push('Alert: There was an error processing a ' +
+                                    'version of the vocabulary (version Id = ' +
+                                    taskOutcome.getVersionId() +
+                                    '). Please contact ' +
+                                    'services@ands.org.au for more ' +
+                                    'information.');
+                    }
                     var subtaskOutcomes = taskOutcome.getSubtaskOutcome();
                     if (subtaskOutcomes != null) {
                       subtaskOutcomes.forEach(
