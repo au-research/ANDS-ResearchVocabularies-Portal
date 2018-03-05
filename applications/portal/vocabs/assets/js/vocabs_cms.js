@@ -88,7 +88,7 @@
             ],
             body_class: 'vocabs_tinymce',
             content_style: '.vocabs_tinymce {margin: 8px;}',
-            plugins: 'legacyoutput link lists code',
+            plugins: 'legacyoutput link lists code paste',
             toolbar: 'undo redo | styleselect | bold italic underline strikethrough superscript subscript | bullist numlist outdent indent blockquote codeformat | link | code',
             menubar: false,
             style_formats: [
