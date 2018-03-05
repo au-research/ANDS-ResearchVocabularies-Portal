@@ -11,16 +11,21 @@
                             <div align="center">
                                 <p class="small center"> <span class="yellow_exclamation"><i class="fa fa-exclamation" style="color:#fff"></i></span>
                                     Please review the <a href="https://documentation.ands.org.au/display/DOC/Research+Vocabularies+Australia+participant+agreement" target="_blank">Research Vocabularies Australia participant agreement</a> before you proceed.<br />
-                                    If you have questions, please email <a href="mailto:services.ands.org.au">services.ands.org.au</a>.
                                 </p>
-
                             </div>
-                            @if($this->user->affiliations())
+                            @if(count($affiliates) > 0)
 							<a href="{{ portal_url('vocabs/add') }}" class="btn btn-block btn-primary"><i class="fa fa-plus"></i> Add a new vocabulary from PoolParty</a>
-                            @endif
                             <a href="{{ portal_url('vocabs/add#!/?skip=true') }}" class="btn btn-block btn-primary"><i class="fa fa-plus"></i> Add a new Vocabulary</a>
+							@else
+								<br>
+							<div align="center">
+								<p class="small center">
+									Your account is not affiliated with an organisational role. Please contact <a href="mailto:services@ands.org.au">services@ands.org.au</a> for assistance.
+								</p>
+							</div>
+							@endif
 							<hr>
-							@if(sizeof($owned_vocabs) == 0)
+							@if(sizeof($ownedCount) == 0)
 								You don't own any vocabularies, start by adding a new one
 							@else
 								<h4>Published Vocabularies</h4>
@@ -29,19 +34,32 @@
 										<tr><th>Vocabulary</th><th>Action</th></tr>
 									</thead>
 									<tbody>
-										@foreach($owned_vocabs as $vocab)
-											@if($vocab['status']=='published')
+										@foreach($published as $vocab)
 											<tr>
-												<td style="width:90%"><div class="published_title"><a href="{{ portal_url('vocabs/edit/'.$vocab['id']) }}" ng-non-bindable>{{ htmlspecialchars($vocab['title']) }}</a></div></td>
+												<td style="width:90%"><div class="published_title"><a href="{{ portal_url('vocabs/edit/'.$vocab->getId()) }}" ng-non-bindable>{{ htmlspecialchars($vocab->getTitle()) }}</a></div></td>
 												<td>
 													<div class="btn-group" style="display:inline-flex">
-														<a href="{{ portal_url($vocab['slug']) }}" class="btn btn-primary" style="float:none"><i class="fa fa-search"></i> View</a>
-														<a href="{{ portal_url('vocabs/edit/'.$vocab['id']) }}" class="btn btn-primary" style="float:none"><i class="fa fa-edit"></i> Edit</a>
-														<a href="javascript:;" class="btn btn-primary btn-primary-warning deleteVocab" style="float:none" vocab_id="{{ $vocab['id'] }}" title="Delete this vocabulary"><i class="fa fa-trash"></i></a>
+														<a href="{{ portal_url('viewById/'.$vocab->getId()) }}"
+														   class="btn btn-primary"
+														   style="float:none">
+															<i class="fa fa-search"></i> View
+														</a>
+														<a href="{{ portal_url('vocabs/edit/'.$vocab->getId()) }}"
+														   class="btn btn-primary"
+														   style="float:none">
+															<i class="fa fa-edit"></i> Edit
+														</a>
+														<a href="javascript:;"
+														   class="btn btn-primary btn-primary-warning deleteVocab"
+														   style="float:none"
+														   vocab_id="{{ $vocab->getId() }}"
+														   delete_mode="current"
+														   title="Delete this vocabulary">
+															<i class="fa fa-trash"></i>
+														</a>
 													</div>
 												</td>
 											</tr>
-											@endif
 										@endforeach
 									</tbody>
 								</table>
@@ -52,18 +70,20 @@
 										<tr><th>Vocabulary</th><th>Action</th></tr>
 									</thead>
 									<tbody>
-										@foreach($owned_vocabs as $vocab)
-											@if($vocab['status']=='draft')
+										@foreach($draft as $vocab)
 											<tr>
-												<td style="width:90%"><div class="draft_title"><a href="{{ portal_url('vocabs/edit/'.$vocab['id']) }}" ng-non-bindable>{{ htmlspecialchars($vocab['title']) }}</a></div></td>
-                        <td>
+												<td style="width:90%">
+													<div class="draft_title">
+														<a href="{{ portal_url('vocabs/edit/'.$vocab->getId()) }}" ng-non-bindable>{{ htmlspecialchars($vocab->getTitle()) }}</a>
+													</div>
+												</td>
+                        						<td>
 													<div class="btn-group" style="display:inline-flex">
-														<a href="{{ portal_url('vocabs/edit/'.$vocab['id']) }}" class="btn btn-primary" style="float:none"><i class="fa fa-edit"></i> Edit</a>
-														<a href="javascript:;" class="btn btn-primary btn-primary-warning deleteVocab" style="float:none" vocab_id="{{ $vocab['id'] }}" title="Delete this vocabulary"><i class="fa fa-trash"></i></a>
+														<a href="{{ portal_url('vocabs/edit/'.$vocab->getId()) }}" class="btn btn-primary" style="float:none"><i class="fa fa-edit"></i> Edit</a>
+														<a href="javascript:;" class="btn btn-primary btn-primary-warning deleteVocab" style="float:none" vocab_id="{{ $vocab->getId() }}" delete_mode="draft" title="Delete this vocabulary"><i class="fa fa-trash"></i></a>
 													</div>
 												</td>
 											</tr>
-											@endif
 										@endforeach
 									</tbody>
 								</table>
@@ -74,18 +94,25 @@
 										<tr><th>Vocabulary</th><th>Action</th></tr>
 									</thead>
 									<tbody>
-										@foreach($owned_vocabs as $vocab)
-											@if($vocab['status']=='deprecated')
+										@foreach($deprecated as $vocab)
 											<tr>
-												<td style="width:90%"><div class="draft_title"><a href="{{ portal_url('vocabs/edit/'.$vocab['id']) }}" ng-non-bindable>{{ htmlspecialchars($vocab['title']) }}</a></div></td>
+												<td style="width:90%">
+													<div class="draft_title">
+														<a href="{{ portal_url('vocabs/edit/'.$vocab->getId()) }}" ng-non-bindable>{{ htmlspecialchars($vocab->getTitle()) }}</a>
+													</div>
+												</td>
 												<td>
 													<div class="btn-group" style="display:inline-flex">
-														<a href="{{ portal_url('vocabs/edit/'.$vocab['id']) }}" class="btn btn-primary" style="float:none"><i class="fa fa-edit"></i> Edit</a>
-														<a href="javascript:;" class="btn btn-primary btn-primary-warning deleteVocab" style="float:none" vocab_id="{{ $vocab['id'] }}" title="Delete this vocabulary"><i class="fa fa-trash"></i></a>
+														<a href="{{ portal_url('viewById/'.$vocab->getId()) }}"
+														   class="btn btn-primary"
+														   style="float:none">
+															<i class="fa fa-search"></i> View
+														</a>
+														<a href="{{ portal_url('vocabs/edit/'.$vocab->getId()) }}" class="btn btn-primary" style="float:none"><i class="fa fa-edit"></i> Edit</a>
+														<a href="javascript:;" class="btn btn-primary btn-primary-warning deleteVocab" style="float:none" vocab_id="{{ $vocab->getId() }}" delete_mode="current" title="Delete this vocabulary"><i class="fa fa-trash"></i></a>
 													</div>
 												</td>
 											</tr>
-											@endif
 										@endforeach
 									</tbody>
 								</table>

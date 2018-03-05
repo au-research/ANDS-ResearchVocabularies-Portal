@@ -1,0 +1,53 @@
+.ands-switch {
+    position: relative; width: 78px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+
+    .ands-switch-checkbox {
+        display: none;
+    }
+
+    .ands-switch-label {
+        display: block; overflow: hidden; cursor: pointer;
+        border: 2px solid ; border-radius: 5px;
+    }
+
+    .ands-switch-inner {
+        display: block; width: 200%; margin-left: -100%;
+        transition: margin 0.3s ease-in 0s;
+        &:before, &:after {
+            display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+            font-size: 16px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+            box-sizing: border-box;
+        }
+        &:before {
+            content: "YES";
+            padding-left: 10px;
+            background-color: #82c9ed; color: #FFFFFF;
+        }
+        &:after {
+            content: "NO";
+            padding-right: 10px;
+            background-color: #EEEEEE; color: #999999;
+            text-align: right;
+        }
+    }
+
+    .ands-switch-switch {
+        display: block; width: 20px; margin: 3.5px;
+        background: #FFFFFF;
+        position: absolute; top: 0; bottom: 0;
+        right: 47px;
+        border: 2px solid ; border-radius: 5px;
+        transition: all 0.3s ease-in 0s;
+    }
+
+    .ands-switch-checkbox:checked + .ands-switch-label {
+        .ands-switch-inner {
+            margin-left: 0;
+        }
+        .ands-switch-switch {
+            right: 0px;
+        }
+    }
+
+}

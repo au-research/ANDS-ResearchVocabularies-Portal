@@ -1,0 +1,51 @@
+<!-- Related entity identifier type dropdown -->
+<td style="border:none;width:35%">
+  <select
+     id="[['identifier_type_'+index]]"
+     ng-disabled="editingDisabled"
+     class="form-control caret-for-select rei-type"
+     placeholder="Type"
+     ng-options="reit as reit.label for reit in rei_types track by reit.id"
+     ng-model="selected"
+     ng-change="setType()"
+     >
+    <option value="">Select a type</option>
+  </select>
+</td>
+
+<!-- Related entity identifier value -->
+<td style="border:none;width:100%"
+  ng-class="{'has-error': form.[['identifier_value_'+index]].$invalid}"
+  ng-show="reiType">
+  <input
+     id="[['identifier_value_'+index]]"
+     ng-disabled="editingDisabled"
+     name="[['identifier_value_'+index]]"
+     type="text" class="form-control rei-value"
+     placeholder="e.g., [[selected.placeholder]]"
+     ng-model="reiValue"
+     required=""
+     ng-pattern="reiPattern" />
+   <p ng-show="form.[['identifier_value_'+index]].$invalid" class="help-block">Valid [[selected.label]] is required, e.g., [[selected.placeholder]]</p>
+</td><!-- ng-disabled="reiType==undefined||reiType==''" -->
+
+<!-- Provide a td element if no selection from the type dropdown,
+    to force the delete button into the right-hand column. -->
+<td style="border:none;width:100%"
+  ng-show="!reiType">
+</td>
+
+<!-- Delete button ("X") -->
+<td style="border:none">
+  <span>
+    <button
+       id="[['rei_close_'+index]]"
+       ng-disabled="editingDisabled"
+       class="btn btn-primary btn-primary-warning"
+       type="button"
+       ng-click="close()"
+       title="Remove this identifier"
+       ><i class="fa fa-remove"></i></button>
+  </span>
+</td>
+

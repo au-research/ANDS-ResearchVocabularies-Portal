@@ -1,147 +1,266 @@
 <div style="modal-center">
-    <div class="modal-header">
-        <button type="button" class="close" ng-click="dismiss()"><span aria-hidden="true">&times;</span><span
-                class="sr-only">Close</span></button>
-        <h4 class="modal-title"><span ng-if="entity.title">Edit</span> <span ng-if="!entity.title">Add a </span> related
-            [[ type ]]</h4>
-    </div>
-    <div class="modal-body swatch-white" ng-cloak>
-        <form action="" class="form" name="form.reForm">
-            <div class="container-fluid">
-                <input name="type" value="[[ type ]]" type="hidden"/>
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="dismiss()"><span
+      aria-hidden="true">&times;</span><span
+      class="sr-only">Close</span></button>
+    <h4 class="modal-title"><span ng-if="entity.title">Edit</span> <span
+     ng-if="!entity.title">Add a </span> related
+      [[ type ]]</h4>
+  </div>
+  <div class="modal-body swatch-white" ng-cloak>
+    <form action="" class="form" name="form.reForm">
+      <div class="container-fluid">
+        <input name="type" value="[[ type ]]" type="hidden"/>
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group" ng-class="{'has-error':form.reForm.title.$invalid}">
-                            <label for="">Title
-                                <span ng-bind-html="confluenceTip('RelatedTitle')"></span>
-                            </label>
-                            <input type="text" required name="title" class="form-control" placeholder="entity Title"
-                                   ng-model="entity.title"
-                                   typeahead="suggest.title as suggest.title for suggest in suggestions | filter:$viewValue | limitTo:8"
-                                   typeahead-min-length="0" typeahead-on-select="populate($item, $model, $label)">
 
-                            <p class="help-block" ng-show="form.reForm.title.$invalid">Title is required</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6" ng-if="type!='service' && type!='vocabulary'">
-                        <input type="hidden" value="publishedBy" name="relationship" ng-if="type=='publisher'"/>
-                        <div class="form-group">
-                            <label for="">Email
-                                <span ng-bind-html="confluenceTip('Email')"></span>
-                            </label>
-                            <input type="text" name="email" class="form-control" placeholder="entity Email"
-                                   ng-model="entity.email">
-                        </div>
-                    </div>
-                    <div class="col-md-6" ng-if="type!='service' && type!='vocabulary'">
-                        <div class="form-group">
-                            <label for="">Phone
-                                <span ng-bind-html="confluenceTip('Phone')"></span>
-                            </label>
-                            <input type="text" class="form-control" placeholder="entity Phone" ng-model="entity.phone">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="">Relationship
-                                <span ng-bind-html="confluenceTip('Relation')"></span>
-                            </label>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group"
+                 ng-class="{'has-error':entity.title === undefined || entity.title == ''}">
+              <label for="">Title
+                <span ng-bind-html="confluenceTip('RelatedTitle')"></span>
+              </label>
+              <ui-select name="title"
+                append-to-body="false" ng-model="selected"
+                reset-search-input="false"
+                tagging="addNew"
+                         ng-show="!inputReady"
+                tagging-label="false"
+                on-select="populate($select.selected)">
+                <!-- Truncate title to 65 chars, which seems to be the most that can fit -->
+                <ui-select-match placeholder="Enter a title and press Enter, or make a selection">[[entity.title | limitTo:65]][[entity.title.length > 65 ? '...' : '']]</ui-select-match>
+                <ui-select-choices id="related-title"
+                   repeat="suggest in suggestions | filter: $select.search ">
+                  <div>
+                    [[ suggest.getTitle() ]]
+                    <br />
+                    <small>Owner: [[ suggest.getOwner() ]]</small>
+                    <!-- br /> -->
+                    <!-- [ [ suggest.getDescription() ] ] -->
+                  </div>
+                </ui-select-choices>
+                <ui-select-no-choice>
+                  &nbsp;&nbsp;<i>No matches</i>
+                </ui-select-no-choice>
+             </ui-select>
 
-                            <!-- Show one relationship field. Doesn't use input-group. -->
-                            <div ng-repeat="relationship in entity.relationship track by $index" ng-show="entity.relationship.length == 1">
-                              <select name="rel" id="rel" class="form-control caret-for-select"
-                                      placeholder="Select a
-                                                   relationship"
-                                      ng-options="rel.value as
-                                      rel.text for rel in
-                                      relatedEntityRelations"
-                                      options-disabled="rel.value as
-                                      rel.text for rel in
-                                      relatedEntityRelations"
-                                      ng-model="entity.relationship[$index]"
-                                      >
-                                <option value="">Select a
-                                  relationship</option>
-                              </select>
-                            </div>
+              <p class="input-group" ng-show="inputReady">
+                <input type="text"
+                       class="form-control"
+                       ng-model="entity.title">
+                <span class="input-group-btn">
+                      <button type="button" class="btn btn-default"
+                              ng-click="inputReady = !inputReady">
+                        <i class="glyphicon glyphicon-search"></i> Search</button>
+                    </span>
+              </p>
 
-                            <!-- Show more than one relationship field. Does use input-group. -->
-                            <div class="input-group" ng-repeat="relationship in entity.relationship track by $index" ng-show="entity.relationship.length > 1">
-                              <select name="rel" id="rel" class="form-control caret-for-select"
-                                      placeholder="Select a
-                                                   relationship"
-                                      ng-options="rel.value as
-                                      rel.text for rel in
-                                      relatedEntityRelations"
-                                      ng-model="entity.relationship[$index]"
-                                      >
-                                <option value="">Select a
-                                  relationship</option>
-                              </select>
-                              <span class="input-group-btn">
-                                <button class="btn btn-primary" type="button"
-                                        ng-click="list_remove('relationship', $index)"><i class="fa fa-remove"></i></button>
-                              </span>
-                            </div>
-
-                            <p></p>
-                            <button class="btn btn-primary" type="button" ng-click="addtolist('relationship')"><i class="fa fa-plus"></i> Add Relationship</button>
-
-                            <div class="form-group has-error" ng-show="entity.relationship === undefined || array_has_no_nonempty_strings(entity.relationship)">
-                              <p class="help-block">At least one
-                              relationship must be provided.</p>
-                            </div>
-
-                        </div>
-                        <div class="form-group">
-                            <label for="">Identifiers
-                                <span ng-bind-html="confluenceTip('Identifiers')"></span>
-                            </label>
-                            <p><span class="yellow_exclamation"><i class="fa fa-exclamation" style="color:#fff"></i></span> At least 1 identifier is highly recommended </p>
-                            <div class="input-group" ng-repeat="ident in entity.identifiers track by $index">
-                                <input type="text" class="form-control" placeholder="Identifier" ng-model="ident.url">
-                                <span class="input-group-btn">
-                                  <button class="btn btn-primary" type="button"
-                                            ng-click="list_remove('identifiers', $index)"><i class="fa fa-remove"></i>
-                                    </button>
-                                </span>
-                            </div>
-                            <p></p>
-                            <button class="btn btn-primary" type="button" ng-click="list_add('identifiers')"><i
-                                    class="fa fa-plus"></i> Add Identifier
-                            </button>
-                        </div>
-                        <div class="form-group">
-                            <label for="">Websites
-                                <span ng-bind-html="confluenceTip('Websites')"></span>
-                            </label>
-
-                            <div class="input-group" ng-repeat="url in entity.urls track by $index">
-                                <input type="text" class="form-control" placeholder="URL" ng-model="url.url">
-                                <span class="input-group-btn">
-                                  <button class="btn btn-primary" type="button"
-                                            ng-click="list_remove('urls', $index)"><i class="fa fa-remove"></i></button>
-                                </span>
-                            </div>
-                            <p></p>
-                            <button class="btn btn-primary" type="button" ng-click="list_add('urls')"><i
-                                    class="fa fa-plus"></i> Add Website
-                            </button>
-                        </div>
-                    </div>
-                </div>
+              <p class="help-block"
+                 ng-show="entity.title === undefined || entity.title == ''">Title is required</p>
             </div>
-        </form>
-    </div>
-    <div class="modal-footer swatch-white">
-        <div class="alert alert-danger" ng-if="error_message">[[error_message]]</div>
-        <button class="btn btn-link" type="button" ng-click="dismiss()">Cancel</button>
-        <button class="btn btn-primary" type="button" ng-if="intent=='add'" ng-click="save()">Add this Related [[ type
-            ]]
-        </button>
-        <button class="btn btn-primary" type="button" ng-if="intent=='save'" ng-click="save()">Save</button>
-    </div>
+          </div>
+          <div class="col-md-12" ng-if="!allowEdits">
+            <div class="form-group">
+              <p>
+                <i class="fa fa-lg fa-lock"
+                   ng-click="unlock()"
+                   style="background: #f58000; color: #fff; padding: 4px; box-shadow: -1px 1px 2px rgba(0, 0, 0, 0.5);"></i>
+                The details of this related entity are locked,
+                as it belongs to another owner.
+                Click this lock to make a copy which you can edit.
+             </p>
+            </div>
+          </div>
+
+          <div class="col-md-6" ng-if="type!='service' && type!='vocabulary'">
+            <input type="hidden" value="publishedBy"
+                   name="relationship"
+                   ng-if="type=='publisher'"/>
+            <div class="form-group" ng-class="{'has-error': form.reForm.email.$invalid}">
+              <label for=""><i class="fa fa-lock"
+                ng-if="!allowEdits">&nbsp;</i>Email
+                <span ng-bind-html="confluenceTip('Email')"></span>
+              </label>
+              <input type="email" name="email" class="form-control"
+                     placeholder="entity Email"
+                     ng-model="entity.email"
+                     ng-disabled="!allowEdits">
+              <p ng-show="form.reForm.email.$invalid" class="help-block">Valid Email is required</p>
+            </div>
+          </div>
+          <div class="col-md-6" ng-if="type!='service' && type!='vocabulary'">
+            <div class="form-group">
+              <label for=""><i class="fa fa-lock"
+                ng-if="!allowEdits">&nbsp;</i>Phone
+                <span ng-bind-html="confluenceTip('Phone')"></span>
+              </label>
+              <input type="text" class="form-control"
+                     placeholder="entity Phone"
+                     ng-model="entity.phone"
+                     ng-disabled="!allowEdits">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+
+            <div class="form-group">
+              <label for=""><i class="fa fa-lock"
+                ng-if="!allowEdits">&nbsp;</i>Identifiers
+                <span ng-bind-html="confluenceTip('Identifiers')"></span>
+              </label>
+              <p><span class="yellow_exclamation"><i class="fa
+                                                            fa-exclamation"
+                   style="color:#fff"></i></span> At least 1
+                identifier is highly recommended </p>
+              <table class="table swatch-white">
+                <!-- swatch-white on table element so as to filter down
+                to identifier value input elements, so that box-shadow
+                displays according to the swatch, rather than Bootstrap. -->
+                <thead>
+                  <tr><th>Type</th> <th>Value</th><th></th></tr>
+                </thead>
+
+                <tr ng-repeat="identifier in entity.identifiers track by $index"
+                    related-entity-identifier-directive
+                    ng-disabled="!allowEdits"
+                    id="[['type_'+$index]]"
+                    index="$index"
+                    rei-type="entity.identifiers[$index].rei_type"
+                    rei-value=
+                    "entity.identifiers[$index].rei_value"
+                    on-close="list_remove('identifiers', $index)"
+                    name="[['rei_form_'+$index]]"
+                    >
+                </tr>
+              </table>
+
+
+              <p></p>
+              <button class="btn btn-primary" type="button"
+                      ng-click="list_add('identifiers')"
+                      ng-disabled="!allowEdits"><i
+                class="fa fa-plus"></i> Add Identifier
+              </button>
+            </div>
+            <div class="form-group">
+              <label for=""><i class="fa fa-lock"
+                ng-if="!allowEdits">&nbsp;</i>Websites
+                <span ng-bind-html="confluenceTip('Websites')"></span>
+              </label>
+
+              <table class="table table-condensed">
+                <tbody>
+                  <tr ng-repeat="url in entity.urls track by $index">
+                    <td style="border:none;width:100%"
+                        ng-class="{'has-error': form.reForm.[['website_'+$index]].$invalid}">
+                      <input id="[['website_'+$index]]" type="url"
+                             required="true" class="form-control"
+                             name="[['website_'+$index]]"
+                             placeholder="URL" ng-model="url.url"
+                             ng-disabled="!allowEdits"
+                             >
+                      <p ng-show="form.reForm.[['website_'+$index]].$invalid" class="help-block">Valid URL is required</p>
+                    </td>
+                    <td>
+                      <button class="btn btn-primary btn-primary-warning
+                              align-top"
+                              type="button"
+                              ng-click="list_remove('urls', $index)"
+                              ng-disabled="!allowEdits"><i
+                                  class="fa fa-remove"></i></button>
+                    </td>
+                  </tr>
+                <tbody>
+              </table>
+              <p></p>
+              <button class="btn btn-primary" type="button"
+                      ng-click="list_add('urls')"
+                      ng-disabled="!allowEdits"><i
+                class="fa fa-plus"></i> Add Website
+              </button>
+            </div>
+
+            <div class="form-group">
+              <label for="">Relationship
+                <span ng-bind-html="confluenceTip('Relation')"></span>
+              </label>
+
+              <!-- Show one relationship field. Doesn't use input-group. -->
+              <div ng-repeat="relationship in entity.relationship
+                              track by $index"
+                   ng-show="entity.relationship.length == 1">
+                <select name="rel" id="rel"
+                        class="form-control caret-for-select"
+                        placeholder="Select a relationship"
+                        ng-options="rel.value as
+                                    rel.text for rel in
+                                    relatedEntityRelations"
+                        options-disabled="rel.value as
+                                          rel.text for rel in
+                                          relatedEntityRelations"
+                        ng-model="entity.relationship[$index]"
+                        >
+                  <option value="">Select a relationship</option>
+                </select>
+              </div>
+
+              <!-- Show more than one relationship field.
+              Does use input-group. -->
+              <div class="input-group"
+                   ng-repeat="relationship in entity.relationship
+                              track by $index"
+                   ng-show="entity.relationship.length > 1">
+                <select name="rel" id="rel"
+                        class="form-control caret-for-select"
+                        placeholder="Select a relationship"
+                        ng-options="rel.value as
+                                    rel.text for rel in
+                                    relatedEntityRelations"
+                        ng-model="entity.relationship[$index]"
+                        >
+                  <option value="">Select a relationship</option>
+                </select>
+                <span class="input-group-btn">
+                  <button class="btn btn-primary btn-primary-warning"
+                          type="button"
+                          ng-click="list_remove('relationship',
+                                    $index)"><i
+                                              class="fa fa-remove"></i></button>
+                </span>
+              </div>
+
+              <p></p>
+              <button class="btn btn-primary" type="button"
+                      ng-click="addtolist('relationship')"><i
+                           class="fa fa-plus"></i> Add Relationship</button>
+
+              <div class="form-group has-error"
+                   ng-show="entity.relationship === undefined ||
+                            array_has_no_nonempty_strings(entity.relationship)">
+                <p class="help-block">At least one
+                  relationship must be provided.</p>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer swatch-white">
+    <div class="alert alert-danger"
+         ng-if="error_message">[[error_message]]</div>
+    <button class="btn btn-link"
+            type="button" ng-click="dismiss()">Cancel</button>
+    <button class="btn btn-primary"
+            type="button" ng-if="intent=='add'"
+            ng-click="save()">Add this Related [[ type
+      ]]
+    </button>
+    <button class="btn btn-primary" type="button"
+            ng-if="intent=='save'" ng-click="save()">Save</button>
+  </div>
 </div>

@@ -324,11 +324,13 @@ small.deprecated {
   padding-left: 5px;
   padding-right: 5px;
 }
-.btn-discard {
-  float: right;
+.btn-discard-nof {
   background-color: #F58000 !important;
   padding-left: 5px;
   padding-right: 5px;
+}
+.btn-discard {
+  float: right;
 }
 input:disabled + label {
   color: #cccccc;
@@ -412,6 +414,13 @@ ul.pagi li a.active {
   background-size: cover;
   background-position: 50% 60%;
   background-repeat: no-repeat;
+}
+.has-error .form-control {
+  border: 1px solid #a94442;
+}
+.mce-panel button {
+  background-color: inherit !important;
+  color: inherit !important;
 }
 .classic-tree ul {
   margin-left: 20px;
@@ -653,4 +662,73 @@ Thanks :)*/
   font-size: 100%;
   font-weight: 400;
   color: #65625d;
+}
+.ands-switch {
+  position: relative;
+  width: 78px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.ands-switch .ands-switch-checkbox {
+  display: none;
+}
+.ands-switch .ands-switch-label {
+  display: block;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid ;
+  border-radius: 5px;
+}
+.ands-switch .ands-switch-inner {
+  display: block;
+  width: 200%;
+  margin-left: -100%;
+  transition: margin 0.3s ease-in 0s;
+}
+.ands-switch .ands-switch-inner:before,
+.ands-switch .ands-switch-inner:after {
+  display: block;
+  float: left;
+  width: 50%;
+  height: 27px;
+  padding: 0;
+  line-height: 27px;
+  font-size: 16px;
+  color: white;
+  font-family: Trebuchet, Arial, sans-serif;
+  font-weight: bold;
+  box-sizing: border-box;
+}
+.ands-switch .ands-switch-inner:before {
+  content: "YES";
+  padding-left: 10px;
+  background-color: #82c9ed;
+  color: #FFFFFF;
+}
+.ands-switch .ands-switch-inner:after {
+  content: "NO";
+  padding-right: 10px;
+  background-color: #EEEEEE;
+  color: #999999;
+  text-align: right;
+}
+.ands-switch .ands-switch-switch {
+  display: block;
+  width: 20px;
+  margin: 3.5px;
+  background: #FFFFFF;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 47px;
+  border: 2px solid ;
+  border-radius: 5px;
+  transition: all 0.3s ease-in 0s;
+}
+.ands-switch .ands-switch-checkbox:checked + .ands-switch-label .ands-switch-inner {
+  margin-left: 0;
+}
+.ands-switch .ands-switch-checkbox:checked + .ands-switch-label .ands-switch-switch {
+  right: 0px;
 }

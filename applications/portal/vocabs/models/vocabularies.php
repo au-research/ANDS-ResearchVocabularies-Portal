@@ -641,6 +641,10 @@ class Vocabularies extends CI_Model
      * And then save it
      * NB No authorization checks are performed; this is
      * the responsibility of the controller.
+     *
+     * Richard's note: more precisely, this method is "add a new row to the
+     * vocabularies table", which _could_ be for a new vocabulary, but
+     * it can also be to add a draft for an already-published vocabulary.
      * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
      * @param $data data to save to the database
      */
