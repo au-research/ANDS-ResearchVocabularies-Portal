@@ -20,6 +20,9 @@
         // $log.debug($location.search());
         // The form of filters value for this will be <base_url>+/#!/?<filter>=<value>
         // eg. <base_url>+/#!/?q=fish, #!/?q=fish&subjects=Fish
+        // In recent AngularJS, $scope.filters is a _copy_, not
+        // a reference. So need to invoke $location.search($scope.filters)
+        // when there's a change.
         $scope.filters = $location.search();
 
         $scope.search = function (isPagination) {
@@ -28,6 +31,9 @@
             if ($scope.searchRedirect()) {
                 window.location = base_url + 'search/#!/?q=' + $scope.filters['q'];
             } else {
+                // See comment above about a change to AngularJS. Now,
+                // put back our $scope.filters into $location.search().
+                $location.search($scope.filters);
                 $location.path('/').replace();
                 window.history.pushState($scope.filters, 'ANDS Research Vocabulary', $location.absUrl());
                 api.search({"filtersJson": JSON.stringify($scope.filters)}).
