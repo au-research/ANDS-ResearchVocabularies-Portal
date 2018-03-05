@@ -105,6 +105,19 @@
         ];
 
         $scope.updateNewAPTypeFormat = function(option) {
+            // Remove any properties added by $scope.upload.
+            delete $scope.newValue.ap.upload_id;
+            delete $scope.newValue.ap.name;
+            delete $scope.newValue.ap.uri;
+            // A "feature" of AngularJS is that the previous line
+            // is not enough to clear the uri field, if it is currently
+            // invalid, since there is no real change to the model.
+            // For that case, the next line is required to clear
+            // the DOM value.
+            angular.element(document.querySelector('#newValueApUri')).val('');
+            // And reset any upload progress values.
+            $scope.error_upload_msg = false;
+            $scope.uploadPercentage = 0;
 
             if (option === 'webPage' || option === 'apiSparql') {
                 $scope.newValue.ap.type = option;
@@ -501,6 +514,8 @@
                         // $log.debug(resp.config);
 
                         $scope.uploading = false;
+                        // See also $scope.updateNewAPTypeFormat, which deletes these
+                        // properties when the format changes.
                         ap.upload_id = resp.data.integerValue;
                         ap.name = resp.data.stringValue;
                         ap.uri = resp.headers('Location');
