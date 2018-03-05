@@ -332,7 +332,7 @@
             // which has the 'Harvest Version From PoolParty' option enabled,
             // an additonal version settings option shall be displayed
             // 'Reapply version settings on publish'.
-            if (version.status === "current" && $scope.vocab.status === "published") {
+            if (version.status === "current" && ($scope.vocab.status === "published" || $scope.vocab.status === "deprecated")) {
                 $scope.canReapplyVersion = true;
             }
 
