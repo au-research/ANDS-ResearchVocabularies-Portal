@@ -41,8 +41,19 @@
         "symfony/stopwatch": "^3.1",
         "monolog/monolog": "^1.19",
         "jaybizzle/crawler-detect": "1.*",
-        "vlucas/phpdotenv": "^2.4"
+        "vlucas/phpdotenv": "^2.4",
+        "au-research/vocabs-php-client": "@dev"
     },
+
+    "repositories": [
+        {
+            "type": "path",
+            "url": "/opt/ands/vocabs-clients/php",
+            "options": {
+                "symlink": false
+            }
+        }
+    ],
 
     "require-dev": {
         "phpunit/phpunit": "4.8.*"

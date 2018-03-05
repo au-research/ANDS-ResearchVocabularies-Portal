@@ -4,8 +4,8 @@
 
     angular
         .module('app', ['ngRoute', 'ngSanitize', 'ui.bootstrap',
-                        'ui.utils', 'angular-loading-bar', 'angularFileUpload',
-                        'ui.select'
+                        'ui.utils', 'angular-loading-bar', 'ngFileUpload',
+                        'ui.select', 'ui.tinymce'
                        ])
         .config(
             function ($interpolateProvider, $locationProvider, $logProvider) {
@@ -313,7 +313,7 @@ $(document).on(
                             // return "we have some text for re "+$(this).attr('re_id');
                             var url = (base_url
                                        + 'vocabs/related_preview/?related='
-                                       + $(this).attr('related')
+                                       + encodeURIComponent($(this).attr('related'))
                                        + '&v_id=' + $(this).attr('v_id')
                                        + '&sub_type='
                                        + $(this).attr('sub_type'));
@@ -341,6 +341,7 @@ $(document).on(
                 position: {
                     target: 'mouse',
                     adjust: {
+                        method: 'shift',
                         mouse: false
                     },
                     viewport: $(window)
@@ -368,6 +369,7 @@ window.ATL_JQ_PAGE_PROPS = {
     }
 };
 
+// TODO: Remove this once we are sure that there is no call to this binding anymore
 $(document).on(
     'click',
     '.ver_preview',
@@ -435,12 +437,14 @@ $(document).on(
         if (confirm('Are you sure you want to delete this vocabulary, '
               + 'including all endpoints? This action cannot be reversed.')) {
             var vocab_id = $(this).attr('vocab_id');
+            var delete_mode = $(this).attr('delete_mode');
             $.ajax(
                 {
                     url: base_url + 'vocabs/delete',
                     type: 'POST',
                     data: {
-                        id: vocab_id
+                        id: vocab_id,
+                        mode: delete_mode,
                     },
                     dataType: 'json',
                     success: function (data) {
@@ -474,4 +478,65 @@ function showWidget()
     }
 
     return undefined;
+}
+
+// Utility function to get a cookie.
+function readCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+
+// Polyfill Array find() method from
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
+// Needed for IE (sigh).
+// Used in relatedCtrl.js.
+//https://tc39.github.io/ecma262/#sec-array.prototype.find
+if (!Array.prototype.find) {
+  Object.defineProperty(Array.prototype, 'find', {
+    value: function(predicate) {
+     // 1. Let O be ? ToObject(this value).
+      if (this == null) {
+        throw new TypeError('"this" is null or not defined');
+      }
+
+      var o = Object(this);
+
+      // 2. Let len be ? ToLength(? Get(O, "length")).
+      var len = o.length >>> 0;
+
+      // 3. If IsCallable(predicate) is false, throw a TypeError exception.
+      if (typeof predicate !== 'function') {
+        throw new TypeError('predicate must be a function');
+      }
+
+      // 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
+      var thisArg = arguments[1];
+
+      // 5. Let k be 0.
+      var k = 0;
+
+      // 6. Repeat, while k < len
+      while (k < len) {
+        // a. Let Pk be ! ToString(k).
+        // b. Let kValue be ? Get(O, Pk).
+        // c. Let testResult be ToBoolean(? Call(predicate, T, « kValue, k, O »)).
+        // d. If testResult is true, return kValue.
+        var kValue = o[k];
+        if (predicate.call(thisArg, kValue, k, o)) {
+          return kValue;
+        }
+        // e. Increase k by 1.
+        k++;
+      }
+
+      // 7. Return undefined.
+      return undefined;
+    }
+  });
 }

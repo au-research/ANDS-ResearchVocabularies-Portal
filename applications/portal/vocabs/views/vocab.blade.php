@@ -1,67 +1,96 @@
 <?php
-$cc=$vocab['licence'];
-$current_version =  $vocab['current_version'] ;
+
+use ANDS\VocabsRegistry\Model\Version;
+use ANDS\VocabsRegistry\Model\RelatedEntity;
+use ANDS\VocabsRegistry\Model\RelatedEntityRef;
+
+$cc=$vocab->getLicence();
+$versions = $vocab->getVersion();
+$current_version = null;
+$superseded_version = null;
+foreach ($versions as $version) {
+    if ($version->getStatus() === Version::STATUS_CURRENT) {
+        $current_version = $version;
+        break;
+    }
+}
+if(!isset($current_version)){
+    foreach ($versions as $version) {
+        if ($version->getStatus() === Version::STATUS_SUPERSEDED) {
+            $superseded_version = $version;
+            break;
+        }
+    }
+}
 $publisher = array();
 $related_people = array();
 $related_vocabs = array();
 $related_service = array();
+$related_internal_vocabs = array();
 
-if(isset($vocab['related_entity'])){
-    foreach($vocab['related_entity'] as $related){
-        if($related['type']=='party'){
-            if(isset($related['relationship'])){
-                if (is_array($related['relationship'])) {
-                    $relationships = implode($related['relationship'], ',');
-                } else {
-                    $relationships = $related['relationship'];
+foreach ($vocab->getRelatedEntityRef() as $relatedRef) {
+    $related = $relatedRef->getRelatedEntity();
+    if ($related->getType() === RelatedEntity::TYPE_PARTY) {
+        $relationships = implode($relatedRef->getRelation(), ',');
+        if(strpos($relationships,
+            RelatedEntityRef::RELATION_PUBLISHED_BY)
+            !== false) {
+                $publisher[]=$relatedRef;
+                // And also add it to related people, if
+                // it is not _just_ a publisher.
+                if (count($relatedRef->getRelation()) > 1) {
+                    $related_people[] =$relatedRef;
                 }
+            } else {
+                $related_people[] =$relatedRef;
             }
-            if($relationships=='publishedBy'){
-                $publisher[]=$related;
-            }else{
-                $related_people[] =$related;
-            }
-        }
-        elseif($related['type']=='service'){
-            $related_service[]=$related;
-        }
-        elseif($related['type']=='vocabulary'){
-            $related_vocabs[]=$related;
-        }
     }
+    elseif ($related->getType() === RelatedEntity::TYPE_SERVICE) {
+        $related_service[]=$relatedRef;
+    }
+    elseif ($related->getType() === RelatedEntity::TYPE_VOCABULARY) {
+        $related_vocabs[]=$relatedRef;
+    }
+}
+
+foreach ($vocab->getRelatedVocabularyRef() as $relatedVocabRef) {
+    $related_internal_vocabs[]=$relatedVocabRef;
 }
 
 // Determine whether or not to show the widgetableness.
 // Set $sissvocEndPoint if it is to be shown.
-foreach ($vocab['versions'] as $version) {
-    if ($version['status']=='current' && $version['version_access_points']) {
-        foreach($version['version_access_points'] as $ap)
-        {
-            if($ap['type'] == 'sissvoc'){
-                $url = json_decode($ap['portal_data'])->uri;
-                $sissvocEndPoint = $url;
+foreach ($vocab->getVersion() as $version) {
+    if (($version->getStatus() === Version::STATUS_CURRENT
+        && !empty($version->getAccessPoint())) || ($version->getStatus() === Version::STATUS_SUPERSEDED
+                    && !empty($version->getAccessPoint()) && isset($superseded_version))) {
+            foreach ($version->getAccessPoint() as $ap)
+            {
+                if(is_object($ap->getApSissvoc())) {
+                    $url = $ap->getApSissvoc()->getUrlPrefix();
+                    $sissvocEndPoint = $url;
+                }
             }
         }
-    }
 }
+
 
 ?>
 
 @section('og-description')
-@if(gettype($vocab) == "array" && isset($vocab['description']))
-	<?php
-		$clean_description = htmlspecialchars(substr(str_replace(array('"','[[',']]'), '', $vocab['description']), 0, 200));
-	?>
+@if(is_object($vocab) && (!empty($vocab->getDescription())))
+    <?php
+        $clean_description = htmlspecialchars(substr(str_replace(array('"','[[',']]'), '', $vocab->getDescription()), 0, 200));
+    ?>
 @endif
 @if(isset($clean_description))
-	<meta ng-non-bindable property="og:description" content="{{ $clean_description }}" />
+    <meta ng-non-bindable property="og:description" content="{{ $clean_description }}" />
 @else
-	<meta ng-non-bindable property="og:description" content="Find, access, and re-use vocabularies for research" />
+    <meta ng-non-bindable property="og:description" content="Find, access, and re-use vocabularies for research" />
 @endif
 @stop
 @section('og-other-meta')
-<meta property="og:url" content="{{ base_url().$vocab['slug'] }}" />
-<meta property="og:title" content="{{ htmlspecialchars($vocab['title']) }}" />
+<meta property="og:url" content="{{ base_url().$vocab->getSlug() }}" />
+<meta property="og:title" content="{{ htmlspecialchars($vocab->getTitle()) }}" />
 @stop
 @extends('layout/vocab_2col_layout')
 @section('content')
@@ -71,34 +100,31 @@ foreach ($vocab['versions'] as $version) {
 
             <div class="container-fluid" >
                 <div class="row">
-                    @if($vocab['current_version'])
+                    @if($current_version != null || $superseded_version!=null )
 
                     <div class="col-md-4 panel-body">
-                        @include('wrap-getvocabaccess')
+                        @include('wrap-getvocabaccess', [ 'current_version' => $current_version ])
                     </div>
                     @endif
+
+
                     <div class="col-md-8 panel-body">
-                        {{ $vocab['description'] }}
-                        @if(isset($vocab['language']))
+                        {{ $vocab->getDescription() }}
                         <h4>Languages</h4>
                         <p>
                             <?php
-                            $pipe_count = 0;
-                            foreach($vocab['language'] as $language)
+                            echo(readable($vocab->getPrimaryLanguage()));
+                            foreach($vocab->getOtherLanguage() as $language)
                             {
-                                echo readable($language);
-                                $pipe_count++;
-                                if($pipe_count<count($vocab['language'])){
-                                    echo " | ";
-                                }
+                                echo " | ";
+                                echo(readable($language));
                             }
                             ?>
 
                         </p>
-                        @endif
-                        @if(isset($vocab['note']))
+                        @if(!empty($vocab->getNote()))
                             <h4>Notes</h4>
-                            <p>{{ $vocab['note'] }}</p>
+                            <p>{{ $vocab->getNote() }}</p>
                         @endif
                         @if(isset($cc)&&$cc!='')
                         <h4>Licence</h4>
@@ -116,7 +142,7 @@ foreach ($vocab['versions'] as $version) {
                             @elseif($cc=='CC-BY-NC-ND')
                             <a href="http://creativecommons.org/licenses/by-nc-nd/3.0/au/" tip="Attribution-Non Commercial-Non Derivatives"><img src="{{asset_url('images/icons/CC-BY-NC-ND.png', 'core')}}" class="img-cc" alt="CC-BY-NC-ND"></a> <br/>
                             @else
-                            <span>Licence: {{ $cc }}</span>
+                            <span>Licence: {{ htmlspecialchars($cc) }}</span>
                             @endif
                         </p>
                         @endif
@@ -125,14 +151,14 @@ foreach ($vocab['versions'] as $version) {
             </div>
         </div>
 
-        @if(isset($vocab['top_concept']) && count($vocab['top_concept']) > 0)
+        @if(!empty($vocab->getTopConcept()))
         <div class="panel swatch-white" id="concept">
             <div class="panel-heading">Top Concepts</div>
             <div class="panel-body">
                 <table class="table">
                     <tbody>
-                        @foreach($vocab['top_concept'] as $concept)
-                            <tr><td>{{$concept}}</td></tr>
+                        @foreach($vocab->getTopConcept() as $concept)
+                            <tr><td>{{htmlspecialchars($concept)}}</td></tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -142,15 +168,17 @@ foreach ($vocab['versions'] as $version) {
 
         {{-- The concept tree is shown if there is one to show. --}}
         {{-- There is one to show, if the "tree" service returns one. --}}
-        <div visualise vocabid="{{ $vocab['id'] }}"></div>
+        @if(isset($current_version))
+          <div visualise versionid="{{ $current_version->getId() }}"></div>
+        @endif
         {{-- Show widgetable status based on $sissVocEndPoint. --}}
         @if(isset($sissvocEndPoint))
         <div id="widget" class="panel swatch-white">
-            <div class="panel-body">Use this code snippet to describe or discover resources with {{$vocab['title']}} in your system
+            <div class="panel-body">Use this code snippet to describe or discover resources with {{$vocab->getTitle()}} in your system
                 <br/><br/><b>Example:</b> Search for and select concepts in this vocabulary
-            <input type="text" id="{{$vocab['slug']}}" name="{{$vocab['slug']}}" placeholder="Search" size="80" autocomplete="off">
+            <input type="text" id="{{$vocab->getSlug()}}" name="{{$vocab->getSlug()}}" placeholder="Search" size="80" autocomplete="off">
                 <script>
-                $("#{{$vocab['slug']}}").vocab_widget({
+                $("#{{$vocab->getSlug()}}").vocab_widget({
                 mode: 'search',
                 cache: false,
                 repository: '{{$sissvocEndPoint}}',
@@ -163,9 +191,9 @@ foreach ($vocab['versions'] as $version) {
             <br/>
             <div id="widget-info" class="toggle">
             <pre class="panel-body prettyprint">
-&lt;input type="text" id="{{$vocab['slug']}}" name="{{$vocab['slug']}}" value="" size="80" autocomplete="off"&gt;
+&lt;input type="text" id="{{$vocab->getSlug()}}" name="{{$vocab->getSlug()}}" value="" size="80" autocomplete="off"&gt;
 &lt;script&gt;
-    $("#{{$vocab['slug']}}").vocab_widget({
+    $("#{{$vocab->getSlug()}}").vocab_widget({
         mode: 'search',
         cache: false,
         repository: '{{$sissvocEndPoint}}',
@@ -177,22 +205,16 @@ foreach ($vocab['versions'] as $version) {
             </div>
         </div>
 
-
-
         @endif
 
-        @if(isset($vocab['subjects']))
+        @if(!empty($vocab->getSubject()))
         <div class="panel swatch-white">
             <div class="panel-heading">Subjects</div>
             <div class="panel-body">
                 <?php $sub_count=0; ?>
-                @foreach($vocab['subjects'] as $subject)
+                @foreach($vocab->getSubject() as $subject)
                 <?php $sub_count++; ?>
-                    @if(isset($subject['subject_label']))
-                        <a  href="{{base_url()}}search/#!/?subject_labels={{rawurlencode($subject['subject_label'])}}"> {{$subject['subject_label']}} </a> <?php if($sub_count<count($vocab['subjects'])) echo " | "; ?>
-                    @else
-                        <a  href="{{base_url()}}search/#!/?subject_labels={{rawurlencode($subject['subject'])}}"> {{$subject['subject']}} </a> <?php if($sub_count<count($vocab['subjects'])) echo " | "; ?>
-                    @endif
+                    <a  href="{{base_url()}}search/#!/?subject_labels={{rawurlencode($subject->getLabel())}}"> {{htmlspecialchars($subject->getLabel())}} </a> <?php if($sub_count<count($vocab->getSubject())) echo " | "; ?>
                 @endforeach
             </div>
         </div>
@@ -204,69 +226,60 @@ foreach ($vocab['versions'] as $version) {
 
 
 @section('sidebar')
-@if(isset($related_service[0]['title']))
+@if($related_service)
 
 <div class="panel swatch-white  panel-primary element-no-top element-short-bottom panel-content">
     <div class="panel-heading">Services that make use of this vocabulary</div>
     <div class="panel-body">
 
-            @foreach($related_service as $service)
+            @foreach($related_service as $serviceRef)
             <p><small>
                 <?php
-                    if (isset($service['relationship'])) {
-                        if (is_array($service['relationship'])) {
-                            echo readable(implode($service['relationship'], ','));
-                        } else {
-                            echo readable($service['relationship']);
-                        }
-                    }
+                    echo implode(array_map('trim', array_map('readable', $serviceRef->getRelation())), ', ');
                 ?>
-            </small> <a href="" class="re_preview"  related='{{json_encode($service)}}' v_id="{{ $vocab['id'] }}">{{$service['title']}}</a></p>
+            </small> <a href="" class="re_preview"  related='{{$serviceRef}}' v_id="{{ $vocab->getId() }}">{{htmlspecialchars($serviceRef->getRelatedEntity()->getTitle())}}</a></p>
             @endforeach
 
     </div>
 </div>
 @endif
-@if($related_people||$related_vocabs)
+@if($related_people||$related_vocabs||$related_internal_vocabs)
 <div class="panel swatch-white  panel-primary element-no-top element-short-bottom panel-content">
     <div class="panel-heading">Related</div>
     <div class="panel-body">
 
         @if($related_people)
         <h4>Related people and organisations</h4>
-        @foreach($related_people as $related)
+        @foreach($related_people as $relatedRef)
 
         <p>
 
             <small>
                 <?php
-                    if (isset($related['relationship'])) {
-                        if (is_array($related['relationship'])) {
-                            echo readable(implode($related['relationship'], ', '));
-                        } else {
-                            echo readable($related['relationship']);
-                        }
-                    }
+                    echo implode(array_map('trim', array_map('readable', $relatedRef->getRelation())), ', ');
                 ?>
-            </small> <a href="" class="re_preview"  related='{{json_encode($related)}}' v_id="{{ $vocab['id'] }}"> {{$related['title']}}</a>
+            </small> <a href="" class="re_preview"  related='{{$relatedRef}}' v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
         </p>
         @endforeach
         @endif
-        @if($related_vocabs)
+        @if($related_vocabs||$related_internal_vocabs)
         <h4>Related vocabularies</h4>
-        @foreach($related_vocabs as $related)
+        @foreach($related_vocabs as $relatedRef)
         <p>
             <small>
                 <?php
-                    if (isset($related['relationship'])) {
-                        if (is_array($related['relationship'])) {
-                            echo implode(array_map('readable', $related['relationship']), ', ');
-                        } else {
-                            echo readable($related['relationship']);
-                        }
-                    }
+                    echo implode(array_map('trim', array_map('readable', $relatedRef->getRelation())), ', ');
                 ?>
-            </small> <a href="" class="re_preview"  related='{{json_encode($related)}}' v_id="{{ $vocab['id'] }}"> {{$related['title']}}</a>
+            </small> <a href="" class="re_preview"  related='{{$relatedRef}}' v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
+        </p>
+        @endforeach
+        @foreach($related_internal_vocabs as $relatedRef)
+        <p>
+            <small>
+                <?php
+                    echo implode(array_map('trim', array_map('readable', $relatedRef->getRelation())), ', ');
+                ?>
+            </small> <a href="" class="re_preview"  related='{{$relatedRef}}' v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedVocabulary()->getTitle())}}</a>
         </p>
         @endforeach
         @endif

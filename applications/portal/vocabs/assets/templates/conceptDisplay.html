@@ -83,7 +83,7 @@
 $("#{{$parent.vocab.slug}}").vocab_widget({
     mode: 'search',
     cache: false,
-    repository: '{{$parent.vocab.sissvoc_end_point}}',
+    repository: '{{$parent.vocab.sissvoc_endpoint}}',
     target_field: '{{$parent.target_field}}',
     endpoint: '{{$parent.endpoint}}'
 });
@@ -105,7 +105,7 @@ $("#{{$parent.vocab.slug}}").qtip({
     events: {
         render: function(event, api) {
             var widget = $(".subject_chooser", this).vocab_widget({mode:'{{$parent.mode}}',
-                repository:'{{$parent.vocab.sissvoc_end_point}}',
+                repository:'{{$parent.vocab.sissvoc_endpoint}}',
                 endpoint:'{{$parent.endpoint}}' ,
                 display_count:false});
             widget.on('treeselect.vocab.ands', function(event) {

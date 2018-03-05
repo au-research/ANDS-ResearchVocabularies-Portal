@@ -48,7 +48,7 @@
     <div class="container">
         <div class="row element-shorter-bottom element-shorter-top">
             <div class="col-md-5">
-                <form action="" ng-submit="search()">
+                <form action="" ng-submit="$event.preventDefault();search()">
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="Search for a vocabulary or a concept" ng-model="filters.q" ng-debounce="500">
                         <span class="input-group-btn">

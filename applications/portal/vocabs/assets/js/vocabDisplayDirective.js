@@ -83,10 +83,10 @@
 
                     if (scope.vocab) {
                         var subjectValueInput = $('#sampleWidgetInput');
-                        // NB Use of Solr field sissvoc_end_point.
+                        // NB Use of Solr field sissvoc_endpoint.
                         // Must be included in the fields given in the
                         // "fl" option. See controllers/vocabs.php/filter().
-                        var sissvoc_end_point = scope.vocab.sissvoc_end_point;
+                        var sissvoc_endpoint = scope.vocab.sissvoc_endpoint;
 
                         if (clearField) {
                             subjectValueInput.val("");
@@ -114,7 +114,7 @@
                                     render: function (event, api) {
                                         scope.widget = $(".subject_chooser", this).vocab_widget({
                                             mode: scope.mode,
-                                            repository: sissvoc_end_point,
+                                            repository: sissvoc_endpoint,
                                             endpoint: scope.endpoint,
                                             display_count: false
                                         });
@@ -148,7 +148,7 @@
 
                             scope.widget = subjectValueInput.vocab_widget({
                                 mode: scope.mode,
-                                repository: sissvoc_end_point,
+                                repository: sissvoc_endpoint,
                                 endpoint: scope.endpoint,
                                 target_field: scope.target_field
                             });

@@ -3,6 +3,13 @@
  * For adding / editing vocabulary metadata
  * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
  */
+/* Changes to make this work with the new Registry include:
+ * * Connecting up to the Registry API via the generated JS client API
+ * * A method to copy vocabulary data that comes _from_ the client API
+ *   into the fields of the forms
+ * * A method to copy data from the fields of the forms into client API
+ *   model objects, for sending to the Registry API.
+ */
 (function () {
     'use strict';
 
@@ -17,7 +24,27 @@
     };
 
     function addVocabsCtrl($log, $scope, $sce, $timeout,
-                           $location, $modal, vocabs_factory) {
+                           $location, $uibModal, vocabs_factory) {
+
+        // Initialise Registry API access.
+        var VocabularyRegistryApi = require('vocabulary_registry_api');
+        var defaultClient = VocabularyRegistryApi.ApiClient.instance;
+        defaultClient.basePath = registry_api_url;
+        // Configure API key authorization: apiKeyAuth
+        var apiKeyAuth = defaultClient.authentications['apiKeyAuth'];
+        var cookie = readCookie('ands_authentication');
+        if (cookie) {
+            apiKeyAuth.apiKey = cookie;
+        }
+        var api = new VocabularyRegistryApi.ResourcesApi();
+        var ServicesAPI = new VocabularyRegistryApi.ServicesApi();
+
+        // TODO: Move to config
+        $scope.PPServerID = 1;
+
+        // model for the owner select
+        // upon Continue vocab.owner will be set to this value
+        $scope.commitVocabOwner = false;
 
         $scope.form = {};
 
@@ -34,23 +61,100 @@
                     subject_notation: ""
                 }
             ],
-            language: [""]
+            language: [null],
+            related_entity: [],
+            versions: []
         };
+
+        /* TinyMCE options.
+          content_css: ensure that we get the same font and size as
+          the rest of the form.
+          body_class and content_style: using the content_css setting means
+          we include lib.css, which sets body margin to 0. So need these
+          to settings to get back the nice 8 pixel margin.
+          plugins: legacyoutput to get <u> and <strike>.
+          force_root_block to avoid <p> tag around the content.
+          link_title and target_list: lock down supported link attributes.
+            content_css: '../assets/vocabs/css/lib.css',
+
+         */
+        $scope.tinymceOptions = {
+            content_css: [
+                'https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900,300italic,400italic,600italic',
+                base_url + 'assets/templates/ands-green/css/bootstrap.min.css',
+                base_url + 'assets/templates/ands-green/css/fonts.min.css',
+                base_url + 'assets/templates/ands-green/css/swatch-gray.css',
+                base_url + 'assets/templates/ands-green/css/theme.css',
+            ],
+            body_class: 'vocabs_tinymce',
+            content_style: '.vocabs_tinymce {margin: 8px;}',
+            plugins: 'legacyoutput link lists code paste',
+            toolbar: 'undo redo | styleselect | bold italic underline strikethrough superscript subscript | bullist numlist outdent indent blockquote codeformat | link | code',
+            menubar: false,
+            style_formats: [
+                {
+                    title: 'Blocks',
+                    items: [
+                        { title: 'Paragraph', format: 'p' },
+                        { title: 'Blockquote', format: 'blockquote' },
+                        { title: 'Pre', format: 'pre' }
+                    ]
+                }
+            ],
+            forced_root_block: false,
+            link_title: false,
+            target_list: false,
+            valid_elements: 'a[href|target:_blank|rel:nofollow],b,blockquote,br,cite,code,dd,dl,dt,em,i,li,ol,p,pre,q,small,span,strike,strong,sub,sup,u,ul',
+            relative_urls: false,
+            document_base_url: base_url,
+            remove_script_host: false
+        };
+
         /**
          * Collect all the user roles, for vocab.owner value
          */
-        vocabs_factory.user().then(function (data) {
-            $scope.user_orgs = data.message['affiliations'];
+        ServicesAPI.getUserData().then(function(data) {
+            $log.debug("User Data fetched", data);
+            $scope.user_orgs = [];
             $scope.user_orgs_names = [];
-            for (var i=0; i<data.message['affiliations'].length; ++i)
-            {
-                // Use the affiliation as the 'id', and then use the affiliation
-                // to look up the full name, and use that as the 'name'.
-                $scope.user_orgs_names.push({'id':data.message['affiliations'][i],'name': data.message['affiliationsNames'][ data.message['affiliations'][i] ]});
+            var parentRoles = data.getParentRole();
+            if (parentRoles !== null) {
+                // Filter organisational roles and sort by full name.
+                var orgRoles = parentRoles.filter(function(role) {
+                    return role.getTypeId() ==
+                        VocabularyRegistryApi.Role.TypeIdEnum.ORGANISATIONAL;}).
+                    sort(function (a, b) {
+                        // Case-insensitive sort of full names, based
+                        // on https://developer.mozilla.org/en-US/docs/Web/
+                        //    JavaScript/Reference/Global_Objects/Array/sort
+                        var nameA = a.getFullName().toUpperCase();
+                        var nameB = b.getFullName().toUpperCase();
+                        if (nameA < nameB) {
+                            return -1;
+                        }
+                        if (nameA > nameB) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+
+                $scope.user_orgs_names = orgRoles.map(function(role) {
+                    return {
+                        id: role.getId(),
+                        name: role.getFullName()
+                    }
+                });
+                $scope.user_orgs = orgRoles.map(function(role) {
+                    return role.getId();
+                });
+            } else {
+                $log.debug("user has no role", data['parentRole']);
             }
-            $scope.user_owner = data.message['role_id'];
         });
+
+
         $scope.vocab.user_owner = $scope.user_owner;
+
         $scope.mode = 'add'; // [add|edit]
         $scope.langs = [
             {"value": "zh", "text": "Chinese"},
@@ -108,7 +212,10 @@
             $scope.subject_sources.push(vo);
         }
 
+        // Is the datepicker popup open?
         $scope.opened = false;
+        // When adding a new voabulary, has the user chosen whether
+        // to add from PoolParty or not?
         $scope.decide = false;
 
         $scope.creation_date = '';
@@ -116,38 +223,324 @@
 
         $scope.status = 'idle';
 
-        $scope.open = function ($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-            $scope.opened = !$scope.opened;
-        };
-
         /**
          * If there is a slug available, this is an edit view for the CMS
          * Proceed to overwrite the vocab object with the one fetched
-         * from the vocabs_factory.get()
+         * from the Registry API
          * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
          */
-        if ($('#vocab_slug').val()) {
-            vocabs_factory.get($('#vocab_id').val()).then(function (data) {
-                $log.debug('Editing ', data.message);
+        if ($('#vocab_id').val()) {
+            $scope.decide = true;
+            api.getVocabularyByIdEdit($('#vocab_id').val()).then(
+                             function (data) {
+               $log.debug('Editing ', data);
+               $scope.commitVocabOwner = true;
                 // Preserve the original data for later. We need this
                 // specifically for the creation_date value.
-                $scope.original_data = data.message;
-                // Make a deep copy. This used to be
-                //    $scope.vocab = data.message;
-                // But that is a copy by reference ... subsequent changes
-                // to $scope.vocab affect data.message too, making
-                // it impossible to refer to the original values.
-                $scope.vocab = angular.copy(data.message);
-                $scope.vocab.user_owner = $scope.user_owner;
+                $scope.original_data = data;
+                // Copy the values into the form.
+                $scope.copy_incoming_vocab_to_scope(data);
                 $scope.mode = 'edit';
-                $scope.decide = true;
                 // Special handling for creation date.
                 $scope.set_creation_date_textfield($scope);
-                $log.debug($scope.form.cms);
+//                $log.debug($scope.form.cms);
             });
+        } else {
+            /**
+             * Collect All PoolParty Project
+             * For adding
+             */
+            $scope.projects = [];
+            $scope.ppid = {};
+            $scope.fetchingPP = true;
+            ServicesAPI.getPoolPartyProjects($scope.PPServerID)
+                .then(function(data){
+                    $log.debug("All PP Project fetched", data);
+                    $scope.$apply(function() {
+                        $scope.fetchingPP = false;
+                        $scope.projects = data;
+                    });
+                });
         }
+
+        // Copy existing vocabulary data provided by the Registry API
+        // into the scope for the form.
+        // TODO: move this to another factory/service, this does not really belong in a controller
+        $scope.copy_incoming_vocab_to_scope = function (data) {
+            $scope.vocab = [];
+            // Top-level metadata
+            $scope.vocab.status = data.getStatus();
+            $scope.vocab['title'] = data.getTitle();
+            $scope.vocab['acronym'] = data.getAcronym();
+            $scope.vocab['description'] = data.getDescription();
+            $scope.vocab['licence'] = data.getLicence();
+            $scope.vocab['revision_cycle'] = data.getRevisionCycle();
+            $scope.vocab['note'] = data.getNote();
+            $scope.vocab['owner'] = data.getOwner();
+            $scope.vocab['top_concept'] = angular.copy(data.getTopConcept());
+            // Special handling for creation_date done elsewhere.
+            $scope.vocab['language'] = [ data.getPrimaryLanguage() ];
+            angular.forEach(data.getOtherLanguage(), function(lang) {
+                $scope.vocab['language'].push(lang);
+            });
+            $scope.vocab['subjects'] = [];
+
+            var PPProject = data.getPoolpartyProject();
+            if (PPProject) {
+                $scope.vocab['poolparty_id'] = PPProject.getProjectId();
+            }
+
+            angular.forEach(data.getSubject(), function(subject) {
+                $scope.vocab['subjects'].push({
+                    subject_source: subject.getSource(),
+                    subject_label: subject.getLabel(),
+                    subject_iri: subject.getIri(),
+                    subject_notation: subject.getNotation()
+                });
+            });
+            // Related entities
+            $scope.vocab['related_entity'] = [];
+            angular.forEach(data.getRelatedEntityRef(), function(reRef) {
+                var re = reRef.getRelatedEntity();
+                var reForForm = {
+                        'id': reRef.getId(),
+                        'type': re.getType(),
+                        'title': re.getTitle(),
+                        'owner' : re.getOwner(),
+                        'relationship' : angular.copy(reRef.getRelation())
+                    };
+                if (re.getEmail()) {
+                    reForForm['email'] = re.getEmail();
+                }
+                if (re.getPhone()) {
+                    reForForm['phone'] = re.getPhone();
+                }
+                // Identifiers
+                reForForm['identifiers'] = [];
+                angular.forEach(re.getRelatedEntityIdentifier(), function(id) {
+                    reForForm['identifiers'].push(
+                            {'id': id.getId(),
+                             'rei_type' : id.getIdentifierType(),
+                             'rei_value' : id.getIdentifierValue()});
+                });
+                // URLs
+                reForForm['urls'] = [];
+                angular.forEach(re.getUrl(), function(url) {
+                    reForForm['urls'].push({'url' : url});
+                });
+                $scope.vocab['related_entity'].push(reForForm);
+            });
+            // Related internal vocabularies
+            $scope.vocab['related_vocabulary'] = [];
+            angular.forEach(data.getRelatedVocabularyRef(), function(rvRef) {
+                var rv = rvRef.getRelatedVocabulary();
+                var rvForForm = {
+                        'id': rvRef.getId(),
+                        'type': 'internal',
+                        'title': rv.getTitle(),
+                        'relationship' : angular.copy(rvRef.getRelation())
+                    };
+                $scope.vocab['related_vocabulary'].push(rvForForm);
+            });
+
+            $scope.vocab['versions'] = [];
+            angular.forEach(data.getVersion(), function(ver) {
+                var versionForForm = {
+                    'id': ver.getId(),
+                    'status': ver.getStatus(),
+                    'title': ver.getTitle(),
+                    'slug': ver.getSlug(),
+                    'release_date': ver.getReleaseDate(),
+                    'note': ver.getNote(),
+                    // 'import': ver.getDoImport(),
+                    // 'publish': ver.getDoPublish(),
+                    'doImport': ver.getDoImport(),
+                    'doPublish': ver.getDoPublish(),
+                    'doPoolpartyHarvest': ver.getDoPoolpartyHarvest(),
+                    'forceWorkflow': ver.getForceWorkflow(),
+                    'access_points': ver.getAccessPoint().map(function (ap) {
+                        var APForm = {
+                            type: ap.getDiscriminator(),
+                            id: ap.getId()
+                        };
+                        switch (ap.getDiscriminator()) {
+                            case "webPage":
+                                APForm.uri = ap.getApWebPage().getUrl();
+                                break;
+                            case "apiSparql":
+                                APForm.uri = ap.getApApiSparql().getUrl();
+                                break;
+                            case "file":
+                                APForm.uri = ap.getApFile().getUrl();
+                                APForm.format = ap.getApFile().getFormat();
+                                APForm.upload_id = ap.getApFile().getUploadId();
+                                break;
+                        }
+
+                        return APForm;
+                    })
+//                        '': ver.get(),
+                };
+                $scope.vocab['versions'].push(versionForForm);
+            });
+            $log.debug("Local vocab scope", $scope.vocab);
+        };
+
+        // Create a Registry API model object based on the form values.
+        // TODO: migrate this outside of controller, this is not a controller method
+        $scope.create_vocab_from_scope = function () {
+            var vocab = new VocabularyRegistryApi.Vocabulary();
+            if ($('#vocab_id').val()) {
+                vocab.setId($('#vocab_id').val());
+            }
+            if ($('#vocab_slug').val()) {
+                vocab.setSlug($('#vocab_slug').val());
+            }
+
+            // set PP
+            if ($scope.vocab['poolparty_id']) {
+                var PPProject = new VocabularyRegistryApi.PoolpartyProject();
+                PPProject.setServerId(1);
+                PPProject.setProjectId($scope.vocab['poolparty_id']);
+                vocab.setPoolpartyProject(PPProject);
+            }
+
+            vocab.setTitle($scope.vocab['title']);
+            vocab.setAcronym($scope.vocab['acronym']);
+            vocab.setDescription($scope.vocab['description']);
+            vocab.setLicence($scope.vocab['licence']);
+            vocab.setRevisionCycle($scope.vocab['revision_cycle']);
+            vocab.setNote($scope.vocab['note']);
+            vocab.setOwner($scope.vocab['owner']);
+            vocab.setTopConcept(angular.copy($scope.vocab['top_concept']));
+            // Extract creation date directly from the input text field, not
+            // from the model value.
+            vocab.setCreationDate($('#creation_date').val());
+            var languages = angular.copy($scope.vocab['language']);
+            vocab.setPrimaryLanguage(languages.shift());
+            vocab.setOtherLanguage(languages);
+
+            // subjects
+            if ($scope.vocab['subjects'].length) {
+                var subjects = $scope.vocab['subjects'].map(function(subject) {
+                    var subjectModel = new VocabularyRegistryApi.Subject();
+                    subjectModel.setSource(subject['subject_source']);
+                    subjectModel.setLabel(subject['subject_label']);
+                    subjectModel.setIri(subject['subject_iri']);
+                    subjectModel.setNotation(subject['subject_notation']);
+                    return subjectModel;
+                });
+                vocab.setSubject(subjects);
+            }
+
+            // related-entities
+            if ($scope.vocab['related_entity'].length) {
+                var relatedEntitiesRefs = $scope.vocab['related_entity'].map(function (re) {
+                    var relatedEntity =  new VocabularyRegistryApi.RelatedEntityRef();
+                    relatedEntity.setId(re['id']);
+                    relatedEntity.setRelation(re['relationship']);
+                    return relatedEntity;
+                });
+                vocab.setRelatedEntityRef(relatedEntitiesRefs);
+            }
+
+            // related-vocabularies
+            if ('related_vocabulary' in $scope.vocab && $scope.vocab['related_vocabulary'].length) {
+                var relatedVocabulariesRef = $scope.vocab['related_vocabulary'].map(function(re){
+                   var relatedEntity = new VocabularyRegistryApi.RelatedVocabularyRef();
+                   relatedEntity.setId(re['id']);
+                   relatedEntity.setRelation(re['relationship']);
+                   return relatedEntity;
+                });
+                vocab.setRelatedVocabularyRef(relatedVocabulariesRef);
+            }
+
+            if ($scope.vocab['versions'].length) {
+                var versions = $scope.vocab['versions'].map(function(version) {
+                    var versionEntity = new VocabularyRegistryApi.Version();
+
+                    if (version['id']) {
+                        versionEntity.setId(version['id']);
+                    }
+
+                    versionEntity.setTitle(version['title']);
+                    versionEntity.setNote(version['note']);
+                    var release_date = 'release_date_val' in version ?
+                        version['release_date_val'] : version['release_date'];
+                    versionEntity.setReleaseDate(release_date);
+
+                    versionEntity.setStatus(version['status']);
+
+                    if (version['doImport'] && version['doImport'] === true) {
+                        versionEntity.setDoImport(true);
+                    } else versionEntity.setDoImport(false);
+
+                    if (version['doPublish'] && version['doPublish'] === true) {
+                        versionEntity.setDoPublish(true);
+                    } else versionEntity.setDoPublish(false);
+
+                    if (version['doPoolpartyHarvest'] && version['doPoolpartyHarvest'] === true) {
+                        versionEntity.setDoPoolpartyHarvest(true);
+                    } else versionEntity.setDoPoolpartyHarvest(false);
+
+                    if (version['forceWorkflow'] && version['forceWorkflow'] === true) {
+                        versionEntity.setForceWorkflow(true);
+                    } else versionEntity.setForceWorkflow(false);
+
+                    // access points
+                    var accessPoints = version['access_points'].map(function(ap) {
+                        return $scope.packAccessPoint(ap);
+                    });
+                    versionEntity.setAccessPoint(accessPoints);
+
+                    return versionEntity;
+                });
+                vocab.setVersion(versions);
+            }
+
+            return vocab;
+        };
+
+        // packing access points into the right format for delivery
+        $scope.packAccessPoint = function (ap) {
+            var APEntity = new VocabularyRegistryApi.AccessPoint();
+            if ("id" in ap) {
+                APEntity.setId(ap['id']);
+            }
+            APEntity.setDiscriminator(ap['type']);
+            APEntity.setSource(VocabularyRegistryApi.AccessPoint.SourceEnum.user);
+            switch (ap['type']) {
+                case "webPage":
+                    APEntity.setDiscriminator(VocabularyRegistryApi.AccessPoint.DiscriminatorEnum.webPage);
+                    var APWebPage = new VocabularyRegistryApi.ApWebPage;
+                    APWebPage.setUrl(ap['uri']);
+                    APEntity.setApWebPage(APWebPage);
+                    break;
+                case "apiSparql":
+                    APEntity.setDiscriminator(VocabularyRegistryApi.AccessPoint.DiscriminatorEnum.apiSparql);
+                    var APapiSparql = new VocabularyRegistryApi.ApApiSparql();
+                    APapiSparql.setUrl(ap['uri']);
+                    APEntity.setApApiSparql(APapiSparql);
+                    break;
+                case "file":
+                    APEntity.setDiscriminator(VocabularyRegistryApi.AccessPoint.DiscriminatorEnum.file);
+                    var APFile = new VocabularyRegistryApi.ApFile();
+                    APFile.setFormat(ap['format']);
+                    APFile.setUploadId(ap['upload_id']);
+                    APFile.setUrl(ap['uri']);
+                    APEntity.setApFile(APFile);
+                    break;
+                default:
+                    $log.error("Unknown AP type: ", ap['type']);
+                    break;
+            }
+            // if (ap['type'] === VocabularyRegistryApi.AccessPoint.DiscriminatorEnum.webPage)
+            // APEntity.setUrl(ap['url']);
+            //APEntity.setUploadID(ap['upload_id']);
+            $log.debug("Packed AP ", ap, APEntity);
+            return APEntity;
+        };
+
 
         // Now follows all the code for special treatment of the creation date.
         // See also versionCtrl.js, which has a modified version of all of
@@ -167,7 +560,7 @@
             // into the Unix epoch. But Date.parse() seems to cope better,
             // so pass the date field through Date.parse() first. If that
             // succeeds, it can then go through the Date constructor.
-            var dateValParsed = Date.parse($scope.original_data.creation_date);
+            var dateValParsed = Date.parse($scope.original_data.getCreationDate());
             if (!isNaN(dateValParsed)) {
                 var dateVal = new Date(dateValParsed);
                 $scope.vocab.creation_date = dateVal;
@@ -182,8 +575,8 @@
            It overrides the content of the creation date text field with
            the value we got from the database. */
         $scope.do_restore_creation_date = function() {
-            $('#creation_date').val($scope.original_data.creation_date);
-        }
+            $('#creation_date').val($scope.original_data.getCreationDate());
+        };
 
         /* Watcher for the vocab.creation_data field. If we got notification
            (via the restore_creation_date_value flag) to reset the text
@@ -204,15 +597,6 @@
             $scope.success_message = [];
             $scope.success_message.push('Successfully saved to a Draft.');
         }
-
-        /**
-         * Collect All PoolParty Project
-         */
-        $scope.projects = [];
-        $scope.ppid = {};
-        vocabs_factory.toolkit('listPoolPartyProjects').then(function (data) {
-            $scope.projects = data;
-        });
 
 
 
@@ -267,6 +651,7 @@
             return chosen;
         };
 
+        $scope.populatingPP = false;
         /**
          * Populate the vocab with data
          * @author  Minh Duc Nguyen <minh.nguyen@ands.org.au>
@@ -274,139 +659,231 @@
          * @param project
          */
         $scope.populate = function (project) {
-            if (project) {
+            if (!project) {
+                $log.debug("No project to populate")
+                return;
+            }
 
-                //populate data from the PP API first
-                //if selection was made
-                //otherwise assume the pooplParty ID is still in the field unprocessed!!!
-                if(typeof project.id != 'undefined'){
-                    $scope.vocab.pool_party_id = project.id;
-                } else {
-                    $scope.vocab.pool_party_id = project;
+            //populate data from the PP API first
+            //if selection was made
+            //otherwise assume the pooplParty ID is still in the field unprocessed!!!
+            if(typeof project.id != 'undefined'){
+                $scope.vocab.poolparty_id = project.id;
+            } else {
+                $scope.vocab.poolparty_id = project;
+            }
+
+            $scope.decide = true;
+
+            $scope.populatingPP = true;
+            ServicesAPI.getPoolPartyProjectMetadata($scope.PPServerID, $scope.vocab.poolparty_id).then(function(data) {
+                if (!data) {
+                    return;
                 }
 
-                $scope.decide = true;
-                //populate with metadata from toolkit, overwrite the previous data where need be
-                vocabs_factory.getMetadata($scope.vocab.pool_party_id).then(function (data) {
-                    if (data) {
+                $scope.$apply(function() {
+                    $scope.populatingPP = false;
+                    $log.debug("Fetched PP Project", data);
+                    $scope.applyPPData(data);
+                });
+            });
 
-                        // CC-1447. Provide some feedback, if the Toolkit
-                        // returned with either an error or an exception.
-                        // This can happen, e.g., if the PP project does
-                        // not exist, or if the RDF data is invalid (and
-                        // therefore can not be parsed to extract metadata).
-                        if (("error" in data) || ("exception" in data)) {
-                            alert("Unable to get project metadata from PoolParty. Fields will not be pre-filled.");
-                            return;
-                        }
+        };
 
-                        if (data['dcterms:title']) {
-                            $scope.vocab.title = $scope.choose(data['dcterms:title']);
-                            if (angular.isArray($scope.vocab.title)) $scope.vocab.title = $scope.vocab.title[0];
-                        }
+        $scope.applyPPData = function(data) {
 
-                        if (data['dcterms:description']) {
-                            $scope.vocab.description = $scope.choose(data['dcterms:description']);
-                            if (angular.isArray($scope.vocab.description)) $scope.vocab.description = $scope.vocab.description[0];
-                        }
+            // CC-1447. Provide some feedback, if the Toolkit
+            // returned with either an error or an exception.
+            // This can happen, e.g., if the PP project does
+            // not exist, or if the RDF data is invalid (and
+            // therefore can not be parsed to extract metadata).
+            if (("error" in data) || ("exception" in data)) {
+                alert("Unable to get project metadata from PoolParty. Fields will not be pre-filled.");
+                return;
+            }
 
-                        if (data['dcterms:subject']) {
-                            //overwrite the previous ones
-                            var chosen = $scope.choose(data['dcterms:subject']);
+            if (data['dcterms:title']) {
+                $scope.vocab.title = $scope.choose(data['dcterms:title']);
+                if (angular.isArray($scope.vocab.title)) $scope.vocab.title = $scope.vocab.title[0];
+            }
 
-                            $scope.vocab.subjects = [];
-                            angular.forEach(chosen, function (theone) {
-                                $scope.vocab.subjects.push(
-                                    {subject_source: 'local',
-                                     subject_label: theone,
-                                     subject_iri: '',
-                                     subject_notation: ''
-                                     });
-                            });
-                        }
-                        if (data['dcterms:language']) {
-                            var chosen = $scope.choose(data['dcterms:language']);
-                            $scope.vocab.language = [];
-                            angular.forEach(chosen, function (lang) {
-                                $scope.vocab.language.push(lang);
-                            });
-                        }
-                      //related entity population
-                        if (!$scope.vocab.related_entity) $scope.vocab.related_entity = [];
+            if (data['dcterms:description']) {
+                $scope.vocab.description = $scope.choose(data['dcterms:description']);
+                if (angular.isArray($scope.vocab.description)) $scope.vocab.description = $scope.vocab.description[0];
+            }
 
-                        //Go through the list to determine the related entities to add
-                        var rel_ent = [
-                            {field: 'dcterms:publisher', relationship: 'publishedBy'},
-                            {field: 'dcterms:contributor', relationship: 'hasContributor'},
-                            {field: 'dcterms:creator', relationship: 'hasAuthor'}
-                        ];
-                        angular.forEach(rel_ent, function (rel) {
-                            if (data[rel.field]) {
-                                var chosen = $scope.choose(data[rel.field]);
-                                var list = [];
-                                if (angular.isString(chosen)) {
-                                    list.push(chosen);
-                                } else {
-                                    angular.forEach(chosen, function (item) {
-                                        list.push(item);
-                                    });
-                                }
-                                angular.forEach(list, function (item) {
+            if (data['dcterms:subject']) {
+                //overwrite the previous ones
+                var chosen = $scope.choose(data['dcterms:subject']);
 
-                                    //check if same item exist
-                                    var exist = false;
-                                    angular.forEach($scope.vocab.related_entity, function (entity) {
-                                        if (entity.title == item) exist = entity;
-                                    });
+                $scope.vocab.subjects = [];
+                angular.forEach(chosen, function (theone) {
+                    $scope.vocab.subjects.push(
+                        {subject_source: 'local',
+                            subject_label: theone,
+                            subject_iri: '',
+                            subject_notation: ''
+                        });
+                });
+            }
 
-                                    if (exist) {
-                                        exist.relationship.push(rel.relationship);
-                                    } else {
-                                        $scope.vocab.related_entity.push({
-                                            title: item,
-                                            type: 'party',
-                                            relationship: [rel.relationship]
-                                        });
-                                    }
+            if (data['dcterms:language']) {
+                var chosen = $scope.choose(data['dcterms:language']);
+                $scope.vocab.language = [];
+                angular.forEach(chosen, function (lang) {
+                    $scope.vocab.language.push(lang);
+                });
+            }
 
-                                })
-                            }
+            //related entity population
+            if (!$scope.vocab.related_entity) $scope.vocab.related_entity = [];
+
+            //Go through the list to determine the related entities to add
+            var rel_ent = [
+                {field: 'dcterms:publisher', relationship: 'publishedBy'},
+                {field: 'dcterms:contributor', relationship: 'hasContributor'},
+                {field: 'dcterms:creator', relationship: 'hasAuthor'}
+            ];
+
+            var relatedEntities = [];
+
+            angular.forEach(rel_ent, function (rel) {
+                if (data[rel.field]) {
+                    var chosen = $scope.choose(data[rel.field]);
+                    var list = [];
+                    if (angular.isString(chosen)) {
+                        list.push(chosen);
+                    } else {
+                        angular.forEach(chosen, function (item) {
+                            list.push(item);
+                        });
+                    }
+                    angular.forEach(list, function (item) {
+
+                        //check if same item exist
+                        var exist = false;
+                        angular.forEach(relatedEntities, function (entity) {
+                            if (entity.title == item) exist = entity;
                         });
 
+                        if (exist) {
+                            exist.relationship.push(rel.relationship);
+                        } else {
+                            relatedEntities.push({
+                                title: item,
+                                type: 'party',
+                                relationship: [rel.relationship],
+                                urls: [],
+                                identifiers: []
+                            });
+                        }
+                    })
+                }
+            });
+
+            // resolve related entities
+            // all related entities upon entering the form must have an id
+            api.getRelatedEntities("party").then(function(entities) {
+                $log.debug("Fetched all related parties", entities);
+                var titles = entities['related-entity'].map(function(re) {
+                    return re.title;
+                });
+                angular.forEach(relatedEntities, function(re){
+                    if (titles.indexOf(re.title) >= 0) {
+                        // it exists, grab it
+                        $log.debug("Related Entity " + re.title + " exists");
+                        var entity = entities['related-entity'].find(function(x) {
+                             return x.title === re.title;
+                        });
+                        $log.debug("Found", entity);
+                        re.id = entity.id;
+                        re.owner = entity.owner;
+                        $scope.$apply(function() {
+                            $scope.vocab.related_entity.push(re);
+                        });
+                    } else {
+                        // it doesn't exist, create it
+                        $log.debug("Related Entity " + re.title + " doesn't exist");
+                        var relatedEntity = $scope.packRelatedEntityFromData(re);
+                        $log.debug("Creating related entity", relatedEntity);
+                        api.createRelatedEntity(relatedEntity)
+                            .then(function(resp) {
+                                $log.debug("Success creating related entity", resp);
+                                re.id = resp.id;
+                                $scope.$apply(function() {
+                                    $scope.vocab.related_entity.push(re);
+                                });
+                            }, function(resp) {
+                                $log.error("Failed to create related entity", resp);
+                                var apiError = VocabularyRegistryApi.Error.
+                                    constructFromObject(resp.response.body);
+                                $scope.show_alert_with_callback(
+                                    'There was an error creating a new '
+                                        + 'related entity: '
+                                        + apiError.getMessage(),
+                                    function() {});
+                            });
                     }
                 });
-            } else {
-                console.log('no project to decide');
-            }
+            });
         };
 
         /**
          * Get any alert text to be displayed, after save/publish.
-         * Alert text is found by going through data.message.import_log,
-         * looking for values that begin with the string 'Alert: '.
+         * Alert text is found by going through data's workflow-outcome
+         * element, if there is one,
+         * looking for subtask results that have a key/value pair in
+         * which the key is 'alert-html'.
          * All such values are concatenated, separated by 'br' tags.
          * @param data Data returned from the save/publish service.
          * @return The alert message to be displayed.
          */
         $scope.get_alert_text_after_save = function (data) {
-            var alert_message = '';
-            if ((typeof data == 'object')
-                && (typeof data.message == 'object')
-                && (typeof data.message.import_log == 'object')
-                && (data.message.import_log.length > 0)) {
-                alert_message = data.message.import_log.reduce(
-                    function (previousValue, currentValue,
-                              currentIndex, array) {
-                        if (currentValue.startsWith('Alert: ')) {
-                            if (previousValue != '') {
-                                previousValue += '<br />';
-                            }
-                            return previousValue + currentValue;
-                        }
-                        return previousValue;
-                    }, '');
+            var workflowOutcome;
+            try {
+                workflowOutcome = data.getWorkflowOutcome();
+            } catch (err) {
+                return '';
             }
-            return alert_message;
+            var alerts = [];
+            if (workflowOutcome != null) {
+              // For each task outcome, each
+              // subtask outcome, each subtask result:
+              // see if it is an alert (has result-key 'alert-html').
+              var taskOutcomes = workflowOutcome.getTaskOutcome();
+              if (taskOutcomes != null) {
+                taskOutcomes.forEach(
+                  function (taskOutcome) {
+                    if (taskOutcome.getStatus() === 'error') {
+                        alerts.push('Alert: There was an error processing a ' +
+                                    'version of the vocabulary (version Id = ' +
+                                    taskOutcome.getVersionId() +
+                                    '). Please contact ' +
+                                    'services@ands.org.au for more ' +
+                                    'information.');
+                    }
+                    var subtaskOutcomes = taskOutcome.getSubtaskOutcome();
+                    if (subtaskOutcomes != null) {
+                      subtaskOutcomes.forEach(
+                        function (subtaskOutcome) {
+                          var subtaskResults = subtaskOutcome.
+                            getSubtaskResult();
+                          if (subtaskResults != null) {
+                            subtaskResults.forEach(
+                              function (subtaskResult) {
+                                if (subtaskResult.getResultKey() ===
+                                    'alert-html') {
+                                  alerts.push(subtaskResult.getResultValue());
+                                }
+                              });
+                          }
+                        });
+                    }
+                  });
+              }
+              return alerts.join('<br />');
+            }
+            return '';
         };
 
         /**
@@ -460,20 +937,90 @@
             }
         };
 
-        /**
-         * Saving a vocabulary
-         * Based on the mode, add and edit will call different service point
-         * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
-         */
-        $scope.save = function (status) {
+        /* TO DO: see if possible to reconcile the preceding method
+           with the following one.
+           The following method was quick/dirty to use a modified
+           events/hide so that the modal really goes away when you
+           close it. But that might well work for the above
+           case too; it never came up because the alerts generated
+           by the preceding method are followed by a redirect. */
 
-            $scope.error_message = false;
-            $scope.success_message = false;
-            if(status == 'discard'){
-                window.location.replace(base_url + 'vocabs/myvocabs');
+        /**
+         * Show an alert, with basic qTip behaviour. When the alert
+         * is hidden (by the user closing it), delete the qTip and
+         * invoke the hide_callback function.
+         * If no alert is to be shown, invoke the hide_callback
+         * function immediately.
+         * @param alert_message The alert message to be displayed.
+         * @param hide_callback Callback function to be invoked
+         *     when the alert is hidden.
+         */
+        $scope.show_alert_with_callback = function (alert_message,
+                                                    hide_callback) {
+            if (alert_message != '') {
+                $('body').qtip({
+                    content: {
+                        text: alert_message,
+                        title: 'Alert',
+                        button: 'Close'
+                    },
+                    style: {
+                        classes: 'qtip-bootstrap cms-help-tip'
+                    },
+                    position: {
+                        my: 'center',
+                        at: 'center',
+                        target: $(window)
+                    },
+                    show: {
+                        modal: true,
+                        when : false
+                    },
+                    hide: {
+                        // Overrides the default of 'mouseleave'.
+                        // Otherwise, clicking a link in the
+                        // alert text that has target="_blank"
+                        // opens a new tab/window, but also
+                        // closes the modal. With this setting,
+                        // the user can go back to the original
+                        // tab/window and still see the modal.
+                        event: ''
+                    },
+                    events: {
+                        hide: function(event, api) {
+                            api.destroy(true);
+                            hide_callback();
+                        }
+                    }
+                });
+                $('body').qtip('show');
+            } else {
+                hide_callback();
+            }
+        };
+
+        $scope.validStatuses = ['draft', 'published', 'deprecated', 'discard'];
+
+        // targetStatus: [draft, published, deprecated]
+        $scope.loading = false;
+        $scope.targetStatus = null;
+        $scope.save = function (targetStatus) {
+
+            $scope.loading = true;
+            $scope.targetStatus = targetStatus;
+
+            if ($scope.validStatuses.indexOf(targetStatus) < 0) {
+                $log.error("Target Status " + targetStatus + " is not valid");
+                $scope.loading = false;
                 return false;
             }
-            // Tidy up empty fields before validation.
+
+            if (targetStatus === 'discard'){
+                window.location.replace(base_url + 'vocabs/myvocabs');
+                $scope.loading = false;
+                return false;
+            }
+
             $scope.tidy_empty();
 
             // Validation.
@@ -481,95 +1028,113 @@
             if ($scope.form.cms.$invalid) {
                 // Put back the multi-value lists ready for more editing.
                 $scope.ensure_all_minimal_lists();
+                $log.error("Form Validation Failed");
+                $scope.loading = false;
                 return false;
             }
+
             // Then, do our own validation.
             if (!$scope.validate()) {
                 // Put back the multi-value lists ready for more editing.
                 $scope.ensure_all_minimal_lists();
+                $log.error("Client Validation Failed");
+                $scope.loading = false;
                 return false;
             }
 
-            // Save the date as it actually is in the input's textarea, not
-            // as it is in the model.
-            $scope.vocab.creation_date = $('#creation_date').val();
+            // packing up the vocab for transporting
+            $log.debug('packing', $scope.vocab);
+            var vocab = $scope.create_vocab_from_scope();
+            $log.debug('packed to', vocab);
 
-            if ($scope.mode == 'add' ||
-                ($scope.vocab.status == 'published' && status == 'draft')) {
-                $scope.vocab.status = status;
-                $scope.status = 'saving';
-                $log.debug('Adding Vocab', $scope.vocab);
-                vocabs_factory.add($scope.vocab).then(function (data) {
-                    $scope.status = 'idle';
-                    $log.debug('Data Response from saving vocab', data);
-                    if (data.status == 'ERROR') {
-                        $scope.error_message = data.message;
-                    } else {//success
-                        //navigate to the edit form if on the add form
-                        if (status == 'published') {
-                            $scope.show_alert_after_save(data,
-                                function() {
-                                    window.location.replace(base_url +
-                                        data.message.prop.slug);
-                                });
-                        }
-                        else{
-                        // $log.debug(data.message.prop[0].slug);
-                            $scope.success_message = data.message.import_log;
-                            $scope.success_message.push('Successfully saved to a Draft. <a href="' + base_url + "vocabs/edit/" + data.message.prop.id + '">Click Here edit the draft</a>');
-                            $scope.show_alert_after_save(data,
-                                function() {
-                                    window.location.replace(base_url +
-                                        "vocabs/edit/" +
-                                        data.message.prop.id +
-                                        '/#!/?message=saved_draft');
-                                });
-                        }
-                    }
-                });
-            } else if ($scope.mode == 'edit') {
-                $scope.vocab.status = status;
-                $scope.status = 'saving';
-                $log.debug('Saving Vocab', $scope.vocab);
-                vocabs_factory.modify($scope.vocab.id, $scope.vocab).then(function (data) {
-                    $scope.status = 'idle';
-                    $log.debug('Data Response from saving vocab (edit)', data);
-                    if (data.status == 'ERROR') {
-                        $scope.error_message = data.message;
-                    } else {//success
-                        $scope.success_message = data.message.import_log;
-                        $scope.success_message = [
-                            'Successfully saved Vocabulary.'
-                        ];
-                        if ($scope.vocab.status=='published') {
-                            $scope.success_message.push(
-                                '<a href="'+base_url+$scope.vocab.slug+'">View Vocabulary</a>'
-                            )
-                        }
-                        if (status == 'draft') {
-                            vocabs_factory.get($scope.vocab.id).then(function (data) {
-                                $scope.vocab = data.message;
-                            });
-                        } else if(status == 'deprecated'){
-                            $scope.show_alert_after_save(data, function() {
-                                window.location.replace(base_url +
-                                                        'vocabs/myvocabs');
-                            });
-                        }
-                        else{
-                            $scope.show_alert_after_save(data, function() {
-                                window.location.replace(base_url +
-                                                        $scope.vocab.slug);
-                            });
-                        }
-                    }
-                });
+            vocab.setStatus(targetStatus);
+
+            $scope.errors = [];
+            $scope.success_message = [];
+
+            if ($scope.mode === "add") {
+                api.createVocabulary(vocab)
+                    .then(
+                        $scope.handleSuccessResponse,
+                        $scope.handleErrorResponse
+                    ).finally( function() {
+                        $scope.$apply(function () {
+                            $scope.status = "idle";
+                        });
+                    });
+            } else if ($scope.mode === "edit") {
+                api.updateVocabulary(vocab.getId(), vocab)
+                    .then(
+                        $scope.handleSuccessResponse,
+                        $scope.handleErrorResponse
+                    ).finally( function() {
+                        $scope.$apply(function () {
+                            $scope.status = "idle";
+                        });
+                    });
             }
         };
 
-        $scope.validate = function () {
+        $scope.handleSuccessResponse = function (resp) {
+            $scope.loading = false;
+            $log.debug("Success", resp);
+            $scope.showServerSuccessMessage(resp);
 
-            $log.debug($scope.form.cms);
+            $scope.show_alert_after_save(resp, function() {
+                if ($scope.targetStatus === "published") {
+                    window.location.replace(base_url + "viewById/" + resp.id);
+                    return;
+                }
+
+                if ($scope.mode === "add") {
+                    // relocate to the new edit page with an id now
+                    window.location.replace(base_url +
+                                            'vocabs/edit/' + resp.id);
+                    return;
+                }
+            });
+        };
+
+        $scope.handleErrorResponse = function (resp) {
+            $scope.loading = false;
+            $log.error("Error", resp.status, resp.response.body);
+            $scope.showServerValidationErrors(resp.response.body);
+        };
+
+        $scope.showServerValidationErrors = function (payload) {
+            if (!payload) {
+                $log.error("Server Response unreadable");
+                return;
+            }
+            $log.debug("Showing errors", payload);
+
+            $scope.errors = [];
+
+            // show servers errores
+            if ("message" in payload) {
+                $scope.errors = [ payload.message ];
+            } else {
+                $log.debug("No message found in ", payload);
+            }
+
+            // show constraints violation
+            if ("constraintViolation" in payload) {
+                $scope.errors = payload.constraintViolation.map(function (item) {
+                    return item.message;
+                });
+            } else {
+                $log.debug("No constraintViolation found in ", payload);
+            }
+
+        };
+
+        $scope.showServerSuccessMessage = function (payload) {
+            $scope.success_message = [ 'Successfully saved Vocabulary.' ];
+        };
+
+        $scope.validate = function () {
+            // $log.debug($scope.form.cms);
+            $scope.error_message = false;
             if ($scope.form.cms.$valid) {
 
                 //language validation
@@ -601,10 +1166,9 @@
                         $scope.error_message = 'There must be a publisher related to this vocabulary';
                     }
                 }
-
             }
 
-            return $scope.error_message == false;
+            return $scope.error_message === false;
         };
 
         /**
@@ -642,7 +1206,7 @@
         // copy of the related entity to the modal, and then need to
         // copy it back into the correct place after a Save.
         $scope.relatedmodal = function (action, type, index) {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: base_url + 'assets/vocabs/templates/relatedModal.html',
                 controller: 'relatedCtrl',
                 windowClass: 'modal-center',
@@ -658,6 +1222,131 @@
                     type: function () {
                         return type;
                     },
+                    user_orgs: function() {
+                        return $scope.user_orgs;
+                    },
+                    confluenceTip: function () {
+                        return $scope.confluenceTip;
+                    }
+                }
+            });
+            modalInstance.result.then(function (obj) {
+                //close
+                // TODO: Migrate over to relatedCtrl instead, handle validation there
+                var relatedEntity = $scope.packRelatedEntityFromData(obj.data);
+                $log.debug("packed related entity to", relatedEntity, obj);
+                if ("id" in obj.data) {
+                    // has ID, update if the owner is the same
+                    relatedEntity.setId(obj.data['id']);
+
+                    // different owner
+                    if ($scope.vocab.owner !== obj.data.owner) {
+                        $scope.addRelatedEntity(obj.data, index);
+                    } else {
+                        $log.debug("Updating related entity", relatedEntity);
+                        api.updateRelatedEntity(relatedEntity.getId(), relatedEntity)
+                            .then(function(resp) {
+                                $log.debug("Success updating related entity", resp);
+                                $scope.$apply(function() {
+                                    $scope.addRelatedEntity(obj.data, index);
+                                });
+                            }, function(resp){
+                                $log.error("Failed updating related entity", resp)
+                                var apiError = VocabularyRegistryApi.Error.
+                                    constructFromObject(resp.response.body);
+                                $scope.show_alert_with_callback(
+                                    'There was an error updating a '
+                                        + 'related entity: '
+                                        + apiError.getMessage(),
+                                    function() {});
+                            });
+                    }
+                } else {
+                    // does not have ID, create
+                    $log.debug("Creating related entity", relatedEntity);
+                    api.createRelatedEntity(relatedEntity)
+                        .then(function(resp) {
+                            $log.debug("Success creating related entity", resp);
+                            $scope.$apply(function() {
+                                obj.data['id'] = resp['id'];
+                                obj.data['owner'] = resp['owner'];
+                                $scope.vocab.related_entity.push(obj.data);
+                            });
+                        }, function(resp){
+                            $log.error("Failed creating related entity", resp);
+                            var apiError = VocabularyRegistryApi.Error.
+                                constructFromObject(resp.response.body);
+                            $scope.show_alert_with_callback(
+                                'There was an error creating a new '
+                                    + 'related entity: '
+                                    + apiError.getMessage(),
+                                function() {});
+                        });
+                }
+
+            }, function () {
+                // dismiss, do nothing?
+            });
+        };
+
+        $scope.addRelatedEntity = function(relatedEntity, index) {
+            var exist = $scope.vocab.related_entity.find(function(re) {
+                return re.id === relatedEntity.id;
+            });
+            if (exist && index) {
+                $log.debug("Found existing related entity", exist);
+                $scope.vocab.related_entity[index] = relatedEntity;
+            } else {
+                $log.debug("Does not found exist, add new");
+                $scope.vocab.related_entity.push(relatedEntity);
+            }
+        };
+
+        $scope.packRelatedEntityFromData = function(data) {
+            var relatedEntity =  new VocabularyRegistryApi.RelatedEntity();
+            relatedEntity.setTitle(data['title']);
+            relatedEntity.setType(data['type']);
+            relatedEntity.setEmail(data['email']);
+            relatedEntity.setPhone(data['phone']);
+            relatedEntity.setId(data['id']);
+            relatedEntity.setOwner($scope.vocab.owner);
+
+            // owner is set by the vocab.owner exclusively
+            // it must be already set by this point
+            relatedEntity.setOwner($scope.vocab.owner);
+
+            // identifiers
+            var identifiers = data['identifiers'].map(function(id) {
+                var identifier = new VocabularyRegistryApi.RelatedEntityIdentifier();
+                identifier.setIdentifierType(id.rei_type);
+                identifier.setIdentifierValue(id.rei_value);
+                return identifier;
+            });
+            relatedEntity.setRelatedEntityIdentifier(identifiers);
+
+            // urls
+            var urls = data['urls'].map(function(url) {
+                 return url.url;
+            });
+            relatedEntity.setUrl(urls);
+
+            return relatedEntity;
+        };
+
+        $scope.relatedvocabularymodal = function (action, index) {
+            var modalInstance = $uibModal.open({
+                templateUrl: base_url + 'assets/vocabs/templates/relatedVocabularyModal.html',
+                controller: 'relatedVocabularyCtrl',
+                windowClass: 'modal-center',
+                resolve: {
+                    entity: function () {
+                        if (action == 'edit') {
+                            // CC-1518 Operate on a copy of the related vocabulary.
+                            return angular.copy($scope.vocab.related_vocabulary[index]);
+                        } else {
+                            return false;
+                        }
+                    },
                     confluenceTip: function () {
                         return $scope.confluenceTip;
                     }
@@ -667,26 +1356,27 @@
                 //close
                 if (obj.intent == 'add') {
                     var newObj = obj.data;
-                    newObj['type'] = type;
-                    if (newObj['type'] == 'publisher') newObj['type'] = 'party';
-                    if (!$scope.vocab.related_entity) $scope.vocab.related_entity = [];
-                    $scope.vocab.related_entity.push(newObj);
+                    if (!$scope.vocab.related_vocabulary) $scope.vocab.related_vocabulary = [];
+                    $scope.vocab.related_vocabulary.push(newObj);
                 } else if (obj.intent == 'save') {
-                    // CC-1518 Copy the modified related entity back into place.
-                    $scope.vocab.related_entity[index] = obj.data;
+                    $scope.vocab.related_vocabulary[index] = obj.data;
                 }
             }, function () {
                 //dismiss
             });
         };
 
+        $scope.testbool = false;
+        $scope.testbool2 = true;
+
         // CC-1518 Need the version index, because we send a copy of the version
         // to the modal, and then need to copy it back into the correct place
         // after a Save.
         $scope.versionmodal = function (action, index) {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: base_url + 'assets/vocabs/templates/versionModal.html',
                 controller: 'versionCtrl',
+                size: 'lg',
                 windowClass: 'modal-center',
                 resolve: {
                     version: function () {
@@ -698,13 +1388,16 @@
                         }
                     },
                     vocab: function () {
-                        return $scope.vocab
+                        return $scope.vocab;
                     },
                     action: function () {
                         return action;
                     },
                     confluenceTip: function () {
                         return $scope.confluenceTip;
+                    },
+                    tinymceOptions: function () {
+                        return $scope.tinymceOptions;
                     }
                 }
             });
@@ -745,7 +1438,7 @@
                             subject_notation: ''};
             } else {
                 // Otherwise ('language' and 'top_concept') ...
-                newValue = '';
+                newValue = null;
             }
 
             // Add new blank item to list.
@@ -769,7 +1462,7 @@
                 $scope.vocab[type].splice(0, 1);
             }
             $scope.ensure_minimal_list(type);
-        }
+        };
 
         /** Ensure that a multi-value field has a minimal content, ready
             for editing. For some types, this could be an empty list;
@@ -779,7 +1472,7 @@
                 // Now an empty list. Do we put back a placeholder?
                 switch (type) {
                 case 'language':
-                    $scope.vocab[type] = [""];
+                    $scope.vocab[type] = [null];
                     break;
                 case 'subjects':
                     $scope.vocab[type] = [{
@@ -792,7 +1485,7 @@
                 default:
                 }
             }
-        }
+        };
 
         /** Ensure that all multi-value fields have minimal content, ready
             for editing. For some types, this could be an empty list;
@@ -801,7 +1494,7 @@
             angular.forEach($scope.multi_valued_lists, function (type) {
                 $scope.ensure_minimal_list(type);
             });
-        }
+        };
 
         /** Tidy up all empty fields. To be used before saving.
             Note that this does not guarantee validity.
@@ -812,7 +1505,7 @@
             $scope.vocab.top_concept = $scope.vocab.top_concept.filter(Boolean);
             $scope.vocab.language = $scope.vocab.language.filter(Boolean);
             $scope.vocab.subjects = $scope.vocab.subjects.filter($scope.partially_valid_subject_filter);
-        }
+        };
 
         /** Utility function for validation of fields that can have
             multiple entries. The list is supposed to have at least one
@@ -978,3 +1671,24 @@ RewriteRule ^/ands_doc/tooltips$  /ands_doc/pages/viewpage.action?pageId=2247884
 
 
 })();
+
+// Polyfill Promise finally() method from
+// https://www.promisejs.org/api/
+// Needed for Safari and IE (sigh).
+// Used when saving.
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+if (!Promise.prototype.finally) {
+  Object.defineProperty(Promise.prototype, 'finally', {
+    value: function (f) {
+      return this.then(function (value) {
+        return Promise.resolve(f()).then(function () {
+          return value;
+        });
+      }, function (err) {
+        return Promise.resolve(f()).then(function () {
+          throw err;
+        });
+      });
+    }
+  });
+}

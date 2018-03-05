@@ -7,6 +7,12 @@
 
     function searchController($scope, $timeout, $log, $location, vocabs_factory) {
 
+        // Initialise Registry API access.
+        var VocabularyRegistryApi = require('vocabulary_registry_api');
+        var defaultClient = VocabularyRegistryApi.ApiClient.instance;
+        defaultClient.basePath = registry_api_url;
+        var api = new VocabularyRegistryApi.ServicesApi();
+
         $scope.vocabs = [];
         $scope.filters = {};
         $scope.base_url = base_url;
@@ -14,6 +20,9 @@
         // $log.debug($location.search());
         // The form of filters value for this will be <base_url>+/#!/?<filter>=<value>
         // eg. <base_url>+/#!/?q=fish, #!/?q=fish&subjects=Fish
+        // In recent AngularJS, $scope.filters is a _copy_, not
+        // a reference. So need to invoke $location.search($scope.filters)
+        // when there's a change.
         $scope.filters = $location.search();
 
         $scope.search = function (isPagination) {
@@ -22,9 +31,13 @@
             if ($scope.searchRedirect()) {
                 window.location = base_url + 'search/#!/?q=' + $scope.filters['q'];
             } else {
+                // See comment above about a change to AngularJS. Now,
+                // put back our $scope.filters into $location.search().
+                $location.search($scope.filters);
                 $location.path('/').replace();
                 window.history.pushState($scope.filters, 'ANDS Research Vocabulary', $location.absUrl());
-                vocabs_factory.search($scope.filters).then(function (data) {
+                api.search({"filtersJson": JSON.stringify($scope.filters)}).
+                then(function (data) {
                     $log.debug(data);
                     $scope.result = data;
                     var facets = [];
@@ -52,6 +65,9 @@
                             $scope.page.pages.push(x);
                         }
                     }
+                    // We changed the model outside AngularJS's notice, so we
+                    // need to cause a refresh of the form.
+                    $scope.$apply();
                 });
             }
         };
@@ -66,6 +82,9 @@
             return $('#search_app').length <= 0;
         };
 
+        // Seems to be necessary to get started. Unfortunately, the $watch
+        // defined below also then kicks in, so the initial search is done
+        // twice.
         if (!$scope.searchRedirect()) {
             $scope.search();
         }
@@ -132,18 +151,10 @@
 
         $scope.clearFilter = function (type, value, execute) {
             if (typeof $scope.filters[type] != 'object') {
-                if (type == 'q') {
-                    $scope.query = '';
-                    search_factory.update('query', '');
-                    $scope.filters['q'] = '';
-                } else if (type == 'description' || type == 'title' || type == 'identifier' || type == 'related_people' || type == 'related_organisations' || type == 'institution' || type == 'researcher') {
-                    $scope.query = '';
-                    search_factory.update('query', '');
-                    delete $scope.filters[type];
-                    delete $scope.filters['q'];
-                }
+                // It's a string.
                 delete $scope.filters[type];
             } else if (typeof $scope.filters[type] == 'object') {
+                // It's an array.
                 var index = $scope.filters[type].indexOf(value);
                 $scope.filters[type].splice(index, 1);
             }

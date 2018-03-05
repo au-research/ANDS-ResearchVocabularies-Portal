@@ -4,7 +4,7 @@
 
 			<div class="col-md-4 col-lg-3 sidebar search-sidebar">
 
-				<div ng-if="facets.subject_labels">
+				<div ng-if="facets.subject_labels.length > 0">
 				<h3>Subject</h3>
 					<ul class="list-unstyled">
 						<li ng-repeat="facet in facets.subject_labels.slice(0,8)">
@@ -28,7 +28,7 @@
                         </a>
                     </ul>
 				</div>
-				<div ng-if="facets.publisher">
+				<div ng-if="facets.publisher.length > 0">
 				<h3>Publisher</h3>
    					<ul class="list-unstyled">
 						<li ng-repeat="facet in facets.publisher.slice(0,8)">
@@ -49,7 +49,7 @@
                         </a>
 					</ul>
 				</div>
-				<div ng-if="facets.language">
+				<div ng-if="facets.language.length > 0">
 				<h3>Language</h3>
 					<ul class="list-unstyled">
 						<li ng-repeat="facet in facets.language.slice(0,8)">
@@ -70,7 +70,7 @@
                         </a>
                     </ul>
 				</div>
-				<div ng-if="facets.format">
+				<div ng-if="facets.format.length > 0">
 				<h3>Format</h3>
 					<ul class="list-unstyled">
 						<li ng-repeat="facet in facets.format">
@@ -79,7 +79,7 @@
 						</li>
 					</ul>
 				</div>
-				<div ng-if="facets.access">
+				<div ng-if="facets.access.length > 0">
 				<h3>Access</h3>
 					<ul class="list-unstyled">
 						<li ng-repeat="facet in facets.access">
@@ -88,7 +88,7 @@
 						</li>
 					</ul>
 				</div>
-				<div ng-if="facets.licence">
+				<div ng-if="facets.licence.length > 0">
 				<h3>Licence</h3>
 					<ul class="list-unstyled">
 						<li ng-repeat="facet in facets.licence">
@@ -110,18 +110,22 @@
                 <div class="clearfix"></div>
 
 				<div ng-repeat="doc in result.response.docs" class="animated fadeInLeft vocab-search-result">
-                    <span class="label label-default pull-right" ng-if="doc.status=='deprecated'"  style="margin-left:5px">[[ doc.status ]]</span>
-                    <a id="widget-link" class="pull-right" href="" ng-if="doc.widgetable" tip="<b>Widgetable</b><br/>This vocabulary can be readily used for resource description or discovery in your system using our vocabulary widget.<br/><a id='widget-link2' target='_blank' href='{{portal_url('vocabs/page/widget_explorer')}}'>Learn more</a>">
+
+                    <span class="label label-default pull-right"
+						  ng-if="doc.status=='deprecated' || doc.status=='DEPRECATED'"
+						  style="margin-left:5px">deprecated</span>
+					
+                    <a id="widget-link" class="pull-right" href="" ng-if="doc.widgetable" tip="&lt;b>Widgetable&lt;/b>&lt;br/>This vocabulary can be readily used for resource description or discovery in your system using our vocabulary widget.&lt;br/>&lt;a id='widget-link2' target='_blank' href='{{portal_url('vocabs/page/widget_explorer')}}'>Learn more&lt;/a>">
                        <span class="label label-default pull-right"><img class="widget-icon" height="16" width="16"src="{{asset_url('images/cogwheels_white.png', 'core')}}"/> widgetable</span>
                     </a>
 
-                    <h3 class="break"><a href="[[ base_url ]][[ doc.slug ]]">[[ doc.title ]]</a></h3>
+                    <h3 class="break"><a href="[[ base_url ]]viewById/[[ doc.id ]]">[[ doc.title ]]</a></h3>
 
                    	<p ng-if="doc.acronym">
 						<small>Acronym: [[ doc.acronym ]]</small>
 					</p>
 					<p ng-if="doc.publisher">
-						Publisher: [[ doc.publisher.join(',') ]]
+						Publisher: [[ doc.publisher.join(', ') ]]
 					</p>
 					<p ng-if="getHighlight(doc.id)===false">[[ doc.description | limitTo:500 ]]<span ng-if="doc.description.length > 500">...</span></p>
 					<div ng-repeat="(index, content) in getHighlight(doc.id)" class="element-shorter-bottom">
