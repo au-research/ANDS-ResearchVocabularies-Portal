@@ -815,6 +815,13 @@
                                 });
                             }, function(resp) {
                                 $log.error("Failed to create related entity", resp);
+                                var apiError = VocabularyRegistryApi.Error.
+                                    constructFromObject(resp.response.body);
+                                $scope.show_alert_with_callback(
+                                    'There was an error creating a new '
+                                        + 'related entity: '
+                                        + apiError.getMessage(),
+                                    function() {});
                             });
                     }
                 });
@@ -922,6 +929,68 @@
                     },
                     events: {
                         hide: hide_callback
+                    }
+                });
+                $('body').qtip('show');
+            } else {
+                hide_callback();
+            }
+        };
+
+        /* TO DO: see if possible to reconcile the preceding method
+           with the following one.
+           The following method was quick/dirty to use a modified
+           events/hide so that the modal really goes away when you
+           close it. But that might well work for the above
+           case too; it never came up because the alerts generated
+           by the preceding method are followed by a redirect. */
+
+        /**
+         * Show an alert, with basic qTip behaviour. When the alert
+         * is hidden (by the user closing it), delete the qTip and
+         * invoke the hide_callback function.
+         * If no alert is to be shown, invoke the hide_callback
+         * function immediately.
+         * @param alert_message The alert message to be displayed.
+         * @param hide_callback Callback function to be invoked
+         *     when the alert is hidden.
+         */
+        $scope.show_alert_with_callback = function (alert_message,
+                                                    hide_callback) {
+            if (alert_message != '') {
+                $('body').qtip({
+                    content: {
+                        text: alert_message,
+                        title: 'Alert',
+                        button: 'Close'
+                    },
+                    style: {
+                        classes: 'qtip-bootstrap cms-help-tip'
+                    },
+                    position: {
+                        my: 'center',
+                        at: 'center',
+                        target: $(window)
+                    },
+                    show: {
+                        modal: true,
+                        when : false
+                    },
+                    hide: {
+                        // Overrides the default of 'mouseleave'.
+                        // Otherwise, clicking a link in the
+                        // alert text that has target="_blank"
+                        // opens a new tab/window, but also
+                        // closes the modal. With this setting,
+                        // the user can go back to the original
+                        // tab/window and still see the modal.
+                        event: ''
+                    },
+                    events: {
+                        hide: function(event, api) {
+                            api.destroy(true);
+                            hide_callback();
+                        }
                     }
                 });
                 $('body').qtip('show');
@@ -1183,6 +1252,13 @@
                                 });
                             }, function(resp){
                                 $log.error("Failed updating related entity", resp)
+                                var apiError = VocabularyRegistryApi.Error.
+                                    constructFromObject(resp.response.body);
+                                $scope.show_alert_with_callback(
+                                    'There was an error updating a '
+                                        + 'related entity: '
+                                        + apiError.getMessage(),
+                                    function() {});
                             });
                     }
                 } else {
@@ -1197,7 +1273,14 @@
                                 $scope.vocab.related_entity.push(obj.data);
                             });
                         }, function(resp){
-                            $log.error("Failed creating related entity", resp)
+                            $log.error("Failed creating related entity", resp);
+                            var apiError = VocabularyRegistryApi.Error.
+                                constructFromObject(resp.response.body);
+                            $scope.show_alert_with_callback(
+                                'There was an error creating a new '
+                                    + 'related entity: '
+                                    + apiError.getMessage(),
+                                function() {});
                         });
                 }
 
