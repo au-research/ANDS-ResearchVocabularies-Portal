@@ -1241,7 +1241,7 @@
 
                     // different owner
                     if ($scope.vocab.owner !== obj.data.owner) {
-                        $scope.addRelatedEntity(obj.data);
+                        $scope.addRelatedEntity(obj.data, index);
                     } else {
                         $log.debug("Updating related entity", relatedEntity);
                         api.updateRelatedEntity(relatedEntity.getId(), relatedEntity)
