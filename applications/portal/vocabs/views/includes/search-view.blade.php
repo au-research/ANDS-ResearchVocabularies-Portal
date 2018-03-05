@@ -125,7 +125,7 @@
 						<small>Acronym: [[ doc.acronym ]]</small>
 					</p>
 					<p ng-if="doc.publisher">
-						Publisher: [[ doc.publisher.join(',') ]]
+						Publisher: [[ doc.publisher.join(', ') ]]
 					</p>
 					<p ng-if="getHighlight(doc.id)===false">[[ doc.description | limitTo:500 ]]<span ng-if="doc.description.length > 500">...</span></p>
 					<div ng-repeat="(index, content) in getHighlight(doc.id)" class="element-shorter-bottom">
