@@ -410,7 +410,7 @@
 
                 // duplicate relationships
                 if ($scope.hasDuplicateRelationships()) {
-                    $scope.error_message = 'No duplicate relationships allowed';
+                    $scope.error_message = 'Duplicate relationships are not permitted';
                     return false;
                 }
 

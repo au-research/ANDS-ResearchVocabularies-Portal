@@ -11,13 +11,19 @@
                             <div align="center">
                                 <p class="small center"> <span class="yellow_exclamation"><i class="fa fa-exclamation" style="color:#fff"></i></span>
                                     Please review the <a href="https://documentation.ands.org.au/display/DOC/Research+Vocabularies+Australia+participant+agreement" target="_blank">Research Vocabularies Australia participant agreement</a> before you proceed.<br />
-                                    If you have questions, please email <a href="mailto:services.ands.org.au">services.ands.org.au</a>.
                                 </p>
                             </div>
-                            @if($this->user->affiliations())
+                            @if(count($affiliates) > 0)
 							<a href="{{ portal_url('vocabs/add') }}" class="btn btn-block btn-primary"><i class="fa fa-plus"></i> Add a new vocabulary from PoolParty</a>
-                            @endif
                             <a href="{{ portal_url('vocabs/add#!/?skip=true') }}" class="btn btn-block btn-primary"><i class="fa fa-plus"></i> Add a new Vocabulary</a>
+							@else
+								<br>
+							<div align="center">
+								<p class="small center">
+									Your account is not affiliated with an organisational role. Please contact <a href="mailto:services@ands.org.au">services@ands.org.au</a> for assistance.
+								</p>
+							</div>
+							@endif
 							<hr>
 							@if(sizeof($ownedCount) == 0)
 								You don't own any vocabularies, start by adding a new one

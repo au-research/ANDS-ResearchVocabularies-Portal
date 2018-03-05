@@ -23,6 +23,8 @@ class Vocabs extends MX_Controller
     // Access to the Registry API.
     private $RegistryAPI;
 
+    private $ServiceAPI;
+
     /**
      * Index / Home page
      * Displaying the Home Page
@@ -444,6 +446,12 @@ class Vocabs extends MX_Controller
                      . 'login#?redirect=' . portal_url('vocabs/myvocabs'));
         }
 
+        $userData = $this->ServiceAPI->getUserData();
+        $affiliates = collect($userData->getParentRole())
+            ->filter(function(\ANDS\VocabsRegistry\Model\Role $role){
+                return $role->getTypeId() === \ANDS\VocabsRegistry\Model\Role::TYPE_ID_ORGANISATIONAL;
+            })->toArray();
+
         $ownedVocabulariesList = $this->RegistryAPI->getOwnedVocabularies();
         $ownedVocabularies = $ownedVocabulariesList->getOwnedVocabulary();
 
@@ -474,6 +482,7 @@ class Vocabs extends MX_Controller
             ->set('published', $published)
             ->set('deprecated', $deprecated)
             ->set('ownedCount', count($ownedVocabularies))
+            ->set('affiliates', $affiliates)
             ->set('title', 'My Vocabs - Research Vocabularies Australia')
             ->render('myvocabs');
     }
@@ -1663,6 +1672,7 @@ class Vocabs extends MX_Controller
         }
         $this->RegistryAPIClient = new ANDS\VocabsRegistry\ApiClient();
         $this->RegistryAPI = new ANDS\VocabsRegistry\Api\ResourcesApi();
+        $this->ServiceAPI = new ANDS\VocabsRegistry\Api\ServicesApi();
 
     }
 }
