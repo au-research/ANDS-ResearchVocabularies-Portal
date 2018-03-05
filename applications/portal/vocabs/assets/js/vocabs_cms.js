@@ -1191,9 +1191,10 @@
                     api.createRelatedEntity(relatedEntity)
                         .then(function(resp) {
                             $log.debug("Success creating related entity", resp);
-                            obj.data['id'] = resp['id'];
                             $scope.$apply(function() {
-                                $scope.addRelatedEntity(obj.data);
+                                obj.data['id'] = resp['id'];
+                                obj.data['owner'] = resp['owner'];
+                                $scope.vocab.related_entity.push(obj.data);
                             });
                         }, function(resp){
                             $log.error("Failed creating related entity", resp)
@@ -1210,9 +1211,10 @@
                 return re.id === relatedEntity.id;
             });
             if (exist && index) {
-                // $log.debug("Found existing related entity", exist);
+                $log.debug("Found existing related entity", exist);
                 $scope.vocab.related_entity[index] = relatedEntity;
             } else {
+                $log.debug("Does not found exist, add new");
                 $scope.vocab.related_entity.push(relatedEntity);
             }
         };
@@ -1223,6 +1225,8 @@
             relatedEntity.setType(data['type']);
             relatedEntity.setEmail(data['email']);
             relatedEntity.setPhone(data['phone']);
+            relatedEntity.setId(data['id']);
+            relatedEntity.setOwner($scope.vocab.owner);
 
             // owner is set by the vocab.owner exclusively
             // it must be already set by this point

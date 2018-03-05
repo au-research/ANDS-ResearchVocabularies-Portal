@@ -187,6 +187,7 @@
             );
         }
 
+
         /* Set valid relations for this type. Note that this statement
            must occur _after_ the preceding "if" statement because
            of the treatment of type="publisher". */
@@ -407,6 +408,12 @@
                     return false;
                 }
 
+                // duplicate relationships
+                if ($scope.hasDuplicateRelationships()) {
+                    $scope.error_message = 'No duplicate relationships allowed';
+                    return false;
+                }
+
                 //at least 1 identifier, changed CC-1257, identifier no longer required
                 // if (!$scope.entity || !$scope.entity.identifiers || $scope.entity.identifiers.length == 0) {
                 //     $scope.error_message = 'At least 1 identifier is required';
@@ -459,6 +466,22 @@
                         });
             }
         });
+
+        $scope.hasDuplicateRelationships = function() {
+            return $scope.hasDuplicates($scope.entity.relationship);
+        };
+
+        $scope.hasDuplicates = function(array) {
+            var valuesSoFar = Object.create(null);
+            for (var i = 0; i < array.length; ++i) {
+                var value = array[i];
+                if (value in valuesSoFar) {
+                    return true;
+                }
+                valuesSoFar[value] = true;
+            }
+            return false;
+        };
 
         // Override the Bootstrap templates defined
         // at the end of assets/js/lib/ui-select/dist/select.js.
