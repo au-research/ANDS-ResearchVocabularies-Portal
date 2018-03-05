@@ -341,6 +341,12 @@
                 $scope.version.doImport = false;
                 $scope.version.doPublish = false;
             }
+
+            // finally, if the settings are hidden, they are false
+            if (!$scope.canImportPublish) {
+                $scope.version.doImport = false;
+                $scope.version.doPublish = false;
+            }
         };
         $scope.evaluateVersionSettings();
 
