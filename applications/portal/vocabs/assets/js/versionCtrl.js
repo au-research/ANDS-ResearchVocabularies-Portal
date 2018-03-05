@@ -343,9 +343,16 @@
 
             // Where the user is editing a previously published version
             // which has the 'Harvest Version From PoolParty' option enabled,
-            // an additonal version settings option shall be displayed
+            // an additional version settings option shall be displayed
             // 'Reapply version settings on publish'.
-            if (version.status === "current" && ($scope.vocab.status === "published" || $scope.vocab.status === "deprecated")) {
+            // So, this is done if: (a) we are not editing a draft,
+            // and (b) this is an existing version.
+            // This isn't completely right: you might want to be able
+            // to edit a vocab that exists in _both_ published and draft
+            // form, and to force workflow for an existing version.
+            // You can't currently do that: you have to publish the
+            // vocabulary, then go in again to see this toggle.
+            if (version.id && ($scope.vocab.status === "published" || $scope.vocab.status === "deprecated")) {
                 $scope.canReapplyVersion = true;
             }
 
