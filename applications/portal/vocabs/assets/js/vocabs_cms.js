@@ -1293,7 +1293,10 @@
             var exist = $scope.vocab.related_entity.find(function(re) {
                 return re.id === relatedEntity.id;
             });
-            if (exist && index) {
+            // Can't say just (exist && index),
+            // because index might be 0, which
+            // is treated as false.
+            if (exist && (index !== undefined)) {
                 $log.debug("Found existing related entity", exist);
                 $scope.vocab.related_entity[index] = relatedEntity;
             } else {
