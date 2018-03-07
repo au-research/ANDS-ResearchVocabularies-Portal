@@ -796,11 +796,37 @@
                              return x.title === re.title;
                         });
                         $log.debug("Found", entity);
-                        re.id = entity.id;
-                        re.owner = entity.owner;
-                        $scope.$apply(function() {
-                            $scope.vocab.related_entity.push(re);
+                        // Now have to get the full RE, which includes identifiers.
+
+                        api.getRelatedEntityById(entity.getId()).then(function(fullEntity) {
+                            // See also copy_incoming_vocab_to_scope, which shows
+                            // how to populate from an existing RE.
+                            re.id = fullEntity.getId();
+                            re.owner = fullEntity.getOwner();
+                            if (fullEntity.getEmail()) {
+                                re['email'] = fullEntity.getEmail();
+                            }
+                            if (fullEntity.getPhone()) {
+                                re['phone'] = fullEntity.getPhone();
+                            }
+                            // Identifiers
+                            re['identifiers'] = [];
+                            angular.forEach(fullEntity.getRelatedEntityIdentifier(), function(id) {
+                                re['identifiers'].push(
+                                    {'id': id.getId(),
+                                     'rei_type' : id.getIdentifierType(),
+                                     'rei_value' : id.getIdentifierValue()});
+                            });
+                            // URLs
+                            re['urls'] = [];
+                            angular.forEach(fullEntity.getUrl(), function(url) {
+                                re['urls'].push({'url' : url});
+                            });
+                            $scope.$apply(function() {
+                                $scope.vocab.related_entity.push(re);
+                            });
                         });
+
                     } else {
                         // it doesn't exist, create it
                         $log.debug("Related Entity " + re.title + " doesn't exist");
