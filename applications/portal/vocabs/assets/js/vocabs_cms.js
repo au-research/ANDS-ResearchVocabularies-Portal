@@ -1265,8 +1265,11 @@
                     // has ID, update if the owner is the same
                     relatedEntity.setId(obj.data['id']);
 
-                    // different owner
-                    if ($scope.vocab.owner !== obj.data.owner) {
+                    // not correct comment: "different owner"
+                    // if ($scope.vocab.owner !== obj.data.owner) {
+                    // now made consistent with relatedCtrl
+                    // correct comment: owner not one of our organisational roles
+                    if ($scope.user_orgs.indexOf(obj.data.owner) < 0) {
                         $scope.addRelatedEntity(obj.data, index);
                     } else {
                         $log.debug("Updating related entity", relatedEntity);
