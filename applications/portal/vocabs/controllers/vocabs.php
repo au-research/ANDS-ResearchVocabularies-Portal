@@ -179,259 +179,6 @@ class Vocabs extends MX_Controller
     }
 
     /**
-     * Primary search functionality
-     * data is obtained from angularjs php input POST
-     * vocabs_factory's search(filters)
-     *                calls post('filter', {filters: filters})
-     * @author  Minh Duc Nguyen <minh.nguyen@ands.org.au>
-     * @return json search result
-     */
-    public function filter()
-    {
-        // This should not now be called! It has been replaced with calls
-        // to the Registry API.
-        // Remove this method during final cleanup.
-        throw new Exception('Oops, the controller filter() method was called');
-        return;
-
-        //header
-        header('Cache-Control: no-cache, must-revalidate');
-        header('Content-type: application/json');
-        set_exception_handler('json_exception_handler');
-        $data = json_decode(file_get_contents("php://input"), true);
-        $filters = isset($data['filters']) ? $data['filters'] : false;
-        $this->load->library('solr');
-        $vocab_config = get_config_item('vocab_config');
-        if (!$vocab_config['solr_url']) {
-            throw new Exception('Indexer URL for Vocabulary '
-                . 'module is not configured correctly');
-        }
-
-        $this->solr->setUrl($vocab_config['solr_url']);
-//         $this->solr->init()->setCore('vocabs');
-
-        $pp = array_key_exists('pp', $filters) ? $filters['pp'] : 10;
-        $start = 0;
-
-        //facets
-        $this->solr
-             ->setFacetOpt('field', 'subject_labels')
-             ->setFacetOpt('field', 'publisher')
-             ->setFacetOpt('field', 'language')
-             ->setFacetOpt('field', 'access')
-             ->setFacetOpt('field', 'format')
-             ->setFacetOpt('field', 'licence')
-             ->setFacetOpt('field', 'widgetable')
-             ->setFacetOpt('sort', 'index asc')
-             ->setFacetOpt('mincount', '1');
-        if ($filters) {
-            //highlighting
-            $this->solr
-                 ->setOpt('hl', 'true')
-                 ->setOpt('hl.fl', '*')
-                 ->setOpt('hl.simple.pre', '&lt;b&gt;')
-                 ->setOpt('hl.simple.post', '&lt;/b&gt;')
-                 ->setOpt('hl.snippets', '2');
-
-            //search definition
-            $this->solr
-                 ->setOpt('defType', 'edismax')
-                 ->setOpt('rows', $pp)
-                 ->setOpt('q.alt', '*:*')
-                // see (1) views/includes/search-view.blade.php
-                // for the fields that must be returned for the
-                // "main" search function,
-                // (2) assets/templates/widgetDirective.html and
-                // assets/js/vocabDisplayDirective.js for the
-                // fields needed for the Widget Explorer.
-                // The Widget Explorer needs "sissvoc_endpoint" added
-                // to the list required by the "main" search.
-                // NB: highlighting can/does also return snippets
-                // from other fields not listed in fl (which is good!).
-                 ->setOpt('fl',
-                     'id,slug,status,title,acronym,publisher,'
-                          . 'description,widgetable,sissvoc_endpoint')
-                 ->setOpt(
-                     'qf',
-                     'title_search^1 subject_search^0.5 '
-                          . 'description^0.01 fulltext^0.001 '
-                     . 'concept_search^0.02 publisher_search^0.5'
-                 );
-
-            foreach ($filters as $key => $value) {
-                switch ($key) {
-                    case "q":
-                        if ($value != '') {
-                            $this->solr->setOpt('q', $value);
-                        }
-
-                        break;
-                    case "p":
-                        $page = (int)$value;
-                        if ($page>1) {
-                            $start = $pp * ($page-1);
-                        }
-                        $this->solr->setOpt('start', $start);
-                        break;
-                    case 'subject_labels':
-                    case 'publisher':
-                    case 'access':
-                    case 'format':
-                    case 'language':
-                    case 'licence':
-                    case 'widgetable':
-                        if (is_array($value)) {
-                            $fq_str = '';
-                            foreach ($value as $v) {
-                                $fq_str .= ' ' . $key . ':("' . $v . '")';
-                            }
-
-                            $this->solr->setOpt('fq', $fq_str);
-                        } else {
-                            $this->solr->setOpt('fq', '+' . $key
-                                                . ':("' . $value . '")');
-                        }
-                        break;
-                }
-            }
-        }
-
-        // CC-1298 If there's no search term, order search result by
-        // title_sort asc
-        if (!$filters || !isset($filters['q']) || trim($filters['q']) == '') {
-            $this->solr
-                ->setOpt('sort', 'title_sort asc')
-                ->setOpt('rows', $pp);
-        }
-
-        // $this->solr->setFilters($filters);
-        $result = $this->solr->executeSearch(true);
-
-        // CC-1270 Facet names come back from Solr sorted case-sensitively.
-        // Resort them case-insensitively.
-        foreach ($result['facet_counts']['facet_fields'] as $key => $value) {
-            $result['facet_counts']['facet_fields'][$key] =
-            $this->sortFacetsInsensitively($value);
-        }
-
-        $event = array(
-            'event' => 'search',
-            'filters' => $filters,
-        );
-        if ($filters) {
-            $event = array_merge($event, $filters);
-        }
-
-        vocab_log_terms($event);
-        echo json_encode($result);
-    }
-
-    /** Partition an array based on the location of the first lower-case
-     * element.
-     * The array to be partitioned is treated
-     * as a set of Solr facets, i.e., the values to be examined are only
-     * in the even-numbered indexes of the array; the odd-numbered positions
-     * are facet counts, and are ignored.
-     * @param array $arrayToPartition The array to be partitioned.
-     * @return int If the array is empty, then 0. If non-empty, the index
-     * of the first element beginning with a lower-case value, if there is one.
-     * Otherwise, the size of the array (i.e., the index of the first position
-     * beyond the end of the array. */
-    private function findPartitionPoint($arrayToPartition)
-    {
-        $lower = 0;
-        $upper = count($arrayToPartition) - 2;
-
-        // Binary chop based on
-        // https://terenceyim.wordpress.com/2011/02/01/
-        //         all-purpose-binary-search-in-php/
-        while ($lower <= $upper) {
-            $mid = (int) (($upper - $lower) / 2) + $lower;
-            if ($mid % 2 == 1) {
-                // $mid is odd, i.e., a count value. So move down
-                // to the preceding index value.
-                $mid = $mid - 1;
-            }
-            // Use "a" as the first possible lower-case value.
-            if ($arrayToPartition[$mid] < "a") {
-                $lower = $mid + 2;
-            } elseif ($arrayToPartition[$mid] > "a") {
-                $upper = $mid - 2;
-            } else {
-                return $mid;
-            }
-        }
-        return $lower;
-    }
-
-    /** Sort facet information case-insensitively. The array is assumed
-     * to be already sorted case-sensitively. The array to be partitioned is
-     * treated
-     * as a set of Solr facets, i.e., the values to be examined are only
-     * in the even-numbered indexes of the array; the odd-numbered positions
-     * are facet counts, and are ignored for sorting purposes, but during
-     * merging, each one is kept together with the preceding array element.
-     * The array is first partitioned
-     * into the upper-case and lower-case sections, then a merge sort is
-     * done on the two sections. *
-     * @param array $arrayToSort The array of facets to be sorted.
-     * @return array The array as sorted.
-     */
-    private function sortFacetsInsensitively($arrayToSort)
-    {
-        $arraySize = count($arrayToSort);
-        $partitionPoint = $this->findPartitionPoint($arrayToSort);
-        if ($partitionPoint == 0 || $partitionPoint == $arraySize) {
-            // Either all upper-case, or all lower-case, so no merging
-            // to be done.
-            return $arrayToSort;
-        }
-        $mergedArray = array();
-        // Index that works through the first part of the array
-        // (with upper-case elements).
-        $counter1 = 0;
-        // Index that works through the second part of the array
-        // (with lower-case elements).
-        $counter2 = $partitionPoint;
-
-        // Merge based on http://www.codexpedia.com/php/
-        //                       merge-sort-example-in-php/
-        // Merge lists as much as possible.
-        while ($counter1 < $partitionPoint && $counter2 < $arraySize) {
-            if (strcasecmp(
-                $arrayToSort[$counter1],
-                $arrayToSort[$counter2]
-            ) > 0) {
-                $mergedArray[] = $arrayToSort[$counter2];
-                $counter2 ++;
-                $mergedArray[] = $arrayToSort[$counter2];
-                $counter2 ++;
-            } else {
-                $mergedArray[] = $arrayToSort[$counter1];
-                $counter1 ++;
-                $mergedArray[] = $arrayToSort[$counter1];
-                $counter1 ++;
-            }
-        }
-        // Copy the left-overs from the first part of the array.
-        while ($counter1 < $partitionPoint) {
-            $mergedArray[] = $arrayToSort[$counter1];
-            $counter1 ++;
-            $mergedArray[] = $arrayToSort[$counter1];
-            $counter1 ++;
-        }
-        // Copy the left-overs from the second part of the array.
-        while ($counter2 < $arraySize) {
-            $mergedArray[] = $arrayToSort[$counter2];
-            $counter2 ++;
-            $mergedArray[] = $arrayToSort[$counter2];
-            $counter2 ++;
-        }
-
-        return $mergedArray;
-    }
-
-    /**
      * MyVocabs functionality
      * If the user is not logged in, redirects them to the login screen
      * with redirection back to this page
@@ -1026,6 +773,7 @@ class Vocabs extends MX_Controller
 
 
 
+    // TO DO: remove this
     /**
      * ToolKit Service provider
      * To interact with 3rd party application in order to get
@@ -1085,6 +833,7 @@ class Vocabs extends MX_Controller
         }
     }
 
+    // TO DO: remove
     /**
      * Does haystack start with needle?
      * Taken from http://stackoverflow.com/questions/834303/
@@ -1099,6 +848,7 @@ class Vocabs extends MX_Controller
     }
 
 
+    // TO DO: remove
     /*
      * possible future use of migration scripts for release specific data change
      *
@@ -1121,6 +871,7 @@ class Vocabs extends MX_Controller
 
     }
 
+    // TO DO: remove
 /*
  * migrate concepts_list and concept_tree from task's response into
  * version's data where it belongs
