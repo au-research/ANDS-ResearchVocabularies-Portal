@@ -76,7 +76,9 @@
           force_root_block to avoid <p> tag around the content.
           link_title and target_list: lock down supported link attributes.
             content_css: '../assets/vocabs/css/lib.css',
-
+          relative_urls, document_base_url, remove_script_host: "support"
+            relative URLs in href attributes, by rewriting them against
+            our base_url.
          */
         $scope.tinymceOptions = {
             content_css: [
