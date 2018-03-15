@@ -1518,6 +1518,10 @@
          * @param index of the item to be removed.
          */
         $scope.list_remove = function (type, index) {
+            // Consider the form to have been modified,
+            // and require confirmation if the user
+            // wants to exit.
+            $scope.confirmationRequiredOnExit = true;
             if (index > 0) {
                 $scope.vocab[type].splice(index, 1);
             } else {
