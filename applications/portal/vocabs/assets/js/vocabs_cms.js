@@ -42,6 +42,11 @@
         // TODO: Move to config
         $scope.PPServerID = 1;
 
+        // Whether the "Exit" button should become
+        // an "Exit Without Saving" button, with
+        // user confirmation required.
+        $scope.confirmationRequiredOnExit = false;
+
         // model for the owner select
         // upon Continue vocab.owner will be set to this value
         $scope.commitVocabOwner = false;
@@ -1027,7 +1032,23 @@
             }
         };
 
-        $scope.validStatuses = ['draft', 'published', 'deprecated', 'discard'];
+
+        // Exit button, without confirmation modal
+        $scope.exitNoConfirmation = function() {
+            window.location.replace(base_url + 'vocabs/myvocabs');
+            $scope.loading = false;
+        }
+
+        // Exit (without saving) button, with confirmation modal
+        $scope.exitWithConfirmation = function() {
+            if (confirm('All unsaved changes will be lost. ' +
+                        'Would you like to continue?')) {
+                window.location.replace(base_url + 'vocabs/myvocabs');
+                $scope.loading = false;
+            }
+        }
+
+        $scope.validStatuses = ['draft', 'published', 'deprecated'];
 
         // targetStatus: [draft, published, deprecated]
         $scope.loading = false;
@@ -1039,12 +1060,6 @@
 
             if ($scope.validStatuses.indexOf(targetStatus) < 0) {
                 $log.error("Target Status " + targetStatus + " is not valid");
-                $scope.loading = false;
-                return false;
-            }
-
-            if (targetStatus === 'discard'){
-                window.location.replace(base_url + 'vocabs/myvocabs');
                 $scope.loading = false;
                 return false;
             }
@@ -1105,6 +1120,7 @@
 
         $scope.handleSuccessResponse = function (resp) {
             $scope.loading = false;
+            $scope.confirmationRequiredOnExit = false;
             $log.debug("Success", resp);
             $scope.showServerSuccessMessage(resp);
 
@@ -1260,6 +1276,10 @@
             });
             modalInstance.result.then(function (obj) {
                 //close
+                // Consider the form to have been modified,
+                // and require confirmation if the user
+                // wants to exit.
+                $scope.confirmationRequiredOnExit = true;
                 // TODO: Migrate over to relatedCtrl instead, handle validation there
                 var relatedEntity = $scope.packRelatedEntityFromData(obj.data);
                 $log.debug("packed related entity to", relatedEntity, obj);
@@ -1388,6 +1408,10 @@
             });
             modalInstance.result.then(function (obj) {
                 //close
+                // Consider the form to have been modified,
+                // and require confirmation if the user
+                // wants to exit.
+                $scope.confirmationRequiredOnExit = true;
                 if (obj.intent == 'add') {
                     var newObj = obj.data;
                     if (!$scope.vocab.related_vocabulary) $scope.vocab.related_vocabulary = [];
@@ -1437,6 +1461,10 @@
             });
             modalInstance.result.then(function (obj) {
                 //close
+                // Consider the form to have been modified,
+                // and require confirmation if the user
+                // wants to exit.
+                $scope.confirmationRequiredOnExit = true;
                 if (obj.intent == 'add') {
                     var newObj = obj.data;
                     if (!$scope.vocab.versions) $scope.vocab.versions = [];

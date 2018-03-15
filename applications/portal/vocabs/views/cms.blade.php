@@ -449,7 +449,8 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                   [[ error ]]
                 </div>
 
-                <a href="" class="btn btn-large btn-primary btn-discard" ng-click="save('discard')">Exit Without Saving</a>
+                <a ng-if="!form.cms.$dirty && !confirmationRequiredOnExit" href="" class="btn btn-large btn-primary btn-discard" ng-click="exitNoConfirmation()">Exit</a>
+                <a ng-if="form.cms.$dirty || confirmationRequiredOnExit" href="" class="btn btn-large btn-primary btn-discard" ng-click="exitWithConfirmation()">Exit Without Saving</a>
               </div>
               <div class="panel-body" ng-if="status=='saving'">
                 <i class="fa fa-refresh fa-spin"></i> Saving...
