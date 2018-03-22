@@ -50,6 +50,22 @@
                             };
                             facets[index].push(fa);
                         }
+                        // Sort facets case-insentively; they come back
+                        // from Solr sorted case-sensitively.
+                        facets[index].sort(function (a, b) {
+                            // Case-insensitive sort of full names, based
+                            // on https://developer.mozilla.org/en-US/docs/Web/
+                            //    JavaScript/Reference/Global_Objects/Array/sort
+                            var nameA = a.name.toUpperCase();
+                            var nameB = b.name.toUpperCase();
+                            if (nameA < nameB) {
+                                return -1;
+                            }
+                            if (nameA > nameB) {
+                                return 1;
+                            }
+                            return 0;
+                        });
                     });
                     $scope.facets = facets;
 

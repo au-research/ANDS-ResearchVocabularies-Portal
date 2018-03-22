@@ -42,6 +42,11 @@
         // TODO: Move to config
         $scope.PPServerID = 1;
 
+        // Whether the "Exit" button should become
+        // an "Exit Without Saving" button, with
+        // user confirmation required.
+        $scope.confirmationRequiredOnExit = false;
+
         // model for the owner select
         // upon Continue vocab.owner will be set to this value
         $scope.commitVocabOwner = false;
@@ -76,7 +81,9 @@
           force_root_block to avoid <p> tag around the content.
           link_title and target_list: lock down supported link attributes.
             content_css: '../assets/vocabs/css/lib.css',
-
+          relative_urls, document_base_url, remove_script_host: "support"
+            relative URLs in href attributes, by rewriting them against
+            our base_url.
          */
         $scope.tinymceOptions = {
             content_css: [
@@ -796,11 +803,37 @@
                              return x.title === re.title;
                         });
                         $log.debug("Found", entity);
-                        re.id = entity.id;
-                        re.owner = entity.owner;
-                        $scope.$apply(function() {
-                            $scope.vocab.related_entity.push(re);
+                        // Now have to get the full RE, which includes identifiers.
+
+                        api.getRelatedEntityById(entity.getId()).then(function(fullEntity) {
+                            // See also copy_incoming_vocab_to_scope, which shows
+                            // how to populate from an existing RE.
+                            re.id = fullEntity.getId();
+                            re.owner = fullEntity.getOwner();
+                            if (fullEntity.getEmail()) {
+                                re['email'] = fullEntity.getEmail();
+                            }
+                            if (fullEntity.getPhone()) {
+                                re['phone'] = fullEntity.getPhone();
+                            }
+                            // Identifiers
+                            re['identifiers'] = [];
+                            angular.forEach(fullEntity.getRelatedEntityIdentifier(), function(id) {
+                                re['identifiers'].push(
+                                    {'id': id.getId(),
+                                     'rei_type' : id.getIdentifierType(),
+                                     'rei_value' : id.getIdentifierValue()});
+                            });
+                            // URLs
+                            re['urls'] = [];
+                            angular.forEach(fullEntity.getUrl(), function(url) {
+                                re['urls'].push({'url' : url});
+                            });
+                            $scope.$apply(function() {
+                                $scope.vocab.related_entity.push(re);
+                            });
                         });
+
                     } else {
                         // it doesn't exist, create it
                         $log.debug("Related Entity " + re.title + " doesn't exist");
@@ -999,7 +1032,23 @@
             }
         };
 
-        $scope.validStatuses = ['draft', 'published', 'deprecated', 'discard'];
+
+        // Exit button, without confirmation modal
+        $scope.exitNoConfirmation = function() {
+            window.location.replace(base_url + 'vocabs/myvocabs');
+            $scope.loading = false;
+        }
+
+        // Exit (without saving) button, with confirmation modal
+        $scope.exitWithConfirmation = function() {
+            if (confirm('All unsaved changes will be lost. ' +
+                        'Would you like to continue?')) {
+                window.location.replace(base_url + 'vocabs/myvocabs');
+                $scope.loading = false;
+            }
+        }
+
+        $scope.validStatuses = ['draft', 'published', 'deprecated'];
 
         // targetStatus: [draft, published, deprecated]
         $scope.loading = false;
@@ -1011,12 +1060,6 @@
 
             if ($scope.validStatuses.indexOf(targetStatus) < 0) {
                 $log.error("Target Status " + targetStatus + " is not valid");
-                $scope.loading = false;
-                return false;
-            }
-
-            if (targetStatus === 'discard'){
-                window.location.replace(base_url + 'vocabs/myvocabs');
                 $scope.loading = false;
                 return false;
             }
@@ -1077,6 +1120,7 @@
 
         $scope.handleSuccessResponse = function (resp) {
             $scope.loading = false;
+            $scope.confirmationRequiredOnExit = false;
             $log.debug("Success", resp);
             $scope.showServerSuccessMessage(resp);
 
@@ -1232,6 +1276,10 @@
             });
             modalInstance.result.then(function (obj) {
                 //close
+                // Consider the form to have been modified,
+                // and require confirmation if the user
+                // wants to exit.
+                $scope.confirmationRequiredOnExit = true;
                 // TODO: Migrate over to relatedCtrl instead, handle validation there
                 var relatedEntity = $scope.packRelatedEntityFromData(obj.data);
                 $log.debug("packed related entity to", relatedEntity, obj);
@@ -1239,8 +1287,11 @@
                     // has ID, update if the owner is the same
                     relatedEntity.setId(obj.data['id']);
 
-                    // different owner
-                    if ($scope.vocab.owner !== obj.data.owner) {
+                    // not correct comment: "different owner"
+                    // if ($scope.vocab.owner !== obj.data.owner) {
+                    // now made consistent with relatedCtrl
+                    // correct comment: owner not one of our organisational roles
+                    if ($scope.user_orgs.indexOf(obj.data.owner) < 0) {
                         $scope.addRelatedEntity(obj.data, index);
                     } else {
                         $log.debug("Updating related entity", relatedEntity);
@@ -1293,7 +1344,10 @@
             var exist = $scope.vocab.related_entity.find(function(re) {
                 return re.id === relatedEntity.id;
             });
-            if (exist && index) {
+            // Can't say just (exist && index),
+            // because index might be 0, which
+            // is treated as false.
+            if (exist && (index !== undefined)) {
                 $log.debug("Found existing related entity", exist);
                 $scope.vocab.related_entity[index] = relatedEntity;
             } else {
@@ -1354,6 +1408,10 @@
             });
             modalInstance.result.then(function (obj) {
                 //close
+                // Consider the form to have been modified,
+                // and require confirmation if the user
+                // wants to exit.
+                $scope.confirmationRequiredOnExit = true;
                 if (obj.intent == 'add') {
                     var newObj = obj.data;
                     if (!$scope.vocab.related_vocabulary) $scope.vocab.related_vocabulary = [];
@@ -1403,6 +1461,10 @@
             });
             modalInstance.result.then(function (obj) {
                 //close
+                // Consider the form to have been modified,
+                // and require confirmation if the user
+                // wants to exit.
+                $scope.confirmationRequiredOnExit = true;
                 if (obj.intent == 'add') {
                     var newObj = obj.data;
                     if (!$scope.vocab.versions) $scope.vocab.versions = [];
@@ -1456,6 +1518,10 @@
          * @param index of the item to be removed.
          */
         $scope.list_remove = function (type, index) {
+            // Consider the form to have been modified,
+            // and require confirmation if the user
+            // wants to exit.
+            $scope.confirmationRequiredOnExit = true;
             if (index > 0) {
                 $scope.vocab[type].splice(index, 1);
             } else {
