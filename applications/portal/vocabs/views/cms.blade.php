@@ -245,7 +245,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                   <input type="text" class="form-control" placeholder="New Top Concept" ng-model="vocab.top_concept[$index]">
                   <span class="input-group-btn">
                     <button class="btn btn-primary btn-primary-warning" type="button"
-                            ng-click="vocab.top_concept.splice($index, 1)" title="Remove this top concept"><i class="fa fa-remove"></i></button>
+                            ng-click="list_remove('top_concept', $index)" title="Remove this top concept"><i class="fa fa-remove"></i></button>
                   </span>
                 </div>
 
@@ -449,7 +449,8 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                   [[ error ]]
                 </div>
 
-                <a href="" class="btn btn-large btn-primary btn-discard" ng-click="save('discard')">Exit Without Saving</a>
+                <a ng-if="!form.cms.$dirty && !confirmationRequiredOnExit" href="" class="btn btn-large btn-primary btn-discard" ng-click="exitNoConfirmation()">Exit</a>
+                <a ng-if="form.cms.$dirty || confirmationRequiredOnExit" href="" class="btn btn-large btn-primary btn-discard" ng-click="exitWithConfirmation()">Exit Without Saving</a>
               </div>
               <div class="panel-body" ng-if="status=='saving'">
                 <i class="fa fa-refresh fa-spin"></i> Saving...
