@@ -377,6 +377,9 @@
                             case "apiSparql":
                                 APForm.uri = ap.getApApiSparql().getUrl();
                                 break;
+                            case "sissvoc":
+                                APForm.uri = ap.getApSissvoc().getUrlPrefix();
+                                break;
                             case "file":
                                 APForm.uri = ap.getApFile().getUrl();
                                 APForm.format = ap.getApFile().getFormat();
@@ -528,6 +531,12 @@
                     var APapiSparql = new VocabularyRegistryApi.ApApiSparql();
                     APapiSparql.setUrl(ap['uri']);
                     APEntity.setApApiSparql(APapiSparql);
+                    break;
+                case "sissvoc":
+                    APEntity.setDiscriminator(VocabularyRegistryApi.AccessPoint.DiscriminatorEnum.sissvoc);
+                    var APsissvoc = new VocabularyRegistryApi.ApSissvoc();
+                    APsissvoc.setUrlPrefix(ap['uri']);
+                    APEntity.setApSissvoc(APsissvoc);
                     break;
                 case "file":
                     APEntity.setDiscriminator(VocabularyRegistryApi.AccessPoint.DiscriminatorEnum.file);
