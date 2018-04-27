@@ -30,6 +30,9 @@
         var VocabularyRegistryApi = require('vocabulary_registry_api');
         var defaultClient = VocabularyRegistryApi.ApiClient.instance;
         defaultClient.basePath = registry_api_url;
+        // Let the registry know that we are the CMS, and what URL this page is.
+        defaultClient.defaultHeaders['portal-id'] = 'Portal-JS-CMS';
+        defaultClient.defaultHeaders['portal-referrer'] = window.location;
         // Configure API key authorization: apiKeyAuth
         var apiKeyAuth = defaultClient.authentications['apiKeyAuth'];
         var cookie = readCookie('ands_authentication');

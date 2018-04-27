@@ -1231,11 +1231,42 @@ class Vocabs extends MX_Controller
         return false;
     }
 
+    /** Add an HTTP header to all Registry API invocations, with
+     * content taken from one of the values of $_SERVER.
+     * @param string $remotekey The HTTP header to bet set.
+     * @param string $localkey The key to use to look up in $_SERVER
+     *        to fetch the value to be put into the HTTP header.
+     *        If the key is not present in $_SERVER, this method
+     *        does not add the HTTP header.
+     */
+    private function set_header_for_registry($remotekey, $localkey) {
+        if (!empty($_SERVER[$localkey])) {
+            ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()->
+                addDefaultHeader($remotekey, $_SERVER[$localkey]);
+        }
+    }
 
+    /** Add referrer data to all Registry API invocations, with
+     * content taken from $_SERVER. The value of HTTP_REFERER is
+     * considered first. If that is missing, fall back to REQUEST_URI.
+     */
+    private function set_referrer_for_registry() {
+        if (!empty($_SERVER['HTTP_REFERER'])) {
+            $referrer = $_SERVER['HTTP_REFERER'];
+        } else if (!empty($_SERVER['REQUEST_URI'])) {
+            $referrer = $_SERVER['REQUEST_SCHEME'] .
+                      '://'.$_SERVER['HTTP_HOST'] .
+                      $_SERVER['REQUEST_URI'];
+        }
+        if (!empty($referrer)) {
+            ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()->
+                addDefaultHeader('portal-referrer', $referrer);
+        }
+    }
 
     /**
      * Constructor Method
-     * Autload blade by default
+     * Autoload blade by default
      */
     public function __construct()
     {
@@ -1248,6 +1279,16 @@ class Vocabs extends MX_Controller
 //          ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()
 //              ->setDebug(true)
 //          ->setDebugFile('/var/www/html/workareas/richard/vocabs-new/engine/logs/error/richardvocabsnewphpdebug.txt');
+
+        // Send who we are to the Registry. NB: the header names
+        // must match the values used in the
+        // Registry code, in class au.org.ands.vocabs.registry.utils.Analytics,
+        // method createBasicMarker().
+        ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()->
+            addDefaultHeader('portal-id', 'Portal-PHP');
+        $this->set_header_for_registry('portal-remote-address', 'REMOTE_ADDR');
+        $this->set_header_for_registry('portal-user-agent', 'HTTP_USER_AGENT');
+        $this->set_referrer_for_registry();
 
         // The user's authentication cookie is used as
         // an API key to authenticate with the Registry.
