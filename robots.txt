@@ -4,3 +4,5 @@ Disallow: /etc/
 Disallow: /engine/
 Disallow: /registry/
 Disallow: /view/
+Disallow: /repository/api/download/
+Disallow: /repository/api/registry/
