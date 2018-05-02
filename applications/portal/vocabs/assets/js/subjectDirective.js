@@ -145,6 +145,10 @@
                     // we can distinguish the required behaviour
                     // based on the mode (tree/search/freetext).
                     if (vocab == 'anzsrc-for' || vocab == 'anzsrc-seo') {
+                        // Please note, the values 'anzsrc-for'
+                        // and 'anzsrc-seo' must
+                        // match the keys in global_config.php's
+                        // $ENV['vocab_resolving_services']!
                         $(subjectValueInput).qtip(
                             {
                                 content: {
@@ -205,8 +209,10 @@
                                    'qtip-bootstrap ui-tooltip-shadow ui-tooltip-bootstrap ui-tooltip-large'}
                             }
                         );
-                    } else if (vocab == 'GCMD') {
-
+                    } else if (vocab == 'gcmd') {
+                        // Please note, the value 'gcmd' must
+                        // match the key in global_config.php's
+                        // $ENV['vocab_resolving_services']!
 
                         $(subjectValueInput).qtip(
                             {
