@@ -149,6 +149,12 @@ $ENV['subject_vocab_proxy'] = $ENV['default_base_url']
 // implemented in vocabs_cms.js as a test for the presence of a
 // subject with source = 'anzsrc-for'. Therefore, this list
 // should include an entry with that as the key!
+// Note well: there is still some hard-coding in
+// applications/portal/vocabs/assets/js/subjectDirective.js
+// using the keys included here:
+// 'anzsrc-for', 'anzsrc-seo', and 'gcmd'.
+// So, changes to keys here and in subjectDirective.js must
+// be kept in sync.
 $ENV['vocab_resolving_services'] =  array(
     'local' => array(
         'label' =>
@@ -173,7 +179,7 @@ $ENV['vocab_resolving_services'] =  array(
             'http://localhost/repository/api/lda/anzsrc-seo/',
         'uriprefix' =>
             'http://purl.org/au-research/vocabulary/anzsrc-seo/2008/'),
-    'GCMD' => array(
+    'gcmd' => array(
         'label' =>
             'GCMD',
         'mode' =>
