@@ -1134,6 +1134,14 @@
             $scope.loading = false;
             $scope.confirmationRequiredOnExit = false;
             $log.debug("Success", resp);
+            // Mark the form as "pristine" (i.e., not "dirty"),
+            // for the case(s) in which the form will still be visible
+            // after save.
+            // (Currently, that means after saving as a draft.)
+            // The effect is that if the "Exit Without Saving"
+            // button was visible before, it will now become just "Exit".
+            $scope.form.cms.$setPristine();
+            // Show message.
             $scope.showServerSuccessMessage(resp);
 
             $scope.show_alert_after_save(resp, function() {
