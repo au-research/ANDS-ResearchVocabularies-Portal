@@ -3077,6 +3077,10 @@ if (!Array.prototype.find) {
         var VocabularyRegistryApi = require('vocabulary_registry_api');
         var defaultClient = VocabularyRegistryApi.ApiClient.instance;
         defaultClient.basePath = registry_api_url;
+        // Let the registry know that we are the search controller,
+        // and what URL this page is.
+        defaultClient.defaultHeaders['portal-id'] = 'Portal-JS-search';
+        defaultClient.defaultHeaders['portal-referrer'] = window.location;
         var api = new VocabularyRegistryApi.ServicesApi();
 
         $scope.vocabs = [];
