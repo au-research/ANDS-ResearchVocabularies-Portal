@@ -32,6 +32,7 @@
 @endif
 
 @if(is_dev())
+    <script src="{{ asset_url('js/ie-polyfill.js') }} "></script>
     <script src="{{ asset_url('js/lib/angular/angular.min.js') }} "></script>
     <script src="{{ asset_url('js/lib/angular-route/angular-route.min.js') }}"></script>
     <script src="{{ asset_url('js/lib/angular-sanitize/angular-sanitize.min.js') }}"></script>
