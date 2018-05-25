@@ -1757,24 +1757,3 @@ RewriteRule ^/ands_doc/tooltips$  /ands_doc/pages/viewpage.action?pageId=2247884
 
 
 })();
-
-// Polyfill Promise finally() method from
-// https://www.promisejs.org/api/
-// Needed for Safari and IE (sigh).
-// Used when saving.
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
-if (!Promise.prototype.finally) {
-  Object.defineProperty(Promise.prototype, 'finally', {
-    value: function (f) {
-      return this.then(function (value) {
-        return Promise.resolve(f()).then(function () {
-          return value;
-        });
-      }, function (err) {
-        return Promise.resolve(f()).then(function () {
-          throw err;
-        });
-      });
-    }
-  });
-}

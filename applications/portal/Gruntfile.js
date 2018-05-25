@@ -95,6 +95,7 @@ module.exports = function(grunt){
                 options:{separator:';'},
                 nonull: true,
                 src:[
+                    '<%= yeoman.vocab_asset %>/js/ie-polyfill.js',
                     '<%= yeoman.vocab_asset %>/js/lib/angular/angular.min.js',
                     '<%= yeoman.vocab_asset %>/js/lib/angular-route/angular-route.min.js',
                     '<%= yeoman.vocab_asset %>/js/lib/angular-sanitize/angular-sanitize.min.js',
