@@ -77,11 +77,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
             </div>
             <div class="panel-footer">
               <a href="" class="btn btn-primary"
-                 ng-click="populate(project)">Use this PoolParty Project</a>
-              <!--  <a href="" class="btn btn-link"
-                   ng-click="skip()">Skip</a>
-                   <p class="help-block">Skipping will start a
-                   blank Vocabulary</p> -->
+                 ng-click="selectPoolPartyProject(project)">Use this PoolParty Project</a>
             </div>
           </div>
         </div>
@@ -134,7 +130,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                      class="btn btn-primary"
                      ng-show="!commitVocabOwner"
                      ng-disabled="!vocab.owner"
-                     ng-click="commitVocabOwner = true">Continue [[ tmp_owner ]]</a>
+                     ng-click="setCommitVocabOwner()">Continue</a>
                 @endif
               </div>
             </div>
