@@ -462,10 +462,12 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
   <div id="all_help" style="display: none;"></div>
 
 @stop
+@section('emacs_local_variables')
 <!--
 Local Variables:
 mode: web
 web-mode-code-indent-offset: 2
 web-mode-markup-indent-offset: 2
 End:
- -->
+-->
+@stop
