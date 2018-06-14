@@ -50,6 +50,7 @@
                   <td class="text-right"
                       style="width:15%; padding-top: 10px">Select All &nbsp;
                     <input type="checkbox" ng-model="form.vocabulariesSelectAll"
+                           id="toggleSelectAllVocabularies"
                            ng-click="toggleSelectAllVocabularies()" /></td>
                     <td></td>
                 </tr>
@@ -73,6 +74,7 @@
                   <td class="text-right" style="padding-top: 10px">Select All
                     &nbsp;
                     <input type="checkbox" ng-model="form.ownersSelectAll"
+                           id="toggleSelectAllOwners"
                            ng-click="toggleSelectAllOwners()" /></td>
                     <td></td>
                 </tr>
@@ -97,6 +99,7 @@
                   <td></td>
                   <td class="text-right padding-top">
                     <input type="button" value="Unsubscribe"
+                           id="unsubscribe"
                            class="btn btn-large btn-primary"
                            ng-disabled="!anyChecked() || loading"
                            ng-click="unsubscribe()"></td>
