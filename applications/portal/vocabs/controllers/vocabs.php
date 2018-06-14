@@ -1183,6 +1183,33 @@ class Vocabs extends MX_Controller
         }
     }
 
+    /* Subscriptions */
+
+    /**
+     * Manage a subscriber's subscriptions.
+     * @param  string $token The subscriber's token.
+     * @return view
+     * @throws Exception
+     */
+    public function manageSubscriptions($token) {
+        $event = array(
+            'event' => 'pageview',
+            'page' => 'manageSubscriptions',
+        );
+        vocab_log_terms($event);
+        // Set strip_last_url_component so as not to leak
+        // the subscriber's token into the URLs generated for
+        // the various "Share" options. See footer.blade.php
+        // for the code that does the stripping, based on this setting.
+        $this->blade
+            ->set('scripts', array('manageSubscriptions'))
+            ->set('strip_last_url_component', true)
+            ->set('token', $token)
+            ->render('manageSubscriptions');
+    }
+
+    /* Utility methods */
+
     /**
      * Returns true if the user is logged in
      * and has ownership of the given vocab.
