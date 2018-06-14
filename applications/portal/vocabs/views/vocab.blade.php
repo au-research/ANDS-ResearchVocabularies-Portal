@@ -61,8 +61,10 @@ foreach ($vocab->getRelatedVocabularyRef() as $relatedVocabRef) {
 // Set $sissvocEndPoint if it is to be shown.
 foreach ($vocab->getVersion() as $version) {
     if (($version->getStatus() === Version::STATUS_CURRENT
-        && !empty($version->getAccessPoint())) || ($version->getStatus() === Version::STATUS_SUPERSEDED
-                    && !empty($version->getAccessPoint()) && isset($superseded_version))) {
+         && !empty($version->getAccessPoint()))
+        || ($version->getStatus() === Version::STATUS_SUPERSEDED
+            && !empty($version->getAccessPoint())
+            && isset($superseded_version))) {
             foreach ($version->getAccessPoint() as $ap)
             {
                 if(is_object($ap->getApSissvoc())) {
@@ -79,24 +81,29 @@ foreach ($vocab->getVersion() as $version) {
 @section('og-description')
 @if(is_object($vocab) && (!empty($vocab->getDescription())))
     <?php
-        $clean_description = htmlspecialchars(substr(str_replace(array('"','[[',']]'), '', $vocab->getDescription()), 0, 200));
+        $clean_description = htmlspecialchars(substr(str_replace(
+            array('"','[[',']]'), '', $vocab->getDescription()), 0, 200));
     ?>
 @endif
 @if(isset($clean_description))
-    <meta ng-non-bindable property="og:description" content="{{ $clean_description }}" />
+    <meta ng-non-bindable property="og:description"
+          content="{{ $clean_description }}" />
 @else
-    <meta ng-non-bindable property="og:description" content="Find, access, and re-use vocabularies for research" />
+    <meta ng-non-bindable property="og:description"
+          content="Find, access, and re-use vocabularies for research" />
 @endif
 @stop
 @section('og-other-meta')
 <meta property="og:url" content="{{ base_url().$vocab->getSlug() }}" />
-<meta property="og:title" content="{{ htmlspecialchars($vocab->getTitle()) }}" />
+<meta property="og:title"
+      content="{{ htmlspecialchars($vocab->getTitle()) }}" />
 @stop
 @extends('layout/vocab_2col_layout')
 @section('content')
 <article class="post">
     <div class="post-body">
-        <div class="panel swatch-white panel-primary element-no-top element-short-bottom panel-content">
+        <div class="panel swatch-white panel-primary element-no-top
+                    element-short-bottom panel-content">
 
             <div class="container-fluid" >
                 <div class="row">
@@ -174,9 +181,13 @@ foreach ($vocab->getVersion() as $version) {
         {{-- Show widgetable status based on $sissVocEndPoint. --}}
         @if(isset($sissvocEndPoint))
         <div id="widget" class="panel swatch-white">
-            <div class="panel-body">Use this code snippet to describe or discover resources with {{$vocab->getTitle()}} in your system
-                <br/><br/><b>Example:</b> Search for and select concepts in this vocabulary
-            <input type="text" id="{{$vocab->getSlug()}}" name="{{$vocab->getSlug()}}" placeholder="Search" size="80" autocomplete="off">
+            <div class="panel-body">Use this code snippet to describe or
+                discover resources with {{$vocab->getTitle()}} in your system
+                <br/><br/><b>Example:</b> Search for and select concepts
+                in this vocabulary
+                <input type="text" id="{{$vocab->getSlug()}}"
+                       name="{{$vocab->getSlug()}}" placeholder="Search"
+                       size="80" autocomplete="off">
                 <script>
                 $("#{{$vocab->getSlug()}}").vocab_widget({
                 mode: 'search',
@@ -187,7 +198,8 @@ foreach ($vocab->getVersion() as $version) {
                 });
                 </script>
             </div>
-            <button id="widget-toggle">Show code</button><div class="pull-right dev-link"><a target="_blank" href="{{portal_url('vocabs/page/widget_explorer')}}">Learn more</a></div>
+            <button id="widget-toggle">Show
+                code</button><div class="pull-right dev-link"><a target="_blank" href="{{portal_url('vocabs/page/widget_explorer')}}">Learn more</a></div>
             <br/>
             <div id="widget-info" class="toggle">
             <pre class="panel-body prettyprint">
@@ -213,8 +225,10 @@ foreach ($vocab->getVersion() as $version) {
             <div class="panel-body">
                 <?php $sub_count=0; ?>
                 @foreach($vocab->getSubject() as $subject)
-                <?php $sub_count++; ?>
-                    <a  href="{{base_url()}}search/#!/?subject_labels={{rawurlencode($subject->getLabel())}}"> {{htmlspecialchars($subject->getLabel())}} </a> <?php if($sub_count<count($vocab->getSubject())) echo " | "; ?>
+                    <?php $sub_count++; ?>
+                    <a href="{{base_url()}}search/#!/?subject_labels={{rawurlencode($subject->getLabel())}}">
+                        {{htmlspecialchars($subject->getLabel())}} </a>
+                    <?php if($sub_count<count($vocab->getSubject())) echo " | "; ?>
                 @endforeach
             </div>
         </div>
@@ -228,7 +242,8 @@ foreach ($vocab->getVersion() as $version) {
 @section('sidebar')
 @if($related_service)
 
-<div class="panel swatch-white  panel-primary element-no-top element-short-bottom panel-content">
+    <div class="panel swatch-white  panel-primary element-no-top
+                element-short-bottom panel-content">
     <div class="panel-heading">Services that make use of this vocabulary</div>
     <div class="panel-body">
 
@@ -237,7 +252,9 @@ foreach ($vocab->getVersion() as $version) {
                 <?php
                     echo implode(array_map('trim', array_map('readable', $serviceRef->getRelation())), ', ');
                 ?>
-            </small> <a href="" class="re_preview"  related='{{$serviceRef}}' v_id="{{ $vocab->getId() }}">{{htmlspecialchars($serviceRef->getRelatedEntity()->getTitle())}}</a></p>
+            </small>
+            <a href="" class="re_preview" related='{{$serviceRef}}'
+               v_id="{{ $vocab->getId() }}">{{htmlspecialchars($serviceRef->getRelatedEntity()->getTitle())}}</a></p>
             @endforeach
 
     </div>
@@ -258,7 +275,9 @@ foreach ($vocab->getVersion() as $version) {
                 <?php
                     echo implode(array_map('trim', array_map('readable', $relatedRef->getRelation())), ', ');
                 ?>
-            </small> <a href="" class="re_preview"  related='{{$relatedRef}}' v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
+            </small>
+            <a href="" class="re_preview" related='{{$relatedRef}}'
+               v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
         </p>
         @endforeach
         @endif
@@ -268,18 +287,24 @@ foreach ($vocab->getVersion() as $version) {
         <p>
             <small>
                 <?php
-                    echo implode(array_map('trim', array_map('readable', $relatedRef->getRelation())), ', ');
+                echo implode(array_map('trim', array_map('readable',
+                    $relatedRef->getRelation())), ', ');
                 ?>
-            </small> <a href="" class="re_preview"  related='{{$relatedRef}}' v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
+            </small>
+            <a href="" class="re_preview" related='{{$relatedRef}}'
+               v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
         </p>
         @endforeach
         @foreach($related_internal_vocabs as $relatedRef)
         <p>
             <small>
                 <?php
-                    echo implode(array_map('trim', array_map('readable', $relatedRef->getRelation())), ', ');
+                echo implode(array_map('trim', array_map('readable',
+                    $relatedRef->getRelation())), ', ');
                 ?>
-            </small> <a href="" class="re_preview"  related='{{$relatedRef}}' v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedVocabulary()->getTitle())}}</a>
+            </small>
+            <a href="" class="re_preview"  related='{{$relatedRef}}'
+               v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedVocabulary()->getTitle())}}</a>
         </p>
         @endforeach
         @endif
