@@ -1202,7 +1202,7 @@ class Vocabs extends MX_Controller
         // the various "Share" options. See footer.blade.php
         // for the code that does the stripping, based on this setting.
         $this->blade
-            ->set('scripts', array('manageSubscriptions'))
+            ->set('scripts', array('manageSubscriptionsCtrl'))
             ->set('strip_last_url_component', true)
             ->set('token', $token)
             ->render('manageSubscriptions');
