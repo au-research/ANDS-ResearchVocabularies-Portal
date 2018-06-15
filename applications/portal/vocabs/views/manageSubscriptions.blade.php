@@ -61,8 +61,12 @@
                     <input type="checkbox" id="v_[[subscription.id]]"
                            ng-model="subscription.checked" /></td>
                     <td class="padding-left">
-                      <a href="{{base_url()}}viewById/[[subscription.id]]"
-                         target="_blank">[[subscription.title]]</a></td>
+                      <a ng-if="!subscription.deleted"
+                         href="{{base_url()}}viewById/[[subscription.id]]"
+                         target="_blank">[[subscription.title]]</a>
+                      <span ng-if="subscription.deleted">
+                        [[subscription.title]] <i>(This vocabulary has been deleted.)</i></span>
+                    </td>
                 </tr>
 
                 <tr ng-if-start="hasOwnerAllSubscription

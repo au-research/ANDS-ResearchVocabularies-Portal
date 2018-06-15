@@ -81,6 +81,7 @@
         // Elements are objects:
         // { id: owner Id,
         //   title: owner full name,
+        //   deleted: true, if the element is deleted
         //   checked: model for checkbox }
         $scope.ownerSubscriptions = [];
 
@@ -105,6 +106,7 @@
                     $scope.vocabularySubscriptions.push({
                         'id': subscription.getElementId(),
                         'title': subscription.getTitle(),
+                        'deleted': subscription.getDeleted(),
                         'checked': false
                     });
                     break;
@@ -115,6 +117,7 @@
                         $scope.ownerSubscriptions.push({
                             'id': subscription.getElementId(),
                             'title': subscription.getTitle(),
+                            'deleted': subscription.getDeleted(),
                             'checked': false
                         });
                     }
