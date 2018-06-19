@@ -38,9 +38,20 @@ $title = rawurlencode(substr($vocab->getTitle(), 0, 200)) ;
                                 @if($vocab->getStatus() === Vocabulary::STATUS_DEPRECATED)
                                 <span class="label label-default pull-right" style="margin-left:5px">{{ htmlspecialchars($vocab->getStatus()) }}</span>
                                 @endif
-                                <a id="widget-link" class="pull-right" href="" tip="&lt;b>Widgetable&lt;/b>&lt;br/>This vocabulary can be readily used for resource description or discovery in your system using our vocabulary widget.&lt;br/>&lt;a id='widget-link2' target='_blank' href='{{portal_url('vocabs/page/widget_explorer')}}'>Learn more&lt;/a>">
-                                    <span class="label label-default pull-right"><img class="widget-icon" height="16" width="16"src="{{asset_url('images/cogwheels_white.png', 'core')}}"/> widgetable</span>
-                                </a>
+                                <div class="pull-right">
+                                    <div id="widget-link">
+                                        <a href="" tip="&lt;b>Widgetable&lt;/b>&lt;br/>This vocabulary can be readily used for resource description or discovery in your system using our vocabulary widget.&lt;br/>&lt;a id='widget-link2' target='_blank' href='{{portal_url('vocabs/page/widget_explorer')}}'>Learn more&lt;/a>">
+                                            <span class="label label-default pull-right btn-widget-link"><img class="widget-icon" height="16" width="16" src="{{asset_url('images/cogwheels_white.png', 'core')}}"/> widgetable</span>
+                                        </a>
+                                        <br />
+                                    </div>
+                                    <div ng-controller="subscribeDialogCtrl">
+                                        <a id="subscribe-link" href="" ng-click="openDialog()">
+                                            <!-- b tag for icon instead of usual i, to avoid ".swatch-white i" CSS overriding the colour of the icon. -->
+                                            <span class="label label-default pull-right btn-subscribe-link"><b class="fa fa-envelope" height="16" width="16"></b> &nbsp; subscribe</span>
+                                        </a>
+                                    </div>
+                                </div>
                                 <h1 class="hairline bordered-normal break" style="line-height:1.1em"><span itemprop="name" ng-non-bindable>{{ htmlspecialchars($vocab->getTitle()) }} </span></h1>
                                 @if (!empty($vocab->getAcronym()))
                                 <small>Acronym: {{ htmlspecialchars($vocab->getAcronym()) }}</small><br>

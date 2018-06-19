@@ -260,3 +260,10 @@ $ENV['oauth_config'] =
 
 		)
 	);
+
+// ReCAPTCHA keys, used on the subscription modal dialog.
+// Provide both the site key and the secret key.
+$ENV['reCAPTCHA'] = array(
+    "site_key" => "6L...",
+    "secret_key" => "6L..."
+);

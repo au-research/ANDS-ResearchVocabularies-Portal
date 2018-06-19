@@ -801,6 +801,7 @@ class Vocabs extends MX_Controller
                 ->set('vocab', $vocab)
                 ->set('title', $vocab->getTitle()
                       . ' - Research Vocabularies Australia')
+                ->set('scripts', array('subscribeDialogCtrl'))
                 ->render('vocab');
         } catch (Exception $e) {
             // No longer throw an exception, like this:
@@ -1256,6 +1257,36 @@ class Vocabs extends MX_Controller
         }
         // Not an owner.
         return false;
+    }
+
+    /** Validate a response from the reCAPTCHA service.
+     * Send a POST request, with body:
+     *   {"recaptcha": "response from reCAPTCHA server"}.
+     * Response is either:
+     *   {"status": "OK"}
+     * or:
+     *   {"status": "fail"}.
+     */
+    public function checkReCAPTCHA() {
+        // Get the POST data
+        $postdata = file_get_contents("php://input");
+        $request = json_decode($postdata);
+        $gRecaptchaResponse = $request->recaptcha;
+        // Require configuration item from global_config.php.
+        $secret = get_config_item('reCAPTCHA')['secret_key'];
+        // Server-side validation of the response.
+        $reCAPTCHA = new \ReCaptcha\ReCaptcha($secret);
+        $resp = $reCAPTCHA->verify($gRecaptchaResponse,
+                                   $_SERVER['REMOTE_ADDR']);
+        if ($resp->isSuccess()) {
+            echo '{"status": "OK"}';
+            // verified!
+            // if Domain Name Validation turned off don't forget to check
+            // hostname field
+            // if($resp->getHostName() === $_SERVER['SERVER_NAME']) {  }
+        } else {
+            echo '{"status": "fail"}';
+        }
     }
 
     /** Add an HTTP header to all Registry API invocations, with

@@ -19,6 +19,8 @@
 	@endif
 	{{-- Add Additional Facebook metadata, if any. --}}
 	@yield('og-other-meta')
+	{{-- Vocabulary metadata for our own use. Currently used for subscriptions. --}}
+	@yield('vocab-meta')
 	{{-- If more metadata needed, insert more yields here. --}}
 	@include('includes/styles')
 	<script type="text/javascript">

@@ -2,6 +2,7 @@
     var base_url = "{{base_url()}}";
     var registry_url = "{{registry_url()}}";
     var registry_api_url = {{json_encode(get_config_item('vocab_config')['registry_api_url'])}};
+    var recaptcha_site_key = "{{get_config_item('reCAPTCHA')['site_key']}}";
 @yield('script')
 </script>
 
@@ -43,6 +44,7 @@
     <script src="{{ asset_url('js/lib/angular-loading-bar/build/loading-bar.min.js')}}"></script>
     <script type="text/javascript" src="{{ asset_url('js/lib/ng-file-upload/ng-file-upload-all.min.js') }}"></script>
     <script src="{{ asset_url('ands-green/js/packages.min.js','templates') }}"></script>
+    <script src="{{ asset_url('js/lib/angular-recaptcha/release/angular-recaptcha.min.js') }} "></script>
 @else
     <script src="{{ asset_url('js/lib.js').'?'.getReleaseVersion() }}"></script>
 @endif

@@ -338,14 +338,24 @@ input:disabled + label {
 }
 .btn-widget-link {
   background-color: #aaaaaa;
-  border-radius: 6px;
   display: block;
-  color: black;
-  float: right;
+  color: white;
   padding-left: 5px;
   padding-right: 5px;
+  width: 90px;
 }
 .widget-icon {
+  padding-right: 5px;
+}
+.btn-subscribe-link {
+  background-color: #82c9ed;
+  display: block;
+  color: white;
+  padding-left: 0px;
+  padding-right: 5px;
+  width: 90px;
+}
+.subscribe-icon {
   padding-right: 5px;
 }
 .dev-link {
