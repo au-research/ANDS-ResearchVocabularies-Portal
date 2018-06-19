@@ -1,0 +1,100 @@
+<div style="modal-center">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="dismiss()">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+        <h4 class="modal-title">Subscriptions</h4>
+    </div>
+
+    <div ng-if="allowInteraction" ng-cloak class="modal-body swatch-white">
+        <h3>I would like to subscribe to a weekly email digest of:</h3>
+
+        <form name="form.subscribeForm">
+            <div class="container-fluid">
+
+                <table>
+                    <tr>
+                        <td class="padding-top">
+                            <input id="subscribe_vocab" type="radio"
+                                   ng-model="form.subscribeRadio"
+                                   value="vocabulary" />
+                            Changes to the <i>[[ vocabTitle ]]</i> vocabulary.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input id="subscribe_this_owner" type="radio"
+                                   ng-model="form.subscribeRadio"
+                                   value="thisOwner" />
+                            New/changed vocabularies from the owner <i>[[ vocabOwner ]]</i>.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input id="subscribe_all_owners" type="radio"
+                                   ng-model="form.subscribeRadio"
+                                   value="allOwners" />
+                            New/changed vocabularies from all owners.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="padding-top">
+                            <input id="subscribe_system" type="checkbox" ng-model="form.subscribeSystem" />
+                            Also notify me of Research Vocabularies Australia service updates and new features.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="padding-top padding-bottom form-group"
+                            ng-class="{'has-error': form.subscribeForm.email.$invalid}">
+                            <label for="subscriber_email">Email</label>
+                            <input id="subscriber_email" type="email"
+                                   class="form-control"
+                                   style="width:80%"
+                                   placeholder="enter your email address"
+                                   required
+                                   ng-model="form.subscriberEmail"
+                                   name="email" />
+                            <p ng-show="form.subscribeForm.email.$invalid" class="help-block">Valid Email is required</p>
+                        </td>
+
+                        <td ng-if="showReCAPTCHA"
+                             vc-recaptcha key="reCAPTCHA.key"
+                             size="invisible"
+                             badge="inline"
+                             on-create="setReCAPTCHAWidgetId(widgetId)"
+                             on-success="setReCAPTCHAResponse(response)"
+                             on-expire="expireReCAPTCHA()"></td>
+
+                    </tr>
+                </table>
+
+            </div>
+            <div class="modal-footer swatch-white">
+                <button type="button"
+                        id="cancel"
+                        class="btn btn-large btn-link"
+                        ng-click="dismiss()">Cancel</button>
+                <input type="submit" value="Subscribe"
+                        id="subscribe"
+                        class="btn btn-large btn-primary"
+                        ng-disabled="!anyChecked() || form.subscribeForm.email.$invalid"
+                        ng-click="clickSubscribe()" />
+            </div>
+        </form>
+    </div>
+    <div ng-cloak ng-if="success">
+        <form>
+            <div class="container-fluid swatch-white">
+                <p>You have been successfully subscribed.</p>
+
+                <p class="text-right"><button type="button"
+                        id="success"
+                        class="btn btn-large btn-primary"
+                           ng-click="close()">OK</button>
+                </p>
+            </div>
+        </form>
+    </div>
+
+</div>
