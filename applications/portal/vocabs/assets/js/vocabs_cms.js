@@ -1175,7 +1175,8 @@
             $scope.showServerSuccessMessage(resp);
 
             $scope.show_alert_after_save(resp, function() {
-                if ($scope.targetStatus === "published") {
+                if ($scope.targetStatus === "published" ||
+                    $scope.targetStatus === "deprecated") {
                     window.location.replace(base_url + "viewById/" + resp.id);
                     return;
                 }
