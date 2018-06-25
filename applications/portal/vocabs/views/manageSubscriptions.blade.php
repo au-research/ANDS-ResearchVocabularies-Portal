@@ -46,7 +46,7 @@
                   <td colspan="2" class="h3 padding-top"
                       >Vocabularies you are subscribed to</td>
                 </tr>
-                <tr>
+                <tr ng-if="vocabularySubscriptions.length > 1">
                   <td class="text-right"
                       style="width:15%; padding-top: 10px">Select All &nbsp;
                     <input type="checkbox" ng-model="form.vocabulariesSelectAll"
@@ -74,7 +74,9 @@
                   <td colspan="2" class="h3 padding-top">Publishers you are
                     subscribed to</td>
                 </tr>
-                <tr>
+                <tr ng-if="(hasOwnerAllSubscription &&
+                           ownerSubscriptions.length > 0) ||
+                           ownerSubscriptions.length > 1">
                   <td class="text-right" style="padding-top: 10px">Select All
                     &nbsp;
                     <input type="checkbox" ng-model="form.ownersSelectAll"
