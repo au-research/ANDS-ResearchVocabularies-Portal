@@ -1186,6 +1186,85 @@ class Vocabs extends MX_Controller
 
     /* Subscriptions */
 
+    /** Process a request to add vocabulary subscriptions.
+     * It must contain a response from the reCAPTCHA service.
+     * Send a POST request, with body:
+     *   {"recaptcha": "response from reCAPTCHA server",
+     *    "email": "email-address-of-subscriber",
+     *    "subscriptions": { ... }
+     *   }.
+     * Response is either:
+     *   {"status": "OK"}
+     * or if reCAPTCHA validation fails:
+     *   {"status": "failReCAPTCHA"}
+     * or if an API call fails:
+     *   {"status": "fail", "message": "[401] Error connecting ..."}.
+     */
+    public function addSubscriptions() {
+        // Get the POST data
+        $postdata = file_get_contents("php://input");
+        $request = json_decode($postdata);
+        $gRecaptchaResponse = $request->recaptcha;
+        // Require configuration item from global_config.php.
+        $secret = get_config_item('reCAPTCHA')['secret_key'];
+        // Server-side validation of the response.
+        $reCAPTCHA = new \ReCaptcha\ReCaptcha($secret);
+        $resp = $reCAPTCHA->verify($gRecaptchaResponse,
+                                   $_SERVER['REMOTE_ADDR']);
+        if ($resp->isSuccess()) {
+            // verified!
+            // if Domain Name Validation turned off don't forget to check
+            // hostname field
+            // if($resp->getHostName() === $_SERVER['SERVER_NAME']) {  }
+
+            if (!$this->user->isLoggedIn()) {
+                // Remove the user's non-logged-in cookie (which will
+                // be rejected by the Registry)
+                // and supply our own authentication.
+                $vocab_config = get_config_item('vocab_config');
+                $username = $vocab_config['registry_user'];
+                $password = $vocab_config['registry_password'];
+                $registryConfig = ANDS\VocabsRegistry\Configuration::
+                                getDefaultConfiguration();
+                $registryConfig->setApiKey($this->session->sess_cookie_name,
+                                           null);
+                $registryConfig->setUsername($username);
+                $registryConfig->setPassword($password);
+            }
+
+            $subscriptions = $request->subscriptions;
+            $email = $request->email;
+            try {
+                foreach ($subscriptions as $key => $value) {
+                    switch ($key) {
+                    case 'vocabularyId':
+                        $this->ServiceAPI->createEmailSubscriptionVocabulary(
+                            $value, $email);
+                        break;
+                    case 'ownerId':
+                        $this->ServiceAPI->createEmailSubscriptionOwner(
+                            $value, $email);
+                        break;
+                    case 'system':
+                        if ($value == true) {
+                            $this->ServiceAPI->createEmailSubscriptionSystem(
+                                $email);
+                        }
+                        break;
+                    }
+                }
+            } catch (Exception $e) {
+                // Failure of an API call.
+                echo '{"status": "fail", "message": "'
+                    . addslashes($e->getMessage()) . '"}';
+                return;
+            }
+            echo '{"status": "OK"}';
+        } else {
+            echo '{"status": "failReCAPTCHA"}';
+        }
+    }
+
     /**
      * Manage a subscriber's subscriptions.
      * @param  string $token The subscriber's token.
@@ -1257,36 +1336,6 @@ class Vocabs extends MX_Controller
         }
         // Not an owner.
         return false;
-    }
-
-    /** Validate a response from the reCAPTCHA service.
-     * Send a POST request, with body:
-     *   {"recaptcha": "response from reCAPTCHA server"}.
-     * Response is either:
-     *   {"status": "OK"}
-     * or:
-     *   {"status": "fail"}.
-     */
-    public function checkReCAPTCHA() {
-        // Get the POST data
-        $postdata = file_get_contents("php://input");
-        $request = json_decode($postdata);
-        $gRecaptchaResponse = $request->recaptcha;
-        // Require configuration item from global_config.php.
-        $secret = get_config_item('reCAPTCHA')['secret_key'];
-        // Server-side validation of the response.
-        $reCAPTCHA = new \ReCaptcha\ReCaptcha($secret);
-        $resp = $reCAPTCHA->verify($gRecaptchaResponse,
-                                   $_SERVER['REMOTE_ADDR']);
-        if ($resp->isSuccess()) {
-            echo '{"status": "OK"}';
-            // verified!
-            // if Domain Name Validation turned off don't forget to check
-            // hostname field
-            // if($resp->getHostName() === $_SERVER['SERVER_NAME']) {  }
-        } else {
-            echo '{"status": "fail"}';
-        }
     }
 
     /** Add an HTTP header to all Registry API invocations, with

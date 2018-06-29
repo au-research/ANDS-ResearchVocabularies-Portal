@@ -131,7 +131,7 @@
         /** Accept the response from reCAPTCHA. */
         $scope.setReCAPTCHAResponse = function(response) {
             reCAPTCHAResponse = response;
-            checkReCAPTCHAResponse();
+            requestSubscriptions();
         }
 
         $scope.expireReCAPTCHA = function() {
@@ -149,64 +149,60 @@
             if (reCAPTCHAResponse == null) {
                 vcRecaptchaService.execute(reCAPTCHAWidgetId);
             } else {
-                checkReCAPTCHAResponse();
+                requestSubscriptions();
             }
         }
 
-        /** Send reCAPTCHA for validation. On success, do the subscription. */
-        var checkReCAPTCHAResponse = function() {
-            $http.post(base_url + 'vocabs/checkReCAPTCHA',
-                       {'recaptcha' : reCAPTCHAResponse}).
+        /** Send subscription requests, with reCAPTCHA for
+            validation. (The subscriptions will be processed by the
+            PHP controller method on successful validation of the
+            reCAPTCHA.) */
+        var requestSubscriptions = function() {
+            $http.post(base_url + 'vocabs/addSubscriptions',
+                       {'recaptcha' : reCAPTCHAResponse,
+                        'email': $scope.form.subscriberEmail,
+                        'subscriptions' : getSubscriptions()}).
                 then(function(response) {
                     if (response.data.status == 'OK') {
-                        doSubscribe();
-                    } else {
+                        console.log('success');
+                        $scope.loading = false;
+                        $scope.allowInteraction = false;
+                        $scope.success = true;
+                    } else if (response.data.status == 'failReCAPTCHA')  {
                         alert('Unable to validate reCAPTCHA.');
+                        $scope.loading = false;
+                        $scope.allowInteraction = true;
+                    } else {
+                        alert('Unable to process request. ' +
+                              'Please try again later.');
+                        $scope.loading = false;
+                        $scope.allowInteraction = true;
                     }
                 });
         }
 
-        /** Invoke the API methods to do the requested subscriptions. */
-        var doSubscribe = function() {
-            var promises = [];
+        /** Construct an object representing the requested
+            subscriptions, for sending to the PHP controller. */
+        var getSubscriptions = function() {
+            var subscriptions = {};
             switch ($scope.form.subscribeRadio) {
             case 'vocabulary':
-                promises.push(ServicesAPI.createEmailSubscriptionVocabulary(
-                    vocabId, $scope.form.subscriberEmail));
+                subscriptions['vocabularyId'] = vocabId;
                 break;
             case 'thisOwner':
-                promises.push(ServicesAPI.createEmailSubscriptionOwner(
-                    vocabOwner, $scope.form.subscriberEmail));
+                subscriptions['ownerId'] = vocabOwner;
                 break;
             case 'allOwners':
-                promises.push(ServicesAPI.createEmailSubscriptionOwner(
-                    '*', $scope.form.subscriberEmail));
+                subscriptions['ownerId'] = '*';
                 break;
             default:
                 break;
             }
             // System subscription, if selected.
             if ($scope.form.subscribeSystem) {
-                promises.push(ServicesAPI.createEmailSubscriptionSystem(
-                    $scope.form.subscriberEmail));
+                subscriptions['system'] = true;
             }
-            // Wait for all to complete.
-            Promise.all(promises).then(function(values) {
-                console.log('success');
-                console.log(values);
-                $scope.loading = false;
-                $scope.allowInteraction = false;
-                $scope.success = true;
-            }, function(values) {
-                console.log('Failure of one of the API calls');
-                console.log(values);
-                alert('Unable to complete subscription due to a ' +
-                      'network error.');
-                $scope.loading = false;
-            }).finally(function() {
-                // Force updating of the model.
-                $scope.$apply();
-            });
+            return subscriptions;
         }
 
     }
