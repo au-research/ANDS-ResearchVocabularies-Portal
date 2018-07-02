@@ -5,7 +5,7 @@
     angular
         .module('app', ['ngRoute', 'ngSanitize', 'ui.bootstrap',
                         'ui.utils', 'angular-loading-bar', 'ngFileUpload',
-                        'ui.select', 'ui.tinymce'
+                        'ui.select', 'ui.tinymce', 'vcRecaptcha'
                        ])
         .config(
             function ($interpolateProvider, $locationProvider, $logProvider) {
@@ -351,6 +351,46 @@ $(document).on(
                 }
             },
             event
+        );
+    }
+);
+
+// Subscribe button.
+// First, mouseover. This is just like a[tip],
+// except the tooltip is moved down (class element-shorter-top)
+// and out of the way of the element, so that click events are always
+// processed. See:
+// https://stackoverflow.com/questions/18670334/qtip2-prevents-clicks-on-underlaying-elements
+$(document).on(
+    'mouseover',
+    '#subscribe-link',
+    function (event) {
+        event.preventDefault();
+        $(this).qtip(
+            {
+                content: {
+                    text: 'Open the subscription dialog.'
+                },
+                show: {
+                    event: 'mouseover',
+                    ready: true
+                },
+                hide: {
+                    event: 'mouseleave click unfocus',
+                    fixed: true
+                },
+                position: {
+                    target: 'mouse',
+                    adjust: {
+                        mouse: false,
+                        method: 'shift'
+                    },
+                    viewport: $(window)
+                },
+                style: {
+                    classes: 'qtip-light qtip-shadow qtip-normal qtip-bootstrap element-shorter-top'
+                }
+            }
         );
     }
 );

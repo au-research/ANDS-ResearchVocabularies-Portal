@@ -431,7 +431,7 @@
                 }
 
                 if (!$scope.version.doImport && $scope.version.doPoolpartyHarvest) {
-                    $scope.error_message = "Import must be enabled for Poolparty harvested versions";
+                    $scope.error_message = "Import must be enabled for PoolParty harvested versions";
                     return false;
                 }
 

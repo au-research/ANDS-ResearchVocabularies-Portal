@@ -43,7 +43,8 @@
                 <div class="col-md-3">
                     <?php
                     $url = ((isset($ro) && isset($ro->core['slug']) && isset($ro->core['id'])) ? base_url().$ro->core['slug'].'/'.$ro->core['id'] : current_url() );
-                    $title = ((isset($ro) && isset($ro->core['slug']) && isset($ro->core['id'])) ? $ro->core['title']. ' - Research Data Australia' : 'Research Data Australia' );
+                    if (isset($strip_last_url_component) && $strip_last_url_component) { $url_array = explode('/', $url); array_pop($url_array); $url = implode('/', $url_array); }
+                    $title = ((isset($ro) && isset($ro->core['slug']) && isset($ro->core['id'])) ? $ro->core['title']. ' - Research Vocabularies Australia' : 'Research Vocabularies Australia' );
                     ?>
                     <div id="categories-5" class="sidebar-widget widget_categories">
                         <h3 class="sidebar-header">Share</h3>

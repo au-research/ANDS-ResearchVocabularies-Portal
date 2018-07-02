@@ -10,7 +10,7 @@
 /*
 /*					Vocabs Software Configuration
 /*
-/*		Release Version :	25
+/*		Release Version :	28
 /*		Contact Person  :	services@ands.org.au
 /*		Help/support    :	http://documentation.ands.org.au/
 /*
@@ -20,7 +20,7 @@
 /* (SECTION 1) REQUIRED CONFIGURATION OPTIONS
 /*************************************************************************/
 // The Release Version
-$ENV['release_version'] = 'r25';
+$ENV['release_version'] = 'r28';
 
 // Details of your database server (note: advanced settings can be modified in Sect 4)
 $eDBCONF['default']['hostname'] = 'localhost';  // hostname or IP address
@@ -119,7 +119,13 @@ $ENV['vocab_config'] = array(
 	'upload_path' => '/var/vocab-files/toolkit-data/temp/uploads/',
 	// This should match the Vocab Toolkit's Toolkit.storagePath
 	// setting.
-	'repository_path' => '/var/vocab-files/toolkit-data/vocabs/'
+	'repository_path' => '/var/vocab-files/toolkit-data/vocabs/',
+        // This must be the username of a Registry user that has authority
+        // to do what the portal needs it to do. For now, that means
+        // it must have the authority to create email subscriptions.
+        'registry_user' => '{CONFIGURE ME vocabs_portal-for-example}',
+        // This must be the password for the registry_user.
+        'registry_password' => '{CONFIGURE ME put-the-password-here}'
 );
 // $ENV['enable_logging'] = true;
 
@@ -260,3 +266,10 @@ $ENV['oauth_config'] =
 
 		)
 	);
+
+// ReCAPTCHA keys, used on the subscription modal dialog.
+// Provide both the site key and the secret key.
+$ENV['reCAPTCHA'] = array(
+    "site_key" => "6L...",
+    "secret_key" => "6L..."
+);

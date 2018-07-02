@@ -50,9 +50,38 @@
         // user confirmation required.
         $scope.confirmationRequiredOnExit = false;
 
-        // model for the owner select
-        // upon Continue vocab.owner will be set to this value
+        // $scope.commitVocabOwner is set to true if/when the owner
+        // field has been "locked in": either, this is a new vocab,
+        // and the user has made a selection from the owner dropdown
+        // and clicked the Continue button, _or_, we are editing an
+        // existing vocabulary (i.e., for which the owner is set
+        // already).
         $scope.commitVocabOwner = false;
+
+        // Used to keep a record of the selection of PoolParty project.
+        // The value starts and remains false if we are not adding
+        // from PoolParty, or if we are adding from PoolParty, but
+        // the project has not yet been selected.
+        $scope.poolPartySelection = false;
+
+        // Called by clicking the "Use this PoolParty Project" button.
+        // Save the selected project into $scope.poolPartySelection.
+        $scope.selectPoolPartyProject = function(project) {
+            $scope.poolPartySelection = project;
+            // And now enable the Owner selection.
+            $scope.decide = true;
+        }
+
+        // Called by clicking the Continue button.
+        // Handle the case of adding from PoolParty, where we
+        // know what the selected project is, but we haven't yet
+        // fetched the project's metadata from PoolParty.
+        $scope.setCommitVocabOwner = function() {
+            $scope.commitVocabOwner = true;
+            if ($scope.poolPartySelection !== false) {
+                $scope.populate($scope.poolPartySelection);
+            }
+        }
 
         $scope.form = {};
 
@@ -224,8 +253,9 @@
 
         // Is the datepicker popup open?
         $scope.opened = false;
-        // When adding a new voabulary, has the user chosen whether
-        // to add from PoolParty or not?
+        // The $scope.decide flag determines whether the user
+        // sees the PoolParty integration fields (if false)
+        // or the main CMS fields (if true).
         $scope.decide = false;
 
         $scope.creation_date = '';
@@ -610,6 +640,8 @@
         });
 
 
+        // The link from My Vocabs passes adds ?skip=true
+        // for the "Add a new Vocabulary" link.
         if ($location.search().skip) {
             $scope.decide = true;
         } else if($location.search().message == 'saved_draft') {
@@ -625,11 +657,6 @@
                     return true;
                 } else return false;
             }
-        };
-
-
-        $scope.skip = function () {
-            $scope.decide = true;
         };
 
 
@@ -670,6 +697,9 @@
             return chosen;
         };
 
+        // $scope.populatingPP is set to true just before invoking
+        // the API method to fetch metadata from PoolParty, and
+        // is set back to false in the callback from the API method.
         $scope.populatingPP = false;
         /**
          * Populate the vocab with data
@@ -1145,7 +1175,8 @@
             $scope.showServerSuccessMessage(resp);
 
             $scope.show_alert_after_save(resp, function() {
-                if ($scope.targetStatus === "published") {
+                if ($scope.targetStatus === "published" ||
+                    $scope.targetStatus === "deprecated") {
                     window.location.replace(base_url + "viewById/" + resp.id);
                     return;
                 }

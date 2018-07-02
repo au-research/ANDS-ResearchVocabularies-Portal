@@ -42,6 +42,7 @@
         "monolog/monolog": "^1.19",
         "jaybizzle/crawler-detect": "1.*",
         "vlucas/phpdotenv": "^2.4",
+        "google/recaptcha": "~1.1",
         "au-research/vocabs-php-client": "@dev"
     },
 

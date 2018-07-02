@@ -105,6 +105,7 @@ module.exports = function(grunt){
                     '<%= yeoman.vocab_asset %>/js/lib/angular-bootstrap/ui-bootstrap-tpls.min.js',
                     '<%= yeoman.vocab_asset %>/js/lib/angular-loading-bar/build/loading-bar.min.js',
                     '<%= yeoman.vocab_asset %>/js/lib/ng-file-upload/ng-file-upload-all.min.js',
+                    '<%= yeoman.vocab_asset %>/js/lib/angular-recaptcha/release/angular-recaptcha.min.js',
                     '<%= yeoman.templates %>/ands-green/assets/js/packages.min.js'
                 ],
                 dest:'<%=yeoman.vocab_asset %>/js/lib.js'
