@@ -246,7 +246,48 @@ class VocabProxy
 					if (is_string($i)) {
 						return false;
 					}
-					$i['label'] = $i['prefLabel']['_value'];
+					// CC-2156: support multilingual vocabs.
+					// For now, do it in a way consistent with
+					// what we did for CC-1866 in the Registry's
+					// JsonTreeTransformProvider, i.e.,
+					// give priority to labels that have no lang tag,
+					// then labels with lang="en", then otherwise,
+					// fall back to the last one in the array.
+
+					// The structure of $i['prefLabel'] is either:
+					// (a) {"_value":"Australian parrots","_lang":"en"}
+					// (b) {"_value":"Australian parrots","_datatype":"string"}
+					// (c) [{"_value":"Australian parrots","_lang":"en"},
+					//      {"_value":"Loros australianos","_lang":"es"}]
+					// (d) [{"_value":"Australian parrots","_lang":"en"},
+					//      {"_value":"Australian parrots without language",
+					//       "_datatype":"string"}
+					//      {"_value":"Loros australianos","_lang":"es"}]
+					// _All_ of these are PHP arrays! So to distinguish
+					// (a) and (b) from (c) and (d), check for the presence of
+					// key 0.
+
+					if (array_key_exists(0, $i['prefLabel'])) {
+						// This is a multilingual vocabulary.
+						$prefLabel = NULL;
+						$prefLabelLanguage = NULL;
+						foreach ($i['prefLabel'] as $one_label) {
+							if (array_key_exists('_datatype', $one_label)) {
+								// Always prioritize label with no lang.
+								$prefLabel = $one_label['_value'];
+								$prefLabelLanguage = NULL;
+							} elseif ($prefLabel == NULL ||
+									  ($prefLabelLanguage != NULL &&
+									   $prefLabelLanguage != 'en')) {
+								$prefLabel = $one_label['_value'];
+								$prefLabelLanguage = $one_label['_lang'];
+							}
+						}
+						$i['label'] = $prefLabel;
+					} else {
+						// Just one prefLabel.
+						$i['label'] = $i['prefLabel']['_value'];
+					}
 
 					$i['about'] = $i['_about'];
 					if (array_key_exists('broader', $i) &&
