@@ -50,6 +50,10 @@
                                 vcRecaptchaService,
                                 vocabId, vocabTitle, vocabOwner) {
 
+        // base_url is used by the template, to give the URL
+        // of the privacy policy.
+        $scope.base_url = base_url;
+
         // Initialise Registry API access.
         var VocabularyRegistryApi = require('vocabulary_registry_api');
         var defaultClient = VocabularyRegistryApi.ApiClient.instance;
