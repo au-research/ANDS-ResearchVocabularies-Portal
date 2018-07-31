@@ -106,7 +106,7 @@
   margin: 7px 0px;
 }
 .vocab-search-result a {
-  color: #0c415a;
+  color: #17649a;
 }
 .current-version-ap-block {
   width: 25%;
@@ -210,7 +210,7 @@ ul.listy li a small {
 }
 .swatch-white a,
 [class*="swatch-"] .swatch-white a {
-  color: #0c415a;
+  color: #17649a;
 }
 .swatch-white a.btn-danger {
   color: white;
