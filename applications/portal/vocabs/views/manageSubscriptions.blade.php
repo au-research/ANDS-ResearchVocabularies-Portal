@@ -30,18 +30,6 @@
             <form ng-if="hasAnySubscription">
 
               <table style="width:100%">
-                <tr ng-if-start="hasSystemSubscription">
-                  <td colspan="2" class="h3 padding-top">System notifications</td>
-                </tr>
-                <tr ng-if-end="">
-                  <td class="text-right" style="padding-top: 10px">
-                    <input type="checkbox" id="system"
-                           ng-model="form.systemSubscriptionUnsubscribe" /></td>
-                    <td class="padding-left" style="padding-top: 10px">System
-                      notifications</td>
-                </tr>
-
-
                 <tr ng-if-start="vocabularySubscriptions.length &gt; 0">
                   <td colspan="2" class="h3 padding-top"
                       >Vocabularies you are subscribed to</td>
@@ -71,13 +59,14 @@
 
                 <tr ng-if-start="hasOwnerAllSubscription
                                  || ownerSubscriptions.length &gt; 0">
-                  <td colspan="2" class="h3 padding-top">Publishers you are
-                    subscribed to</td>
+                  <td colspan="2" class="h3 padding-top"
+                      style="padding-bottom: 10px">Publishers
+                    you are subscribed to</td>
                 </tr>
                 <tr ng-if="(hasOwnerAllSubscription &&
                            ownerSubscriptions.length > 0) ||
                            ownerSubscriptions.length > 1">
-                  <td class="text-right" style="padding-top: 10px">Select All
+                  <td class="text-right">Select All
                     &nbsp;
                     <input type="checkbox" ng-model="form.ownersSelectAll"
                            id="toggleSelectAllOwners"
@@ -99,6 +88,18 @@
                     <input type="checkbox" id="o_[[subscription.id]]"
                            ng-model="subscription.checked" /></td>
                     <td class="padding-left">[[subscription.title]]</td>
+                </tr>
+
+                <tr ng-if-start="hasSystemSubscription">
+                  <td colspan="2" class="h3 padding-top">Service notifications</td>
+                </tr>
+                <tr ng-if-end="">
+                  <td class="text-right" style="padding-top: 10px">
+                    <input type="checkbox" id="system"
+                           ng-model="form.systemSubscriptionUnsubscribe" /></td>
+                    <td class="padding-left" style="padding-top: 10px">Research
+                      Vocabularies Australia service updates and new
+                      features</td>
                 </tr>
 
                 <tr>
