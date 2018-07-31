@@ -19,7 +19,7 @@
 
                     <h3>Use of non-personally identifiable information</h3>
 
-                    <p>The non-personally identifiable information collected will be used for the purpose of gauging visitor traffic, trends analysis and delivering personalised content to you while you are at the site.  We will also use the aggregated data, in its entirety or in a time-based scale, to provide statistics to our users and our partners. These statistics can either be displayed in Research Data Australia (e.g. views, access) or as a report shared with our partners and stakeholders.</p>
+                    <p>The non-personally identifiable information collected will be used for the purpose of gauging visitor traffic, trends analysis and delivering personalised content to you while you are at the site.  We will also use the aggregated data, in its entirety or in a time-based scale, to provide statistics to our users and our partners. These statistics can either be displayed in Research Vocabularies Australia (e.g. views, access) or as a report shared with our partners and stakeholders.</p>
 
                     <h3>Collection of your personal information</h3>
 
