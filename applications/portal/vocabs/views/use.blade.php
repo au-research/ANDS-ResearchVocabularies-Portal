@@ -46,7 +46,7 @@
                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                     <h3 class="normal light bordered">Subscribe to a vocabulary</h3>
                     <p>The subscription functionality within Research Vocabularies Australia allows users to subscribe to notifications for specific vocabularies, vocabulary owners, or all vocabularies. Once subscribed, users will begin receiving weekly digest emails which detail the changes that have occurred during the last week. Subscribing is a great way to keep up to date with changes and ensure you are using the latest version of a vocabulary.</p>
-                    <p>Learn more about <a href="https://intranet.ands.org.au/display/DSS/Subscribing+to+vocabularies" target="_blank">subscribing to vocabularies</a>.</p>
+                    <p>Learn more about <a href="https://documentation.ands.org.au/display/DOC/Subscribing+to+vocabularies" target="_blank">subscribing to vocabularies</a>.</p>
                 </div>
             </div>
         </div>

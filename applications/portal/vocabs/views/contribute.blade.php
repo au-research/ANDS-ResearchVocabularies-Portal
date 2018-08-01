@@ -37,7 +37,7 @@
                     Contact <a href="mailto:services@ands.org.au">services@ands.org.au</a> to register for the RVA editor.
                    </p>
                     <p>
-                    Learn more about the <a href="https://intranet.ands.org.au/pages/viewpage.action?pageId=19529976" target="_blank">RVA editor</a>.
+                    Learn more about the <a href="https://documentation.ands.org.au/pages/viewpage.action?pageId=19529976" target="_blank">RVA editor</a>.
                     </p>
                 </div>
                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
@@ -56,7 +56,7 @@
                         Contact <a href="mailto:services@ands.org.au">services@ands.org.au</a> to register for the RVA portal.
                     </p>
                     <p>
-                        Learn more about the <a href="https://intranet.ands.org.au/pages/viewpage.action?pageId=19529985" target="_blank">RVA portal</a>.
+                        Learn more about the <a href="https://documentation.ands.org.au/display/DOC/Subscribing+to+vocabularies" target="_blank">RVA portal</a>.
                     </p>
                 </div>
                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
