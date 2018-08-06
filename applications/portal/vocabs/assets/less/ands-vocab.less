@@ -10,13 +10,18 @@
 @deprecated: #CC0000;
 
 //second
-// @primaryColor: #17649A;
-@primaryColor: #0c415a;
+
+// 2018-07-26 Restored primaryColor to state before commit
+// a1bf4b364355a12868b4c43542ea66d191a4ea68, introduced
+// primaryBackgroundColor for what was then intended.
+
+@primaryColor: #17649A;
+@primaryBackgroundColor: #0c415a;
 @secondaryColor: #46494C;
 @boxColor: #487577;
 
 .swatch-blue {
-    background: @primaryColor;
+    background: @primaryBackgroundColor;
     color: white;
     a {
         color: white;
@@ -26,7 +31,7 @@
             a {
                 color: white;
                 &:hover, &:focus {
-                    background: @primaryColor;
+                    background: @primaryBackgroundColor;
                 }
             }
         }
@@ -37,7 +42,7 @@
                 color: grey;
                 &:hover {
                     color: white;
-                    background: @primaryColor;
+                    background: @primaryBackgroundColor;
                 }
             }
         }

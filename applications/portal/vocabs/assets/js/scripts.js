@@ -2821,6 +2821,53 @@ $(document).on(
     }
 );
 
+// Show a tooltip over the subscribe button _after_ the user
+// has requested a download. Clicking on the tooltip opens
+// the subscribe modal dialog.
+$(document).on(
+    'click',
+    '.download-link',
+    function (event) {
+        // Timeout seems to be necessary, otherwise the qtip can get
+        // lost.
+        setTimeout(function() {
+            $('#subscribe-link').qtip(
+                {
+                    content: {
+                        text: 'Subscribe to be notified of changes to this vocabulary.'
+                    },
+                    show: {
+                        ready: true
+                    },
+                    hide: {
+                        leave: false,
+                        inactive: 5000,
+                        event: 'mouseleave click unfocus',
+                        fixed: true
+                    },
+                    position: {
+                        viewport: $(window)
+                    },
+                    style: {
+                        classes: 'qtip-light qtip-shadow qtip-normal qtip-bootstrap element-shorter-top'
+                    },
+                    events: {
+                        render: function(event, api) {
+                            // Clicking on the qtip opens the
+                            // subscribe modal dialog.
+                            var tooltip = api.elements.tooltip;
+                            tooltip.bind('click', function(event, api) {
+                                angular.element(document.getElementById(
+                                    'subscribe-link')).scope().openDialog();
+                            });
+                        }
+                    }
+                }
+            );
+        }, 1000);
+    }
+);
+
 // Feedback button
 window.ATL_JQ_PAGE_PROPS = {
     "triggerFunction": function (showCollectorDialog) {

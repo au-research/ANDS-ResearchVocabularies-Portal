@@ -4,7 +4,14 @@
             <span aria-hidden="true">&times;</span>
             <span class="sr-only">Close</span>
         </button>
-        <h4 class="modal-title">Subscriptions</h4>
+        <h4 class="modal-title">Subscriptions
+            <span class="pull-right padding-right">
+                <a href="https://documentation.ands.org.au/display/DOC/Subscribing+to+vocabularies"
+                   target="_blank">
+                    <span class="fa fa-info-circle"></span>
+                    Help</a>
+        </span>
+        </h4>
     </div>
 
     <div ng-if="allowInteraction" ng-cloak class="modal-body swatch-white">
@@ -71,6 +78,10 @@
 
             </div>
             <div class="modal-footer swatch-white">
+                <span class="padding-right">By clicking Subscribe, you
+                    are confirming that you have read and agree to our
+                    <a href="[[ base_url ]]vocabs/page/privacy"
+                       target="_blank">Privacy Policy</a>.</span>
                 <button type="button"
                         id="cancel"
                         class="btn btn-large btn-link"

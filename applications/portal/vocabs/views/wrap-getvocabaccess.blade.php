@@ -85,7 +85,7 @@ foreach ($vocab->getVersion() as $version) {
       @if($singleFile)
         @foreach($current_version->getAccessPoint() as $ap)
           @if($ap->getDiscriminator() === AP_FILE)
-            <a class="btn btn-lg btn-block btn-primary"
+            <a class="download-link btn btn-lg btn-block btn-primary"
                href="{{ $ap->getApFile()->getUrl() }}"><i class="fa fa-download"></i>
                Download ({{ htmlspecialchars($ap->getApFile()->getFormat()) }})</a>
           @endif
@@ -142,7 +142,8 @@ foreach ($vocab->getVersion() as $version) {
         <ul>
           @foreach($current_version->getAccessPoint() as $ap)
             @if($ap->getDiscriminator() === AP_FILE)
-              <li><a href="{{ $ap->getApFile()->getUrl() }}">{{ htmlspecialchars($ap->getApFile()->getFormat()) }}</a></li>
+              <li><a class="download-link"
+            href="{{ $ap->getApFile()->getUrl() }}">{{ htmlspecialchars($ap->getApFile()->getFormat()) }}</a></li>
             @endif
           @endforeach
         </ul>
@@ -166,7 +167,8 @@ foreach ($vocab->getVersion() as $version) {
                 );
               ?>
               @foreach($sesameFormats as $key=>$val)
-                <li><a target="_blank" href="{{ $ap->getApSesameDownload()->getUrlPrefix() }}{{$key}}">{{ $val }}</a></li>
+                <li><a class="download-link" target="_blank"
+                href="{{ $ap->getApSesameDownload()->getUrlPrefix() }}{{$key}}">{{ $val }}</a></li>
               @endforeach
             </ul>
           @endif
@@ -216,7 +218,7 @@ foreach ($vocab->getVersion() as $version) {
         @if($singleFile)
           @foreach($version->getAccessPoint() as $ap)
             @if($ap->getDiscriminator() === AP_FILE)
-              <a class="btn btn-lg btn-block btn-primary" href="{{ $ap->getApFile()->getUrl() }}"><i class="fa fa-download"></i> Download ({{ htmlspecialchars($ap->getApFile()->getFormat()) }})</a>
+              <a class="download-link btn btn-lg btn-block btn-primary" href="{{ $ap->getApFile()->getUrl() }}"><i class="fa fa-download"></i> Download ({{ htmlspecialchars($ap->getApFile()->getFormat()) }})</a>
             @endif
           @endforeach
         @endif
@@ -264,7 +266,8 @@ foreach ($vocab->getVersion() as $version) {
                 Original:
               @endif
               <ul>
-                <li><a target="_blank" href="{{ $ap->getApFile()->getUrl() }}">{{ htmlspecialchars($ap->getApFile()->getFormat()) }}</a></li>
+                <li><a class="download-link" target="_blank"
+                       href="{{ $ap->getApFile()->getUrl() }}">{{ htmlspecialchars($ap->getApFile()->getFormat()) }}</a></li>
               </ul>
             @endif
           @endforeach
@@ -288,7 +291,8 @@ foreach ($vocab->getVersion() as $version) {
                   );
                 ?>
                 @foreach($sesameFormats as $key=>$val)
-                  <li><a target="_blank" href="{{ $ap->getApSesameDownload()->getUrlPrefix() }}{{$key}}">{{ $val }}</a></li>
+                  <li><a class="download-link" target="_blank"
+                  href="{{ $ap->getApSesameDownload()->getUrlPrefix() }}{{$key}}">{{ $val }}</a></li>
                 @endforeach
               </ul>
             @endif
