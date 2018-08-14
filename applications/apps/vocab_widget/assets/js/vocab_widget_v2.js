@@ -504,13 +504,16 @@
 		},
 		{
 		    fields: ["mode"],
-		    description: "one of <search,narrow,collection,tree,advanced>",
+                    // In fact, for advanced/core, "parent" VocabHandler
+                    // is used, so we don't handle those cases here.
+		    description: "one of <search,narrow,collection,tree,advanced,core>",
 		    test: function(val) {
 			return (val === 'search' ||
 				val === 'narrow' ||
 				val === 'collection' ||
+				val === 'tree' ||
 				val === 'advanced' ||
-				val === 'tree');
+				val === 'core');
 		    }
 		},
 		{
