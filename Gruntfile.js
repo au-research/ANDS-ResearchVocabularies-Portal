@@ -9,15 +9,6 @@ module.exports = function(grunt){
 		concurrent:{
 			dev:['watch:compass']
 		},
-		cssmin:{
-			options:{
-				report:'min'
-			},
-			minify:{
-				src:'<%= yeoman.assets %>/css/arms.combine.css',
-				dest:'<%= yeoman.assets %>/css/arms.comb.min.css'
-			}
-		},
 		concat:{
 			coreStyles:{
 				options:{separator:''},
@@ -31,7 +22,7 @@ module.exports = function(grunt){
 					'<%= yeoman.assets %>/lib/unicorn_styles/css/unicorn.main.css',
 					'<%= yeoman.assets %>/lib/unicorn_styles/css/unicorn.grey.css',
 					'<%= yeoman.assets %>/css/base.css',
-					'<%= yeoman.assets %>/css/arms.css',
+					'<%= yeoman.assets %>/css/arms-scss.css',
 					'<%= yeoman.assets %>/css/arms.less.compiled.css',
 				],
 				dest: '<%= yeoman.assets %>/css/arms.combine.css'
@@ -54,37 +45,18 @@ module.exports = function(grunt){
 				dest:'<%=yeoman.assets %>/js/arms.scripts.js'
 			}
 		},
-		uglify:{
-			options:{
-				mangle: false,
-				report: 'min'
-			},
-			scripts:{
-				files:{
-					'<%= yeoman.assets %>/js/arms.min.js':['<%= yeoman.assets %>/js/arms.scripts.js']
-				}
-			}
-		},
-		compass: {
-			core:{
-				options: {
-					sassDir: '<%= yeoman.assets %>/sass',
-					cssDir: '<%= yeoman.assets %>/css',
-					debugInfo: false
-				}
-			}
-		},
 		less: {
 			core:{
 				files:{
+					"<%= yeoman.assets %>/css/arms-scss.css": "<%= yeoman.assets %>/less/arms-scss.less",
 					"<%= yeoman.assets %>/css/arms.less.compiled.css": "<%= yeoman.assets %>/less/arms.less"
 				}
 			}
 		},
 		watch: {
 			core: {
-				files: ['<%= yeoman.assets %>/sass/{,*/}*.{scss,sass}', '<%= yeoman.assets %>/less/{,*/}*.{less,less}'],
-				tasks: ['compass:core', 'concat:coreStyles', 'cssmin'],
+				files: ['<%= yeoman.assets %>/less/{,*/}*.{less,less}'],
+				tasks: ['concat:coreStyles', 'cssmin'],
 				options:{nospawn:true}
 			}
 		}
@@ -93,10 +65,8 @@ module.exports = function(grunt){
 
 	//define your tasks
 	grunt.registerTask('default', [
-		'compass',
 		'less',
-		'concat',
-		'uglify'
+		'concat'
 	]);
 
 	grunt.registerTask('core',[

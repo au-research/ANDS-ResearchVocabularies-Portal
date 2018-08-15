@@ -1,2 +1,0 @@
-ANDS Registry Contrib
-=====================

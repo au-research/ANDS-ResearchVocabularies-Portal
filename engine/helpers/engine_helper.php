@@ -686,14 +686,3 @@ function isbot($useragent = false)
 		return false;
 	}
 }
-
-function initEloquent() {
-    require_once BASE . 'vendor/autoload.php';
-    $importTask = new \ANDS\API\Task\ImportTask();
-    $importTask->initialiseTask();
-}
-
-function tearDownEloquent() {
-    $connection = \Illuminate\Database\Capsule\Manager::connection("default");
-    $connection->disconnect();
-}

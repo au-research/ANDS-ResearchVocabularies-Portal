@@ -1,1 +1,0 @@
-ALTER TABLE `registry_object_relationships` ADD COLUMN `relation_url` VARCHAR(255) NULL  AFTER `relation_description`;

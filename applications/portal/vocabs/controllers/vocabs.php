@@ -194,28 +194,30 @@ class Vocabs extends MX_Controller
         }
 
         $userData = $this->ServiceAPI->getUserData();
-        $affiliates = collect($userData->getParentRole())
-            ->filter(function(\ANDS\VocabsRegistry\Model\Role $role){
+
+        $affiliates = array_filter($userData->getParentRole(),
+            function(\ANDS\VocabsRegistry\Model\Role $role){
                 return $role->getTypeId() === \ANDS\VocabsRegistry\Model\Role::TYPE_ID_ORGANISATIONAL;
-            })->toArray();
+            });
+
 
         $ownedVocabulariesList = $this->RegistryAPI->getOwnedVocabularies();
         $ownedVocabularies = $ownedVocabulariesList->getOwnedVocabulary();
 
-        $published = collect($ownedVocabularies)
-            ->filter(function(OwnedVocabulary $vocab) {
+        $published = array_filter($ownedVocabularies,
+            function(OwnedVocabulary $vocab) {
                 return $vocab->getStatus() === Vocabulary::STATUS_PUBLISHED;
-            })->toArray();
+            });
 
-        $draft = collect($ownedVocabularies)
-            ->filter(function(OwnedVocabulary $vocab) {
+        $draft = array_filter($ownedVocabularies,
+            function(OwnedVocabulary $vocab) {
                 return $vocab->getStatus() === Vocabulary::STATUS_DRAFT || $vocab->getHasDraft();
-            })->toArray();
+            });
 
-        $deprecated = collect($ownedVocabularies)
-            ->filter(function(OwnedVocabulary $vocab) {
+        $deprecated = array_filter($ownedVocabularies,
+            function(OwnedVocabulary $vocab) {
                 return $vocab->getStatus() === Vocabulary::STATUS_DEPRECATED;
-            })->toArray();
+            });
 
         vocab_log_terms([
             'event' => 'pageview',
