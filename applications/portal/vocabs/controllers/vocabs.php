@@ -84,6 +84,7 @@ class Vocabs extends MX_Controller
             // throw new Exception('No Record found with slug: ' . $slug);
             // But instead, show the soft 404 page.
             $message = '';
+            $this->output->set_status_header('404');
             $this->blade
                 ->set('message', $message)
                 ->render('soft_404');
@@ -810,6 +811,7 @@ class Vocabs extends MX_Controller
             // throw new Exception('No Record found with slug: ' . $slug);
             // But instead, show the soft 404 page.
             $message = '';
+            $this->output->set_status_header('404');
             $this->blade
                 ->set('message', $message)
                 ->render('soft_404');
@@ -844,6 +846,7 @@ class Vocabs extends MX_Controller
             // throw new Exception('No Record found with slug: ' . $slug);
             // But instead, show the soft 404 page.
             $message = '';
+            $this->output->set_status_header('404');
             $this->blade
                 ->set('message', $message)
                 ->render('soft_404');
@@ -1031,9 +1034,10 @@ class Vocabs extends MX_Controller
                 $message = $e->getMessage();
                 break;
             }
+            $this->output->set_status_header('404');
             $this->blade
-            ->set('message', $message)
-            ->render('soft_404');
+                ->set('message', $message)
+                ->render('soft_404');
         }
     }
 
