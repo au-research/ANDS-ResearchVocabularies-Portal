@@ -132,7 +132,7 @@ class VocabProxy
 		 *  - for 'top', 'narrow', and 'allnarrow' we want terms sorted by notation, or label
 		 *  - for 'collection' sort by description
 		 */
-		foreach (array('top', 'allnarrow') as $action) {
+		foreach (array('top', 'narrow', 'allnarrow') as $action) {
 		    $this->valid_actions[$action]['sortprocessor'] = function($e1, $e2) {
 			if (array_key_exists('notation', $e1) && array_key_exists('notation', $e2))
 			{

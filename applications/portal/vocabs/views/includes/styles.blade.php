@@ -1,5 +1,5 @@
 <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900,300italic,400italic,600italic' rel='stylesheet' type='text/css' />
-<link rel="stylesheet" type="text/css" href="{{ base_url() }}apps/assets/vocab_widget/css/vocab_widget.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="{{ base_url() }}apps/assets/vocab_widget/css/vocab_widget.css?{{ getReleaseVersion() }}" media="screen" />
 @if(is_dev())
 <link rel="stylesheet" href="{{asset_url('ands-green/css/bootstrap.min.css','templates')}}" />
 <link rel="stylesheet" href="{{asset_url('ands-green/css/theme.css','templates')}}" />

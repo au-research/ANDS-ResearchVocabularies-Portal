@@ -52,12 +52,12 @@
 <script src='//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.js'></script>
 <!-- JQuery UI used for draggable modal dialogs on CMS. -->
 <script src='//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
-<script src="{{asset_url('lib/qtip2/jquery.qtip.js', 'core')}}"></script>
-<script type="text/javascript" src="{{ base_url() }}apps/assets/vocab_widget/js/vocab_widget_v2.js"></script>
+<script src="{{asset_url('lib/qtip2/jquery.qtip.js', 'core').'?'.getReleaseVersion() }}"></script>
+<script type="text/javascript" src="{{ base_url() }}apps/assets/vocab_widget/js/vocab_widget_v2.js?{{ getReleaseVersion() }}"></script>
 
 <!-- TinyMCE wants to load other things, so let it. -->
-<script src="{{ asset_url('js/lib/tinymce/tinymce.min.js')}}"></script>
-<script src="{{ asset_url('js/lib/angular-ui-tinymce/dist/tinymce.min.js')}}"></script>
+<script src="{{ asset_url('js/lib/tinymce/tinymce.min.js').'?'.getReleaseVersion() }}"></script>
+<script src="{{ asset_url('js/lib/angular-ui-tinymce/dist/tinymce.min.js').'?'.getReleaseVersion() }}"></script>
 
 
 @if(is_dev())
@@ -73,7 +73,7 @@
     <script type="text/javascript" src="{{ asset_url('js/scripts.js').'?'.getReleaseVersion() }}"></script>
 @endif
 
-<script type="text/javascript" src="{{ asset_url('js/vocabs-registry-client-bundle.js') }}"></script>
+<script type="text/javascript" src="{{ asset_url('js/vocabs-registry-client-bundle.js').'?'.getReleaseVersion() }}"></script>
 
 
 @if(isset($scripts))

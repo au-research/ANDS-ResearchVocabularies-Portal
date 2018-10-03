@@ -55,26 +55,11 @@ $base_url = str_replace('/apps','/registry',base_url());
 
     <?php foreach($js_lib as $lib):?>
 
-        <?php if($lib=='graph'):?>
-            <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="excanvas.js"></script><![endif]-->
-            <script language="javascript" type="text/javascript" src="<?php echo$base_url;?>assets/lib/jqplot/jquery.jqplot.min.js"></script>
-            <script language="javascript" type="text/javascript" src="<?php echo$base_url;?>assets/lib/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
-            <script type="text/javascript" src="<?php echo$base_url;?>assets/lib/jqplot/plugins/jqplot.highlighter.min.js"></script>
-            <script type="text/javascript" src="<?php echo$base_url;?>assets/lib/jqplot/plugins/jqplot.cursor.min.js"></script>
-            <link rel="stylesheet" type="text/css" href="<?php echo$base_url;?>assets/lib/jqplot/jquery.jqplot.css" />
-
-
-        <?php elseif($lib=='googleapi'):?>
+        <?php if($lib=='googleapi'):?>
             <script type='text/javascript' src='https://www.google.com/jsapi'></script>
             <script type="text/javascript">
                 localGoogle = google;
                 google.load("visualization", "1", {packages:["corechart"]});
-            </script>
-
-        <?php elseif($lib=='tinymce'):?>
-            <script type="text/javascript" src="<?php echo$base_url;?>assets/lib/tinymce/tinymce.min.js"></script>
-            <script>
-               var editor = 'tinymce';
             </script>
 
         <?php elseif($lib=='datepicker'):?>
@@ -93,48 +78,12 @@ $base_url = str_replace('/apps','/registry',base_url());
             <script type="text/javascript" src="<?php echo$base_url;?>assets/lib/prettyprint/pretty.js"></script>
             <link rel="stylesheet" type="text/css" href="<?php echo$base_url;?>assets/lib/prettyprint/pretty.css" />
 
-        <?php elseif($lib=='dataTables'):?>
-            <script type="text/javascript" src="<?php echo$base_url;?>assets/lib/dataTable/js/jquery.dataTables.js"></script>
-
-        <?php elseif($lib=='abs_sdmx_querytool'):?>
-            <script type="text/javascript" src="<?php echo apps_url('assets/abs_sdmx_querytool/js/abs_sdmx_querytool.js') ?>"></script>
-
         <?php elseif($lib=='context_menu'):?>
             <script src="<?php echo asset_url('lib/bootstrap-contextmenu.js', 'base'); ?>" type="text/javascript"></script>
 
         <?php elseif($lib=='vocab_widget'):?>
             <link rel="stylesheet" type="text/css" href="<?php echo apps_url('assets/vocab_widget/css/vocab_widget_v2.css'); ?>">
             <script src="<?php echo apps_url('assets/vocab_widget/js/vocab_widget_v2.js'); ?>"></script>
-
-       <?php elseif($lib=='orcid_widget'):?>
-            <link href="<?php echo apps_url('assets/orcid_widget/css/orcid_widget_v2.css');?>" rel="stylesheet" type="text/css">
-            <script src="<?php echo apps_url('assets/orcid_widget/js/orcid_widget_v2.js');?>" type="text/javascript"></script>
-
-       <?php elseif($lib=='grant_widget'):?>
-            <link href="<?php echo apps_url('assets/grant_widget/css/grant_widget_v2.css');?>" rel="stylesheet" type="text/css">
-            <script src="<?php echo apps_url('assets/grant_widget/js/grant_widget_v2.js');?>" type="text/javascript"></script>
-
-        <?php elseif($lib=='location_capture_widget'):?>
-            <link href="<?php echo apps_url('assets/location_capture_widget/css/location_capture_widget_v2.css');?>" rel="stylesheet" type="text/css">
-            <script src="<?php echo apps_url('assets/location_capture_widget/js/location_capture_widget_v2.js');?>" type="text/javascript"></script>
-
-        <?php elseif($lib=='rosearch_widget'):?>
-            <link href="<?php echo apps_url('assets/registry_object_search/css/rosearch_widget.css');?>" rel="stylesheet" type="text/css">
-            <script src="<?php echo apps_url('assets/registry_object_search/js/rosearch_widget.js');?>" type="text/javascript"></script>
-
-        <?php elseif($lib=='registry_widget'):?>
-            <link href="<?php echo apps_url('assets/registry_widget/css/registry_widget_v2.css');?>" rel="stylesheet" type="text/css">
-            <script src="<?php echo apps_url('assets/registry_widget/js/registry_widget_v2.js');?>" type="text/javascript"></script>
-
-         <?php elseif($lib=='statistics'):?>
-            <script src="<?php echo str_replace('/apps','/applications/apps',base_url());?>statistics/assets/js/statistics.js" type="text/javascript"></script>
-
-        <?php elseif($lib=='bootstro'):?>
-            <link href="<?php echo base_url();?>assets/lib/bootstro/bootstro.min.css" rel="stylesheet" type="text/css">
-            <script src="<?php echo base_url();?>assets/lib/bootstro/bootstro.min.js" type="text/javascript"></script>
-
-        <?php elseif($lib=='google_map'):?>
-            <script src="https://maps.googleapis.com/maps/api/js?libraries=drawing&amp;sensor=false" type="text/javascript"></script>
 
         <?php elseif($lib=='select2'):?>
             <link href="<?php echo asset_url('lib/select2/select2.css', 'base');?>" rel="stylesheet" type="text/css">
@@ -157,22 +106,6 @@ $base_url = str_replace('/apps','/registry',base_url());
             <script type="text/javascript" src="<?php echo asset_url('lib/angular129.min.js', 'base') ?>"></script>
             <script type="text/javascript" src="<?php echo asset_url('lib/angular129-route.min.js', 'base') ?>"></script>
             <script type="text/javascript" src="<?php echo asset_url('lib/angular129-resource.min.js', 'base') ?>"></script>
-
-         <?php elseif($lib=='APIService'): ?>
-            <script type="text/javascript" src="<?php echo asset_url('lib/angularmod/services/APIService.js', 'base') ?>"></script>
-
-        <?php elseif($lib=='APIRoleService'): ?>
-            <script type="text/javascript" src="<?php echo asset_url('lib/angularmod/services/APIRoleService.js', 'base') ?>"></script>
-
-        <?php elseif($lib=='APIDOIService'): ?>
-            <script type="text/javascript" src="<?php echo asset_url('lib/angularmod/services/APIDOIService.js', 'base') ?>"></script>
-
-
-        <?php elseif($lib=='APITaskService'): ?>
-            <script type="text/javascript" src="<?php echo asset_url('lib/angularmod/services/APITaskService.js', 'base') ?>"></script>
-
-        <?php elseif($lib=='APIDataSourceService'): ?>
-            <script type="text/javascript" src="<?php echo asset_url('lib/angularmod/services/APIDataSourceService.js', 'base') ?>"></script>
 
         <?php elseif($lib=='xmlToJson'): ?>
             <script type="text/javascript" src="<?php echo asset_url('lib/xmlToJson.js', 'base') ?>"></script>

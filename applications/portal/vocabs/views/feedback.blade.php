@@ -18,7 +18,7 @@
             of research fields, across sciences, social sciences,
             arts, and humanities.  The Australian National Data
             Service (ANDS) offers several options for our partners to
-            give feedback about vocabularies and vocabulary concepts
+            give feedback about vocabularies and content
             in Research Vocabularies Australia.</p>
         </div>
       </div>
@@ -42,8 +42,8 @@
             Research Vocabularies Australia are welcome.  Such
             suggestions can include:
             <ul>
-              <li>new concepts for a vocabulary;</li>
-              <li>changes to concept definitions;</li>
+              <li>additional content for a vocabulary;</li>
+              <li>changes to vocabulary content;</li>
               <li>improvements to vocabulary descriptions.</li>
             </ul>
             To suggest a change to a vocabulary in Research

@@ -248,7 +248,6 @@ if (defined('ENVIRONMENT'))
 define("BASE", "./");
 require_once APPPATH.'libraries/RegistryPlugin.php';
 require_once BASEPATH.'core/CodeIgniter.php';
-initEloquent();
 
 /* End of file index.php */
 /* Location: ./index.php */
