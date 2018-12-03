@@ -1364,11 +1364,55 @@ class Vocabs extends MX_Controller
      * considered first. If that is missing, fall back to REQUEST_URI.
      */
     private function set_referrer_for_registry() {
+        // To test the paths through this code, uncomment some or all
+        // of the following as necessary. Do not leave _any_ of the
+        // following lines uncommented when committing the code,
+        // nor in production!
+        // $_SERVER['HTTP_REFERER'] = null;
+        // unset($_SERVER['REQUEST_SCHEME']);
+        // unset($_SERVER['HTTP_HOST']);
+        // unset($_SERVER['SERVER_NAME']);
+
         if (!empty($_SERVER['HTTP_REFERER'])) {
             $referrer = $_SERVER['HTTP_REFERER'];
         } else if (!empty($_SERVER['REQUEST_URI'])) {
-            $referrer = $_SERVER['REQUEST_SCHEME'] .
-                      '://'.$_SERVER['HTTP_HOST'] .
+            // Build up the referrer from the combination of
+            // REQUEST_SCHEME, HTTP_HOST, and REQUEST_URI.  We know we
+            // have REQUEST_URI (that's this branch of the conditional
+            // statement!), but the first two server variables may be
+            // missing. So we have fallbacks for each of them.
+
+            // Try REQUEST_SCHEME. If not set (e.g.,
+            // Apache HTTP Server 2.2),
+            // see if HTTPS is set. Fall back to 'http'
+            // if neither is present.
+            if (empty($_SERVER['REQUEST_SCHEME'])) {
+                if (empty($_SERVER['HTTPS'])) {
+                    $request_scheme = 'http';
+                } else {
+                    $request_scheme = 'https';
+                }
+            } else {
+                $request_scheme = $_SERVER['REQUEST_SCHEME'];
+            }
+
+            // For host, try HTTP_HOST. If not set, try
+            // SERVER_NAME. Fall back to 'localhost' if neither is
+            // present. But very bad if that ever happens: NB: it's
+            // good to have a ServerName setting in the HTTP Server
+            // config!
+            if (empty($_SERVER['HTTP_HOST'])) {
+                if (empty($_SERVER['SERVER_NAME'])) {
+                    $host = 'localhost';
+                } else {
+                    $host = $_SERVER['SERVER_NAME'];
+                }
+            } else {
+                $host = $_SERVER['HTTP_HOST'];
+            }
+
+            $referrer = $request_scheme .
+                      '://' . $host .
                       $_SERVER['REQUEST_URI'];
         }
         if (!empty($referrer)) {

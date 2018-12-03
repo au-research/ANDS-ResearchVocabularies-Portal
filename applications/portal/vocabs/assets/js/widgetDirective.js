@@ -35,8 +35,7 @@
                 // a "ridiculously large" number of result rows).
                 // So, we should look to implement an API method that does
                 // a database query instead of a Solr query.
-                api.search({"filtersJson":
-                    "{\"pp\": -1, \"widgetable\":true}"}).
+                api.search("{\"pp\": -1, \"widgetable\":true}").
                 then(function (data) {
                     scope.vocabList = data.response.docs;
                     // If desired, uncomment the following to
