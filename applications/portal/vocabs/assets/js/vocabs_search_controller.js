@@ -40,7 +40,7 @@
                 $location.search($scope.filters);
                 $location.path('/').replace();
                 window.history.pushState($scope.filters, 'ANDS Research Vocabulary', $location.absUrl());
-                api.search({"filtersJson": JSON.stringify($scope.filters)}).
+                api.search(JSON.stringify($scope.filters)).
                 then(function (data) {
                     $log.debug(data);
                     $scope.result = data;
