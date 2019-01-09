@@ -207,7 +207,20 @@
         // to be able to provide suggestions.
         api.getVocabularies().
         then(function (data) {
-            $scope.suggestions = data.getVocabulary();
+            // See if we are creating, or updating this vocabulary.
+            // Easiest way is to see if there is a vocab_id element.
+            var vocab_id = $('#vocab_id').val();
+            if (vocab_id) {
+                // We're updating. Filter out the current vocabulary,
+                // so as to disallow self-references.
+                $scope.suggestions = data.getVocabulary().filter(
+                    function(v) { return v.getId() != vocab_id; }
+                );
+            } else {
+                // We're creating a vocabulary. OK to offer
+                // all vocabularies.
+                $scope.suggestions = data.getVocabulary();
+            }
             // Results come back from the API unsorted, so sort
             // them by title.
             // Need $scope.$apply() to force an update if the dialog
