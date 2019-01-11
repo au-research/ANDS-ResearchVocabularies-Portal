@@ -341,7 +341,11 @@ $(document).on(
                 position: {
                     target: 'mouse',
                     adjust: {
-                        method: 'shift',
+                        // The method was 'shift', but is now 'flip shift'
+                        // after removing the escaping of the description,
+                        // as the width of the tooltip was no longer
+                        // fully expanding to make full use of max-width.
+                        method: 'flip shift',
                         mouse: false
                     },
                     viewport: $(window)

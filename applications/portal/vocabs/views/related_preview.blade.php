@@ -12,7 +12,7 @@
                 </div>
                 @if(isset($related['description']))
                   <div class="form-group">
-                      <label for="">Description</label><br />{{htmlspecialchars($related['description'])}}
+                      <label for="">Description</label><br />{{$related['description']}}
                   </div>
                 @endif
                 <div class="form-group">
