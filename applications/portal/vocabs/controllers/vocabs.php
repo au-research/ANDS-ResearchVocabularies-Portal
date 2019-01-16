@@ -88,6 +88,10 @@ class Vocabs extends MX_Controller
             $this->blade
                 ->set('message', $message)
                 ->render('soft_404');
+            $event = [
+                'event' => 'portal_view_notfound'
+            ];
+            vocabs_portal_log($event);
         }
     }
 
@@ -173,6 +177,17 @@ class Vocabs extends MX_Controller
                     array('widgetDirective',
                         'vocabDisplayDirective', 'conceptDisplayDirective'));
                 break;
+            default:
+                $message = '';
+                $this->output->set_status_header('404');
+                $this->blade
+                    ->set('message', $message)
+                    ->render('soft_404');
+                $event = [
+                    'event' => 'portal_view_notfound'
+                ];
+                vocabs_portal_log($event);
+                return;
         }
         $this->blade
              ->set('title', $title . ' - Research Vocabularies Australia')
@@ -815,6 +830,10 @@ class Vocabs extends MX_Controller
             $this->blade
                 ->set('message', $message)
                 ->render('soft_404');
+            $event = [
+                'event' => 'portal_view_notfound'
+            ];
+            vocabs_portal_log($event);
         }
     }
 
@@ -850,6 +869,10 @@ class Vocabs extends MX_Controller
             $this->blade
                 ->set('message', $message)
                 ->render('soft_404');
+            $event = [
+                'event' => 'portal_view_notfound'
+            ];
+            vocabs_portal_log($event);
         }
     }
 
@@ -1038,6 +1061,10 @@ class Vocabs extends MX_Controller
             $this->blade
                 ->set('message', $message)
                 ->render('soft_404');
+            $event = [
+                'event' => 'portal_view_notfound'
+            ];
+            vocabs_portal_log($event);
         }
     }
 

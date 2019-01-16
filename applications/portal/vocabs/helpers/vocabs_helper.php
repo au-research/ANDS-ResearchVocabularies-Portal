@@ -27,7 +27,9 @@ function vocab_uploaded_url($name)
 }
 
 /**
- * Logging functionality for vocabs
+ * Logging functionality for vocabs. This function
+ * logs to the per-date files in engine/logs/vocab,
+ * e.g., engine/logs/vocab/log-vocab-2019-01-15.php.
  * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
  * @param $message
  * @param string $type
@@ -177,3 +179,17 @@ function vocab_readable($term)
             break;
     }
 }
+
+/**
+ * Analytic logging functionality for vocabs. This function logs to
+ * the logstash-format portal.log file in logs,
+ * i.e., logs/portal.log.
+ * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
+ * @param $message
+ * @param string $type
+ */
+function vocabs_portal_log($event)
+{
+    monolog($event, 'portal');
+}
+
