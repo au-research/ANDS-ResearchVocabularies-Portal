@@ -184,9 +184,7 @@ function vocab_readable($term)
  * Analytic logging functionality for vocabs. This function logs to
  * the logstash-format portal.log file in logs,
  * i.e., logs/portal.log.
- * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
- * @param $message
- * @param string $type
+ * @param mixed[] $event The event to be logged.
  */
 function vocabs_portal_log($event)
 {

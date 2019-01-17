@@ -89,7 +89,8 @@ class Vocabs extends MX_Controller
                 ->set('message', $message)
                 ->render('soft_404');
             $event = [
-                'event' => 'portal_view_notfound'
+                'event' => 'portal_view_notfound',
+                'type' => 'soft_404'
             ];
             vocabs_portal_log($event);
         }
@@ -131,6 +132,11 @@ class Vocabs extends MX_Controller
             'user_agent' => $this->input->user_agent(),
         );
         vocab_log_terms($event);
+        $event = [
+            'event' => 'portal_page',
+            'page' => 'search'
+        ];
+        vocabs_portal_log($event);
         $this->blade
              ->set('search_app', true)
              ->set('title', 'Research Vocabularies Australia')
@@ -184,11 +190,17 @@ class Vocabs extends MX_Controller
                     ->set('message', $message)
                     ->render('soft_404');
                 $event = [
-                    'event' => 'portal_view_notfound'
+                    'event' => 'portal_view_notfound',
+                    'type' => 'soft_404'
                 ];
                 vocabs_portal_log($event);
                 return;
         }
+        $event = [
+            'event' => 'portal_page',
+            'page' => $slug
+        ];
+        vocabs_portal_log($event);
         $this->blade
              ->set('title', $title . ' - Research Vocabularies Australia')
              ->render($slug);
@@ -239,6 +251,11 @@ class Vocabs extends MX_Controller
             'event' => 'pageview',
             'page' => 'myvocabs'
         ]);
+        $event = [
+            'event' => 'portal_page',
+            'page' => 'myvocabs'
+        ];
+        vocabs_portal_log($event);
 
         $this
             ->blade
@@ -347,6 +364,17 @@ class Vocabs extends MX_Controller
                 'id' => $vocab->getId(),
             );
             vocab_log_terms($event);
+            $event = [
+                'event' => 'portal_accessed',
+                'lookup' => 'id',
+                'vocabulary' => [
+                    'id' => $vocab->getId(),
+                    'title' => $vocab->getTitle(),
+                    'owner' => $vocab->getOwner(),
+                    'slug' => $vocab->getSlug()
+                ]
+            ];
+            vocabs_portal_log($event);
 
             $this->blade
                 ->set('vocab', $vocab)
@@ -364,7 +392,8 @@ class Vocabs extends MX_Controller
                 ->set('message', $message)
                 ->render('soft_404');
             $event = [
-                'event' => 'portal_view_notfound'
+                'event' => 'portal_view_notfound',
+                'type' => 'soft_404'
             ];
             vocabs_portal_log($event);
         }
@@ -387,6 +416,17 @@ class Vocabs extends MX_Controller
                 'id' => $vocab->getId(),
             );
             vocab_log_terms($event);
+            $event = [
+                'event' => 'portal_accessed',
+                'lookup' => 'slug',
+                'vocabulary' => [
+                    'id' => $vocab->getId(),
+                    'title' => $vocab->getTitle(),
+                    'owner' => $vocab->getOwner(),
+                    'slug' => $vocab->getSlug()
+                ]
+            ];
+            vocabs_portal_log($event);
 
             $this->blade
                 ->set('vocab', $vocab)
@@ -403,7 +443,8 @@ class Vocabs extends MX_Controller
                 ->set('message', $message)
                 ->render('soft_404');
             $event = [
-                'event' => 'portal_view_notfound'
+                'event' => 'portal_view_notfound',
+                'type' => 'soft_404'
             ];
             vocabs_portal_log($event);
         }
@@ -444,6 +485,18 @@ class Vocabs extends MX_Controller
             }
 //             $related[''] = $reRef->getRelatedEntity()->get();
             $related_vocabs = $this->RegistryAPI->getVocabulariesRelatedToRelatedEntityById($reRef->getRelatedEntity()->getId());
+
+            $event = [
+                'event' => 'portal_preview_re',
+                'vocabulary' => [
+                    'id' => $v_id
+                ],
+                'relatedEntity' => [
+                    'id' => $re->getId(),
+                    'title' => $re->getTitle()
+                ]
+            ];
+            vocabs_portal_log($event);
         } else {
             $isVocab = true;
             $rvRef = $this->RegistryAPIClient->getSerializer()->
@@ -457,6 +510,18 @@ class Vocabs extends MX_Controller
             $related['vocab_id'] = $rv->getId();
             $related_vocabs = $this->RegistryAPI->getVocabulariesRelatedToVocabularyById($rvRef->getRelatedVocabulary()->getId());
             // Filter out _this_ vocabulary
+
+            $event = [
+                'event' => 'portal_preview_rv',
+                'vocabulary' => [
+                    'id' => $v_id
+                ],
+                'relatedVocabulary' => [
+                    'id' => $rv->getId(),
+                    'title' => $rv->getTitle()
+                ]
+            ];
+            vocabs_portal_log($event);
         }
 //         echo(json_encode($related));
 // return;
@@ -523,6 +588,11 @@ class Vocabs extends MX_Controller
             'page' => 'add',
         );
         vocab_log_terms($event);
+        $event = [
+            'event' => 'portal_cms',
+            'cms' => [ 'action' => 'add' ]
+        ];
+        vocabs_portal_log($event);
         $this->blade
         ->set('scripts', array('vocabs_cms', 'versionCtrl', 'relatedCtrl',
             'relatedVocabularyCtrl',
@@ -566,6 +636,17 @@ class Vocabs extends MX_Controller
                 'id' => $vocab->getId(),
             );
             vocab_log_terms($event);
+            $event = [
+                'event' => 'portal_cms',
+                'cms' => [ 'action' => 'edit' ],
+                'vocabulary' => [
+                    'id' => $vocab->getId(),
+                    'title' => $vocab->getTitle(),
+                    'owner' => $vocab->getOwner(),
+                    'slug' => $vocab->getSlug()
+                ]
+            ];
+            vocabs_portal_log($event);
 
             $this->blade
                 ->set(
@@ -595,7 +676,8 @@ class Vocabs extends MX_Controller
                 ->set('message', $message)
                 ->render('soft_404');
             $event = [
-                'event' => 'portal_view_notfound'
+                'event' => 'portal_view_notfound',
+                'type' => 'soft_404'
             ];
             vocabs_portal_log($event);
         }
