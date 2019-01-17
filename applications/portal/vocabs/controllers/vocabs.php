@@ -608,6 +608,9 @@ class Vocabs extends MX_Controller
      *    Used by assets/js/vocabs_visualise_directive.js:
      *       tree
      *
+     *    There is also "tree-raw" for use by RDA to get subjects
+     *    for our curated vocabularies.
+     *
      *
      * @param  string $class [vocabs] context
      * @param  string $id [id] of the context
@@ -616,7 +619,7 @@ class Vocabs extends MX_Controller
      * @example services/vocabs/ , services/vocabs/anzsrc-for ,
      *          services/vocabs/rifcs/versions
      */
-    public function servicesnew($class = '', $id = '', $method = '', $type = '')
+    public function services($class = '', $id = '', $method = '', $type = '')
     {
 
         //header

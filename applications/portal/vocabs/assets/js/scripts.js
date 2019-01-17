@@ -3371,7 +3371,7 @@ if (!Array.prototype.find) {
             },
             link: function (scope) {
                 scope.treeclass = 'classic-tree';
-                $http.get(base_url + 'vocabs/servicesnew/vocabs/' + scope.versionid + '/tree')
+                $http.get(base_url + 'vocabs/services/vocabs/' + scope.versionid + '/tree')
                     .then(function (response) {
                         if (response.data.status === 'OK') {
                             scope.tree = response.data.message;
