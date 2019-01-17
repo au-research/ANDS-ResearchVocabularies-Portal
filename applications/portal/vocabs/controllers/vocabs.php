@@ -144,7 +144,7 @@ class Vocabs extends MX_Controller
      * @param  $slug supported: [help|about|contribute]
      * @return view
      */
-    public function page($slug)
+    public function page($slug = '')
     {
         $event = array(
             'event' => 'pageview',
