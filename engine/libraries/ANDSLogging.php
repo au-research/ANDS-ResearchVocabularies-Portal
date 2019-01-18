@@ -29,7 +29,14 @@ class ANDSLogging
         // set up the logger
         $logger = new Logger($log);
         $handler = new StreamHandler('logs/'.$log.'.log');
-        $formatter = new LogstashFormatter($log, null, null, null);
+
+        // NB: this is a difference from the RDA version of this file.
+        // Here, we specify LogstashFormatter::V1 to get
+        // "version 1" of the format, i.e., with the entry fields moved
+        // to the top level instead of being embedded into a
+        // field "@fields".
+
+        $formatter = new LogstashFormatter($log, null, null, null, LogstashFormatter::V1);
         $handler->setFormatter($formatter);
         $logger->pushHandler($handler);
 
