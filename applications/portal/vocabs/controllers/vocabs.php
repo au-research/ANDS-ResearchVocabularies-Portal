@@ -47,6 +47,11 @@ class Vocabs extends MX_Controller
             'user_agent' => $this->input->user_agent(),
         );
         vocab_log_terms($event);
+        $event = [
+            'event' => 'portal_page',
+            'page' => 'home'
+        ];
+        vocabs_portal_log($event);
         $this->blade
              ->set('customSearchBlock', true)
              ->set('title', 'Research Vocabularies Australia')
