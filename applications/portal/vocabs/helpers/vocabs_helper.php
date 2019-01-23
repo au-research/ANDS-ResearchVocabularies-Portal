@@ -1,4 +1,6 @@
 <?php
+use Ramsey\Uuid\Uuid;
+
 /**
  * Return the vocabulary configuration for a particular config
  * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
@@ -188,6 +190,9 @@ function vocab_readable($term)
  */
 function vocabs_portal_log($event)
 {
-    monolog($event, 'portal');
+    // Add a UUID, for Elasticsearch's use.  Adding the UUID could be
+    // done inside the monolog() function ... but then we'd get (more)
+    // out of sync with the RDA-flavoured ANDSLogging library.
+    $event['uuid'] = Uuid::uuid4()->toString();
+    monolog($event, 'portal', 'info', true);
 }
-

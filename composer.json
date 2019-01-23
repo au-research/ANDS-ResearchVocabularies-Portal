@@ -22,6 +22,7 @@
 
     "require": {
         "monolog/monolog": "^1.19",
+        "ramsey/uuid": "3.7.1",
         "jaybizzle/crawler-detect": "1.*",
         "vlucas/phpdotenv": "^2.4",
         "google/recaptcha": "~1.1",
