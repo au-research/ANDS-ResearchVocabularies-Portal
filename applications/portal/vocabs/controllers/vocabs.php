@@ -107,26 +107,6 @@ class Vocabs extends MX_Controller
     }
 
     /**
-     * Pre viewing a non current version
-     * @return view/html
-     * @author  Liz Woods <liz.woods@ands.org.au>
-     */
-    public function version_preview()
-    {
-        //echo "we are here";
-        // echo $this->input->get('version');
-        $version = json_decode($this->input->get('version'), true);
-
-        // print_r($version);
-        //$v_id = $this->input->get('v_id');
-
-        $this->blade
-             ->set('version', $version)
-             ->render('version_preview');
-
-    }
-
-    /**
      * Search
      * Displaying the search page
      *
@@ -487,7 +467,7 @@ class Vocabs extends MX_Controller
      * Previewing a related entity or related vocabulary
      * @return view/html
      */
-    public function related_preview()
+    public function relatedPreview()
     {
 
         $relatedParam = json_decode($this->input->get('related'));
