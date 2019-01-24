@@ -10,19 +10,20 @@ use ANDS\VocabsRegistry\ApiException;
 // require_once('vocabs-registry-client/autoload.php');
 
 /**
- * Vocabs controller
- * This is the primary controller for the vocabulary
- * module This module is meant as a standalone with all assets, views
- * and models self contained within the applications/vocabs directory
+ * Vocabs controller.  This is the primary controller for the
+ * vocabulary module. This module is meant as a standalone with all
+ * assets, views and models self contained within the
+ * applications/vocabs directory
  * @version 1.0
  * @author  Minh Duc Nguyen <minh.nguyen@ands.org.au>
  */
 class Vocabs extends MX_Controller
 {
 
-    // Access to the Registry API.
+    // Access to the Registry API. Values are assigned
+    // in the constructor.
+    private $RegistryAPIClient;
     private $RegistryAPI;
-
     private $ServiceAPI;
 
     /**
@@ -237,7 +238,8 @@ class Vocabs extends MX_Controller
         $affiliates = array_filter(
             $userData->getParentRole(),
             function (\ANDS\VocabsRegistry\Model\Role $role) {
-                return $role->getTypeId() === \ANDS\VocabsRegistry\Model\Role::TYPE_ID_ORGANISATIONAL;
+                return $role->getTypeId() ===
+                    \ANDS\VocabsRegistry\Model\Role::TYPE_ID_ORGANISATIONAL;
             }
         );
 
@@ -255,7 +257,8 @@ class Vocabs extends MX_Controller
         $draft = array_filter(
             $ownedVocabularies,
             function (OwnedVocabulary $vocab) {
-                return $vocab->getStatus() === Vocabulary::STATUS_DRAFT || $vocab->getHasDraft();
+                return $vocab->getStatus() ===
+                    Vocabulary::STATUS_DRAFT || $vocab->getHasDraft();
             }
         );
 
@@ -516,9 +519,10 @@ class Vocabs extends MX_Controller
                 $related['urls'] = $temp;
             }
 //             $related[''] = $reRef->getRelatedEntity()->get();
-            $related_vocabs = $this->RegistryAPI->getVocabulariesRelatedToRelatedEntityById(
-                $reRef->getRelatedEntity()->getId()
-            );
+            $related_vocabs = $this->RegistryAPI->
+                getVocabulariesRelatedToRelatedEntityById(
+                    $reRef->getRelatedEntity()->getId()
+                );
 
             $event = [
                 'event' => 'portal_preview_re',
@@ -544,9 +548,10 @@ class Vocabs extends MX_Controller
             $related['relationship'] = $rvRef->getRelation();
             $related['description'] = $rv->getDescription();
             $related['vocab_id'] = $rv->getId();
-            $related_vocabs = $this->RegistryAPI->getVocabulariesRelatedToVocabularyById(
-                $rvRef->getRelatedVocabulary()->getId()
-            );
+            $related_vocabs = $this->RegistryAPI->
+                getVocabulariesRelatedToVocabularyById(
+                    $rvRef->getRelatedVocabulary()->getId()
+                );
             // Filter out _this_ vocabulary
 
             $event = [
@@ -580,7 +585,8 @@ class Vocabs extends MX_Controller
             }
             $others[] = $related_vocab;
             if (!$isVocab) {
-                foreach ($reverse_related_vocab->getRelatedEntityRelation() as $rel) {
+                foreach ($reverse_related_vocab->
+                         getRelatedEntityRelation() as $rel) {
                     if ($rel === RelatedEntityRef::RELATION_PUBLISHED_BY) {
 //                         echo('found publisher');
                         $related['sub_type'] = 'publisher';
@@ -802,7 +808,8 @@ class Vocabs extends MX_Controller
      * Recursive to with the BuilTree function
      * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
      * @param int $id If !$raw, then a version ID; if $raw, then a vocabulary ID
-     * @param  boolean $raw whether to send back the tree as returned from the Registry
+     * @param boolean $raw whether to send back the tree as returned
+     *     from the Registry
      * @return array $tree
      */
     private function displayTree($id, $raw = false)
@@ -873,10 +880,11 @@ class Vocabs extends MX_Controller
                     $tipText .= '<br/><b>Notation: </b>' .$concept['notation'];
                 }
                 if ($sissvoc_endpoint != '') {
-                    $tipText .= '<br/><a class="pull-right" target="_blank" href="' .
-                             $sissvoc_endpoint .
-                             '/resource?uri=' .
-                             $uri . '">View as linked data</a>';
+                    $tipText .=
+                        '<br/><a class="pull-right" target="_blank" href="' .
+                        $sissvoc_endpoint .
+                        '/resource?uri=' .
+                        $uri . '">View as linked data</a>';
                 }
                 $concept['value'] = $title;
                 $concept['tip'] = $tipText. '</p>';
@@ -952,10 +960,11 @@ class Vocabs extends MX_Controller
                 foreach ($subscriptions as $key => $value) {
                     switch ($key) {
                         case 'vocabularyId':
-                            $this->ServiceAPI->createEmailSubscriptionVocabulary(
-                                $value,
-                                $email
-                            );
+                            $this->ServiceAPI->
+                                createEmailSubscriptionVocabulary(
+                                    $value,
+                                    $email
+                                );
                             break;
                         case 'ownerId':
                             $this->ServiceAPI->createEmailSubscriptionOwner(
@@ -965,9 +974,10 @@ class Vocabs extends MX_Controller
                             break;
                         case 'system':
                             if ($value == true) {
-                                $this->ServiceAPI->createEmailSubscriptionSystem(
-                                    $email
-                                );
+                                $this->ServiceAPI->
+                                    createEmailSubscriptionSystem(
+                                        $email
+                                    );
                             }
                             break;
                     }
@@ -1229,7 +1239,9 @@ class Vocabs extends MX_Controller
         // If debugging required, uncomment and adjust filename.
 //          ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()
 //              ->setDebug(true)
-//          ->setDebugFile('/var/www/html/workareas/richard/vocabs-new/engine/logs/error/richardvocabsnewphpdebug.txt');
+//          ->setDebugFile(
+//              '/var/www/html/workareas/richard/vocabs-new/' .
+//              'engine/logs/error/richardvocabsnewphpdebug.txt');
 
         // Send who we are to the Registry. NB: the header names
         // must match the values used in the
