@@ -11,11 +11,10 @@ use ANDS\VocabsRegistry\ApiException;
 
 /**
  * Vocabs controller.  This is the primary controller for the
- * vocabulary module. This module is meant as a standalone with all
- * assets, views and models self contained within the
- * applications/vocabs directory
- * @version 1.0
- * @author  Minh Duc Nguyen <minh.nguyen@ands.org.au>
+ * vocabulary module. This module is meant as a standalone, with all
+ * assets and views self-contained within the
+ * applications/portal/vocabs directory.
+ * @version 2.0
  */
 class Vocabs extends MX_Controller
 {
@@ -1211,7 +1210,6 @@ class Vocabs extends MX_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('vocabularies', 'vocab');
         $this->load->library('blade');
         ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()->setHost(
             get_vocab_config('registry_api_url')
