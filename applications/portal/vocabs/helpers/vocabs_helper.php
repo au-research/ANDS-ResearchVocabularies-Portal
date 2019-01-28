@@ -12,7 +12,9 @@ function get_vocab_config($item)
     $vocab_configs = get_config_item('vocab_config');
     if (isset($vocab_configs[$item])) {
         return $vocab_configs[$item];
-    } else return false;
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -62,19 +64,19 @@ function vocab_log($message, $type = 'info')
         );
         $logger = $CI->logging->get_logger('vocab');
         switch ($type) {
-            case 'info' :
+            case 'info':
                 $logger->info($message);
                 break;
-            case 'debug' :
+            case 'debug':
                 $logger->debug($message);
                 break;
-            case 'warning' :
+            case 'warning':
                 $logger->warning($message);
                 break;
-            case 'error' :
+            case 'error':
                 $logger->error($message);
                 break;
-            case 'critical' :
+            case 'critical':
                 $logger->critical($message);
                 break;
         }
@@ -96,8 +98,12 @@ function vocab_log_terms($terms = array(), $type = 'info')
     $CI =& get_instance();
     $msg = '';
 
-    if (!isset($terms['ip'])) $terms['ip'] = $CI->input->ip_address();
-    if (!isset($terms['user_agent'])) $terms['user_agent'] = $CI->input->user_agent();
+    if (!isset($terms['ip'])) {
+        $terms['ip'] = $CI->input->ip_address();
+    }
+    if (!isset($terms['user_agent'])) {
+        $terms['user_agent'] = $CI->input->user_agent();
+    }
 
     //check if user is logged in, then record the current user
     if ($CI->user->isLoggedIn()) {
@@ -167,13 +173,13 @@ function vocab_readable($term)
 {
     $match = strtolower($term);
     switch ($match) {
-        case 'webpage' :
+        case 'webpage':
             return 'Online';
             break;
-        case 'apisparql' :
+        case 'apisparql':
             return 'API/SPARQL';
             break;
-        case 'file' :
+        case 'file':
             return 'Direct Download';
             break;
         default:
