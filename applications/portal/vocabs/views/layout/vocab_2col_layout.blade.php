@@ -26,7 +26,7 @@ foreach($vocab->getRelatedEntityRef() as $relatedRef) {
 // Construct the URLs for social sharing.
 // The URL we share is of the slug-variety, irrespective
 // of how we got here.
-$url = base_url().$vocab->getSlug();
+$url = base_url().'viewBySlug/'.$vocab->getSlug();
 $share_controller = base_url().'vocabs/share/';
 // Values to go into share URLs.
 $share_id = $vocab->getId();
