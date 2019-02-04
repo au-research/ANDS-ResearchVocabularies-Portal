@@ -116,7 +116,7 @@ class VocabProxy
 	public function __construct() {
 		// Setup HTTP headers so jQuery/browser interprets as JSON
 		header('Cache-Control: private, must-revalidate');
-		header('Content-type: application/json');
+		header('Content-type: application/javascript');
 
 		/**
 		 * Set up the query processors:
@@ -460,7 +460,7 @@ class VocabProxy
 	 * Dump a whole bunch of JSON to STDOUT
 	 */
 	private function display() {
-		$this->jsonData = (defined(PHP_VERSION_ID) && PHP_VERSION_ID >= 50400) ?
+		$this->jsonData = (defined('PHP_VERSION_ID') && PHP_VERSION_ID >= 50400) ?
 			json_encode($this->jsonData, JSON_UNESCAPED_SLASHES) :
 			str_replace('\/','/', json_encode($this->jsonData));
 		echo $this->callback . "(" . $this->jsonData . ");";

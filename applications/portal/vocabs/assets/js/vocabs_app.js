@@ -312,7 +312,7 @@ $(document).on(
                         if ($(this).attr('related')) {
                             // return "we have some text for re "+$(this).attr('re_id');
                             var url = (base_url
-                                       + 'vocabs/related_preview/?related='
+                                       + 'vocabs/relatedPreview/?related='
                                        + encodeURIComponent($(this).attr('related'))
                                        + '&v_id=' + $(this).attr('v_id')
                                        + '&sub_type='
@@ -341,7 +341,11 @@ $(document).on(
                 position: {
                     target: 'mouse',
                     adjust: {
-                        method: 'shift',
+                        // The method was 'shift', but is now 'flip shift'
+                        // after removing the escaping of the description,
+                        // as the width of the tooltip was no longer
+                        // fully expanding to make full use of max-width.
+                        method: 'flip shift',
                         mouse: false
                     },
                     viewport: $(window)
@@ -455,66 +459,6 @@ window.ATL_JQ_PAGE_PROPS = {
 
     }
 };
-
-// TODO: Remove this once we are sure that there is no call to this binding anymore
-$(document).on(
-    'click',
-    '.ver_preview',
-    function (event) {
-        event.preventDefault();
-        $(this).qtip(
-            {
-                show: {
-                    event: event.type,
-                    ready: 'true'
-                },
-                hide: {
-                    delay: 1000,
-                    fixed: true
-                },
-                content: {
-                    text: function (event, api) {
-                        api.elements.content.html('Loading...');
-                        if ($(this).attr('version')) {
-                            var url = (base_url
-                                       + 'vocabs/version_preview/?version='
-                                       + $(this).attr('version'));
-                        }
-
-                        if (url) {
-                            return $.ajax(
-                                {
-                                    url: url
-                                }
-                            ).then(
-                                function (content) {
-                                    return content;
-                                },
-                                function (xhr, status, error) {
-                                    api.set('content.text',
-                                            status + ': ' + error);
-                                }
-                            );
-                        } else {
-                            return 'Error displaying preview';
-                        }
-                    }
-                },
-                position: {
-                    target: 'mouse',
-                    adjust: {
-                        mouse: false
-                    },
-                    viewport: $(window)
-                },
-                style: {
-                    classes: 'qtip-light qtip-shadow qtip-normal qtip-bootstrap'
-                }
-            },
-            event
-        );
-    }
-);
 
 $(document).on(
     'click',

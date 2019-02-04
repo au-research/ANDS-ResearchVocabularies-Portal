@@ -22,8 +22,25 @@ foreach($vocab->getRelatedEntityRef() as $relatedRef) {
     }
 }
 
-$url = base_url().$vocab->getSlug();
-$title = rawurlencode(substr($vocab->getTitle(), 0, 200)) ;
+
+// Construct the URLs for social sharing.
+// The URL we share is of the slug-variety, irrespective
+// of how we got here.
+$url = base_url().'viewBySlug/'.$vocab->getSlug();
+$share_controller = base_url().'vocabs/share/';
+// Values to go into share URLs.
+$share_id = $vocab->getId();
+$share_title = $vocab->getTitle();
+$share_owner = $vocab->getOwner();
+$share_slug = $vocab->getSlug();
+$share_params = [
+    'url' => $url,
+    'id' => $share_id,
+    'title' => $share_title,
+    'owner' => $share_owner,
+    'slug' => $share_slug
+];
+$share_query_params = http_build_query($share_params);
 
 ?>
 <div id="content">
@@ -63,9 +80,9 @@ $title = rawurlencode(substr($vocab->getTitle(), 0, 200)) ;
                                 @endif
                                 <div class="pull-right">
                                     {{ !empty($vocab->getCreationDate()) ? "Created: ".display_release_date($vocab->getCreationDate()) : ''}}
-                                    <a href="http://www.facebook.com/sharer.php?u={{$url}}"><i class="fa fa-facebook" style="padding-right:4px"></i></a>
-                                    <a href="https://twitter.com/share?url={{$url}}&text={{$title}}&hashtags=andsdata"><i class="fa fa-twitter" style="padding-right:4px"></i></a>
-                                    <a href="https://plus.google.com/share?url={{$url}}"><i class="fa fa-google" style="padding-right:4px"></i></a>
+                                    <a href="{{$share_controller . 'facebook?' . $share_query_params}}"><i class="fa fa-facebook" style="padding-right:4px"></i></a>
+                                    <a href="{{$share_controller . 'twitter?' . $share_query_params}}"><i class="fa fa-twitter" style="padding-right:4px"></i></a>
+                                    <a href="{{$share_controller . 'google?' . $share_query_params}}"><i class="fa fa-google" style="padding-right:4px"></i></a>
                                 </div>
                             </div>
                         </div>
