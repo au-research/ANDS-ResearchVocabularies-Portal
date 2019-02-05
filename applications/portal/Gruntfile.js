@@ -150,16 +150,6 @@ module.exports = function(grunt){
                     "<%= yeoman.vocab_asset %>/css/vocab.less.compiled.css": "<%= yeoman.vocab_asset %>/less/ands-vocab.less"
                 }
             }
-        },
-        copy: {
-            vocab_lib:{
-                files: [
-                    {expand: true, flatten: true,
-                     src: ['<%= yeoman.vocab_asset %>/js/lib/**/angular*min.js.map'],
-                     dest: '<%= yeoman.vocab_asset %>/js',
-                     filter: 'isFile'}
-                ]
-            }
         }
     });
     require('load-grunt-tasks')(grunt);
@@ -168,8 +158,7 @@ module.exports = function(grunt){
     grunt.registerTask('default', [
         'less',
         'concat',
-        'uglify',
-        'copy'
+        'uglify'
     ]);
 
     grunt.registerTask('portal', [
@@ -182,8 +171,7 @@ module.exports = function(grunt){
     grunt.registerTask('vocab', [
         'less:vocab_less',
         'concat:vocab_lib',
-        'concat:vocab_scripts',
-        'copy:vocab_lib'
+        'concat:vocab_scripts'
     ]);
 
     grunt.registerTask('core',[
