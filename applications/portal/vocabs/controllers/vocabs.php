@@ -582,7 +582,6 @@ class Vocabs extends MX_Controller
         ->set('related', $related)
         ->set('sub_type', $sub_type)
         ->render('related_preview');
-
     }
 
 
@@ -1242,6 +1241,5 @@ class Vocabs extends MX_Controller
         $this->RegistryAPIClient = new ANDS\VocabsRegistry\ApiClient();
         $this->RegistryAPI = new ANDS\VocabsRegistry\Api\ResourcesApi();
         $this->ServiceAPI = new ANDS\VocabsRegistry\Api\ServicesApi();
-
     }
 }
