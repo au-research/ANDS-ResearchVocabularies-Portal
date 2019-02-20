@@ -376,6 +376,7 @@ class Vocabs extends MX_Controller
                 'event' => 'portal_view',
                 'vocabulary' => [
                     'id' => $vocab->getId(),
+                    'status' => $vocab->getStatus(),
                     'title' => $vocab->getTitle(),
                     'owner' => $vocab->getOwner(),
                     'slug' => $vocab->getSlug(),
@@ -432,6 +433,7 @@ class Vocabs extends MX_Controller
                 'event' => 'portal_view',
                 'vocabulary' => [
                     'id' => $vocab->getId(),
+                    'status' => $vocab->getStatus(),
                     'title' => $vocab->getTitle(),
                     'owner' => $vocab->getOwner(),
                     'slug' => $vocab->getSlug(),
