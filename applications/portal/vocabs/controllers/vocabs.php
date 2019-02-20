@@ -98,8 +98,7 @@ class Vocabs extends MX_Controller
                 ->set('message', $message)
                 ->render('soft_404');
             $event = [
-                'event' => 'portal_view_not_found',
-                'type' => 'soft_404'
+                'event' => 'portal_not_found'
             ];
             vocabs_portal_log($event);
         }
@@ -181,8 +180,7 @@ class Vocabs extends MX_Controller
                     ->set('message', $message)
                     ->render('soft_404');
                 $event = [
-                    'event' => 'portal_view_not_found',
-                    'type' => 'soft_404'
+                    'event' => 'portal_not_found'
                 ];
                 vocabs_portal_log($event);
                 return;
@@ -401,8 +399,7 @@ class Vocabs extends MX_Controller
                 ->set('message', $message)
                 ->render('soft_404');
             $event = [
-                'event' => 'portal_view_not_found',
-                'type' => 'soft_404'
+                'event' => 'portal_not_found'
             ];
             vocabs_portal_log($event);
         }
@@ -457,8 +454,7 @@ class Vocabs extends MX_Controller
                 ->set('message', $message)
                 ->render('soft_404');
             $event = [
-                'event' => 'portal_view_not_found',
-                'type' => 'soft_404'
+                'event' => 'portal_not_found'
             ];
             vocabs_portal_log($event);
         }
@@ -708,8 +704,7 @@ class Vocabs extends MX_Controller
                 ->set('message', $message)
                 ->render('soft_404');
             $event = [
-                'event' => 'portal_view_not_found',
-                'type' => 'soft_404'
+                'event' => 'portal_not_found'
             ];
             vocabs_portal_log($event);
         }
