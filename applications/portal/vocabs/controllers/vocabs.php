@@ -1073,6 +1073,61 @@ class Vocabs extends MX_Controller
         redirect($shareUrl);
     }
 
+    /* Analytics logging of events that otherwise are only logged
+       by the Registry. */
+
+    /**
+     * Log an access to an access point.
+     * @return string JSON object indicating OK status.
+     * @throws Exception
+     */
+    public function logAccessPoint()
+    {
+        // Collect the data to be logged, from the
+        // query parameters.
+
+        $vocab_id = (int) ($this->input->get('vocab_id') ?: 0);
+        $vocab_status = $this->input->get('vocab_status') ?: 'unknown';
+        $vocab_title = $this->input->get('vocab_title') ?: 'unknown';
+        $vocab_owner = $this->input->get('vocab_owner') ?: 'unknown';
+        $vocab_slug = $this->input->get('vocab_slug') ?: 'unknown';
+
+        $version_id = (int) ($this->input->get('version_id') ?: 0);
+        $version_status = $this->input->get('version_status') ?: 'unknown';
+        $version_title = $this->input->get('version_title') ?: 'unknown';
+        $version_slug = $this->input->get('version_slug') ?: 'unknown';
+
+        $ap_id = (int) ($this->input->get('ap_id') ?: 0);
+        $ap_url = $this->input->get('ap_url') ?: 'unknown';
+        $ap_type = $this->input->get('ap_type') ?: 'unknown';
+
+        // Log the event.
+        $event = [
+            'event' => 'portal_accessed',
+            'vocabulary' => [
+                'id' => $vocab_id,
+                'status' => $vocab_status,
+                'title' => $vocab_title,
+                'owner' => $vocab_owner,
+                'slug' => $vocab_slug
+            ],
+            'version' => [
+                'id' => $version_id,
+                'status' => $version_status,
+                'title' => $version_title,
+                'slug' => $version_slug
+            ],
+            'access_point' => [
+                'id' => $ap_id,
+                'type' => $ap_type,
+                'url' => $ap_url
+            ]
+        ];
+        vocabs_portal_log($event);
+        echo '{"status": "OK"}';
+    }
+
+
     /* Utility methods */
 
     /**

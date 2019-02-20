@@ -58,6 +58,44 @@ foreach ($vocab->getVersion() as $version) {
     if ($hasFile && ! $hasSesameDownloads && $fileCounter < 2) {
         $singleFile = true;
     }
+
+    function onclickURL($vocab, $version, $ap) {
+        switch ($ap->getDiscriminator()) {
+        case AP_API_SPARQL:
+            $ap_url = $ap->getApApiSparql()->getUrl();
+            break;
+        case AP_FILE:
+            $ap_url = $ap->getApFile()->getUrl();
+            break;
+        case AP_SESAME_DOWNLOAD:
+            $ap_url = $ap->getApSesameDownload()->getUrlPrefix();
+            break;
+        case AP_SISSVOC:
+            $ap_url = $ap->getApSissvoc()->getUrlPrefix() . '/concept';
+            break;
+        case AP_WEB_PAGE:
+            $ap_url = $ap->getApWebPage()->getUrl();
+            break;
+        default:
+            $ap_url = 'unknown';
+        }
+        $share_params = [
+          'vocab_id' => $vocab->getId(),
+          'vocab_status' => $vocab->getStatus(),
+          'vocab_title' => $vocab->getTitle(),
+          'vocab_slug' => $vocab->getSlug(),
+          'vocab_owner' => $vocab->getOwner(),
+          'version_id' => $version->getId(),
+          'version_status' => $version->getStatus(),
+          'version_title' => $version->getTitle(),
+          'version_slug' => $version->getSlug(),
+          'ap_id' => $ap->getId(),
+          'ap_type' => $ap->getDiscriminator(),
+          'ap_url' => $ap_url
+        ];
+        return htmlspecialchars(portal_url('vocabs/logAccessPoint') . '?' . http_build_query($share_params));
+    }
+
   ?>
 
   <div class="box" ng-non-bindable>
@@ -86,6 +124,7 @@ foreach ($vocab->getVersion() as $version) {
         @foreach($current_version->getAccessPoint() as $ap)
           @if($ap->getDiscriminator() === AP_FILE)
             <a class="download-link btn btn-lg btn-block btn-primary"
+               onclick="$.ajax('{{ onclickURL($vocab, $current_version, $ap) }}'); return true"
                href="{{ $ap->getApFile()->getUrl() }}"><i class="fa fa-download"></i>
                Download ({{ htmlspecialchars($ap->getApFile()->getFormat()) }})</a>
           @endif
@@ -98,6 +137,7 @@ foreach ($vocab->getVersion() as $version) {
             role="group" aria-label="...">
             <a target="_blank"
               class="btn btn-sm btn-default {{$ap->getDiscriminator()}}"
+              onclick="$.ajax('{{ onclickURL($vocab, $current_version, $ap) }}'); return true"
               href="{{ $ap->getApWebPage()->getUrl() }}"><i
               class="fa fa-external-link"></i> Access Web Page</a>
           </div>
@@ -110,6 +150,7 @@ foreach ($vocab->getVersion() as $version) {
             role="group" aria-label="...">
             <a target="_blank"
               class="btn btn-sm btn-default {{$ap->getDiscriminator()}}"
+              onclick="$.ajax('{{ onclickURL($vocab, $current_version, $ap) }}'); return true"
               href="{{ $ap->getApSissvoc()->getUrlPrefix() }}/concept"><i
               class="fa fa-external-link"></i> Access Linked Data API</a>
           </div>
@@ -124,7 +165,9 @@ foreach ($vocab->getVersion() as $version) {
           <div class="sp text-center collapse">
             <small>SPARQL Endpoint:</small>
             <p style="word-break: break-all">
-              <a target="_blank" href="{{ $ap->getApApiSparql()->getUrl() }}">{{ htmlspecialchars($ap->getApApiSparql()->getUrl()) }}</a>
+              <a target="_blank"
+                onclick="$.ajax('{{ onclickURL($vocab, $current_version, $ap) }}'); return true"
+                href="{{ $ap->getApApiSparql()->getUrl() }}">{{ htmlspecialchars($ap->getApApiSparql()->getUrl()) }}</a>
             </p>
             <p>
               <a target="_blank" href="https://documentation.ands.org.au/display/DOC/SPARQL+endpoint">Learn More</a>
@@ -143,7 +186,8 @@ foreach ($vocab->getVersion() as $version) {
           @foreach($current_version->getAccessPoint() as $ap)
             @if($ap->getDiscriminator() === AP_FILE)
               <li><a class="download-link"
-            href="{{ $ap->getApFile()->getUrl() }}">{{ htmlspecialchars($ap->getApFile()->getFormat()) }}</a></li>
+                onclick="$.ajax('{{ onclickURL($vocab, $current_version, $ap) }}'); return true"
+                href="{{ $ap->getApFile()->getUrl() }}">{{ htmlspecialchars($ap->getApFile()->getFormat()) }}</a></li>
             @endif
           @endforeach
         </ul>
@@ -168,7 +212,8 @@ foreach ($vocab->getVersion() as $version) {
               ?>
               @foreach($sesameFormats as $key=>$val)
                 <li><a class="download-link" target="_blank"
-                href="{{ $ap->getApSesameDownload()->getUrlPrefix() }}{{$key}}">{{ $val }}</a></li>
+                  onclick="$.ajax('{{ onclickURL($vocab, $current_version, $ap) }}{{$key}}'); return true"
+                  href="{{ $ap->getApSesameDownload()->getUrlPrefix() }}{{$key}}">{{ $val }}</a></li>
               @endforeach
             </ul>
           @endif
@@ -218,7 +263,9 @@ foreach ($vocab->getVersion() as $version) {
         @if($singleFile)
           @foreach($version->getAccessPoint() as $ap)
             @if($ap->getDiscriminator() === AP_FILE)
-              <a class="download-link btn btn-lg btn-block btn-primary" href="{{ $ap->getApFile()->getUrl() }}"><i class="fa fa-download"></i> Download ({{ htmlspecialchars($ap->getApFile()->getFormat()) }})</a>
+              <a class="download-link btn btn-lg btn-block btn-primary"
+                onclick="$.ajax('{{ onclickURL($vocab, $version, $ap) }}'); return true"
+                href="{{ $ap->getApFile()->getUrl() }}"><i class="fa fa-download"></i> Download ({{ htmlspecialchars($ap->getApFile()->getFormat()) }})</a>
             @endif
           @endforeach
         @endif
@@ -226,7 +273,9 @@ foreach ($vocab->getVersion() as $version) {
         @foreach($version->getAccessPoint() as $ap)
           @if($ap->getDiscriminator() === AP_WEB_PAGE)
             <div class="btn-group btn-group-justified element element-no-bottom element-no-top" role="group" aria-label="...">
-                <a target="_blank" class="btn btn-sm btn-default {{htmlspecialchars($ap->getDiscriminator())}}" href="{{ $ap->getApWebPage()->getUrl() }}"><i class="fa fa-external-link"></i> Access Web Page</a>
+                <a target="_blank" class="btn btn-sm btn-default {{htmlspecialchars($ap->getDiscriminator())}}"
+                  onclick="$.ajax('{{ onclickURL($vocab, $version, $ap) }}'); return true"
+                  href="{{ $ap->getApWebPage()->getUrl() }}"><i class="fa fa-external-link"></i> Access Web Page</a>
             </div>
           @endif
         @endforeach
@@ -234,7 +283,9 @@ foreach ($vocab->getVersion() as $version) {
         @foreach($version->getAccessPoint() as $ap)
           @if($ap->getDiscriminator() === AP_SISSVOC)
             <div class="btn-group btn-group-justified element element-no-bottom element-no-top" role="group" aria-label="...">
-              <a target="_blank" class="btn btn-sm btn-default {{htmlspecialchars($ap->getDiscriminator())}}" href="{{ $ap->getApSissvoc()->getUrlPrefix() }}/concept"><i class="fa fa-external-link"></i> Access Linked Data API</a>
+              <a target="_blank" class="btn btn-sm btn-default {{htmlspecialchars($ap->getDiscriminator())}}"
+                onclick="$.ajax('{{ onclickURL($vocab, $version, $ap) }}'); return true"
+                href="{{ $ap->getApSissvoc()->getUrlPrefix() }}/concept"><i class="fa fa-external-link"></i> Access Linked Data API</a>
             </div>
           @endif
         @endforeach
@@ -248,7 +299,9 @@ foreach ($vocab->getVersion() as $version) {
             <div class="sp text-center collapse">
               <small>SPARQL Endpoint:</small>
               <p style="word-break:break-all">
-                <a target="_blank" href="{{ $ap->getApApiSparql()->getUrl() }}">{{ htmlspecialchars($ap->getApApiSparql()->getUrl()) }}</a>
+                <a target="_blank"
+                  onclick="$.ajax('{{ onclickURL($vocab, $version, $ap) }}'); return true"
+                  href="{{ $ap->getApApiSparql()->getUrl() }}">{{ htmlspecialchars($ap->getApApiSparql()->getUrl()) }}</a>
               </p>
               <p>
                 <a target="_blank" href="https://documentation.ands.org.au/display/DOC/SPARQL+endpoint">Learn More</a>
@@ -267,6 +320,7 @@ foreach ($vocab->getVersion() as $version) {
               @endif
               <ul>
                 <li><a class="download-link" target="_blank"
+                       onclick="$.ajax('{{ onclickURL($vocab, $version, $ap) }}'); return true"
                        href="{{ $ap->getApFile()->getUrl() }}">{{ htmlspecialchars($ap->getApFile()->getFormat()) }}</a></li>
               </ul>
             @endif
@@ -292,7 +346,8 @@ foreach ($vocab->getVersion() as $version) {
                 ?>
                 @foreach($sesameFormats as $key=>$val)
                   <li><a class="download-link" target="_blank"
-                  href="{{ $ap->getApSesameDownload()->getUrlPrefix() }}{{$key}}">{{ $val }}</a></li>
+                    onclick="$.ajax('{{ onclickURL($vocab, $version, $ap) }}{{$key}}'); return true"
+                    href="{{ $ap->getApSesameDownload()->getUrlPrefix() }}{{$key}}">{{ $val }}</a></li>
                 @endforeach
               </ul>
             @endif
