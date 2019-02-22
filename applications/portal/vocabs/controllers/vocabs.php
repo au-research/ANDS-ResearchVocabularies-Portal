@@ -805,6 +805,12 @@ class Vocabs extends MX_Controller
             if ($ap->getDiscriminator() ===
                 AccessPoint::DISCRIMINATOR_SISSVOC) {
                     $sissvoc_endpoint = $ap->getApSissvoc()->getUrlPrefix();
+                    // Stop at the _first_ match.  Note: this choice
+                    // of access point must match the behaviour in
+                    // wrap-getvocabaccess.blade.php that assigns the
+                    // attribute 'id="current_version_sissvoc"' to an
+                    // <a> element.
+                    break;
             }
         }
 
@@ -855,8 +861,12 @@ class Vocabs extends MX_Controller
                     $tipText .= '<br/><b>Notation: </b>' .$concept['notation'];
                 }
                 if ($sissvoc_endpoint != '') {
+                    // clickLinkedData() is defined in vocabs_app.js.
                     $tipText .=
-                        '<br/><a class="pull-right" target="_blank" href="' .
+                        '<br/><a class="pull-right" target="_blank" '.
+                             'onclick="clickLinkedData(\'' .
+                                 $uri . '\')" ' .
+                             'href="' .
                         $sissvoc_endpoint .
                         '/resource?uri=' .
                         $uri . '">View as linked data</a>';
@@ -929,6 +939,20 @@ class Vocabs extends MX_Controller
                 $registryConfig->setPassword($password);
             }
 
+            $vocab_id = (int) (isset($request->vocab_id) ?
+                               $request->vocab_id : 0);
+            $vocab_status = isset($request->vocab_status) ?
+                          $request->vocab_status : 'unknown';
+            $vocab_title = isset($request->vocab_title) ?
+                         $request->vocab_title : 'unknown';
+            $vocab_owner = isset($request->vocab_owner) ?
+                         $request->vocab_owner : 'unknown';
+            $vocab_slug = isset($request->vocab_slug) ?
+                        $request->vocab_slug : 'unknown';
+            $subscribe_all_vocabularies_from_owner = false;
+            $subscribe_all_vocabularies = false;
+            $subscribe_service_updates = false;
+
             $subscriptions = $request->subscriptions;
             $email = $request->email;
             try {
@@ -946,6 +970,11 @@ class Vocabs extends MX_Controller
                                 $value,
                                 $email
                             );
+                            if ($value == '*') {
+                                $subscribe_all_vocabularies = true;
+                            } else {
+                                $subscribe_all_vocabularies_from_owner = true;
+                            }
                             break;
                         case 'system':
                             if ($value == true) {
@@ -953,6 +982,7 @@ class Vocabs extends MX_Controller
                                     createEmailSubscriptionSystem(
                                         $email
                                     );
+                                $subscribe_service_updates = true;
                             }
                             break;
                     }
@@ -963,6 +993,25 @@ class Vocabs extends MX_Controller
                     . addslashes($e->getMessage()) . '"}';
                 return;
             }
+            // Log the event.
+            $event = [
+                'event' => 'portal_subscribe',
+                'vocabulary' => [
+                    'id' => $vocab_id,
+                    'status' => $vocab_status,
+                    'title' => $vocab_title,
+                    'owner' => $vocab_owner,
+                    'slug' => $vocab_slug
+                ],
+                'subscription' => [
+                    'subscribe_all_vocabularies_from_owner' =>
+                      $subscribe_all_vocabularies_from_owner,
+                    'subscribe_all_vocabularies' =>
+                      $subscribe_all_vocabularies,
+                    'subscribe_service_updates' => $subscribe_service_updates
+                ]
+            ];
+            vocabs_portal_log($event);
             echo '{"status": "OK"}';
         } else {
             echo '{"status": "failReCAPTCHA"}';
@@ -982,6 +1031,11 @@ class Vocabs extends MX_Controller
             'page' => 'manageSubscriptions',
         );
         vocab_log_terms($event);
+        $event = [
+            'event' => 'portal_page',
+            'page' => 'manageSubscriptions'
+        ];
+        vocabs_portal_log($event);
         // Set strip_last_url_component so as not to leak
         // the subscriber's token into the URLs generated for
         // the various "Share" options. See footer.blade.php
@@ -1124,6 +1178,40 @@ class Vocabs extends MX_Controller
         echo '{"status": "OK"}';
     }
 
+    /**
+     * Log unsubscription.
+     * @return string JSON object indicating OK status.
+     * @throws Exception
+     */
+    public function logUnsubscribe()
+    {
+        // Get the POST data
+        $postdata = file_get_contents("php://input");
+        $request = json_decode($postdata);
+
+        $vocab_ids = isset($request->vocab_ids) ? $request->vocab_ids: [];
+        $vocab_owners = isset($request->vocab_owners) ?
+                      $request->vocab_owners: [];
+        $unsubscribe_all_vocabularies =
+            isset($request->unsubscribe_all_vocabularies) ?
+                $request->unsubscribe_all_vocabularies: false;
+        $unsubscribe_service_updates =
+            isset($request->unsubscribe_service_updates) ?
+                $request->unsubscribe_service_updates: false;
+
+        // Log the event.
+        $event = [
+            'event' => 'portal_unsubscribe',
+            'subscription' => [
+                'vocabulary_ids' => $vocab_ids,
+                'vocabulary_owners' => $vocab_owners,
+                'unsubscribe_all_vocabularies' => $unsubscribe_all_vocabularies,
+                'unsubscribe_service_updates' => $unsubscribe_service_updates
+            ],
+        ];
+        vocabs_portal_log($event);
+        echo '{"status": "OK"}';
+    }
 
     /* Utility methods */
 

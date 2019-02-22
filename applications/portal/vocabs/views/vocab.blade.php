@@ -99,8 +99,12 @@ foreach ($vocab->getVersion() as $version) {
 @stop
 @section('vocab-meta')
     <meta property="vocab:id" content="{{ $vocab->getId() }}" />
+    <meta property="vocab:status"
+          content="{{ htmlspecialchars($vocab->getStatus()) }}" />
     <meta property="vocab:title"
           content="{{ htmlspecialchars($vocab->getTitle()) }}" />
+    <meta property="vocab:slug"
+          content="{{ htmlspecialchars($vocab->getSlug()) }}" />
     <meta property="vocab:owner"
           content="{{ htmlspecialchars($vocab->getOwner()) }}" />
 @stop

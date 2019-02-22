@@ -96,6 +96,18 @@ foreach ($vocab->getVersion() as $version) {
         return htmlspecialchars(portal_url('vocabs/logAccessPoint') . '?' . http_build_query($share_params));
     }
 
+    // Need to use $GLOBALS explicitly here, because we're in an eval.
+    $GLOBALS['isTheFirstSissvocAccessPoint'] = true;
+    function getIdForSissvocAccessPoint() {
+        global $isTheFirstSissvocAccessPoint;
+        if ($isTheFirstSissvocAccessPoint) {
+            $isTheFirstSissvocAccessPoint = false;
+            return 'id="current_version_sissvoc"';
+        } else {
+            return '';
+        }
+    }
+
   ?>
 
   <div class="box" ng-non-bindable>
@@ -148,7 +160,12 @@ foreach ($vocab->getVersion() as $version) {
           <div
             class="btn-group btn-group-justified element element-no-bottom element-no-top"
             role="group" aria-label="...">
-            <a target="_blank"
+            {{-- The id attribute with value "current_version_sissvoc" --}}
+            {{-- goes on the first such match. This assignment must match --}
+            {{-- the access point selected by --}}
+            {{-- the vocabs controller method displayTree(). --}}
+            <a {{ getIdForSissvocAccessPoint() }}
+              target="_blank"
               class="btn btn-sm btn-default {{$ap->getDiscriminator()}}"
               onclick="$.ajax('{{ onclickURL($vocab, $current_version, $ap) }}'); return true"
               href="{{ $ap->getApSissvoc()->getUrlPrefix() }}/concept"><i

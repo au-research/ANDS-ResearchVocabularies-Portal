@@ -11,7 +11,7 @@
         .controller('manageSubscriptions', manageSubscriptionsCtrl);
 
     function manageSubscriptionsCtrl($log, $scope, $timeout,
-                                     $window, $uibModal) {
+                                     $window, $uibModal, $http) {
 
         // Initialise Registry API access.
         var VocabularyRegistryApi = require('vocabulary_registry_api');
@@ -196,10 +196,17 @@
         /** Implementation of the "Unsubscribe" button. */
         $scope.unsubscribe = function() {
             $scope.loading = true;
+            // These four are just for analytics.
+            var vocabIds = [];
+            var vocabOwners = [];
+            var unsubscribeAllVocabularies = false;
+            var unsubscribeServiceUpdates = false;
+            // Keep our promises (!).
             var promises = [];
             // System subscription, if selected
             if ($scope.form.systemSubscriptionUnsubscribe) {
                 promises.push(ServicesAPI.deleteEmailSubscriptionSystem(token));
+                unsubscribeServiceUpdates = true;
             }
             // All selected vocabulary subscriptions
             angular.forEach($scope.vocabularySubscriptions,
@@ -208,6 +215,7 @@
                         promises.push(ServicesAPI.
                                       deleteEmailSubscriptionVocabulary(
                                           token, subscription.id));
+                        vocabIds.push(subscription.id);
                     }
                 });
             // All selected owner subscriptions
@@ -217,13 +225,22 @@
                         promises.push(ServicesAPI.
                                       deleteEmailSubscriptionOwner(
                                           token, subscription.id));
+                        vocabOwners.push(subscription.id);
                     }
                 });
             // Owner = *, if selected
             if ($scope.form.ownerAllSubscriptionUnsubscribe) {
                 promises.push(ServicesAPI.deleteEmailSubscriptionOwner(
                     token, '*'));
+                unsubscribeAllVocabularies = true;
             }
+            // Portal analytics logging.
+            $http.post(base_url + 'vocabs/logUnsubscribe', {
+                "vocab_ids": vocabIds,
+                "vocab_owners": vocabOwners,
+                "unsubscribe_all_vocabularies": unsubscribeAllVocabularies,
+                "unsubscribe_service_updates": unsubscribeServiceUpdates
+            });
             // Wait for all to complete.
             Promise.all(promises).then(function(values) {
                 console.log('success');

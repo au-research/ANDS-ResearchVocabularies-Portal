@@ -192,6 +192,22 @@ $(document).on(
     }
 );
 
+// Onclick function for the "View as linked data" link embedded
+// within browse tree concept tooltips. It does analytics logging
+// of the user's click.
+// We take advantage of the fact that the SISSVoc endpoint
+// for the current version is being displayed on the same page,
+// and there's an onclick event on it that has pretty much what
+// we want.
+function clickLinkedData(uri) {
+    var sissvoc_onclick = document.querySelector("a#current_version_sissvoc").
+        getAttribute("onclick");
+    // FIXME: it may be that we want to append uri to the "ap_url" value.
+    // Make a decision, then implement it.
+    var ajax_command = sissvoc_onclick.replace(/return true/, '');
+    eval(ajax_command);
+}
+
 $(document).on(
     'click',
     '.download-chooser',
