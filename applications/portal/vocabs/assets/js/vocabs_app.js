@@ -326,19 +326,40 @@ $(document).on(
                     text: function (event, api) {
                         api.elements.content.html('Loading...');
                         if ($(this).attr('related')) {
-                            // return "we have some text for re "+$(this).attr('re_id');
-                            var url = (base_url
-                                       + 'vocabs/relatedPreview/?related='
-                                       + encodeURIComponent($(this).attr('related'))
-                                       + '&v_id=' + $(this).attr('v_id')
-                                       + '&sub_type='
-                                       + $(this).attr('sub_type'));
+                            // return "have text for re "+$(this).attr('related');
+
+                            var vocabId = document.querySelector(
+                                "meta[property='vocab:id']").
+                                getAttribute("content");
+                            // We send back these vocab... properties just for
+                            // analytics logging.
+                            var vocabStatus = document.querySelector(
+                                "meta[property='vocab:status']").
+                                getAttribute("content");
+                            var vocabTitle = document.querySelector(
+                                "meta[property='vocab:title']").
+                                getAttribute("content");
+                            var vocabSlug = document.querySelector(
+                                "meta[property='vocab:slug']").
+                                getAttribute("content");
+                            var vocabOwner = document.querySelector(
+                                "meta[property='vocab:owner']").
+                                getAttribute("content");
+                            var url = base_url + 'vocabs/relatedPreview';
                         }
 
                         if (url) {
-                            return $.ajax(
+                            return $.ajax(url,
                                 {
-                                    url: url
+                                    'data': {
+                                        'related': $(this).attr('related'),
+                                        'vocab_id': vocabId,
+                                        'vocab_status': vocabStatus,
+                                        'vocab_title': vocabTitle,
+                                        'vocab_slug': vocabSlug,
+                                        'vocab_owner': vocabOwner,
+                                        'sub_type': $(this).attr('sub_type')
+                                    }
                                 }
                             ).then(
                                 function (content) {

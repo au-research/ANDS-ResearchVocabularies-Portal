@@ -468,7 +468,13 @@ class Vocabs extends MX_Controller
     {
 
         $relatedParam = json_decode($this->input->get('related'));
-        $v_id = $this->input->get('v_id');
+
+        $vocab_id = (int) ($this->input->get('vocab_id') ?: 0);
+        $vocab_status = $this->input->get('vocab_status') ?: 'unknown';
+        $vocab_title = $this->input->get('vocab_title') ?: 'unknown';
+        $vocab_owner = $this->input->get('vocab_owner') ?: 'unknown';
+        $vocab_slug = $this->input->get('vocab_slug') ?: 'unknown';
+
         $sub_type = $this->input->get('sub_type');
 
         $related = [];
@@ -504,7 +510,11 @@ class Vocabs extends MX_Controller
             $event = [
                 'event' => 'portal_preview_re',
                 'vocabulary' => [
-                    'id' => $v_id
+                    'id' => $vocab_id,
+                    'status' => $vocab_status,
+                    'title' => $vocab_title,
+                    'owner' => $vocab_owner,
+                    'slug' => $vocab_slug
                 ],
                 'related_entity' => [
                     'id' => $re->getId(),
@@ -534,7 +544,11 @@ class Vocabs extends MX_Controller
             $event = [
                 'event' => 'portal_preview_rv',
                 'vocabulary' => [
-                    'id' => $v_id
+                    'id' => $vocab_id,
+                    'status' => $vocab_status,
+                    'title' => $vocab_title,
+                    'owner' => $vocab_owner,
+                    'slug' => $vocab_slug
                 ],
                 'related_vocabulary' => [
                     'id' => $rv->getId(),
@@ -555,9 +569,11 @@ class Vocabs extends MX_Controller
             $related_vocab = $reverse_related_vocab->getRelatedVocabulary();
             // If we got a vocabulary to start with, exclude ourself from
             // the related vocabularies.
+            // This is (currently) the one place we use $vocab_id
+            // _apart from_ for logging purposes.
             if ($reverse_related_vocab->getRelatedVocabulary()->getId() ==
-                $v_id) {
-//                 echo('excluded ourself');
+                $vocab_id) {
+                // echo('excluded ourself');
                 continue;
             }
             $others[] = $related_vocab;
@@ -565,15 +581,12 @@ class Vocabs extends MX_Controller
                 foreach ($reverse_related_vocab->
                          getRelatedEntityRelation() as $rel) {
                     if ($rel === RelatedEntityRef::RELATION_PUBLISHED_BY) {
-//                         echo('found publisher');
+                        // echo('found publisher');
                         $related['sub_type'] = 'publisher';
                     }
                 }
             }
         }
-
-
-//         $others = array_unique($others, true);
 
         $related['other_vocabs'] = $others;
         $this->blade

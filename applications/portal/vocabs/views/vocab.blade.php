@@ -264,7 +264,7 @@ foreach ($vocab->getVersion() as $version) {
                         ?>
                     </small>
                     <a href="" class="re_preview" related='{{$serviceRef}}'
-                       v_id="{{ $vocab->getId() }}">{{htmlspecialchars($serviceRef->getRelatedEntity()->getTitle())}}</a></p>
+                       >{{htmlspecialchars($serviceRef->getRelatedEntity()->getTitle())}}</a></p>
                 @endforeach
 
             </div>
@@ -287,7 +287,7 @@ foreach ($vocab->getVersion() as $version) {
                                 ?>
                             </small>
             <a href="" class="re_preview" related='{{$relatedRef}}'
-               v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
+               > {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
         </p>
         @endforeach
         @endif
@@ -302,7 +302,7 @@ foreach ($vocab->getVersion() as $version) {
                 ?>
             </small>
             <a href="" class="re_preview" related='{{$relatedRef}}'
-               v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
+               > {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
         </p>
         @endforeach
         @foreach($related_internal_vocabs as $relatedRef)
@@ -314,7 +314,7 @@ foreach ($vocab->getVersion() as $version) {
                 ?>
             </small>
             <a href="" class="re_preview"  related='{{$relatedRef}}'
-               v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedVocabulary()->getTitle())}}</a>
+               > {{htmlspecialchars($relatedRef->getRelatedVocabulary()->getTitle())}}</a>
         </p>
         @endforeach
         @endif
