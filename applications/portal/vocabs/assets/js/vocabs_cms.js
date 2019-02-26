@@ -1164,6 +1164,23 @@
             $scope.loading = false;
             $scope.confirmationRequiredOnExit = false;
             $log.debug("Success", resp);
+
+            // Portal-side analytics logging.
+            // Make use of $scope.mode,
+            // resp.getId(), resp.getStatus(),
+            // resp.getTitle(), resp.getSlug(), resp.getOwner()
+            $.ajax(base_url + 'vocabs/logCms',
+                   {
+                       'data': {
+                           'action': $scope.mode,
+                           'vocab_id': resp.getId(),
+                           'vocab_status': resp.getStatus(),
+                           'vocab_title': resp.getTitle(),
+                           'vocab_slug': resp.getSlug(),
+                           'vocab_owner': resp.getOwner()
+                       }
+                   });
+
             // Mark the form as "pristine" (i.e., not "dirty"),
             // for the case(s) in which the form will still be visible
             // after save.
@@ -1177,14 +1194,15 @@
             $scope.show_alert_after_save(resp, function() {
                 if ($scope.targetStatus === "published" ||
                     $scope.targetStatus === "deprecated") {
-                    window.location.replace(base_url + "viewById/" + resp.id);
+                    window.location.replace(base_url + "viewById/" +
+                                            resp.getId());
                     return;
                 }
 
                 if ($scope.mode === "add") {
                     // relocate to the new edit page with an id now
                     window.location.replace(base_url +
-                                            'vocabs/edit/' + resp.id);
+                                            'vocabs/edit/' + resp.getId());
                     return;
                 }
             });

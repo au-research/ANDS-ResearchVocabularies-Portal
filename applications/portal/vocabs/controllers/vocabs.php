@@ -669,6 +669,10 @@ class Vocabs extends MX_Controller
                 'id' => $vocab->getId(),
             );
             vocab_log_terms($event);
+            // If we want to log _initiation_ of an edit,
+            // do it here. But completion is done by the JS controller
+            // calling back to logCMS().
+            /*
             $event = [
                 'event' => 'portal_cms',
                 'cms' => [ 'action' => 'edit' ],
@@ -680,6 +684,7 @@ class Vocabs extends MX_Controller
                 ]
             ];
             vocabs_portal_log($event);
+            */
 
             $this->blade
                 ->set(
@@ -1139,6 +1144,42 @@ class Vocabs extends MX_Controller
 
     /* Analytics logging of events that otherwise are only logged
        by the Registry. */
+
+    /**
+     * Log a CMS event.
+     * @return string JSON object indicating OK status.
+     * @throws Exception
+     */
+    public function logCMS()
+    {
+        // Collect the data to be logged, from the
+        // query parameters.
+
+        $action = $this->input->get('action') ?: 'unknown';
+
+        $vocab_id = (int) ($this->input->get('vocab_id') ?: 0);
+        $vocab_status = $this->input->get('vocab_status') ?: 'unknown';
+        $vocab_title = $this->input->get('vocab_title') ?: 'unknown';
+        $vocab_owner = $this->input->get('vocab_owner') ?: 'unknown';
+        $vocab_slug = $this->input->get('vocab_slug') ?: 'unknown';
+
+        // Log the event.
+        $event = [
+            'event' => 'portal_cms',
+            'cms' => [
+                'action' => $action
+            ],
+            'vocabulary' => [
+                'id' => $vocab_id,
+                'status' => $vocab_status,
+                'title' => $vocab_title,
+                'owner' => $vocab_owner,
+                'slug' => $vocab_slug
+            ]
+        ];
+        vocabs_portal_log($event);
+        echo '{"status": "OK"}';
+    }
 
     /**
      * Log an access to an access point.
