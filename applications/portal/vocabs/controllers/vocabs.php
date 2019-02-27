@@ -621,11 +621,16 @@ class Vocabs extends MX_Controller
             'page' => 'add',
         );
         vocab_log_terms($event);
+        // If we want to log _initiation_ of an add,
+        // do it here. But completion is done by the JS controller
+        // calling back to logCMS().
+        /*
         $event = [
             'event' => 'portal_cms',
             'cms' => [ 'action' => 'add' ]
         ];
         vocabs_portal_log($event);
+        */
         $this->blade
         ->set('scripts', array('vocabs_cms', 'versionCtrl', 'relatedCtrl',
             'relatedVocabularyCtrl',
