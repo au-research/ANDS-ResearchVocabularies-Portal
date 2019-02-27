@@ -1077,7 +1077,7 @@ class Vocabs extends MX_Controller
      * blade used to be direct links to the corresponding social
      * network server. Now, we send the portal client here first, so
      * that we can do our own logging of sharing.
-     * @param  string $social facebook|twitter|google
+     * @param  string $social facebook|twitter
      * @return redirect
      * @throws Exception
      */
@@ -1130,14 +1130,6 @@ class Vocabs extends MX_Controller
                 ];
                 $share_query_params = http_build_query($share_params);
                 $shareUrl = "https://twitter.com/share?" . $share_query_params;
-                break;
-            case "google":
-                $share_params = [
-                    'url' => $url
-                ];
-                $share_query_params = http_build_query($share_params);
-                $shareUrl = "https://plus.google.com/share?" .
-                          $share_query_params;
                 break;
             default:
                 break;

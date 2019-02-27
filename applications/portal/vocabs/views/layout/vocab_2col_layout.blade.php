@@ -83,7 +83,6 @@ $share_query_params = http_build_query($share_params);
                                     {{ !empty($vocab->getCreationDate()) ? "Created: ".display_release_date($vocab->getCreationDate()) : ''}}
                                     <a href="{{$share_controller . 'facebook?' . $share_query_params}}"><i class="fa fa-facebook" style="padding-right:4px"></i></a>
                                     <a href="{{$share_controller . 'twitter?' . $share_query_params}}"><i class="fa fa-twitter" style="padding-right:4px"></i></a>
-                                    <a href="{{$share_controller . 'google?' . $share_query_params}}"><i class="fa fa-google" style="padding-right:4px"></i></a>
                                 </div>
                             </div>
                         </div>
