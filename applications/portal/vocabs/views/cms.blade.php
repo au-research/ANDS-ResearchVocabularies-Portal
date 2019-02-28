@@ -53,7 +53,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
       <div class="row">
         <div class="col-md-12">
           <div class="alert alert-info" ng-show="fetchingPP">
-            Loading Poolparty Projects... Please wait...
+            Loading PoolParty Projects... Please wait...
           </div>
           <div class="panel swatch-gray" ng-show="!fetchingPP">
             <div class="panel-heading">PoolParty Integration</div>
