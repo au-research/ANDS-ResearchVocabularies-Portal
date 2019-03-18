@@ -49,8 +49,14 @@
                     <div id="categories-5" class="sidebar-widget widget_categories">
                         <h3 class="sidebar-header">Share</h3>
                         <ul>
-                            <li class="cat-item"><a class="noexicon social-sharing" href="http://www.facebook.com/sharer.php?u={{$url}}" target="_blank"><i class="fa fa-facebook"></i> Facebook</a></li>
-                            <li class="cat-item"><a class="noexicon social-sharing" href="https://twitter.com/share?url={{$url}}&text={{$title}}&hashtags=andsdata" target="_blank"><i class="fa fa-twitter"></i> Twitter</a></li>
+                            @if(isset($share_controller))
+                                <li class="cat-item"><a class="noexicon social-sharing" href="{{$share_controller . 'facebook?' . $share_query_params}}" target="_blank"><i class="fa fa-facebook"></i> Facebook</a></li>
+                                <li class="cat-item"><a class="noexicon social-sharing" href="{{$share_controller . 'twitter?' . $share_query_params}}" target="_blank"><i class="fa fa-twitter"></i> Twitter</a></li>
+                            @else
+                                <li class="cat-item"><a class="noexicon social-sharing" href="{{ portal_url('vocabs/share/facebook?url=' . $url . '&page=' . $page) }}" target="_blank"><i class="fa fa-facebook"></i> Facebook</a></li>
+                                <li class="cat-item"><a class="noexicon social-sharing" href="{{ portal_url('vocabs/share/twitter?url=' . $url . '&page=' . $page . '&title=' . $title) }}" target="_blank"><i class="fa fa-twitter"></i> Twitter</a></li>
+                            @endif
+
                         </ul>
                     </div>
                 </div>

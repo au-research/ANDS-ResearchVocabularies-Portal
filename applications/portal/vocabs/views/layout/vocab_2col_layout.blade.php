@@ -35,6 +35,7 @@ $share_owner = $vocab->getOwner();
 $share_slug = $vocab->getSlug();
 $share_params = [
     'url' => $url,
+    'page' => 'view',
     'id' => $share_id,
     'title' => $share_title,
     'owner' => $share_owner,
@@ -98,6 +99,6 @@ $share_query_params = http_build_query($share_params);
     </article>
 
 </div>
-@include('includes/footer')
+@include('includes/footer', [ 'share_controller' => $share_controller, 'share_query_params' => $share_query_params ])
 </body>
 </html>

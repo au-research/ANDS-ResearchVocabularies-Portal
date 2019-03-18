@@ -19,6 +19,13 @@ use ANDS\VocabsRegistry\ApiException;
 class Vocabs extends MX_Controller
 {
 
+    // NB: each call to render() must be preceded by
+    //      ->set('page', '...')
+    // where the value of the second parameter is what is expected for
+    // the "page" field of portal_social_share analytics log entries.
+    // The value of $page is included in the social sharing links in
+    // the footer.
+
     // Access to the Registry API. Values are assigned
     // in the constructor.
     private $RegistryAPIClient;
@@ -55,6 +62,7 @@ class Vocabs extends MX_Controller
         $this->blade
              ->set('customSearchBlock', true)
              ->set('title', 'Research Vocabularies Australia')
+             ->set('page', 'home')
              ->render('home');
     }
 
@@ -86,6 +94,7 @@ class Vocabs extends MX_Controller
                 ->set('slug', $slug)
                 ->set('id', $vocab->getId())
                 ->set('title', 'Research Vocabularies Australia')
+                ->set('page', 'slug_redirect')
                 ->render('slug_redirect');
             */
         } catch (Exception $e) {
@@ -96,6 +105,7 @@ class Vocabs extends MX_Controller
             $this->output->set_status_header('404');
             $this->blade
                 ->set('message', $message)
+                ->set('page', 'soft_404')
                 ->render('soft_404');
             $event = [
                 'event' => 'portal_not_found'
@@ -128,6 +138,7 @@ class Vocabs extends MX_Controller
         $this->blade
              ->set('search_app', true)
              ->set('title', 'Research Vocabularies Australia')
+             ->set('page', 'search')
              ->render('index');
     }
 
@@ -178,6 +189,7 @@ class Vocabs extends MX_Controller
                 $this->output->set_status_header('404');
                 $this->blade
                     ->set('message', $message)
+                    ->set('page', 'soft_404')
                     ->render('soft_404');
                 $event = [
                     'event' => 'portal_not_found'
@@ -192,6 +204,7 @@ class Vocabs extends MX_Controller
         vocabs_portal_log($event);
         $this->blade
              ->set('title', $title . ' - Research Vocabularies Australia')
+             ->set('page', $slug)
              ->render($slug);
     }
 
@@ -265,6 +278,7 @@ class Vocabs extends MX_Controller
             ->set('ownedCount', count($ownedVocabularies))
             ->set('affiliates', $affiliates)
             ->set('title', 'My Vocabs - Research Vocabularies Australia')
+            ->set('page', 'myvocabs')
             ->render('myvocabs');
     }
 
@@ -388,6 +402,7 @@ class Vocabs extends MX_Controller
                 ->set('title', $vocab->getTitle()
                       . ' - Research Vocabularies Australia')
                 ->set('scripts', array('subscribeDialogCtrl'))
+                ->set('page', 'view')
                 ->render('vocab');
         } catch (Exception $e) {
             // No longer throw an exception, like this:
@@ -397,6 +412,7 @@ class Vocabs extends MX_Controller
             $this->output->set_status_header('404');
             $this->blade
                 ->set('message', $message)
+                ->set('page', 'soft_404')
                 ->render('soft_404');
             $event = [
                 'event' => 'portal_not_found'
@@ -443,6 +459,7 @@ class Vocabs extends MX_Controller
                 ->set('vocab', $vocab)
                 ->set('title', $vocab->getTitle()
                       . ' - Research Vocabularies Australia')
+                ->set('page', 'view')
                 ->render('vocab');
         } catch (Exception $e) {
             // No longer throw an exception, like this:
@@ -452,6 +469,7 @@ class Vocabs extends MX_Controller
             $this->output->set_status_header('404');
             $this->blade
                 ->set('message', $message)
+                ->set('page', 'soft_404')
                 ->render('soft_404');
             $event = [
                 'event' => 'portal_not_found'
@@ -592,6 +610,7 @@ class Vocabs extends MX_Controller
         $this->blade
         ->set('related', $related)
         ->set('sub_type', $sub_type)
+        ->set('page', 'related_preview')
         ->render('related_preview');
     }
 
@@ -636,6 +655,7 @@ class Vocabs extends MX_Controller
             'relatedVocabularyCtrl',
             'subjectDirective', 'relatedEntityIdentifierDirective'))
             ->set('vocab', false)
+            ->set('page', 'cms')
             ->render('cms');
     }
 
@@ -709,6 +729,7 @@ class Vocabs extends MX_Controller
                     'Edit - ' .
                     $vocab->getTitle() . ' - Research Vocabularies Australia'
                 )
+                ->set('page', 'cms')
                 ->render('cms');
         } catch (Exception $e) {
             switch ($e->getCode()) {
@@ -725,6 +746,7 @@ class Vocabs extends MX_Controller
             $this->output->set_status_header('404');
             $this->blade
                 ->set('message', $message)
+                ->set('page', 'soft_404')
                 ->render('soft_404');
             $event = [
                 'event' => 'portal_not_found'
@@ -1067,6 +1089,7 @@ class Vocabs extends MX_Controller
             ->set('scripts', array('manageSubscriptionsCtrl'))
             ->set('strip_last_url_component', true)
             ->set('token', $token)
+            ->set('page', 'manageSubscriptions')
             ->render('manageSubscriptions');
     }
 
@@ -1089,25 +1112,39 @@ class Vocabs extends MX_Controller
             throw new Exception("No URL provided");
         }
 
+        $page = $this->input->get('page');
+
         $vocab_id = (int) ($this->input->get('id') ?: 0);
         $vocab_title = $this->input->get('title') ?: 'unknown';
         $vocab_owner = $this->input->get('owner') ?: 'unknown';
         $vocab_slug = $this->input->get('slug') ?: 'unknown';
 
         // Log the event.
-        $event = [
-            'event' => 'portal_social_share',
-            'share' => [
-                'type' => $social,
-                'url' => $url
-            ],
-            'vocabulary' => [
-                'id' => $vocab_id,
-                'title' => $vocab_title,
-                'owner' => $vocab_owner,
-                'slug' => $vocab_slug
-            ]
-        ];
+        if ($vocab_id == 0) {
+            $event = [
+                'event' => 'portal_social_share',
+                'share' => [
+                    'type' => $social,
+                    'url' => $url
+                ],
+                'page' => $page
+            ];
+        } else {
+            $event = [
+                'event' => 'portal_social_share',
+                'share' => [
+                    'type' => $social,
+                    'url' => $url
+                ],
+                'page' => $page,
+                'vocabulary' => [
+                    'id' => $vocab_id,
+                    'title' => $vocab_title,
+                    'owner' => $vocab_owner,
+                    'slug' => $vocab_slug
+                ]
+            ];
+        }
         vocabs_portal_log($event);
 
         // Decide the sharing URL. In case the value of $social is not
