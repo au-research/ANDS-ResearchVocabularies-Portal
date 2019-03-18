@@ -13,7 +13,7 @@
                 <div class="col-md-6">
                     <form action="" ng-submit="$event.preventDefault();search()" style="padding-top:55px">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search for a vocabulary or a concept" ng-model="filters.q" ng-debounce="500">
+                            <input type="text" class="form-control" placeholder="Search for a vocabulary or a concept" ng-model="filters.q">
                             <span class="input-group-btn">
                                 <button class="btn btn-primary" type="button" ng-click="search()"><i class="fa fa-search"></i> Search</button>
                             </span>
