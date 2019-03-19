@@ -343,11 +343,32 @@ class Vocabs extends MX_Controller
             ]);
         }
 
+        $vocab_status = $this->input->post('vocab_status') ?: 'unknown';
+        $vocab_title = $this->input->post('vocab_title') ?: 'unknown';
+        $vocab_owner = $this->input->post('vocab_owner') ?: 'unknown';
+        $vocab_slug = $this->input->post('vocab_slug') ?: 'unknown';
+
         $this->RegistryAPI->deleteVocabulary(
             $id,
             $deleteCurrent,
             $deleteDraft
         );
+
+        // Log the event.
+        $event = [
+            'event' => 'portal_cms',
+            'cms' => [
+                'action' => 'delete'
+            ],
+            'vocabulary' => [
+                'id' => $id,
+                'status' => $vocab_status,
+                'title' => $vocab_title,
+                'owner' => $vocab_owner,
+                'slug' => $vocab_slug
+            ]
+        ];
+        vocabs_portal_log($event);
 
         return json_encode([
             'status' => 'success',

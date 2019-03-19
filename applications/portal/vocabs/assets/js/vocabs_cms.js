@@ -1169,10 +1169,15 @@
             // Make use of $scope.mode,
             // resp.getId(), resp.getStatus(),
             // resp.getTitle(), resp.getSlug(), resp.getOwner()
+            var action = 'unknown';
+            switch ($scope.mode) {
+            case 'add': action = 'create'; break;
+            case 'edit': action = 'update'; break;
+            }
             $.ajax(base_url + 'vocabs/logCms',
                    {
                        'data': {
-                           'action': $scope.mode,
+                           'action': action,
                            'vocab_id': resp.getId(),
                            'vocab_status': resp.getStatus(),
                            'vocab_title': resp.getTitle(),

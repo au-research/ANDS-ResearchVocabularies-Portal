@@ -505,6 +505,11 @@ $(document).on(
         if (confirm('Are you sure you want to delete this vocabulary, '
               + 'including all endpoints? This action cannot be reversed.')) {
             var vocab_id = $(this).attr('vocab_id');
+            // status, owner, slug, and title are for analytics logging
+            var vocab_status = $(this).attr('vocab_status');
+            var vocab_owner = $(this).attr('vocab_owner');
+            var vocab_slug = $(this).attr('vocab_slug');
+            var vocab_title = $(this).attr('vocab_title');
             var delete_mode = $(this).attr('delete_mode');
             $.ajax(
                 {
@@ -512,6 +517,10 @@ $(document).on(
                     type: 'POST',
                     data: {
                         id: vocab_id,
+                        vocab_status: vocab_status,
+                        vocab_owner: vocab_owner,
+                        vocab_slug: vocab_slug,
+                        vocab_title: vocab_title,
                         mode: delete_mode,
                     },
                     dataType: 'json',
