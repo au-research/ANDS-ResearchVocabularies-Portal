@@ -3245,19 +3245,10 @@ if (!Array.prototype.find) {
             return $('#search_app').length <= 0;
         };
 
-        // Seems to be necessary to get started. Unfortunately, the $watch
-        // defined below also then kicks in, so the initial search is done
-        // twice.
+        // Necessary to get started, when coming from the front page.
         if (!$scope.searchRedirect()) {
             $scope.search();
         }
-
-        // Works with ng-debounce="500" defined in the search field, goes into effect every 500ms
-        $scope.$watch('filters.q', function (newv) {
-            if ((newv || newv == '')) {
-                $scope.search();
-            }
-        });
 
         //Below this line are all the searching directives
 
