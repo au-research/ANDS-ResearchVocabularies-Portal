@@ -113,8 +113,9 @@ class ANDSLogging
 
         // Logged In user via the User Library
         if ($CI->user && $CI->user->isLoggedIn()) {
-            $event['user']['username'] = $CI->user->name();
-            $event['user']['userid'] = $CI->user->localIdentifier();
+            // NB: this is a difference from the RDA version of this file.
+            $event['user']['fullname'] = $CI->user->name();
+            $event['user']['username'] = $CI->user->localIdentifier();
             $event['user']['source'] = $CI->user->authDomain() ?: $CI->user->authMethod();
         }
 
