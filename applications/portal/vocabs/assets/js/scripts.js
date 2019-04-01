@@ -2618,6 +2618,22 @@ $(document).on(
     }
 );
 
+// Onclick function for the "View as linked data" link embedded
+// within browse tree concept tooltips. It does analytics logging
+// of the user's click.
+// We take advantage of the fact that the SISSVoc endpoint
+// for the current version is being displayed on the same page,
+// and there's an onclick event on it that has pretty much what
+// we want.
+function clickLinkedData(uri) {
+    var sissvoc_onclick = document.querySelector("a#current_version_sissvoc").
+        getAttribute("onclick");
+    // FIXME: it may be that we want to append uri to the "ap_url" value.
+    // Make a decision, then implement it.
+    var ajax_command = sissvoc_onclick.replace(/return true/, '');
+    eval(ajax_command);
+}
+
 $(document).on(
     'click',
     '.download-chooser',
@@ -2736,19 +2752,40 @@ $(document).on(
                     text: function (event, api) {
                         api.elements.content.html('Loading...');
                         if ($(this).attr('related')) {
-                            // return "we have some text for re "+$(this).attr('re_id');
-                            var url = (base_url
-                                       + 'vocabs/relatedPreview/?related='
-                                       + encodeURIComponent($(this).attr('related'))
-                                       + '&v_id=' + $(this).attr('v_id')
-                                       + '&sub_type='
-                                       + $(this).attr('sub_type'));
+                            // return "have text for re "+$(this).attr('related');
+
+                            var vocabId = document.querySelector(
+                                "meta[property='vocab:id']").
+                                getAttribute("content");
+                            // We send back these vocab... properties just for
+                            // analytics logging.
+                            var vocabStatus = document.querySelector(
+                                "meta[property='vocab:status']").
+                                getAttribute("content");
+                            var vocabTitle = document.querySelector(
+                                "meta[property='vocab:title']").
+                                getAttribute("content");
+                            var vocabSlug = document.querySelector(
+                                "meta[property='vocab:slug']").
+                                getAttribute("content");
+                            var vocabOwner = document.querySelector(
+                                "meta[property='vocab:owner']").
+                                getAttribute("content");
+                            var url = base_url + 'vocabs/relatedPreview';
                         }
 
                         if (url) {
-                            return $.ajax(
+                            return $.ajax(url,
                                 {
-                                    url: url
+                                    'data': {
+                                        'related': $(this).attr('related'),
+                                        'vocab_id': vocabId,
+                                        'vocab_status': vocabStatus,
+                                        'vocab_title': vocabTitle,
+                                        'vocab_slug': vocabSlug,
+                                        'vocab_owner': vocabOwner,
+                                        'sub_type': $(this).attr('sub_type')
+                                    }
                                 }
                             ).then(
                                 function (content) {
@@ -2894,6 +2931,11 @@ $(document).on(
         if (confirm('Are you sure you want to delete this vocabulary, '
               + 'including all endpoints? This action cannot be reversed.')) {
             var vocab_id = $(this).attr('vocab_id');
+            // status, owner, slug, and title are for analytics logging
+            var vocab_status = $(this).attr('vocab_status');
+            var vocab_owner = $(this).attr('vocab_owner');
+            var vocab_slug = $(this).attr('vocab_slug');
+            var vocab_title = $(this).attr('vocab_title');
             var delete_mode = $(this).attr('delete_mode');
             $.ajax(
                 {
@@ -2901,6 +2943,10 @@ $(document).on(
                     type: 'POST',
                     data: {
                         id: vocab_id,
+                        vocab_status: vocab_status,
+                        vocab_owner: vocab_owner,
+                        vocab_slug: vocab_slug,
+                        vocab_title: vocab_title,
                         mode: delete_mode,
                     },
                     dataType: 'json',
@@ -3199,19 +3245,10 @@ if (!Array.prototype.find) {
             return $('#search_app').length <= 0;
         };
 
-        // Seems to be necessary to get started. Unfortunately, the $watch
-        // defined below also then kicks in, so the initial search is done
-        // twice.
+        // Necessary to get started, when coming from the front page.
         if (!$scope.searchRedirect()) {
             $scope.search();
         }
-
-        // Works with ng-debounce="500" defined in the search field, goes into effect every 500ms
-        $scope.$watch('filters.q', function (newv) {
-            if ((newv || newv == '')) {
-                $scope.search();
-            }
-        });
 
         //Below this line are all the searching directives
 

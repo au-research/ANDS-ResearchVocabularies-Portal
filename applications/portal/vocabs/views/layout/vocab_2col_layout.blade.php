@@ -35,6 +35,7 @@ $share_owner = $vocab->getOwner();
 $share_slug = $vocab->getSlug();
 $share_params = [
     'url' => $url,
+    'page' => 'view',
     'id' => $share_id,
     'title' => $share_title,
     'owner' => $share_owner,
@@ -75,14 +76,14 @@ $share_query_params = http_build_query($share_params);
                                 @endif
                                 @if(isset($publisher))
                                 @foreach($publisher as $apub)
-                                <small>Publisher </small>  <a class="re_preview" related='{{$apub}}' v_id="{{ $vocab->getId() }}" sub_type="publisher"> {{htmlspecialchars($apub->getRelatedEntity()->getTitle())}} </a>
+                                <small>Publisher </small> <a class="re_preview" related='{{$apub}}' sub_type="publisher"
+                                    >{{htmlspecialchars($apub->getRelatedEntity()->getTitle())}}</a>
                                 @endforeach
                                 @endif
                                 <div class="pull-right">
                                     {{ !empty($vocab->getCreationDate()) ? "Created: ".display_release_date($vocab->getCreationDate()) : ''}}
                                     <a href="{{$share_controller . 'facebook?' . $share_query_params}}"><i class="fa fa-facebook" style="padding-right:4px"></i></a>
                                     <a href="{{$share_controller . 'twitter?' . $share_query_params}}"><i class="fa fa-twitter" style="padding-right:4px"></i></a>
-                                    <a href="{{$share_controller . 'google?' . $share_query_params}}"><i class="fa fa-google" style="padding-right:4px"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -98,6 +99,6 @@ $share_query_params = http_build_query($share_params);
     </article>
 
 </div>
-@include('includes/footer')
+@include('includes/footer', [ 'share_controller' => $share_controller, 'share_query_params' => $share_query_params ])
 </body>
 </html>

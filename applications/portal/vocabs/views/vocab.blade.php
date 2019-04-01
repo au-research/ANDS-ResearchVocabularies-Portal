@@ -99,8 +99,12 @@ foreach ($vocab->getVersion() as $version) {
 @stop
 @section('vocab-meta')
     <meta property="vocab:id" content="{{ $vocab->getId() }}" />
+    <meta property="vocab:status"
+          content="{{ htmlspecialchars($vocab->getStatus()) }}" />
     <meta property="vocab:title"
           content="{{ htmlspecialchars($vocab->getTitle()) }}" />
+    <meta property="vocab:slug"
+          content="{{ htmlspecialchars($vocab->getSlug()) }}" />
     <meta property="vocab:owner"
           content="{{ htmlspecialchars($vocab->getOwner()) }}" />
 @stop
@@ -260,7 +264,7 @@ foreach ($vocab->getVersion() as $version) {
                         ?>
                     </small>
                     <a href="" class="re_preview" related='{{$serviceRef}}'
-                       v_id="{{ $vocab->getId() }}">{{htmlspecialchars($serviceRef->getRelatedEntity()->getTitle())}}</a></p>
+                       >{{htmlspecialchars($serviceRef->getRelatedEntity()->getTitle())}}</a></p>
                 @endforeach
 
             </div>
@@ -283,7 +287,7 @@ foreach ($vocab->getVersion() as $version) {
                                 ?>
                             </small>
             <a href="" class="re_preview" related='{{$relatedRef}}'
-               v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
+               > {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
         </p>
         @endforeach
         @endif
@@ -298,7 +302,7 @@ foreach ($vocab->getVersion() as $version) {
                 ?>
             </small>
             <a href="" class="re_preview" related='{{$relatedRef}}'
-               v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
+               > {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
         </p>
         @endforeach
         @foreach($related_internal_vocabs as $relatedRef)
@@ -310,7 +314,7 @@ foreach ($vocab->getVersion() as $version) {
                 ?>
             </small>
             <a href="" class="re_preview"  related='{{$relatedRef}}'
-               v_id="{{ $vocab->getId() }}"> {{htmlspecialchars($relatedRef->getRelatedVocabulary()->getTitle())}}</a>
+               > {{htmlspecialchars($relatedRef->getRelatedVocabulary()->getTitle())}}</a>
         </p>
         @endforeach
         @endif

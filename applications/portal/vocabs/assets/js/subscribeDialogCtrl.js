@@ -25,9 +25,17 @@
                         return document.querySelector(
                             "meta[property='vocab:id']").
                             getAttribute("content"); },
+                    vocabStatus: function() {
+                        return document.querySelector(
+                            "meta[property='vocab:status']").
+                            getAttribute("content"); },
                     vocabTitle: function() {
                         return document.querySelector(
                             "meta[property='vocab:title']").
+                            getAttribute("content"); },
+                    vocabSlug: function() {
+                        return document.querySelector(
+                            "meta[property='vocab:slug']").
                             getAttribute("content"); },
                     vocabOwner: function() {
                         return document.querySelector(
@@ -48,7 +56,8 @@
                                 $http,
                                 $window, $uibModalInstance,
                                 vcRecaptchaService,
-                                vocabId, vocabTitle, vocabOwner) {
+                                vocabId, vocabStatus, vocabTitle,
+                                vocabSlug, vocabOwner) {
 
         // base_url is used by the template, to give the URL
         // of the privacy policy.
@@ -165,6 +174,11 @@
             $http.post(base_url + 'vocabs/addSubscriptions',
                        {'recaptcha' : reCAPTCHAResponse,
                         'email': $scope.form.subscriberEmail,
+                        'vocab_id': vocabId,
+                        'vocab_status': vocabStatus,
+                        'vocab_title': vocabTitle,
+                        'vocab_slug': vocabSlug,
+                        'vocab_owner': vocabOwner,
                         'subscriptions' : getSubscriptions()}).
                 then(function(response) {
                     if (response.data.status == 'OK') {

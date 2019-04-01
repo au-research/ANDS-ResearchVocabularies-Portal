@@ -19,6 +19,13 @@ use ANDS\VocabsRegistry\ApiException;
 class Vocabs extends MX_Controller
 {
 
+    // NB: each call to render() must be preceded by
+    //      ->set('page', '...')
+    // where the value of the second parameter is what is expected for
+    // the "page" field of portal_social_share analytics log entries.
+    // The value of $page is included in the social sharing links in
+    // the footer.
+
     // Access to the Registry API. Values are assigned
     // in the constructor.
     private $RegistryAPIClient;
@@ -55,6 +62,7 @@ class Vocabs extends MX_Controller
         $this->blade
              ->set('customSearchBlock', true)
              ->set('title', 'Research Vocabularies Australia')
+             ->set('page', 'home')
              ->render('home');
     }
 
@@ -86,6 +94,7 @@ class Vocabs extends MX_Controller
                 ->set('slug', $slug)
                 ->set('id', $vocab->getId())
                 ->set('title', 'Research Vocabularies Australia')
+                ->set('page', 'slug_redirect')
                 ->render('slug_redirect');
             */
         } catch (Exception $e) {
@@ -96,10 +105,10 @@ class Vocabs extends MX_Controller
             $this->output->set_status_header('404');
             $this->blade
                 ->set('message', $message)
+                ->set('page', 'soft_404')
                 ->render('soft_404');
             $event = [
-                'event' => 'portal_view_not_found',
-                'type' => 'soft_404'
+                'event' => 'portal_not_found'
             ];
             vocabs_portal_log($event);
         }
@@ -129,6 +138,7 @@ class Vocabs extends MX_Controller
         $this->blade
              ->set('search_app', true)
              ->set('title', 'Research Vocabularies Australia')
+             ->set('page', 'search')
              ->render('index');
     }
 
@@ -179,10 +189,10 @@ class Vocabs extends MX_Controller
                 $this->output->set_status_header('404');
                 $this->blade
                     ->set('message', $message)
+                    ->set('page', 'soft_404')
                     ->render('soft_404');
                 $event = [
-                    'event' => 'portal_view_not_found',
-                    'type' => 'soft_404'
+                    'event' => 'portal_not_found'
                 ];
                 vocabs_portal_log($event);
                 return;
@@ -194,6 +204,7 @@ class Vocabs extends MX_Controller
         vocabs_portal_log($event);
         $this->blade
              ->set('title', $title . ' - Research Vocabularies Australia')
+             ->set('page', $slug)
              ->render($slug);
     }
 
@@ -267,6 +278,7 @@ class Vocabs extends MX_Controller
             ->set('ownedCount', count($ownedVocabularies))
             ->set('affiliates', $affiliates)
             ->set('title', 'My Vocabs - Research Vocabularies Australia')
+            ->set('page', 'myvocabs')
             ->render('myvocabs');
     }
 
@@ -331,11 +343,32 @@ class Vocabs extends MX_Controller
             ]);
         }
 
+        $vocab_status = $this->input->post('vocab_status') ?: 'unknown';
+        $vocab_title = $this->input->post('vocab_title') ?: 'unknown';
+        $vocab_owner = $this->input->post('vocab_owner') ?: 'unknown';
+        $vocab_slug = $this->input->post('vocab_slug') ?: 'unknown';
+
         $this->RegistryAPI->deleteVocabulary(
             $id,
             $deleteCurrent,
             $deleteDraft
         );
+
+        // Log the event.
+        $event = [
+            'event' => 'portal_cms',
+            'cms' => [
+                'action' => 'delete'
+            ],
+            'vocabulary' => [
+                'id' => $id,
+                'status' => $vocab_status,
+                'title' => $vocab_title,
+                'owner' => $vocab_owner,
+                'slug' => $vocab_slug
+            ]
+        ];
+        vocabs_portal_log($event);
 
         return json_encode([
             'status' => 'success',
@@ -376,6 +409,7 @@ class Vocabs extends MX_Controller
                 'event' => 'portal_view',
                 'vocabulary' => [
                     'id' => $vocab->getId(),
+                    'status' => $vocab->getStatus(),
                     'title' => $vocab->getTitle(),
                     'owner' => $vocab->getOwner(),
                     'slug' => $vocab->getSlug(),
@@ -389,6 +423,7 @@ class Vocabs extends MX_Controller
                 ->set('title', $vocab->getTitle()
                       . ' - Research Vocabularies Australia')
                 ->set('scripts', array('subscribeDialogCtrl'))
+                ->set('page', 'view')
                 ->render('vocab');
         } catch (Exception $e) {
             // No longer throw an exception, like this:
@@ -398,10 +433,10 @@ class Vocabs extends MX_Controller
             $this->output->set_status_header('404');
             $this->blade
                 ->set('message', $message)
+                ->set('page', 'soft_404')
                 ->render('soft_404');
             $event = [
-                'event' => 'portal_view_not_found',
-                'type' => 'soft_404'
+                'event' => 'portal_not_found'
             ];
             vocabs_portal_log($event);
         }
@@ -432,6 +467,7 @@ class Vocabs extends MX_Controller
                 'event' => 'portal_view',
                 'vocabulary' => [
                     'id' => $vocab->getId(),
+                    'status' => $vocab->getStatus(),
                     'title' => $vocab->getTitle(),
                     'owner' => $vocab->getOwner(),
                     'slug' => $vocab->getSlug(),
@@ -444,6 +480,7 @@ class Vocabs extends MX_Controller
                 ->set('vocab', $vocab)
                 ->set('title', $vocab->getTitle()
                       . ' - Research Vocabularies Australia')
+                ->set('page', 'view')
                 ->render('vocab');
         } catch (Exception $e) {
             // No longer throw an exception, like this:
@@ -453,10 +490,10 @@ class Vocabs extends MX_Controller
             $this->output->set_status_header('404');
             $this->blade
                 ->set('message', $message)
+                ->set('page', 'soft_404')
                 ->render('soft_404');
             $event = [
-                'event' => 'portal_view_not_found',
-                'type' => 'soft_404'
+                'event' => 'portal_not_found'
             ];
             vocabs_portal_log($event);
         }
@@ -470,7 +507,13 @@ class Vocabs extends MX_Controller
     {
 
         $relatedParam = json_decode($this->input->get('related'));
-        $v_id = $this->input->get('v_id');
+
+        $vocab_id = (int) ($this->input->get('vocab_id') ?: 0);
+        $vocab_status = $this->input->get('vocab_status') ?: 'unknown';
+        $vocab_title = $this->input->get('vocab_title') ?: 'unknown';
+        $vocab_owner = $this->input->get('vocab_owner') ?: 'unknown';
+        $vocab_slug = $this->input->get('vocab_slug') ?: 'unknown';
+
         $sub_type = $this->input->get('sub_type');
 
         $related = [];
@@ -506,7 +549,11 @@ class Vocabs extends MX_Controller
             $event = [
                 'event' => 'portal_preview_re',
                 'vocabulary' => [
-                    'id' => $v_id
+                    'id' => $vocab_id,
+                    'status' => $vocab_status,
+                    'title' => $vocab_title,
+                    'owner' => $vocab_owner,
+                    'slug' => $vocab_slug
                 ],
                 'related_entity' => [
                     'id' => $re->getId(),
@@ -536,7 +583,11 @@ class Vocabs extends MX_Controller
             $event = [
                 'event' => 'portal_preview_rv',
                 'vocabulary' => [
-                    'id' => $v_id
+                    'id' => $vocab_id,
+                    'status' => $vocab_status,
+                    'title' => $vocab_title,
+                    'owner' => $vocab_owner,
+                    'slug' => $vocab_slug
                 ],
                 'related_vocabulary' => [
                     'id' => $rv->getId(),
@@ -557,9 +608,11 @@ class Vocabs extends MX_Controller
             $related_vocab = $reverse_related_vocab->getRelatedVocabulary();
             // If we got a vocabulary to start with, exclude ourself from
             // the related vocabularies.
+            // This is (currently) the one place we use $vocab_id
+            // _apart from_ for logging purposes.
             if ($reverse_related_vocab->getRelatedVocabulary()->getId() ==
-                $v_id) {
-//                 echo('excluded ourself');
+                $vocab_id) {
+                // echo('excluded ourself');
                 continue;
             }
             $others[] = $related_vocab;
@@ -567,22 +620,19 @@ class Vocabs extends MX_Controller
                 foreach ($reverse_related_vocab->
                          getRelatedEntityRelation() as $rel) {
                     if ($rel === RelatedEntityRef::RELATION_PUBLISHED_BY) {
-//                         echo('found publisher');
+                        // echo('found publisher');
                         $related['sub_type'] = 'publisher';
                     }
                 }
             }
         }
 
-
-//         $others = array_unique($others, true);
-
         $related['other_vocabs'] = $others;
         $this->blade
         ->set('related', $related)
         ->set('sub_type', $sub_type)
+        ->set('page', 'related_preview')
         ->render('related_preview');
-
     }
 
 
@@ -611,16 +661,22 @@ class Vocabs extends MX_Controller
             'page' => 'add',
         );
         vocab_log_terms($event);
+        // If we want to log _initiation_ of an add,
+        // do it here. But completion is done by the JS controller
+        // calling back to logCMS().
+        /*
         $event = [
             'event' => 'portal_cms',
             'cms' => [ 'action' => 'add' ]
         ];
         vocabs_portal_log($event);
+        */
         $this->blade
         ->set('scripts', array('vocabs_cms', 'versionCtrl', 'relatedCtrl',
             'relatedVocabularyCtrl',
             'subjectDirective', 'relatedEntityIdentifierDirective'))
             ->set('vocab', false)
+            ->set('page', 'cms')
             ->render('cms');
     }
 
@@ -659,6 +715,10 @@ class Vocabs extends MX_Controller
                 'id' => $vocab->getId(),
             );
             vocab_log_terms($event);
+            // If we want to log _initiation_ of an edit,
+            // do it here. But completion is done by the JS controller
+            // calling back to logCMS().
+            /*
             $event = [
                 'event' => 'portal_cms',
                 'cms' => [ 'action' => 'edit' ],
@@ -670,6 +730,7 @@ class Vocabs extends MX_Controller
                 ]
             ];
             vocabs_portal_log($event);
+            */
 
             $this->blade
                 ->set(
@@ -689,6 +750,7 @@ class Vocabs extends MX_Controller
                     'Edit - ' .
                     $vocab->getTitle() . ' - Research Vocabularies Australia'
                 )
+                ->set('page', 'cms')
                 ->render('cms');
         } catch (Exception $e) {
             switch ($e->getCode()) {
@@ -705,10 +767,10 @@ class Vocabs extends MX_Controller
             $this->output->set_status_header('404');
             $this->blade
                 ->set('message', $message)
+                ->set('page', 'soft_404')
                 ->render('soft_404');
             $event = [
-                'event' => 'portal_view_not_found',
-                'type' => 'soft_404'
+                'event' => 'portal_not_found'
             ];
             vocabs_portal_log($event);
         }
@@ -809,6 +871,12 @@ class Vocabs extends MX_Controller
             if ($ap->getDiscriminator() ===
                 AccessPoint::DISCRIMINATOR_SISSVOC) {
                     $sissvoc_endpoint = $ap->getApSissvoc()->getUrlPrefix();
+                    // Stop at the _first_ match.  Note: this choice
+                    // of access point must match the behaviour in
+                    // wrap-getvocabaccess.blade.php that assigns the
+                    // attribute 'id="current_version_sissvoc"' to an
+                    // <a> element.
+                    break;
             }
         }
 
@@ -859,8 +927,12 @@ class Vocabs extends MX_Controller
                     $tipText .= '<br/><b>Notation: </b>' .$concept['notation'];
                 }
                 if ($sissvoc_endpoint != '') {
+                    // clickLinkedData() is defined in vocabs_app.js.
                     $tipText .=
-                        '<br/><a class="pull-right" target="_blank" href="' .
+                        '<br/><a class="pull-right" target="_blank" '.
+                             'onclick="clickLinkedData(\'' .
+                                 $uri . '\')" ' .
+                             'href="' .
                         $sissvoc_endpoint .
                         '/resource?uri=' .
                         $uri . '">View as linked data</a>';
@@ -933,6 +1005,20 @@ class Vocabs extends MX_Controller
                 $registryConfig->setPassword($password);
             }
 
+            $vocab_id = (int) (isset($request->vocab_id) ?
+                               $request->vocab_id : 0);
+            $vocab_status = isset($request->vocab_status) ?
+                          $request->vocab_status : 'unknown';
+            $vocab_title = isset($request->vocab_title) ?
+                         $request->vocab_title : 'unknown';
+            $vocab_owner = isset($request->vocab_owner) ?
+                         $request->vocab_owner : 'unknown';
+            $vocab_slug = isset($request->vocab_slug) ?
+                        $request->vocab_slug : 'unknown';
+            $subscribe_all_vocabularies_from_owner = false;
+            $subscribe_all_vocabularies = false;
+            $subscribe_service_updates = false;
+
             $subscriptions = $request->subscriptions;
             $email = $request->email;
             try {
@@ -950,6 +1036,11 @@ class Vocabs extends MX_Controller
                                 $value,
                                 $email
                             );
+                            if ($value == '*') {
+                                $subscribe_all_vocabularies = true;
+                            } else {
+                                $subscribe_all_vocabularies_from_owner = true;
+                            }
                             break;
                         case 'system':
                             if ($value == true) {
@@ -957,6 +1048,7 @@ class Vocabs extends MX_Controller
                                     createEmailSubscriptionSystem(
                                         $email
                                     );
+                                $subscribe_service_updates = true;
                             }
                             break;
                     }
@@ -967,6 +1059,25 @@ class Vocabs extends MX_Controller
                     . addslashes($e->getMessage()) . '"}';
                 return;
             }
+            // Log the event.
+            $event = [
+                'event' => 'portal_subscribe',
+                'vocabulary' => [
+                    'id' => $vocab_id,
+                    'status' => $vocab_status,
+                    'title' => $vocab_title,
+                    'owner' => $vocab_owner,
+                    'slug' => $vocab_slug
+                ],
+                'subscription' => [
+                    'subscribe_all_vocabularies_from_owner' =>
+                      $subscribe_all_vocabularies_from_owner,
+                    'subscribe_all_vocabularies' =>
+                      $subscribe_all_vocabularies,
+                    'subscribe_service_updates' => $subscribe_service_updates
+                ]
+            ];
+            vocabs_portal_log($event);
             echo '{"status": "OK"}';
         } else {
             echo '{"status": "failReCAPTCHA"}';
@@ -986,6 +1097,11 @@ class Vocabs extends MX_Controller
             'page' => 'manageSubscriptions',
         );
         vocab_log_terms($event);
+        $event = [
+            'event' => 'portal_page',
+            'page' => 'manageSubscriptions'
+        ];
+        vocabs_portal_log($event);
         // Set strip_last_url_component so as not to leak
         // the subscriber's token into the URLs generated for
         // the various "Share" options. See footer.blade.php
@@ -994,6 +1110,7 @@ class Vocabs extends MX_Controller
             ->set('scripts', array('manageSubscriptionsCtrl'))
             ->set('strip_last_url_component', true)
             ->set('token', $token)
+            ->set('page', 'manageSubscriptions')
             ->render('manageSubscriptions');
     }
 
@@ -1004,7 +1121,7 @@ class Vocabs extends MX_Controller
      * blade used to be direct links to the corresponding social
      * network server. Now, we send the portal client here first, so
      * that we can do our own logging of sharing.
-     * @param  string $social facebook|twitter|google
+     * @param  string $social facebook|twitter
      * @return redirect
      * @throws Exception
      */
@@ -1016,25 +1133,39 @@ class Vocabs extends MX_Controller
             throw new Exception("No URL provided");
         }
 
+        $page = $this->input->get('page');
+
         $vocab_id = (int) ($this->input->get('id') ?: 0);
         $vocab_title = $this->input->get('title') ?: 'unknown';
         $vocab_owner = $this->input->get('owner') ?: 'unknown';
         $vocab_slug = $this->input->get('slug') ?: 'unknown';
 
         // Log the event.
-        $event = [
-            'event' => 'portal_social_share',
-            'share' => [
-                'type' => $social,
-                'url' => $url
-            ],
-            'vocabulary' => [
-                'id' => $vocab_id,
-                'title' => $vocab_title,
-                'owner' => $vocab_owner,
-                'slug' => $vocab_slug
-            ]
-        ];
+        if ($vocab_id == 0) {
+            $event = [
+                'event' => 'portal_social_share',
+                'share' => [
+                    'type' => $social,
+                    'url' => $url
+                ],
+                'page' => $page
+            ];
+        } else {
+            $event = [
+                'event' => 'portal_social_share',
+                'share' => [
+                    'type' => $social,
+                    'url' => $url
+                ],
+                'page' => $page,
+                'vocabulary' => [
+                    'id' => $vocab_id,
+                    'title' => $vocab_title,
+                    'owner' => $vocab_owner,
+                    'slug' => $vocab_slug
+                ]
+            ];
+        }
         vocabs_portal_log($event);
 
         // Decide the sharing URL. In case the value of $social is not
@@ -1058,20 +1189,137 @@ class Vocabs extends MX_Controller
                 $share_query_params = http_build_query($share_params);
                 $shareUrl = "https://twitter.com/share?" . $share_query_params;
                 break;
-            case "google":
-                $share_params = [
-                    'url' => $url
-                ];
-                $share_query_params = http_build_query($share_params);
-                $shareUrl = "https://plus.google.com/share?" .
-                          $share_query_params;
-                break;
             default:
                 break;
         }
 
         // Do the redirect.
         redirect($shareUrl);
+    }
+
+    /* Analytics logging of events that otherwise are only logged
+       by the Registry. */
+
+    /**
+     * Log a CMS event.
+     * @return string JSON object indicating OK status.
+     * @throws Exception
+     */
+    public function logCMS()
+    {
+        // Collect the data to be logged, from the
+        // query parameters.
+
+        $action = $this->input->get('action') ?: 'unknown';
+
+        $vocab_id = (int) ($this->input->get('vocab_id') ?: 0);
+        $vocab_status = $this->input->get('vocab_status') ?: 'unknown';
+        $vocab_title = $this->input->get('vocab_title') ?: 'unknown';
+        $vocab_owner = $this->input->get('vocab_owner') ?: 'unknown';
+        $vocab_slug = $this->input->get('vocab_slug') ?: 'unknown';
+
+        // Log the event.
+        $event = [
+            'event' => 'portal_cms',
+            'cms' => [
+                'action' => $action
+            ],
+            'vocabulary' => [
+                'id' => $vocab_id,
+                'status' => $vocab_status,
+                'title' => $vocab_title,
+                'owner' => $vocab_owner,
+                'slug' => $vocab_slug
+            ]
+        ];
+        vocabs_portal_log($event);
+        echo '{"status": "OK"}';
+    }
+
+    /**
+     * Log an access to an access point.
+     * @return string JSON object indicating OK status.
+     * @throws Exception
+     */
+    public function logAccessPoint()
+    {
+        // Collect the data to be logged, from the
+        // query parameters.
+
+        $vocab_id = (int) ($this->input->get('vocab_id') ?: 0);
+        $vocab_status = $this->input->get('vocab_status') ?: 'unknown';
+        $vocab_title = $this->input->get('vocab_title') ?: 'unknown';
+        $vocab_owner = $this->input->get('vocab_owner') ?: 'unknown';
+        $vocab_slug = $this->input->get('vocab_slug') ?: 'unknown';
+
+        $version_id = (int) ($this->input->get('version_id') ?: 0);
+        $version_status = $this->input->get('version_status') ?: 'unknown';
+        $version_title = $this->input->get('version_title') ?: 'unknown';
+        $version_slug = $this->input->get('version_slug') ?: 'unknown';
+
+        $ap_id = (int) ($this->input->get('ap_id') ?: 0);
+        $ap_url = $this->input->get('ap_url') ?: 'unknown';
+        $ap_type = $this->input->get('ap_type') ?: 'unknown';
+
+        // Log the event.
+        $event = [
+            'event' => 'portal_accessed',
+            'vocabulary' => [
+                'id' => $vocab_id,
+                'status' => $vocab_status,
+                'title' => $vocab_title,
+                'owner' => $vocab_owner,
+                'slug' => $vocab_slug
+            ],
+            'version' => [
+                'id' => $version_id,
+                'status' => $version_status,
+                'title' => $version_title,
+                'slug' => $version_slug
+            ],
+            'access_point' => [
+                'id' => $ap_id,
+                'type' => $ap_type,
+                'url' => $ap_url
+            ]
+        ];
+        vocabs_portal_log($event);
+        echo '{"status": "OK"}';
+    }
+
+    /**
+     * Log unsubscription.
+     * @return string JSON object indicating OK status.
+     * @throws Exception
+     */
+    public function logUnsubscribe()
+    {
+        // Get the POST data
+        $postdata = file_get_contents("php://input");
+        $request = json_decode($postdata);
+
+        $vocab_ids = isset($request->vocab_ids) ? $request->vocab_ids: [];
+        $vocab_owners = isset($request->vocab_owners) ?
+                      $request->vocab_owners: [];
+        $unsubscribe_all_vocabularies =
+            isset($request->unsubscribe_all_vocabularies) ?
+                $request->unsubscribe_all_vocabularies: false;
+        $unsubscribe_service_updates =
+            isset($request->unsubscribe_service_updates) ?
+                $request->unsubscribe_service_updates: false;
+
+        // Log the event.
+        $event = [
+            'event' => 'portal_unsubscribe',
+            'subscription' => [
+                'vocabulary_ids' => $vocab_ids,
+                'vocabulary_owners' => $vocab_owners,
+                'unsubscribe_all_vocabularies' => $unsubscribe_all_vocabularies,
+                'unsubscribe_service_updates' => $unsubscribe_service_updates
+            ],
+        ];
+        vocabs_portal_log($event);
+        echo '{"status": "OK"}';
     }
 
     /* Utility methods */
@@ -1242,6 +1490,5 @@ class Vocabs extends MX_Controller
         $this->RegistryAPIClient = new ANDS\VocabsRegistry\ApiClient();
         $this->RegistryAPI = new ANDS\VocabsRegistry\Api\ResourcesApi();
         $this->ServiceAPI = new ANDS\VocabsRegistry\Api\ServicesApi();
-
     }
 }
