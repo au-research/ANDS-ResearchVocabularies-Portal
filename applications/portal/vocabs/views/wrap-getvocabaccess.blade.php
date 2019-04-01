@@ -29,6 +29,55 @@ foreach ($vocab->getVersion() as $version) {
         break;
     }
 }
+
+function onclickURL($vocab, $version, $ap) {
+    switch ($ap->getDiscriminator()) {
+    case AP_API_SPARQL:
+        $ap_url = $ap->getApApiSparql()->getUrl();
+        break;
+    case AP_FILE:
+        $ap_url = $ap->getApFile()->getUrl();
+        break;
+    case AP_SESAME_DOWNLOAD:
+        $ap_url = $ap->getApSesameDownload()->getUrlPrefix();
+        break;
+    case AP_SISSVOC:
+        $ap_url = $ap->getApSissvoc()->getUrlPrefix() . '/concept';
+        break;
+    case AP_WEB_PAGE:
+        $ap_url = $ap->getApWebPage()->getUrl();
+        break;
+    default:
+        $ap_url = 'unknown';
+    }
+    $share_params = [
+      'vocab_id' => $vocab->getId(),
+      'vocab_status' => $vocab->getStatus(),
+      'vocab_title' => $vocab->getTitle(),
+      'vocab_slug' => $vocab->getSlug(),
+      'vocab_owner' => $vocab->getOwner(),
+      'version_id' => $version->getId(),
+      'version_status' => $version->getStatus(),
+      'version_title' => $version->getTitle(),
+      'version_slug' => $version->getSlug(),
+      'ap_id' => $ap->getId(),
+      'ap_type' => $ap->getDiscriminator(),
+      'ap_url' => $ap_url
+    ];
+    return htmlspecialchars(portal_url('vocabs/logAccessPoint') . '?' . http_build_query($share_params));
+}
+
+// Need to use $GLOBALS explicitly here, because we're in an eval.
+$GLOBALS['isTheFirstSissvocAccessPoint'] = true;
+function getIdForSissvocAccessPoint() {
+    global $isTheFirstSissvocAccessPoint;
+    if ($isTheFirstSissvocAccessPoint) {
+        $isTheFirstSissvocAccessPoint = false;
+        return 'id="current_version_sissvoc"';
+    } else {
+        return '';
+    }
+}
 ?>
 @if(isset($current_version) && $current_version != '')
 
@@ -57,55 +106,6 @@ foreach ($vocab->getVersion() as $version) {
     $singleFile = false;
     if ($hasFile && ! $hasSesameDownloads && $fileCounter < 2) {
         $singleFile = true;
-    }
-
-    function onclickURL($vocab, $version, $ap) {
-        switch ($ap->getDiscriminator()) {
-        case AP_API_SPARQL:
-            $ap_url = $ap->getApApiSparql()->getUrl();
-            break;
-        case AP_FILE:
-            $ap_url = $ap->getApFile()->getUrl();
-            break;
-        case AP_SESAME_DOWNLOAD:
-            $ap_url = $ap->getApSesameDownload()->getUrlPrefix();
-            break;
-        case AP_SISSVOC:
-            $ap_url = $ap->getApSissvoc()->getUrlPrefix() . '/concept';
-            break;
-        case AP_WEB_PAGE:
-            $ap_url = $ap->getApWebPage()->getUrl();
-            break;
-        default:
-            $ap_url = 'unknown';
-        }
-        $share_params = [
-          'vocab_id' => $vocab->getId(),
-          'vocab_status' => $vocab->getStatus(),
-          'vocab_title' => $vocab->getTitle(),
-          'vocab_slug' => $vocab->getSlug(),
-          'vocab_owner' => $vocab->getOwner(),
-          'version_id' => $version->getId(),
-          'version_status' => $version->getStatus(),
-          'version_title' => $version->getTitle(),
-          'version_slug' => $version->getSlug(),
-          'ap_id' => $ap->getId(),
-          'ap_type' => $ap->getDiscriminator(),
-          'ap_url' => $ap_url
-        ];
-        return htmlspecialchars(portal_url('vocabs/logAccessPoint') . '?' . http_build_query($share_params));
-    }
-
-    // Need to use $GLOBALS explicitly here, because we're in an eval.
-    $GLOBALS['isTheFirstSissvocAccessPoint'] = true;
-    function getIdForSissvocAccessPoint() {
-        global $isTheFirstSissvocAccessPoint;
-        if ($isTheFirstSissvocAccessPoint) {
-            $isTheFirstSissvocAccessPoint = false;
-            return 'id="current_version_sissvoc"';
-        } else {
-            return '';
-        }
     }
 
   ?>
