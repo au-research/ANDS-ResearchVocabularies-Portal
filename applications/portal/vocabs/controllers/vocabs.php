@@ -422,7 +422,8 @@ class Vocabs extends MX_Controller
                 ->set('vocab', $vocab)
                 ->set('title', $vocab->getTitle()
                       . ' - Research Vocabularies Australia')
-                ->set('scripts', array('subscribeDialogCtrl'))
+                ->set('scripts', array('subscribeDialogCtrl',
+                                       'visualiseCtrl'))
                 ->set('page', 'view')
                 ->render('vocab');
         } catch (Exception $e) {

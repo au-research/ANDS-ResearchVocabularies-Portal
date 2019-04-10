@@ -26,6 +26,7 @@
     "ng-file-upload": "12.2.13",
     "ui-select": "https://github.com/angular-ui/ui-select.git#0.19.8",
     "angular-ui-tinymce": "latest",
-    "angular-recaptcha": "4.1.5"
+    "angular-recaptcha": "4.1.5",
+    "fancytree": "2.30.2"
   }
 }

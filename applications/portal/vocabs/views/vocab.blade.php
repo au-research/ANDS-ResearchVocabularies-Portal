@@ -186,7 +186,10 @@ foreach ($vocab->getVersion() as $version) {
             {{-- The concept tree is shown if there is one to show. --}}
             {{-- There is one to show, if the "tree" service returns one. --}}
             @if(isset($current_version))
-                <div visualise versionid="{{ $current_version->getId() }}"></div>
+                <div ng-controller="visualise"
+                versionid="{{ $current_version->getId() }}">
+                @include('wrap-visualise')
+                </div>
             @endif
             {{-- Show widgetable status based on $sissVocEndPoint. --}}
             @if(isset($sissvocEndPoint))

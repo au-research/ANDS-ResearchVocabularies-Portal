@@ -168,6 +168,7 @@ function getIdForSissvocAccessPoint() {
               target="_blank"
               class="btn btn-sm btn-default {{$ap->getDiscriminator()}}"
               onclick="$.ajax('{{ onclickURL($vocab, $current_version, $ap) }}'); return true"
+              sissvoc_endpoint="{{ $ap->getApSissvoc()->getUrlPrefix() }}"
               href="{{ $ap->getApSissvoc()->getUrlPrefix() }}/concept"><i
               class="fa fa-external-link"></i> Access Linked Data API</a>
           </div>

@@ -18,3 +18,4 @@
 <link rel="stylesheet" type="text/css" href="{{ asset_url('css/vocab.less.compiled.css').'?'.getReleaseVersion() }}" media="screen" />
 
 @endif
+<link rel="stylesheet" type="text/css" href="{{ asset_url('css/fancytree.compiled.css') }}" media="screen" />
