@@ -220,6 +220,29 @@
                 <ands-switch model="version.doPublish" name="publishChkbx" class="pull-right"></ands-switch>
             </div>
 
+            <!-- Browse flags. -->
+            <div class="form-group clearfix">
+              <div class="clearfix" ng-if="canImportPublish">
+                <label>Notation format
+                  <span ng-bind-html="confluenceTip('NotationFormat')"></span>
+                </label>
+                <select required name="notationFormat" id="notationFormatSelect"
+                        class="caret-for-select pull-right"
+                        ng-options="notationFormat.value as notationFormat.name for notationFormat in notationFormatOptions"
+                        ng-model="browseFlags.notationFormatSelection"></select>
+              </div>
+
+              <div class="clearfix" ng-if="browseFlags.notationFormatSelection != 'none'">
+                <label>Default display sort order
+                  <span ng-bind-html="confluenceTip('DefaultSortOrder')"></span>
+                </label>
+                <select required name="defaultSortOrder" id="defaultSortOrder"
+                        class="caret-for-select pull-right"
+                        ng-options="defaultSortOrder.value as defaultSortOrder.name for defaultSortOrder in defaultSortOrderOptions"
+                        ng-model="browseFlags.defaultSortOrderSelection"></select>
+              </div>
+            </div>
+
             <div class="clearfix" ng-if="canReapplyVersion">
                 <b>Reapply version settings on publish</b>
                 <ands-switch model="version.forceWorkflow" name="reapplyChkbx" class="pull-right"></ands-switch>
