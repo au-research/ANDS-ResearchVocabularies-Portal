@@ -205,48 +205,59 @@
         <div class="container-fluid" ng-if="isPP() || canImportPublish || canReapplyVersion">
             <label>Version Settings</label>
 
-            <div class="clearfix" ng-if="isPP()">
-                <b>Harvest version from PoolParty</b>
-                <ands-switch model="version.doPoolpartyHarvest" name="harvestChkbx" class="pull-right"></ands-switch>
-            </div>
+            <table style="width:100%">
 
-            <div class="clearfix" ng-if="canImportPublish">
-                <b>Import version into the ANDS Vocabulary Repository</b>
-                <ands-switch model="version.doImport" name="importChkbx" class="pull-right"></ands-switch>
-            </div>
+              <tr ng-if="isPP()">
+                <td><label>Harvest version from PoolParty</label></td>
+                <td class="pull-right"><ands-switch model="version.doPoolpartyHarvest" name="harvestChkbx"></ands-switch></td>
+              </tr>
 
-            <div class="clearfix" ng-if="canImportPublish">
-                <b>Publish version via the ANDS Linked Data API</b>
-                <ands-switch model="version.doPublish" name="publishChkbx" class="pull-right"></ands-switch>
-            </div>
+              <tr ng-if="canImportPublish">
+                <td><label>Import version into the ANDS Vocabulary Repository</label></td>
+                <td class="pull-right"><ands-switch model="version.doImport" name="importChkbx"></ands-switch></td>
+              </tr>
 
-            <!-- Browse flags. -->
-            <div class="form-group clearfix">
-              <div class="clearfix" ng-if="canImportPublish">
-                <label>Notation format
-                  <span ng-bind-html="confluenceTip('NotationFormat')"></span>
-                </label>
-                <select required name="notationFormat" id="notationFormatSelect"
-                        class="caret-for-select pull-right"
-                        ng-options="notationFormat.value as notationFormat.name for notationFormat in notationFormatOptions"
-                        ng-model="browseFlags.notationFormatSelection"></select>
-              </div>
+              <tr ng-if="canImportPublish">
+                <td><label>Publish version via the ANDS Linked Data API</label></td>
+                <td class="pull-right"><ands-switch model="version.doPublish" name="publishChkbx"></ands-switch></td>
+              </tr>
 
-              <div class="clearfix" ng-if="browseFlags.notationFormatSelection != 'none'">
-                <label>Default display sort order
-                  <span ng-bind-html="confluenceTip('DefaultSortOrder')"></span>
-                </label>
-                <select required name="defaultSortOrder" id="defaultSortOrder"
-                        class="caret-for-select pull-right"
-                        ng-options="defaultSortOrder.value as defaultSortOrder.name for defaultSortOrder in defaultSortOrderOptions"
-                        ng-model="browseFlags.defaultSortOrderSelection"></select>
-              </div>
-            </div>
+              <!-- Browse flags. -->
+              <tr ng-if="canImportPublish">
+                <td>
+                  <label>Notation format
+                    <span ng-bind-html="confluenceTip('NotationFormat')"></span>
+                  </label>
+                </td>
+                <td class="pull-right" style="padding-bottom: 5px;width: 90%">
+                  <select required name="notationFormat" id="notationFormatSelect"
+                          class="form-control caret-for-select"
+                          ng-options="notationFormat.value as notationFormat.name for notationFormat in notationFormatOptions"
+                          ng-model="browseFlags.notationFormatSelection"></select>
+                </td>
+              </tr>
 
-            <div class="clearfix" ng-if="canReapplyVersion">
-                <b>Reapply version settings on publish</b>
-                <ands-switch model="version.forceWorkflow" name="reapplyChkbx" class="pull-right"></ands-switch>
-            </div>
+              <tr ng-if="browseFlags.notationFormatSelection != 'none'">
+                <td>
+                  <label>Default display sort order
+                    <span ng-bind-html="confluenceTip('DefaultSortOrder')"></span>
+                  </label>
+                </td>
+                <td class="pull-right" style="padding-bottom: 5px;width:90%">
+                  <select required name="defaultSortOrder" id="defaultSortOrder"
+                          class="form-control col-md-6
+                                 caret-for-select"
+                          ng-options="defaultSortOrder.value as defaultSortOrder.name for defaultSortOrder in defaultSortOrderOptions"
+                          ng-model="browseFlags.defaultSortOrderSelection"></select>
+                </td>
+              </tr>
+
+              <tr ng-if="canReapplyVersion">
+                <td><label>Reapply version settings on publish</label></td>
+                <td class="pull-right"><ands-switch model="version.forceWorkflow" name="reapplyChkbx"></ands-switch></td>
+              </tr>
+
+            </table>
 
         </div>
 

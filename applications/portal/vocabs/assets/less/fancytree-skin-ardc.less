@@ -70,6 +70,7 @@
 @fancy-font-family: "Source Sans Pro", sans-serif;
 @fancy-font-color: #17649a;
 @bordercolor: #ccc;
+@fancy-font-color-dimm: #202020;
 
 /* Remove border */
 ul.fancytree-container {
@@ -187,10 +188,11 @@ ul.fancytree-container ul > li.fancytree-last-visible::before {
 	}
 
 	span.fancytree-title {
-        // Allow wrapping
-        margin: 0 200px 0 0;
-        white-space: normal;
-		border: @fancy-node-border-width solid @bordercolor;  // avoid jumping, when a border is added on hover;
+	// Allow wrapping
+	margin: 0 200px 0 0;
+	white-space: normal;
+	background: aliceblue;
+	border: @fancy-node-border-width solid @bordercolor;  // avoid jumping, when a border is added on hover;
 
 	}
 	&.fancytree-container.fancytree-treefocus span.fancytree-focused span.fancytree-title {

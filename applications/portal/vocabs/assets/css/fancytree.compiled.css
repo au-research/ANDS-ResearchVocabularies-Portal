@@ -27,7 +27,7 @@
   color: #777;
 }
 .fancytree-helper-disabled {
-  color: #c0c0c0;
+  color: #202020;
 }
 /* Helper to allow spinning loader icon with glyph-, ligature-, and SVG-icons. */
 .fancytree-helper-spin {
@@ -493,7 +493,7 @@ table.fancytree-ext-table span.fancytree-node {
 table.fancytree-ext-table td.fancytree-status-merged {
   text-align: center;
   font-style: italic;
-  color: #c0c0c0;
+  color: #202020;
 }
 table.fancytree-ext-table tr.fancytree-statusnode-error td.fancytree-status-merged {
   color: #ff0000;
@@ -557,7 +557,7 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right:h
  * 'filter' extension
  *----------------------------------------------------------------------------*/
 .fancytree-ext-filter-dimm span.fancytree-node span.fancytree-title {
-  color: #c0c0c0;
+  color: #202020;
   font-weight: lighter;
 }
 .fancytree-ext-filter-dimm tr.fancytree-submatch span.fancytree-title,
@@ -576,7 +576,7 @@ table.fancytree-ext-columnview .fancytree-has-children span.fancytree-cv-right:h
 }
 .fancytree-ext-filter-hide tr.fancytree-submatch span.fancytree-title,
 .fancytree-ext-filter-hide span.fancytree-node.fancytree-submatch span.fancytree-title {
-  color: #c0c0c0;
+  color: #202020;
   font-weight: lighter;
 }
 .fancytree-ext-filter-hide tr.fancytree-match span.fancytree-title,
@@ -775,6 +775,7 @@ ul.fancytree-container ul > li.fancytree-last-visible::before {
 .fancytree-plain span.fancytree-title {
   margin: 0 200px 0 0;
   white-space: normal;
+  background: aliceblue;
   border: 1px solid #cccccc;
 }
 .fancytree-plain.fancytree-container.fancytree-treefocus span.fancytree-focused span.fancytree-title {

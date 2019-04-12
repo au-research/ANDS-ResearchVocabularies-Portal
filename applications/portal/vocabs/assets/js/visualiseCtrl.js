@@ -148,6 +148,8 @@
                 '<option label="Notation" value="' + notationFormat + '">' +
                     'Notation</option>');
             sort_dropdown.show();
+            var label_show_notation = $('#label_show_notation');
+            label_show_notation.show();
             var p_show_notation = $('#p_show_notation');
             p_show_notation.show();
             // Pay attention to sort orders here, so that fixConceptRefs
@@ -729,6 +731,9 @@
         });
 
         adjustCss();
+
+        // Prevent the browser jumping to the "Filter..." input.
+        $("input[name=tree_search]").blur();
 
         $scope.$apply();
     }
