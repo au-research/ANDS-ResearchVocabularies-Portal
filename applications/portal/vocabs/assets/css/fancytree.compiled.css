@@ -773,7 +773,7 @@ ul.fancytree-container ul > li.fancytree-last-visible::before {
   position: relative;
 }
 .fancytree-plain span.fancytree-title {
-  margin: 0 200px 0 0;
+  margin: 0 20px 0 0;
   white-space: normal;
   background: aliceblue;
   border: 1px solid #cccccc;
