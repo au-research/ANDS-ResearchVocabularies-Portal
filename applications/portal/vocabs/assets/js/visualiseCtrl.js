@@ -52,21 +52,21 @@
             element.title = 'No Title';
         }
         var tipText = '<p><b>' + element.title +
-            '</b><br/><b>IRI:</b> ' + element.iri;
+            '</b><p/><p><b>IRI:</b> ' + element.iri + '</p>';
         if ('definition' in element) {
-            tipText = tipText + '<br/><b>Definition: </b>' +
-                element.definition;
+            tipText = tipText + '<p><b>Definition: </b>' +
+                element.definition + '</p>';
         }
         if ('notation' in element) {
-            tipText = tipText + '<br/><b>Notation: </b>' +
-                element.notation;
+            tipText = tipText + '<p><b>Notation: </b>' +
+                element.notation + '</p>';
         }
         if (sissvoc_endpoint != '') {
-            tipText = tipText + '<br/><a class="pull-right" target="_blank" ' +
+            tipText = tipText + '<p><a class="pull-right" target="_blank" ' +
                 'onclick="clickLinkedData(\'' + element.iri + '\')" ' +
                 'href="' + sissvoc_endpoint +
                 '/resource?uri=' +
-                element.iri + '">View as linked data</a>';
+                element.iri + '">View as linked data</a></p>';
         }
 
         // Closing the paragraph tag is essential to make
@@ -549,10 +549,19 @@
                                 var node = $.ui.fancytree.getNode(this);
                                 var tip = node.data.tooltipText;
                                 if (node.isClone()) {
+                                    // Strip existing trailing </p>, which
+                                    // is 4 characters long.
+                                    // Be sure to restore the </p>
+                                    // afterwards!
+                                    // tip = tip.slice(0, -4);
                                     tip = tip +
-                                        '<br/><button class="pull-right btn btn-link" ' +
+                                        '<p style="clear: both">' +
+                                        'This concept is present in multiple locations ' +
+                                        'within this vocabulary. <br />' +
+                                        '<a href="#" role="button" ' +
+                                        'style="padding: 0px"' +
                                         'onclick="filterClones(\'' + node.data.iri + '\')" ' +
-                                        '>Filter to clones</button>';
+                                        '>Filter to all instances</a>.</p>';
                                 }
                                 tip = $(tip);
                                 $(tip).find('button').click(function() {

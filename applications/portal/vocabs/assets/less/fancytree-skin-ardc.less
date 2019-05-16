@@ -218,6 +218,15 @@ ul.fancytree-container ul > li.fancytree-last-visible::before {
 			border-color: #26a0da;
 		}
 	}
+
+        // When a node is selected, also add selection styling on descendants
+	&.fancytree-container.fancytree-treefocus {
+		span.fancytree-active + ul li span.fancytree-title {
+			background-color: #cbe8f6;
+			border-color: #26a0da;
+		}
+	}
+
 }
 
 /*******************************************************************************
