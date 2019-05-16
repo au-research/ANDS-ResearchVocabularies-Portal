@@ -500,7 +500,7 @@
             });
             // There's now a filter in place, so change the placeholder, and
             // enable the reset button.
-            searchField.attr('placeholder', 'Filtering by clones');
+            searchField.attr('placeholder', 'Filtering to duplicates');
             $("button#button_reset_filter").attr("disabled", false);
             showNumberOfMatches(n);
             adjustCss();
