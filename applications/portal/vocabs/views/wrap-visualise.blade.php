@@ -25,7 +25,7 @@
           <span id="tree_filter_matches" style="vertical-align: middle"></span>
         </td>
 
-        <td style="width:9%"></td>
+        <td style="width:5%"></td>
 
         <td style="width:25%">
             <span id="sort_dropdown" style="display: none">
