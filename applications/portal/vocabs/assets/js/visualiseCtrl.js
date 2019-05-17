@@ -704,7 +704,7 @@
         // Callback for when the user has changed the sort dropdown.
         $("select#tree_sort").change(function(e) {
             var tree = $("#tree").fancytree("getTree");
-            var newSortOrder = e.target.selectedOptions[0].value;
+            var newSortOrder = e.target.value;
             tree.enableUpdate(false);
             setEnhanceTitle($scope, newSortOrder);
             resortChildren(newSortOrder);
