@@ -69,7 +69,9 @@
         }
         if (sissvoc_endpoint != '') {
             tipText = tipText + '<p><a class="pull-right" target="_blank" ' +
-                'onclick="clickLinkedData(\'' + escapeHtml(element.iri) + '\')" ' +
+                'onclick="clickLinkedData(\'' +
+                escapeHtml(element.iri).replace(/&#39;/g, "\\&#39;") +
+                '\')" ' +
                 'href="' + sissvoc_endpoint +
                 '/resource?uri=' +
                 encodeURIComponent(element.iri) + '">View as linked data</a></p>';
@@ -571,8 +573,10 @@
                                         'This concept is present in multiple locations ' +
                                         'within this vocabulary. <br />' +
                                         '<a href="#" role="button" ' +
-                                        'style="padding: 0px"' +
-                                        'onclick="filterClones(\'' + escapeHtml(node.data.iri) + '\')" ' +
+                                        'style="padding: 0px" ' +
+                                        'onclick="filterClones(\'' +
+                                        escapeHtml(node.data.iri).replace(/&#39;/g, "\\&#39;") +
+                                        '\')" ' +
                                         '>Filter to all instances</a>.</p>';
                                 }
                                 tip = $(tip);
