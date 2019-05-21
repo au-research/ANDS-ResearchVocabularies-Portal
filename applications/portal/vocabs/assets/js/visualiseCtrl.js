@@ -24,6 +24,9 @@
         };
     })();
 
+    // Create a shortcut for an often-used function.
+    var escapeHtml = $.ui.fancytree.escapeHtml;
+
     /** Prepare one concept for display by fancytree.
      *
      * Each concept is assigned:
@@ -47,19 +50,22 @@
         // ones sometimes aren't unique.
         element.key = makeUniqueKey();
         if ('prefLabel' in element) {
+            // Don't need to apply escapeHtml here, as that is
+            // done later by fancytree because we are using
+            // "escapeTitles: true" in the config.
             element.title = element.prefLabel;
         } else {
             element.title = 'No Title';
         }
-        var tipText = '<p><b>' + element.title +
-            '</b><p/><p><b>IRI:</b> ' + element.iri + '</p>';
+        var tipText = '<p><b>' + escapeHtml(element.title) +
+            '</b><p/><p><b>IRI:</b> ' + escapeHtml(element.iri) + '</p>';
         if ('definition' in element) {
             tipText = tipText + '<p><b>Definition: </b>' +
-                element.definition + '</p>';
+                escapeHtml(element.definition) + '</p>';
         }
         if ('notation' in element) {
             tipText = tipText + '<p><b>Notation: </b>' +
-                element.notation + '</p>';
+                escapeHtml(element.notation) + '</p>';
         }
         if (sissvoc_endpoint != '') {
             tipText = tipText + '<p><a class="pull-right" target="_blank" ' +
@@ -330,14 +336,16 @@
                 if (notation !== undefined) {
                     var isShowNotationChecked =
                         document.getElementById('show_notation').checked;
+                    // Do need to use escapeHtml here, as fancytree's
+                    // own escaping has already been applied.
                     if (isShowNotationChecked) {
                         data.$title.prepend(
                             '<span class="notation"><i>' +
-                                notation + '</i>: </span>');
+                                escapeHtml(notation) + '</i>: </span>');
                     } else {
                         data.$title.prepend(
                             '<span class="notation" style="display:none"><i>' +
-                                notation + '</i>: </span>');
+                                escapeHtml(notation) + '</i>: </span>');
                     }
                 }
                 data.$title.append(nodedata.titlesuffix);
@@ -524,6 +532,10 @@
             clones: {
                 highlightClones: true
             },
+            // We do use fancytree's own escaping of titles, but we
+            // still need to use escapeHtml ourselves, as we do
+            // our own munging (i.e., using enhanceTitle).
+            escapeTitles: true,
             enhanceTitle: $scope.enhanceTitle,
             expand: function(e, data) {
                 // Only need to adjust the CSS of the node that was
