@@ -195,7 +195,8 @@ foreach ($vocab->getVersion() as $version) {
             @if(isset($sissvocEndPoint))
                 <div id="widget" class="panel swatch-white">
                     <div class="panel-body">Use this code snippet to describe or
-                        discover resources with {{$vocab->getTitle()}} in your system
+                        discover resources with
+                        {{htmlspecialchars($vocab->getTitle())}} in your system
                         <br/><br/><b>Example:</b> Search for and select concepts
                         in this vocabulary
                         <input type="text" id="{{$vocab->getSlug()}}"
