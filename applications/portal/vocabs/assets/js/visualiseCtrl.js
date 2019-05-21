@@ -69,10 +69,10 @@
         }
         if (sissvoc_endpoint != '') {
             tipText = tipText + '<p><a class="pull-right" target="_blank" ' +
-                'onclick="clickLinkedData(\'' + element.iri + '\')" ' +
+                'onclick="clickLinkedData(\'' + escapeHtml(element.iri) + '\')" ' +
                 'href="' + sissvoc_endpoint +
                 '/resource?uri=' +
-                element.iri + '">View as linked data</a></p>';
+                encodeURIComponent(element.iri) + '">View as linked data</a></p>';
         }
 
         // Closing the paragraph tag is essential to make
@@ -572,7 +572,7 @@
                                         'within this vocabulary. <br />' +
                                         '<a href="#" role="button" ' +
                                         'style="padding: 0px"' +
-                                        'onclick="filterClones(\'' + node.data.iri + '\')" ' +
+                                        'onclick="filterClones(\'' + escapeHtml(node.data.iri) + '\')" ' +
                                         '>Filter to all instances</a>.</p>';
                                 }
                                 tip = $(tip);
