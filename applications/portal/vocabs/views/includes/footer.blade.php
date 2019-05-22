@@ -1,20 +1,20 @@
 <footer id="footer" role="contentinfo">
     <section class="section swatch-dark-blue">
         <div class="container">
-            <div class="row element-normal-top element-normal-bottom">
-                <div class="col-md-8">
-                    <p>
+            <table class="row element-medium-top element-medium-bottom">
+              <tr>
+                <td class="col-md-8" style="vertical-align:bottom">
                         Research Vocabularies Australia is the controlled vocabulary discovery service of the Australian National Data Service (ANDS). ANDS is supported by the Australian Government through the National Collaborative Research Infrastructure Strategy Program.
                         <a href="http://www.ands.org.au/about-us" target="_blank" style="color:#84A07B">Read more about ANDS...</a>
-                    </p>
-                </div>
-                <div class="col-md-2">
-                   <a href="https://education.gov.au/national-collaborative-research-infrastructure-strategy-ncris" target="_blank" class="gov_logo"><img style="height:75px;" src="<?php echo asset_url('images/NCRIS_PROVIDER_rev.png','core');?>" alt="National Collaborative Research Infrastructure Strategy (NCRIS)" /></a>
-                </div>
-                <div class="col-md-2">
-                    <a href="http://www.ands.org.au/" class="footer_logo"><img src="{{asset_url('images/footer_logo_rev.png', 'core')}}" alt="" style="height:75px;"/></a>
-                </div>
-            </div>
+                </td>
+                <td class="col-md-2" style="vertical-align:bottom">
+                   <a href="https://education.gov.au/national-collaborative-research-infrastructure-strategy-ncris" target="_blank" class="gov_logo"><img style="vertical-align:bottom" src="<?php echo asset_url('images/NCRIS_PROVIDER_rev.png','core');?>" alt="National Collaborative Research Infrastructure Strategy (NCRIS)" /></a>
+                </td>
+                <td class="col-md-2" style="vertical-align:bottom">
+                    <a style="vertical-align:text-bottom" href="http://ardc.edu.au/" target="_blank" class="footer_logo"><img style="vertical-align:text-bottom" src="{{asset_url('images/ardc_logo_white.png', 'core')}}" alt="" /></a>
+                </td>
+              </tr>
+            </table>
             <div class="row element-normal-top element-normal-bottom">
                 <div class="col-md-3">
                     <div id="categories-3" class="sidebar-widget  widget_categories">
