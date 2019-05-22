@@ -650,7 +650,10 @@
                         if (!node.title) {
                             return false;
                         }
-                        var text = extractHtmlText(node.title),
+                        // No, don't use extractHtmlText, because
+                        // we've set escapeTitles in the config.
+//                        var text = extractHtmlText(node.title),
+                        var text = node.title,
                             res = !!re.test(text);
                         if (!res) {
                             // Also test definitions and notations.
@@ -668,9 +671,10 @@
                         if (res) {
 /*
                             if (escapeTitles) {
+*/
                                 // #740: we must not apply the marks to escaped entity names, e.g. `&quot;`
                                 // Use some exotic characters to mark matches:
-                                temp = text.replace(reHighlight, function(s) {
+                                var temp = text.replace(reHighlight, function(s) {
                                     return "\uFFF7" + s + "\uFFF8";
                                 });
                                 // now we can escape the title...
@@ -678,15 +682,15 @@
                                 // ... and finally insert the desired `<mark>` tags
                                     .replace(/\uFFF7/g, "<mark>")
                                     .replace(/\uFFF8/g, "</mark>");
+/*
                             } else {
-*/
                                 node.titleWithHighlight = text.replace(
                                     reHighlight,
                                     function(s) {
                                         return "<mark>" + s + "</mark>";
                                     }
                                 );
-/*                            }
+                            }
 */
                             // node.debug("filter", escapeTitles, text, node.titleWithHighlight);
                         }
