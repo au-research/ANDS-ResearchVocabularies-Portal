@@ -1,7 +1,7 @@
 {
   "name": "vocabs-portal",
   "version": "0.1.0",
-  "description": "ANDS Research Vocabulary Portal",
+  "description": "ARDC Research Vocabulary Portal",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

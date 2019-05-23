@@ -15,7 +15,7 @@
                     <img src="{{asset_url('images/vocab_process.jpg', 'core')}}" class="element element-short-bottom element-short-top"/>
                     <h3>A service built to support vocabulary development</h3>
                     <p>
-                        The Australian National Data Service (ANDS) offers several options for our partners to publish vocabularies in Research Vocabularies Australia.
+                        The Australian Research Data Commons (ARDC) offers several options for our partners to publish vocabularies in Research Vocabularies Australia.
                     </p>
                 </div>
             </div>
@@ -34,7 +34,7 @@
                         <li>Query your vocabulary via the built-in SPARQL endpoint</li>
                      </ul>
                    <p>
-                    Contact <a href="mailto:services@ands.org.au">services@ands.org.au</a> to register for the RVA editor.
+                    Contact <a href="mailto:services@ardc.edu.au">services@ardc.edu.au</a> to register for the RVA editor.
                    </p>
                     <p>
                     Learn more about the <a href="https://documentation.ands.org.au/pages/viewpage.action?pageId=19529976" target="_blank">RVA editor</a>.
@@ -53,7 +53,7 @@
                         <li>Use the PoolParty Integration tool to quickly publish vocabularies managed in the RVA editor</li>
                     </ul>
                     <p>
-                        Contact <a href="mailto:services@ands.org.au">services@ands.org.au</a> to register for the RVA portal.
+                        Contact <a href="mailto:services@ardc.edu.au">services@ardc.edu.au</a> to register for the RVA portal.
                     </p>
                     <p>
                         Learn more about the <a href="https://documentation.ands.org.au/pages/viewpage.action?pageId=19529985" target="_blank">RVA portal</a>.
@@ -63,7 +63,7 @@
                     <h3 class="normal light bordered">Store a vocabulary</h3>
                     <p>The Research Vocabularies Australia includes a repository in which vocabulary files and the information about those vocabularies may be stored. The RVA repository allows for the flow of information between the editor and the portal.</p>
 
-                    <p>  Contact <a href="mailto:services@ands.org.au">services@ands.org.au</a>  to register for the RVA repository.</p>
+                    <p>  Contact <a href="mailto:services@ardc.edu.au">services@ardc.edu.au</a>  to register for the RVA repository.</p>
                 </div>
             </div>
         </div>

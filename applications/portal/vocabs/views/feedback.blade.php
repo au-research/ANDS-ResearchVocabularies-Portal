@@ -16,8 +16,8 @@
           <p>Through engagement with the research community, Research
             Vocabularies Australia will grow to cover a broad spectrum
             of research fields, across sciences, social sciences,
-            arts, and humanities.  The Australian National Data
-            Service (ANDS) offers several options for our partners to
+            arts, and humanities.  The Australian Research Data
+            Commons (ARDC) offers several options for our partners to
             give feedback about vocabularies and content
             in Research Vocabularies Australia.</p>
         </div>
@@ -59,7 +59,7 @@
             </ol>
             By following these steps, the vocabulary of interest will
             automatically be captured with the feedback you have
-            provided. This information assists ANDS in forwarding the
+            provided. This information assists ARDC in forwarding the
             feedback to the correct vocabulary publisher for
             consideration.</p>
         </div>

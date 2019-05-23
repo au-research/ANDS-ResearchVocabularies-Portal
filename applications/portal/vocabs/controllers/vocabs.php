@@ -1185,7 +1185,7 @@ class Vocabs extends MX_Controller
                 $share_params = [
                     'url' => $url,
                     'text' => $vocab_title,
-                    'hashtags' => 'andsdata'
+                    'hashtags' => 'ardcdata'
                 ];
                 $share_query_params = http_build_query($share_params);
                 $shareUrl = "https://twitter.com/share?" . $share_query_params;

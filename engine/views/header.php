@@ -26,7 +26,7 @@ else
   $environment_name = '';
   $environment_colour = '';
   $environment_header_style = '';
-  $logo_title = 'Back to ANDS Online Services Home';
+  $logo_title = 'Back to ARDC Online Services Home';
 }
 
 if(get_config_item('environment_logo')){
@@ -46,7 +46,7 @@ if(get_config_item('environment_logo')){
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <!-- ANDS print stylesheet-->
+    <!-- ARDC print stylesheet-->
     <link href="<?php echo$base_url;?>assets/css/print.css" rel="stylesheet/less" type="text/css" media="print">
 
     <!-- Styles -->    

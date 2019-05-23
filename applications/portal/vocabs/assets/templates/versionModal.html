@@ -213,12 +213,12 @@
               </tr>
 
               <tr ng-if="canImportPublish">
-                <td><label>Import version into the ANDS Vocabulary Repository</label></td>
+                <td><label>Import version into the ARDC Vocabulary Repository</label></td>
                 <td class="pull-right"><ands-switch model="version.doImport" name="importChkbx"></ands-switch></td>
               </tr>
 
               <tr ng-if="canImportPublish">
-                <td><label>Publish version via the ANDS Linked Data API</label></td>
+                <td><label>Publish version via the ARDC Linked Data API</label></td>
                 <td class="pull-right"><ands-switch model="version.doPublish" name="publishChkbx"></ands-switch></td>
               </tr>
 
@@ -260,24 +260,6 @@
             </table>
 
         </div>
-
-
-
-        <!--<div class="checkbox">-->
-            <!--<label>-->
-                <!--<input id="importChkbx" ng-click="setImPubcheckboxes('import')" ng-disabled="!validFormat()" type="checkbox" ng-model="newValue.ap.import"><label ng-disabled="!validFormat()" for="importChkbx"> Import vocabulary into the-->
-                <!--ANDS Vocabulary Repository-->
-            <!--</label>-->
-            <!--</label>-->
-            <!--<a class="btn-discard" href="" tip="To enable Import and Publish options, please select Access Point Type <b>File</b> and use one of the following Access Point Formats: <b>TTL</b>, <b>TriG</b>, <b>TriX</b>, <b>N3</b> or <b>RDF/XML</b>."><i class="fa fa-info"></i></a>-->
-        <!--</div>-->
-        <!--<div class="checkbox">-->
-            <!--<label>-->
-                <!--<input id="publishChkbx" ng-click="setImPubcheckboxes('publish')" ng-disabled="!validFormat()" type="checkbox" ng-model="newValue.ap.publish"><label ng-disabled="!validFormat()" for="publishChkbx"> Publish vocabulary via the-->
-                <!--ANDS Linked Data API-->
-            <!--</label>-->
-            <!--</label>-->
-        <!--</div>-->
 
     </div>
 

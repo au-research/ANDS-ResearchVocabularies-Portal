@@ -29,7 +29,7 @@ That directive pulls in the template         applications/portal/vocabs/assets/t
                     can incorporate the widget into your description tools to allow those describing your resources to easily make use of controlled
                     terminology. Below you’ll find a five-step process to explore and configure the vocabulary widget for use in your web applications.
                     Start by browsing the “widgetable” vocabularies listed in the dropdown under step 1.</p>
-                <p>If there is a vocabulary you’d like to use via the Research Vocabularies Australia widget that you can’t find in the RVA portal, please <a href="mailto:services@ands.org.au">let us know!</a></p>
+                <p>If there is a vocabulary you’d like to use via the Research Vocabularies Australia widget that you can’t find in the RVA portal, please <a href="mailto:services@ardc.edu.au">let us know!</a></p>
             </div>
         </div>
     </div>
