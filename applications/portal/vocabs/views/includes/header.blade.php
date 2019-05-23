@@ -3,6 +3,8 @@
 
 	<title>{{ isset($title) ? $title : 'ARDC Research Vocabularies Australia' }}</title>
 
+	<link rel="icon" href="{{asset_url('images/cropped-ardc_favicon-32x32.png', 'core')}}" sizes="32x32">
+
 	<meta content="width=device-width, initial-scale=1.0" name="viewport">
 	<meta content="yes" name="apple-mobile-web-app-capable">
 	@if(get_config_item('environment_name'))
