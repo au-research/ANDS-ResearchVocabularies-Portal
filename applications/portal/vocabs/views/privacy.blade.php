@@ -41,15 +41,10 @@
 
                     <h3>Contacting us</h3>
 
-                    <p>ARDC welcomes your comments regarding this Privacy Policy. If you have any questions or concerns about this Privacy Policy and would like further information, please contact us by any of the following means during business hours Monday to Friday.</p>
+                    <p>ARDC welcomes your comments regarding this Privacy Policy. If you have any questions or concerns about this Privacy Policy and would like further information, please contact us by any of the following means during business hours: Monday to Friday, 9:00 a.m. to 5:00 p.m. AEST/UTC+10.</p>
 
                     <p>
                         ARDC Office<br />
-                        Monash University,<br />
-                        PO Box 197,<br />
-                        Caulfield East VIC 3145,<br />
-                        AUSTRALIA<br />
-                        <br />
                         Phone: <a href="tel:%2B61%203%209902%200585">+61 3 9902 0585</a><br/>
                         E-mail: <a href="mailto:services@ardc.edu.au">services@ardc.edu.au</a><br/>
                     </p>
