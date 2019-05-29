@@ -177,6 +177,11 @@ ul.fancytree-container ul > li.fancytree-last-visible::before {
     border-radius: 0 0 0 5px;
 }
 
+// Disable "X" in filter input for IE
+#browse_filter::-ms-clear {
+    display: none;
+}
+
 /*******************************************************************************
  * Node titles
  */

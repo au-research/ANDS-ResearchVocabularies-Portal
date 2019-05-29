@@ -766,6 +766,9 @@ ul.fancytree-container ul > li.fancytree-last-visible::after {
 ul.fancytree-container ul > li.fancytree-last-visible::before {
   border-radius: 0 0 0 5px;
 }
+#browse_filter::-ms-clear {
+  display: none;
+}
 /*******************************************************************************
  * Node titles
  */
