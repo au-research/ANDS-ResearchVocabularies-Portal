@@ -12,7 +12,7 @@
             </div>
             <div class="row animated fadeInUp">
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-md-offset-3 text-center">
-                    <img src="{{asset_url('images/vocab_process.jpg', 'core')}}" class="element element-short-bottom element-short-top"/>
+                    <img src="{{asset_url('images/RVA_Publish_Vocabulary.png', 'core')}}" class="element element-short-bottom element-short-top"/>
                     <h3>A service built to support vocabulary development</h3>
                     <p>
                         The Australian Research Data Commons (ARDC) offers several options for our partners to publish vocabularies in Research Vocabularies Australia.

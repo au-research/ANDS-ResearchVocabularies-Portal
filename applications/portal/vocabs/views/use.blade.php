@@ -12,7 +12,7 @@
             </div>
             <div class="row animated fadeInUp">
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-md-offset-3 text-center">
-                    <img src="{{asset_url('images/use_vocab.jpg', 'core')}}" class="element element-short-bottom element-short-top"/>
+                    <img src="{{asset_url('images/RVA_Use_Vocabulary.png', 'core')}}" class="element element-short-bottom element-short-top"/>
                     <h3>A service built for discovery and reuse</h3>
                     <p>
                         Research Vocabularies Australia helps you find, access, and reuse vocabularies for research. Many of the vocabularies you can discover here are immediately accessible, either directly through Research Vocabularies Australia or via partners and publishers, and are free to use (subject to licence conditions).
