@@ -724,7 +724,7 @@
         // Callback for when the user has changed the sort dropdown.
         $("select#tree_sort").change(function(e) {
             var tree = $("#tree").fancytree("getTree");
-            var newSortOrder = e.target.value;
+            var newSortOrder = e.currentTarget.value;
             tree.enableUpdate(false);
             setEnhanceTitle($scope, newSortOrder);
             resortChildren(newSortOrder);
@@ -736,7 +736,7 @@
         // Callback for when the user has changed the setting
         // to display/hide notations.
         $("#show_notation").change(function(e) {
-            var isChecked = e.target.checked;
+            var isChecked = e.currentTarget.checked;
             if (isChecked) {
                 $('.notation').show();
             } else {
