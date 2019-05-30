@@ -31,7 +31,15 @@
         };
     })();
 
-    // Create a shortcut for an often-used function.
+    /** Count of total number of nodes (including concept refs). Used
+     * to determine if we should display a warning about performance.
+     * @memberof visualiseCtrl
+     */
+    var nodeCount = 0;
+
+    /** Shortcut to fancytree's escapeHtml function.
+     * @memberof visualiseCtrl
+     */
     var escapeHtml = $.ui.fancytree.escapeHtml;
 
     /** Prepare one concept for display by fancytree.
@@ -52,6 +60,7 @@
      * @memberof visualiseCtrl
      */
     function postProcessOneConcept(element, sissvoc_endpoint) {
+        nodeCount++;
         element.refKey = element.iri;
         // We assign our own (sequential) keys, because the auto-generated
         // ones sometimes aren't unique.
@@ -308,7 +317,7 @@
     function setBasicEnhanceTitle($scope) {
         $scope.enhanceTitle = function(e, data) {
             data.$title.append(data.node.data.titlesuffix);
-        }
+        };
     }
 
     /** Set the enhanceTitle option of the fancytree config, based on
@@ -358,7 +367,7 @@
                     }
                 }
                 data.$title.append(nodedata.titlesuffix);
-            }
+            };
             break;
         default:
             alert('No such sort key');
@@ -499,7 +508,7 @@
             // "ap_url" value.  Make a decision, then implement it.
             var ajax_command = sissvoc_onclick.replace(/return true/, '');
             eval(ajax_command);
-        }
+        };
 
         // Cancel any existing filter, and apply filtering to show
         // all of the instances (clones) of a concept, based on its IRI.
@@ -507,21 +516,26 @@
             var tree = $.ui.fancytree.getTree();
             var filterFunc = tree.filterNodes;
 
-            // Cancel any existing filter.
-            var searchField = $("input[name=tree_search]");
-            searchField.val("");
-            tree.clearFilter();
+            $("#fancytree-spinner").show();
+            setTimeout(function() {
+                // Cancel any existing filter.
+                var searchField = $("input[name=tree_search]");
+                searchField.val("");
+                tree.clearFilter();
 
-            var n = filterFunc.call(tree, function(node) {
-                return iri == node.data.iri;
-            });
-            // There's now a filter in place, so change the placeholder, and
-            // enable the reset button.
-            searchField.attr('placeholder', 'Filtering to duplicates');
-            $("button#button_reset_filter").attr("disabled", false);
-            showNumberOfMatches(n);
-            adjustCss();
-        }
+                var n = filterFunc.call(tree, function(node) {
+                    return iri == node.data.iri;
+                });
+                // There's now a filter in place, so change the placeholder, and
+                // enable the reset button.
+                searchField.attr('placeholder', 'Filtering to duplicates');
+                $("button#button_reset_filter").attr("disabled", false);
+                showNumberOfMatches(n);
+                adjustCss();
+
+                $("#fancytree-spinner").hide();
+            }, 50);
+        };
 
         conceptTreePostProcess($scope);
 
@@ -702,13 +716,19 @@
                             // node.debug("filter", escapeTitles, text, node.titleWithHighlight);
                         }
                         return res;
-                    }
+                    };
 
-                    n = filterFunc.call(tree, filterImpl);
+                    $("#fancytree-spinner").show();
+                    setTimeout(function() {
+                        n = filterFunc.call(tree, filterImpl);
+                        $("button#button_reset_filter").attr("disabled", false);
+                        showNumberOfMatches(n);
+                        adjustCss();
+
+                        $("#fancytree-spinner").hide();
+                    }, 50);
+
                 }
-                $("button#button_reset_filter").attr("disabled", false);
-                showNumberOfMatches(n);
-                adjustCss();
             } // function(e)
                                    ) // debounce
         ).focus();
@@ -723,9 +743,14 @@
             // the clone placeholder.
             searchField.attr('placeholder', 'Filter...');
             $("span#tree_filter_matches").text("");
-            tree.clearFilter();
-            $(e.target).attr("disabled", true);
-            adjustCss();
+            $(e.currentTarget).attr("disabled", true);
+            $("#fancytree-spinner").show();
+            setTimeout(function() {
+                tree.clearFilter();
+                adjustCss();
+
+                $("#fancytree-spinner").hide();
+            }, 50);
         }).attr("disabled", true);
 
         // Callback for when the user has changed the sort dropdown.
@@ -752,14 +777,22 @@
         });
 
         $("button#expandAll").click(function(e) {
-            $("#tree").fancytree("getTree").expandAll();
+            $("#fancytree-spinner").show();
+            setTimeout(function() {
+                $("#tree").fancytree("getTree").expandAll();
+                $("#fancytree-spinner").hide();
+            }, 50);
             // No need to do adjustCss() here, as it is done
             // for every expanded node by the expand event
             // handler specified in the tree's config.
             //    adjustCss();
         });
         $("button#collapseAll").click(function(e) {
-            $("#tree").fancytree("getTree").expandAll(false);
+            $("#fancytree-spinner").show();
+            setTimeout(function() {
+                $("#tree").fancytree("getTree").expandAll(false);
+                $("#fancytree-spinner").hide();
+            }, 50);
             // Need to call adjustCss() even here, to cope with
             // the case that a filter is in operation (i.e., which
             // will still be in operation after collapsing).
@@ -767,6 +800,12 @@
         });
 
         adjustCss();
+
+        // Maybe display a warning, if too many nodes (either concepts
+        // or concept refs). Adjust threshold as necessary.
+        if (nodeCount >= 2000) {
+            $("#large_vocabulary_warning").show();
+        }
 
         // Prevent the browser jumping to the "Filter..." input.
         $("input[name=tree_search]").blur();
