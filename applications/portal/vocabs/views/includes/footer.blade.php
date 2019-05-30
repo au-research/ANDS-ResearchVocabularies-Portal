@@ -3,15 +3,15 @@
         <div class="container">
             <table class="row element-medium-top element-medium-bottom">
               <tr>
-                <td class="col-md-8" style="vertical-align:bottom">
+                <td class="col-md-8 visible-lg visible-md visible-sm-block visible-xs-block" style="vertical-align:bottom">
                         Research Vocabularies Australia is the controlled vocabulary discovery service of the Australian Research Data Commons (ARDC). ARDC is supported by the Australian Government through the National Collaborative Research Infrastructure Strategy Program.
                         <a href="https://ardc.edu.au/about/" target="_blank" style="color:#84A07B">Read more about ARDC...</a>
                 </td>
-                <td class="col-md-2" style="vertical-align:bottom">
+                <td class="col-md-2 visible-lg visible-md visible-sm-block visible-xs-block" style="vertical-align:bottom">
                    <a href="https://education.gov.au/national-collaborative-research-infrastructure-strategy-ncris" target="_blank"><img style="vertical-align:bottom; max-height: 120px" src="<?php echo asset_url('images/NCRIS_PROVIDER_rev.png','core');?>" alt="National Collaborative Research Infrastructure Strategy (NCRIS)" /></a>
                 </td>
-                <td class="col-md-2" style="vertical-align:bottom">
-                    <a style="vertical-align:text-bottom" href="https://ardc.edu.au/" target="_blank" class="footer_logo"><img style="vertical-align:text-bottom; max-height: 60px" src="{{asset_url('images/ardc_logo_white.png', 'core')}}" alt="" /></a>
+                <td class="col-md-2 visible-lg visible-md visible-sm-block visible-xs-block" style="vertical-align:bottom">
+                    <a style="vertical-align:text-bottom" href="https://ardc.edu.au/" target="_blank" class="footer_logo"><img style="vertical-align:text-bottom; margin-top: 10px; max-height: 60px" src="{{asset_url('images/ardc_logo_white.png', 'core')}}" alt="" /></a>
                 </td>
               </tr>
             </table>
