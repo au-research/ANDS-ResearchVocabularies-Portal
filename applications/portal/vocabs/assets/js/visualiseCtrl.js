@@ -2,6 +2,13 @@
  * Controller for the concept browse visualisation.
  * @namespace visualiseCtrl
  */
+/*jslint
+    browser: true
+*/
+/*global
+    $, angular
+*/
+
 (function() {
     'use strict';
 
