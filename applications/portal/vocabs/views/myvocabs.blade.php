@@ -20,7 +20,7 @@
 								<br>
 							<div align="center">
 								<p class="small center">
-									Your account is not affiliated with an organisational role. Please contact <a href="mailto:services@ands.org.au">services@ands.org.au</a> for assistance.
+									Your account is not affiliated with an organisational role. Please contact <a href="mailto:services@ardc.edu.au">services@ardc.edu.au</a> for assistance.
 								</p>
 							</div>
 							@endif

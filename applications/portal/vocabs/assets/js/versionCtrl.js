@@ -13,12 +13,14 @@
                     // console.log("Binding ands-switch", $scope, elem, attrs);
                 },
                 template: "<div class='ands-switch'>" +
-                "      <input type='checkbox' id='{{name}}' class='ands-switch-checkbox' id='{{name}}' ng-click='model = !model' ng-checked='model'>\n" +
-                "      <label class='ands-switch-label' for='{{name}}'>" +
-                "        <span class='ands-switch-inner'></span>" +
-                "        <span class='ands-switch-switch'></span>" +
-                "      </label>" +
-                "    </div>"
+                    "      <input type='checkbox' id='{{name}}' " +
+                    "class='ands-switch-checkbox' " +
+                    "ng-click='model = !model' ng-checked='model'>\n" +
+                    "      <label class='ands-switch-label' for='{{name}}'>" +
+                    "        <span class='ands-switch-inner'></span>" +
+                    "        <span class='ands-switch-switch'></span>" +
+                    "      </label>" +
+                    "    </div>"
             }
         });
 
@@ -59,15 +61,108 @@
             {id: statusTypeEnum.superseded, label: 'superseded'}
             ];
 
+        // Browse flags.
+
+        // Container for the model for browse flags.
+        // The container contains:
+        //   $scope.browseFlags.notationFormatSelection
+        //   $scope.browseFlags.defaultSortOrderSelection
+        $scope.browseFlags = {};
+
+        // Possible notation formats, including a special
+        // first option to represent there being no notations.
+        $scope.notationFormatOptions = [
+            { name: 'None/other', value: 'none'},
+            { name: 'Numeric multi-level hierarchical, e.g., 2.4.1, 2.20',
+              value: 'notationDotted'},
+            { name: 'Floating-point number, e.g., 2.21, 2.4',
+              value: 'notationFloat'},
+            { name: 'Alphanumeric, e.g., A0932, 12, fish',
+              value: 'notationAlpha'}
+        ];
+
+        // Possible default sort orders.
+        $scope.defaultSortOrderOptions = [
+            { name: 'Concept preferred label', value: 'prefLabel'},
+            { name: 'Concept notation', value: 'notation'}
+        ];
+
+        // Reset all browse flags. Used for initialization, and
+        // when the user removes all access points that would
+        // provide vocabulary data.
+        $scope.clearBrowseFlags = function() {
+            $scope.browseFlags.notationFormatSelection = 'none';
+            $scope.browseFlags.defaultSortOrderSelection = 'prefLabel';
+        }
+
+        // Parse an existing version's browse flags into our
+        // own $scope.browseFlags representation.
+        $scope.parseExistingBrowseFlags = function(browseFlags) {
+            // Always reset ...
+            $scope.clearBrowseFlags();
+            // ... and if there are no flags, we stop here.
+            if (browseFlags === undefined || !Array.isArray(browseFlags)) {
+                return;
+            }
+            angular.forEach(browseFlags, function(flag) {
+                switch (flag) {
+                case 'maySortByNotation':
+                    // Tells us nothing by itself. There must also
+                    // be a specific notation... flag.
+                    break;
+                case 'notationAlpha':
+                case 'notationFloat':
+                case 'notationDotted':
+                    $scope.browseFlags.notationFormatSelection = flag;
+                    break;
+                case 'defaultSortByNotation':
+                    $scope.browseFlags.defaultSortOrderSelection = 'notation';
+                    break;
+                default:
+                    // Unknown flag.
+                    break;
+                }
+            });
+        }
+
+        // Use the form elements to populate the browse flags
+        // of $scope.version.
+        $scope.unparseBrowseFlags = function() {
+            // Start by resetting.
+            $scope.version.browseFlags = [];
+            // Now use the form elements to populate the flags.
+            if ($scope.browseFlags.notationFormatSelection == 'none') {
+                // There will be no flags.
+                return;
+            }
+            // There's notation format.
+            $scope.version.browseFlags.push('maySortByNotation');
+            $scope.version.browseFlags.push(
+                $scope.browseFlags.notationFormatSelection);
+            if ($scope.browseFlags.defaultSortOrderSelection == 'notation') {
+                $scope.version.browseFlags.push('defaultSortByNotation');
+            }
+        }
+
+
         $scope.vocab = vocab;
         $scope.confluenceTip = confluenceTip;
         // Preserve the original data for later. We need this
         // specifically for the release_date value.
         $scope.original_version = angular.copy(version);
-        $scope.version = version ? version : {
-            provider_type: false,
-            access_points: []
-        };
+        // Now assign $scope.version; this is what we will use.
+        if (version) {
+            $scope.version = version;
+            $scope.parseExistingBrowseFlags(version.browseFlags);
+        } else {
+            $scope.version = {
+                provider_type: false,
+                access_points: [],
+                browse_flags: []
+            };
+            // Start with browse flags cleared.
+            $scope.clearBrowseFlags();
+        }
 
         $log.debug("Editing Version", $scope.version);
 
@@ -82,26 +177,26 @@
         ];
 
         $scope.typeFormatOptions = [
-            { name:'Web page', value: 'webPage'},
-            { name:'API/SPARQL endpoint', value: 'apiSparql'},
-            { name: 'RDF/XML', value:'RDF/XML', group: 'File Upload'},
-            { name: 'TTL', value:'TTL', group: 'File Upload'},
-            { name: 'N-Triples', value:'N-Triples', group: 'File Upload'},
-            { name: 'JSON', value:'JSON', group: 'File Upload'},
-            { name: 'TriG', value:'TriG', group: 'File Upload'},
-            { name: 'TriX', value:'TriX', group: 'File Upload'},
-            { name: 'N3', value:'N3', group: 'File Upload'},
-            { name: 'CSV', value:'CSV', group: 'File Upload'},
-            { name: 'TSV', value:'TSV', group: 'File Upload'},
-            { name: 'XLS', value:'XLS', group: 'File Upload'},
-            { name: 'XLSX', value:'XLSX', group: 'File Upload'},
-            { name: 'BinaryRDF', value:'BinaryRDF', group: 'File Upload'},
-            { name: 'ODS', value:'ODS', group: 'File Upload'},
-            { name: 'ZIP', value:'ZIP', group: 'File Upload'},
-            { name: 'XML', value:'XML', group: 'File Upload'},
-            { name: 'TXT', value:'TXT', group: 'File Upload'},
-            { name: 'ODT', value:'ODT', group: 'File Upload'},
-            { name: 'PDF', value:'PDF', group: 'File Upload'}
+            { name: 'Web page', value: 'webPage'},
+            { name: 'API/SPARQL endpoint', value: 'apiSparql'},
+            { name: 'RDF/XML', value: 'RDF/XML', group: 'File Upload'},
+            { name: 'TTL', value: 'TTL', group: 'File Upload'},
+            { name: 'N-Triples', value: 'N-Triples', group: 'File Upload'},
+            { name: 'JSON', value: 'JSON', group: 'File Upload'},
+            { name: 'TriG', value: 'TriG', group: 'File Upload'},
+            { name: 'TriX', value: 'TriX', group: 'File Upload'},
+            { name: 'N3', value: 'N3', group: 'File Upload'},
+            { name: 'CSV', value: 'CSV', group: 'File Upload'},
+            { name: 'TSV', value: 'TSV', group: 'File Upload'},
+            { name: 'XLS', value: 'XLS', group: 'File Upload'},
+            { name: 'XLSX', value: 'XLSX', group: 'File Upload'},
+            { name: 'BinaryRDF', value: 'BinaryRDF', group: 'File Upload'},
+            { name: 'ODS', value: 'ODS', group: 'File Upload'},
+            { name: 'ZIP', value: 'ZIP', group: 'File Upload'},
+            { name: 'XML', value: 'XML', group: 'File Upload'},
+            { name: 'TXT', value: 'TXT', group: 'File Upload'},
+            { name: 'ODT', value: 'ODT', group: 'File Upload'},
+            { name: 'PDF', value: 'PDF', group: 'File Upload'}
         ];
 
         $scope.updateNewAPTypeFormat = function(option) {
@@ -129,12 +224,15 @@
             $scope.newValue.ap.type = 'file';
             $scope.newValue.ap.format = option;
         };
-        
-        $scope.currentVersion = $scope.vocab['versions'].find(function (version) {
-            return version.title !== $scope.version.title && version.status === statusTypeEnum.current;
-        });
+
+        $scope.currentVersion = $scope.vocab['versions'].find(
+            function (version) {
+                return version.title !== $scope.version.title &&
+                    version.status === statusTypeEnum.current;
+            });
         if ($scope.currentVersion) {
-            $log.debug("There is an existing current version", $scope.currentVersion);
+            $log.debug("There is an existing current version",
+                       $scope.currentVersion);
         }
 
         // intialize the forms for validation
@@ -190,7 +288,8 @@
            It overrides the content of the release date text field with
            the value we got from the database. */
         $scope.do_restore_release_date = function() {
-            $('#release_date').val($scope.formatDate($scope.original_version.release_date));
+            $('#release_date').val($scope.formatDate(
+                $scope.original_version.release_date));
         };
 
         // Helper function for formating parsable date to yyyy-mm-dd
@@ -279,12 +378,15 @@
             return !!$scope.form.apForm.$valid;
         };
 
-        $scope.validFormats = ['TTL', 'TriG', 'TriX', 'N3', 'RDF/XML', 'N-Triples', 'BinaryRDF'];
+        $scope.validFormats = ['TTL', 'TriG', 'TriX', 'N3', 'RDF/XML',
+                               'N-Triples', 'BinaryRDF'];
 
         // TODO: verify usage of this function
         $scope.validFormat = function () {
-            if ($scope.newValue.ap.format && $scope.newValue.ap.type == 'file') {
-                if ($scope.validFormats.indexOf($scope.newValue.ap.format) > -1) {
+            if ($scope.newValue.ap.format &&
+                $scope.newValue.ap.type == 'file') {
+                if ($scope.validFormats.indexOf(
+                    $scope.newValue.ap.format) > -1) {
                     return true;
                 }
             }
@@ -311,16 +413,20 @@
 
         // Where the user is editing a previously published version
         // which has the 'Harvest Version From PoolParty' option enabled,
-        // an additonal version settings option shall be displayed
+        // an additional version settings option shall be displayed
         // 'Reapply version settings on publish'
         $scope.canReapplyVersion = false;
         $scope.canImportPublish = false;
+
+        // Whether to offer browse flags.
+        $scope.canOfferDefaultSortSelection = false;
 
         $scope.evaluateVersionSettings = function() {
 
             // reset
             $scope.canReapplyVersion = false;
             $scope.canImportPublish = false;
+            $scope.canOfferDefaultSortSelection = false;
 
             $log.debug("Evaluating version settings");
 
@@ -352,20 +458,26 @@
             // form, and to force workflow for an existing version.
             // You can't currently do that: you have to publish the
             // vocabulary, then go in again to see this toggle.
-            if (version.id && ($scope.vocab.status === "published" || $scope.vocab.status === "deprecated")) {
+            if (version.id && ($scope.vocab.status === "published" ||
+                               $scope.vocab.status === "deprecated")) {
                 $scope.canReapplyVersion = true;
             }
 
-            // when we change the hasSupported condition, the underlying data needs changing
+            // when we change the hasSupported condition,
+            // the underlying data needs changing
             if (!$scope.hasSupportedFiles() && !$scope.isPP()) {
                 $scope.version.doImport = false;
                 $scope.version.doPublish = false;
+                $scope.clearBrowseFlags();
+                $scope.canOfferDefaultSortSelection = false;
             }
 
             // finally, if the settings are hidden, they are false
             if (!$scope.canImportPublish) {
                 $scope.version.doImport = false;
                 $scope.version.doPublish = false;
+                $scope.clearBrowseFlags();
+                $scope.canOfferDefaultSortSelection = false;
             }
         };
         $scope.evaluateVersionSettings();
@@ -375,7 +487,8 @@
             $scope.evaluateVersionSettings();
         }, true);
 
-        // If doing PoolpartyHarvest, enable import and publish but set them to false
+        // If doing PoolpartyHarvest, enable import and publish
+        // but set them to false
         $scope.$watch('version.doPoolpartyHarvest', function(newv, oldv) {
 
             // prevents import and publish switch carry over
@@ -384,7 +497,8 @@
                 $scope.version.doPublish = false;
             }
 
-            // Users should be forced to import if they choose to harvest from PP
+            // Users should be forced to import if they choose to harvest
+            // from PP
             if (newv === true) {
                 $scope.version.doImport = true;
                 // TODO: disable doImport switch so it can't be changed
@@ -419,18 +533,21 @@
             if (!$scope.isPP()) {
                 // at least 1 AP is required
                 if ($scope.version.access_points.length === 0) {
-                    $scope.error_message = 'At least 1 access point is required';
+                    $scope.error_message =
+                        'At least 1 access point is required';
                     return false;
                 }
             }
 
             if ($scope.isPP()) {
-                if ($scope.version.access_points.length === 0 && !$scope.version.doPoolpartyHarvest) {
+                if ($scope.version.access_points.length === 0 &&
+                    !$scope.version.doPoolpartyHarvest) {
                     $scope.error_message = "At least 1 access point or PoolParty harvest is required";
                     return false;
                 }
 
-                if (!$scope.version.doImport && $scope.version.doPoolpartyHarvest) {
+                if (!$scope.version.doImport &&
+                    $scope.version.doPoolpartyHarvest) {
                     $scope.error_message = "Import must be enabled for PoolParty harvested versions";
                     return false;
                 }
@@ -459,6 +576,9 @@
                 return false;
             }
 
+            // Save the browse flags.
+            $scope.unparseBrowseFlags();
+
             // Save the date as it actually is in the input's textarea, not
             // as it is in the model.
             // FIXME: don't do this now ...
@@ -473,7 +593,8 @@
             };
             $log.debug("Saving version", ret);
             if ($scope.currentVersion && $scope.version.status === "current") {
-                $log.debug("Setting existing currentVersion to superseded", $scope.currentVersion);
+                $log.debug("Setting existing currentVersion to superseded",
+                           $scope.currentVersion);
                 $scope.currentVersion.status = statusTypeEnum.superseded;
             }
             $uibModalInstance.close(ret);
@@ -483,7 +604,9 @@
         $scope.upload = function (files, ap) {
             if (!ap) ap = {};
 
-            var uploadEndpoint = registry_api_url + "/api/resource/uploads/?owner=" + vocab.owner + "&format=" + ap.format;
+            var uploadEndpoint = registry_api_url +
+                "/api/resource/uploads/?owner=" + vocab.owner +
+                "&format=" + ap.format;
 
             // debug
             // ap.uri = files[0].name;
@@ -496,7 +619,8 @@
                     var file = files[i];
                     if(file.size > 50000000){
                         alert("The file '" + file.name + "' size:(" +
-                                file.size + ") byte exceeds the limit (50MB) allowed and cannot be saved");
+                              file.size +
+                              ") byte exceeds the limit (50MB) allowed and cannot be saved");
                         allowContinue = false;
                     }
                 }
@@ -512,7 +636,8 @@
                         url: uploadEndpoint,
                         data: {file: file},
                         headers: {
-                            'ands_authentication': readCookie('ands_authentication')
+                            'ands_authentication':
+                              readCookie('ands_authentication')
                         }
 
                     }).then(function (resp, status, xhr) {
@@ -533,8 +658,10 @@
                     },
                     function (evt) {
                         // progress
-                        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                        $log.debug('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+                        var progressPercentage = parseInt(
+                            100.0 * evt.loaded / evt.total);
+                        $log.debug('progress: ' + progressPercentage +
+                                   '% ' + evt.config.data.file.name);
                         $scope.uploadPercentage = progressPercentage;
                     });
                 }

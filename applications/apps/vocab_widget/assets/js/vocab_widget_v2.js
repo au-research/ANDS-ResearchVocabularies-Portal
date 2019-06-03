@@ -705,12 +705,12 @@
 		break;
 	    case "open":
 		target.removeClass('tree_open').addClass('tree_closed');
-		target.find('ul').slideUp(100);
+		target.children('ul').slideUp(100);
 		target.data('treestate', 'closed');
 		break;
 	    case "closed":
 		target.removeClass('tree_closed').addClass('tree_open');
-		target.find('ul').slideDown(150);
+		target.children('ul').slideDown(150);
 		target.data('treestate', 'open');
 		break;
 	    }

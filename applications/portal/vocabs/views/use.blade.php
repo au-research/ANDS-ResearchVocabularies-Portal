@@ -12,7 +12,7 @@
             </div>
             <div class="row animated fadeInUp">
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-md-offset-3 text-center">
-                    <img src="{{asset_url('images/use_vocab.jpg', 'core')}}" class="element element-short-bottom element-short-top"/>
+                    <img src="{{asset_url('images/RVA_Use_Vocabulary.png', 'core')}}" class="element element-short-bottom element-short-top"/>
                     <h3>A service built for discovery and reuse</h3>
                     <p>
                         Research Vocabularies Australia helps you find, access, and reuse vocabularies for research. Many of the vocabularies you can discover here are immediately accessible, either directly through Research Vocabularies Australia or via partners and publishers, and are free to use (subject to licence conditions).
@@ -37,7 +37,7 @@
                 </div>
                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                     <h3 class="normal light bordered">Consume a vocabulary in your own system</h3>
-                    <p>Users of Research Vocabularies Australia have several options for using an Australian National Data Service (ANDS)-hosted vocabulary in their own data centres, portals, data generation tools, vocabulary services or other applications. The Linked Data API allows developers to integrate with the vocabulary service using HTTP and a variety of data representations (including XML, JSON and RDF) and the Vocabulary Widget allows you to add Data Classification capabilities to your data capture tools via Research Vocabularies Australia.</p>
+                    <p>Users of Research Vocabularies Australia have several options for using an Australian Research Data Commons (ARDC)-hosted vocabulary in their own data centres, portals, data generation tools, vocabulary services or other applications. The Linked Data API allows developers to integrate with the vocabulary service using HTTP and a variety of data representations (including XML, JSON and RDF) and the Vocabulary Widget allows you to add Data Classification capabilities to your data capture tools via Research Vocabularies Australia.</p>
                     <p>Learn more about <a href="https://documentation.ands.org.au/display/DOC/Research+Vocabularies" target="_blank">Research Vocabularies Australia</a>,
                         the <a href="https://documentation.ands.org.au/display/DOC/Linked+Data+API" target="_blank">Linked Data API</a>,
                         <a href="https://documentation.ands.org.au/display/DOC/SPARQL+endpoint" target="_blank">SPARQL endpoints</a>, and

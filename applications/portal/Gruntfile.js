@@ -92,7 +92,7 @@ module.exports = function(grunt){
                 dest:'<%=yeoman.vocab_asset %>/css/lib.css'
             },
             vocab_lib: {
-                options:{separator:';'},
+                options:{separator:';\n'},
                 nonull: true,
                 src:[
                     '<%= yeoman.vocab_asset %>/js/ie-polyfill.js',
@@ -106,7 +106,9 @@ module.exports = function(grunt){
                     '<%= yeoman.vocab_asset %>/js/lib/angular-loading-bar/build/loading-bar.min.js',
                     '<%= yeoman.vocab_asset %>/js/lib/ng-file-upload/ng-file-upload-all.min.js',
                     '<%= yeoman.vocab_asset %>/js/lib/angular-recaptcha/release/angular-recaptcha.min.js',
-                    '<%= yeoman.templates %>/ands-green/assets/js/packages.min.js'
+                    '<%= yeoman.templates %>/ands-green/assets/js/packages.min.js',
+                    '<%= yeoman.vocab_asset %>/js/lib/fancytree/dist/jquery.fancytree-all-deps.js',
+                    '<%= yeoman.vocab_asset %>/js/lib/fancytree/dist/modules/jquery.fancytree.clones.js'
                 ],
                 dest:'<%=yeoman.vocab_asset %>/js/lib.js'
             },
@@ -120,8 +122,7 @@ module.exports = function(grunt){
                     '<%= yeoman.vocab_asset %>/js/filters.js',
                     '<%= yeoman.vocab_asset %>/js/directives.js',
                     '<%= yeoman.vocab_asset %>/js/vocabs_factory.js',
-                    '<%= yeoman.vocab_asset %>/js/vocabs_search_controller.js',
-                    '<%= yeoman.vocab_asset %>/js/vocabs_visualise_directive.js'
+                    '<%= yeoman.vocab_asset %>/js/vocabs_search_controller.js'
                 ],
                 dest:'<%= yeoman.vocab_asset %>/js/scripts.js'
             }
@@ -147,7 +148,8 @@ module.exports = function(grunt){
             },
             vocab_less: {
                 files:{
-                    "<%= yeoman.vocab_asset %>/css/vocab.less.compiled.css": "<%= yeoman.vocab_asset %>/less/ands-vocab.less"
+                    "<%= yeoman.vocab_asset %>/css/vocab.less.compiled.css": "<%= yeoman.vocab_asset %>/less/ands-vocab.less",
+                    "<%= yeoman.vocab_asset %>/css/fancytree.compiled.css": "<%= yeoman.vocab_asset %>/less/fancytree-skin-ardc.less"
                 }
             }
         }

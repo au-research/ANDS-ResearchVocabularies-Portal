@@ -32,6 +32,8 @@
     @endif
 @endif
 
+<!-- fancytree requires JQuery, so include here. -->
+<script src='//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.js'></script>
 @if(is_dev())
     <script src="{{ asset_url('js/ie-polyfill.js') }} "></script>
     <script src="{{ asset_url('js/lib/angular/angular.min.js') }} "></script>
@@ -45,11 +47,13 @@
     <script type="text/javascript" src="{{ asset_url('js/lib/ng-file-upload/ng-file-upload-all.min.js') }}"></script>
     <script src="{{ asset_url('ands-green/js/packages.min.js','templates') }}"></script>
     <script src="{{ asset_url('js/lib/angular-recaptcha/release/angular-recaptcha.min.js') }} "></script>
+    <!-- fancytree must be loaded after JQuery. -->
+    <script type="text/javascript" src="{{ asset_url('js/lib/fancytree/dist/jquery.fancytree-all-deps.js') }} "></script>
+    <script type="text/javascript" src="{{ asset_url('js/lib/fancytree/dist/modules/jquery.fancytree.clones.js') }} "></script>
 @else
     <script src="{{ asset_url('js/lib.js').'?'.getReleaseVersion() }}"></script>
 @endif
 
-<script src='//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.js'></script>
 <!-- JQuery UI used for draggable modal dialogs on CMS. -->
 <script src='//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
 <script src="{{asset_url('lib/qtip2/jquery.qtip.js', 'core').'?'.getReleaseVersion() }}"></script>
@@ -59,7 +63,6 @@
 <script src="{{ asset_url('js/lib/tinymce/tinymce.min.js').'?'.getReleaseVersion() }}"></script>
 <script src="{{ asset_url('js/lib/angular-ui-tinymce/dist/tinymce.min.js').'?'.getReleaseVersion() }}"></script>
 
-
 @if(is_dev())
     <!-- ui-select must be loaded after JQuery. -->
     <script type="text/javascript" src="{{ asset_url('js/lib/ui-select/dist/select.js') }}"></script>
@@ -68,7 +71,6 @@
     <script type="text/javascript" src="{{ asset_url('js/directives.js') }}"></script>
     <script type="text/javascript" src="{{ asset_url('js/vocabs_factory.js') }}"></script>
     <script type="text/javascript" src="{{ asset_url('js/vocabs_search_controller.js') }}"></script>
-    <script type="text/javascript" src="{{ asset_url('js/vocabs_visualise_directive.js') }}"></script>
 @else
     <script type="text/javascript" src="{{ asset_url('js/scripts.js').'?'.getReleaseVersion() }}"></script>
 @endif

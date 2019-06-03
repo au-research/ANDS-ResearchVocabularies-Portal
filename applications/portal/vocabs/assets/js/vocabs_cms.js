@@ -397,6 +397,7 @@
                     'doImport': ver.getDoImport(),
                     'doPublish': ver.getDoPublish(),
                     'doPoolpartyHarvest': ver.getDoPoolpartyHarvest(),
+                    'browseFlags': ver.getBrowseFlag(),
                     'forceWorkflow': ver.getForceWorkflow(),
                     'access_points': ver.getAccessPoint().map(function (ap) {
                         var APForm = {
@@ -522,18 +523,26 @@
                         versionEntity.setDoPublish(true);
                     } else versionEntity.setDoPublish(false);
 
-                    if (version['doPoolpartyHarvest'] && version['doPoolpartyHarvest'] === true) {
+                    if (version['doPoolpartyHarvest'] &&
+                        version['doPoolpartyHarvest'] === true) {
                         versionEntity.setDoPoolpartyHarvest(true);
                     } else versionEntity.setDoPoolpartyHarvest(false);
 
-                    if (version['forceWorkflow'] && version['forceWorkflow'] === true) {
+                    if (version['browseFlags'] &&
+                        Array.isArray(version['browseFlags'])) {
+                        versionEntity.setBrowseFlag(version['browseFlags']);
+                    }
+
+                    if (version['forceWorkflow'] &&
+                        version['forceWorkflow'] === true) {
                         versionEntity.setForceWorkflow(true);
                     } else versionEntity.setForceWorkflow(false);
 
                     // access points
-                    var accessPoints = version['access_points'].map(function(ap) {
-                        return $scope.packAccessPoint(ap);
-                    });
+                    var accessPoints = version['access_points'].map(
+                        function(ap) {
+                            return $scope.packAccessPoint(ap);
+                        });
                     versionEntity.setAccessPoint(accessPoints);
 
                     return versionEntity;

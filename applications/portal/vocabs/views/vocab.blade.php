@@ -186,13 +186,17 @@ foreach ($vocab->getVersion() as $version) {
             {{-- The concept tree is shown if there is one to show. --}}
             {{-- There is one to show, if the "tree" service returns one. --}}
             @if(isset($current_version))
-                <div visualise versionid="{{ $current_version->getId() }}"></div>
+                <div ng-controller="visualise"
+                versionid="{{ $current_version->getId() }}">
+                @include('wrap-visualise')
+                </div>
             @endif
             {{-- Show widgetable status based on $sissVocEndPoint. --}}
             @if(isset($sissvocEndPoint))
                 <div id="widget" class="panel swatch-white">
                     <div class="panel-body">Use this code snippet to describe or
-                        discover resources with {{$vocab->getTitle()}} in your system
+                        discover resources with
+                        {{htmlspecialchars($vocab->getTitle())}} in your system
                         <br/><br/><b>Example:</b> Search for and select concepts
                         in this vocabulary
                         <input type="text" id="{{$vocab->getSlug()}}"

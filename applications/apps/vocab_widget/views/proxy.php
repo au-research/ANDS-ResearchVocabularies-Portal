@@ -20,6 +20,14 @@ limitations under the License.
  *
  *
  * Requires cURL PHP extensions. PHP5.2+, PHP5.4 recommended
+ *
+ * NB: parameter names used in $_REQUEST often _don't_ correspond
+ * with the parameter names used by the JavaScript front-end code.
+ * E.g., users of the JavaScript front end say
+ * ...vocab_widget({ "max_results": 50, ...}) but that is
+ * translated by the JS into a query parameter "limit", and that's
+ * what is seen by this code.
+ *
  */
 // some constants
 if (isset($solr_base) && !empty($solr_base)) {
@@ -343,19 +351,32 @@ class VocabProxy
 			$querystring = is_callable($processor) ?
 				call_user_func($processor, $this->lookfor) :
 				$this->lookfor;
-            if(strpos($this->repository, 'http') === 0){
-                // using full url for sissvoc webapp
-                return sprintf("%s%s%s",
-                    $this->repository,
-                    $validAction['url'],
-                    $querystring);
-            } else {
+
+			// CC-2430 We will pass on the limit setting as the _pageSize
+			// query parameter. So we need to see if we're also passing on
+			// a url parameter. If so, append "&" to the url as a parameter
+			// separator. Otherwise, append "?" as the separator.
+			if (strpos($validAction['url'], '?') != FALSE) {
+			    $querystring .= "&";
+			} else {
+			    $querystring .= "?";
+			}
+
+			$querystring .= "_pageSize=" . $this->limit ;
+
+			if(strpos($this->repository, 'http') === 0){
+			    // using full url for sissvoc webapp
+			    return sprintf("%s%s%s",
+			        $this->repository,
+			        $validAction['url'],
+			        $querystring);
+			} else {
 			    return sprintf("%s%s%s%s",
 				       BASE_URL,
 				       $this->repository,
 				       $validAction['url'],
 				       $querystring);
-            }
+			}
 		}
 		else {
 			return false;

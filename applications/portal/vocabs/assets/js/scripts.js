@@ -3182,7 +3182,7 @@ if (!Array.prototype.find) {
                 // put back our $scope.filters into $location.search().
                 $location.search($scope.filters);
                 $location.path('/').replace();
-                window.history.pushState($scope.filters, 'ANDS Research Vocabulary', $location.absUrl());
+                window.history.pushState($scope.filters, 'ARDC Research Vocabulary', $location.absUrl());
                 api.search(JSON.stringify($scope.filters)).
                 then(function (data) {
                     $log.debug(data);
@@ -3333,29 +3333,4 @@ if (!Array.prototype.find) {
         }
     }
 
-})();
-;(function(){
-    'use strict';
-    angular
-        .module('app')
-        .directive('visualise', visualiseDirective);
-
-    function visualiseDirective($http) {
-        return {
-            templateUrl: base_url + 'assets/vocabs/templates/visualise.html',
-            scope: {
-                versionid: '='
-            },
-            link: function (scope) {
-                scope.treeclass = 'classic-tree';
-                $http.get(base_url + 'vocabs/services/vocabs/' + scope.versionid + '/tree')
-                    .then(function (response) {
-                        if (response.data.status === 'OK') {
-                            scope.tree = response.data.message;
-                            if(scope.tree.length>1){$("#concept").hide();}
-                        }
-                    });
-            }
-        }
-    }
 })();

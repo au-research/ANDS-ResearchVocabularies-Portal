@@ -26,13 +26,13 @@ else
   $environment_name = '';
   $environment_colour = '';
   $environment_header_style = '';
-  $logo_title = 'Back to ANDS Online Services Home';
+  $logo_title = 'Back to ARDC Online Services Home';
 }
 
 if(get_config_item('environment_logo')){
   $environment_logo = get_config_item('environment_logo');
 }else{
-  $environment_logo = asset_url('/img/ands_logo_white.png', 'base');
+  $environment_logo = asset_url('/img/ardc_logo_white.png', 'base');
 }
 
 ?>
@@ -46,7 +46,7 @@ if(get_config_item('environment_logo')){
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <!-- ANDS print stylesheet-->
+    <!-- ARDC print stylesheet-->
     <link href="<?php echo$base_url;?>assets/css/print.css" rel="stylesheet/less" type="text/css" media="print">
 
     <!-- Styles -->    
@@ -82,7 +82,7 @@ if(get_config_item('environment_logo')){
 
     <div id="header" <?=$environment_header_style;?>>
       <a href="<?php echo registry_url();?>" title="<?=$logo_title;?>" tip="<?=$logo_title;?>" my="center left" at="center right">
-        <img src="<?=$environment_logo;?>" alt="ANDS Logo White"/> 
+        <img src="<?=$environment_logo;?>" alt="ARDC Logo White" style="height:50%;"/>
       </a>
       <strong style="color:<?=$environment_colour;?>;"><?=$environment_name;?></strong>
     </div>

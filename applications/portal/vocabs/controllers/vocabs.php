@@ -422,7 +422,8 @@ class Vocabs extends MX_Controller
                 ->set('vocab', $vocab)
                 ->set('title', $vocab->getTitle()
                       . ' - Research Vocabularies Australia')
-                ->set('scripts', array('subscribeDialogCtrl'))
+                ->set('scripts', array('subscribeDialogCtrl',
+                                       'visualiseCtrl'))
                 ->set('page', 'view')
                 ->render('vocab');
         } catch (Exception $e) {
@@ -1184,7 +1185,7 @@ class Vocabs extends MX_Controller
                 $share_params = [
                     'url' => $url,
                     'text' => $vocab_title,
-                    'hashtags' => 'andsdata'
+                    'hashtags' => 'ardcdata'
                 ];
                 $share_query_params = http_build_query($share_params);
                 $shareUrl = "https://twitter.com/share?" . $share_query_params;
