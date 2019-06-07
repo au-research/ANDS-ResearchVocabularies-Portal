@@ -49,7 +49,7 @@
      * * a title, based on the concept's prefLabel (or 'No Title', if it
      *   doesn't have one)
      * * a titlesuffix, based on the number of this concept's child
-     *  concepts (or an empty string, if it doesn't have any)
+     *   concepts (or an empty string, if it doesn't have any)
      * * a tooltipText to use as the content of the qTip2 tooltip
      * * a setting for folder, if this concept has child concepts
      * * a setting for children, if this concept has child concepts
@@ -90,7 +90,8 @@
                 '\')" ' +
                 'href="' + sissvoc_endpoint +
                 '/resource?uri=' +
-                encodeURIComponent(element.iri) + '">View as linked data</a></p>';
+                encodeURIComponent(element.iri) +
+                '">View as linked data</a></p>';
         }
 
         // Closing the paragraph tag is essential to make
@@ -526,8 +527,8 @@
                 var n = filterFunc.call(tree, function(node) {
                     return iri == node.data.iri;
                 });
-                // There's now a filter in place, so change the placeholder, and
-                // enable the reset button.
+                // There's now a filter in place, so change the
+                // placeholder, and enable the reset button.
                 searchField.attr('placeholder', 'Filtering to duplicates');
                 $("button#button_reset_filter").attr("disabled", false);
                 showNumberOfMatches(n);
