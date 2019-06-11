@@ -130,8 +130,8 @@
      * order of concepts, we can change _back_ to the original
      * sort order.
      * @param elements An array of tree nodes.
-     * @param key The key to use for the key/value pair to be inserted
-     *          into each node.
+     * @param {!string} key The key to use for the key/value pair to
+     *          be inserted into each node.
      * @memberof visualiseCtrl
      */
     function addSortOrder(elements, key) {
@@ -481,8 +481,10 @@
      * is invoked once the tree data has been successfully
      * fetched from the Registry. The function creates the
      * tree and attaches event handlers.
-     * @param $scope The AngularJS controller scope. $scope.tree
-     *          must contain the tree data as fetched from the
+     * @param {!object} $scope The AngularJS controller
+     *          scope. $scope.tree must contain the tree data as
+     *          fetched from the Registry.
+     * @param {!object} $scope.tree The tree data as fetched from the
      *          Registry.
      * @memberof visualiseCtrl
      */
