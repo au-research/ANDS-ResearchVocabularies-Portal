@@ -477,6 +477,20 @@
         return s;
     }
 
+    /** Perform an operation, with a spinner spinning to suggest
+     * to the user that they might need to wait for completion
+     * of the operation.
+     * @param {!function} f The operation to be performed.
+     * @memberof visualiseCtrl
+     */
+    function doWithSpinner(f) {
+        $("#fancytree-spinner").show();
+        setTimeout(function() {
+            f();
+            $("#fancytree-spinner").hide();
+        }, 50);
+    }
+
     /** Initialisation of the browse visualisation. This method
      * is invoked once the tree data has been successfully
      * fetched from the Registry. The function creates the
@@ -519,8 +533,7 @@
             var tree = $.ui.fancytree.getTree();
             var filterFunc = tree.filterNodes;
 
-            $("#fancytree-spinner").show();
-            setTimeout(function() {
+            doWithSpinner(function() {
                 // Cancel any existing filter.
                 var searchField = $("input[name=tree_search]");
                 searchField.val("");
@@ -535,9 +548,7 @@
                 $("button#button_reset_filter").attr("disabled", false);
                 showNumberOfMatches(n);
                 adjustCss();
-
-                $("#fancytree-spinner").hide();
-            }, 50);
+            });
         };
 
         conceptTreePostProcess($scope);
@@ -721,15 +732,12 @@
                         return res;
                     };
 
-                    $("#fancytree-spinner").show();
-                    setTimeout(function() {
+                    doWithSpinner(function() {
                         n = filterFunc.call(tree, filterImpl);
                         $("button#button_reset_filter").attr("disabled", false);
                         showNumberOfMatches(n);
                         adjustCss();
-
-                        $("#fancytree-spinner").hide();
-                    }, 50);
+                    });
 
                 }
             } // function(e)
@@ -747,13 +755,10 @@
             searchField.attr('placeholder', 'Filter...');
             $("span#tree_filter_matches").text("");
             $(e.currentTarget).attr("disabled", true);
-            $("#fancytree-spinner").show();
-            setTimeout(function() {
+            doWithSpinner(function() {
                 tree.clearFilter();
                 adjustCss();
-
-                $("#fancytree-spinner").hide();
-            }, 50);
+            });
         }).attr("disabled", true);
 
         // Callback for when the user has changed the sort dropdown.
@@ -780,22 +785,18 @@
         });
 
         $("button#expandAll").click(function(e) {
-            $("#fancytree-spinner").show();
-            setTimeout(function() {
+            doWithSpinner(function() {
                 $("#tree").fancytree("getTree").expandAll();
-                $("#fancytree-spinner").hide();
-            }, 50);
+            });
             // No need to do adjustCss() here, as it is done
             // for every expanded node by the expand event
             // handler specified in the tree's config.
             //    adjustCss();
         });
         $("button#collapseAll").click(function(e) {
-            $("#fancytree-spinner").show();
-            setTimeout(function() {
+            doWithSpinner(function() {
                 $("#tree").fancytree("getTree").expandAll(false);
-                $("#fancytree-spinner").hide();
-            }, 50);
+            });
             // Need to call adjustCss() even here, to cope with
             // the case that a filter is in operation (i.e., which
             // will still be in operation after collapsing).
