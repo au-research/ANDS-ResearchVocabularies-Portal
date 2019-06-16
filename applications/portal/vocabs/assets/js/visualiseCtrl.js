@@ -807,8 +807,12 @@
 
         // Maybe display a warning, if too many nodes (either concepts
         // or concept refs). Adjust threshold as necessary.
+        // Also, in this case, disable the animation
+        // when expanding/collapsing nodes (i.e., for expand/collapse
+        // all, and when applying/cancelling a filter).
         if (nodeCount >= 2000) {
             $("#large_vocabulary_warning").show();
+            $.ui.fancytree.getTree().setOption("toggleEffect", false);
         }
 
         // Prevent the browser jumping to the "Filter..." input.
