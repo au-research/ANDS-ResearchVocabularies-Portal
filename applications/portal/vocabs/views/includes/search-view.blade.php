@@ -101,13 +101,28 @@
 
       <div class="col-md-8 col-lg-9">
 
-        <ul class="pagi element element-shorter-bottom pull-right" ng-if="result">
-          <li><small>Page [[ page.cur ]] / [[ page.end ]]</small></li>
-          <li ng-if="page.cur!=1"><a href="" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></li>
-          <li ng-repeat="x in page.pages"><a ng-class="{'active':page.cur==x}" href="" ng-click="goto(x)">[[x]]</a></li>
-          <li ng-if="page.cur!=page.end"><a href="" ng-click="goto(page.end)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Last</span></a></li>
-        </ul>
-        <div class="clearfix"></div>
+        <div class="vocab-search-result"
+             ng-if="result.response.numFound > 0">
+          <span class="pull-left"><b>[[ result.response.numFound
+              ]]</b>
+            <ng-pluralize count="result.response.numFound"
+                          when="{'1': 'result',
+                                'other': 'results'}">
+            </ng-pluralize>
+            ([[ result.responseHeader.QTime ]]
+            <ng-pluralize count="result.responseHeader.QTime"
+                          when="{'1': 'millisecond',
+                                'other': 'milliseconds'}" >
+            </ng-pluralize>)</span>
+
+          <ul class="pagi element pull-right" >
+            <li><small>Page [[ page.cur ]] / [[ page.end ]]</small></li>
+            <li ng-if="page.cur!=1"><a href="" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></li>
+            <li ng-repeat="x in page.pages"><a ng-class="{'active':page.cur==x}" href="" ng-click="goto(x)">[[x]]</a></li>
+            <li ng-if="page.cur!=page.end"><a href="" ng-click="goto(page.end)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Last</span></a></li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
 
         <div ng-repeat="doc in result.response.docs" class="animated fadeInLeft vocab-search-result">
 
@@ -135,13 +150,28 @@
           </div>
         </div>
 
-        <div class="clearfix"></div>
-        <ul class="pagi element element-shorter-top pull-right" ng-if="result">
-          <li><small>Page [[ page.cur ]] / [[ page.end ]]</small></li>
-          <li ng-if="page.cur!=1"><a href="" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></li>
-          <li ng-repeat="x in page.pages"><a ng-class="{'active':page.cur==x}" href="" ng-click="goto(x)">[[x]]</a></li>
-          <li ng-if="page.cur!=page.end"><a href="" ng-click="goto(page.end)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Last</span></a></li>
-        </ul>
+        <div class="vocab-search-result"
+             ng-if="result.response.numFound > 0">
+          <span class="pull-left"><b>[[ result.response.numFound
+              ]]</b>
+            <ng-pluralize count="result.response.numFound"
+                          when="{'1': 'result',
+                                'other': 'results'}">
+            </ng-pluralize>
+            ([[ result.responseHeader.QTime ]]
+            <ng-pluralize count="result.responseHeader.QTime"
+                          when="{'1': 'millisecond',
+                                'other': 'milliseconds'}" >
+            </ng-pluralize>)</span>
+
+          <ul class="pagi element pull-right">
+            <li><small>Page [[ page.cur ]] / [[ page.end ]]</small></li>
+            <li ng-if="page.cur!=1"><a href="" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></li>
+            <li ng-repeat="x in page.pages"><a ng-class="{'active':page.cur==x}" href="" ng-click="goto(x)">[[x]]</a></li>
+            <li ng-if="page.cur!=page.end"><a href="" ng-click="goto(page.end)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Last</span></a></li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
 
         <div ng-if="result.response.numFound == 0" class="animated fadeInLeft vocab-search-result">
           Your search did not return any results
