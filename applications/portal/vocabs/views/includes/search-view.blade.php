@@ -101,7 +101,7 @@
 
       <div class="col-md-8 col-lg-9">
 
-        <div class="vocab-search-result"
+        <div class="vocab-search-result ng-cloak"
              ng-if="result.response.numFound > 0">
           <span class="pull-left"><b>[[ result.response.numFound
               ]]</b>
@@ -150,7 +150,7 @@
           </div>
         </div>
 
-        <div class="vocab-search-result"
+        <div class="vocab-search-result ng-cloak"
              ng-if="result.response.numFound > 0">
           <span class="pull-left"><b>[[ result.response.numFound
               ]]</b>
