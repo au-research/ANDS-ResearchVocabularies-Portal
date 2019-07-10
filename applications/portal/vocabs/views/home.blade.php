@@ -44,7 +44,6 @@
 
         </div>
     </div>
-    </div>
 
 </section>
 <section class="section swatch-white">
