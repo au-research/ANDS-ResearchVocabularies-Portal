@@ -41,6 +41,13 @@
          */
         $scope.base_url = base_url;
 
+        /** Model for form elements. For now, that's just
+         * form.query, which is the input in which the user
+         * types their search query term(s).
+         * @memberof searchCtrl
+         */
+        $scope.form = {};
+
         /** The form of the URL containing a search is:
          * `base_url+"search/#!/?"+filter+"="+value`, e.g.,
          * `base_url+"search/#!/?q=fish"`,
@@ -64,6 +71,7 @@
          * @memberof searchCtrl
          */
         $scope.search = function (isPagination) {
+            $scope.filters.q = $scope.form.query;
             if (!$scope.filters['q']) {
                 $scope.filters['q'] = '';
             }
@@ -90,6 +98,15 @@
                 // _should't_ call performSearch() here, because we
                 // would then get an extra call to api.search().
             }
+        };
+
+        /** Reset all search filters.
+         * @memberof searchCtrl
+         */
+        $scope.resetSearch = function () {
+            $scope.filters = {};
+            $scope.form.query = "";
+            $scope.search();
         };
 
         /** Perform a search, and extract the results.
@@ -186,6 +203,7 @@
                 // i.e., which means there is a search to be performed.
                 if (url) {
                     $scope.filters = $location.search();
+                    $scope.form.query = $scope.filters.q;
                     performSearch();
                 }
             });
@@ -216,6 +234,31 @@
         // Below are all the user-initiated callbacks and their
         // helpers.
 
+        /** Are any search filters at all in play?
+         * @returns {boolean} True, if there are any filters set.
+         * @memberof searchCtrl
+         */
+        $scope.anyFilters = function() {
+            var found = false;
+            if (typeof $scope.filters === "object" &&
+                Object.keys($scope.filters).length > 0) {
+                angular.forEach(Object.keys($scope.filters),
+                                function (key) {
+                                    switch (key) {
+                                    case 'q':
+                                        if ($scope.filters['q'] != "") {
+                                            found = true;
+                                        }
+                                        return;
+                                    case 'p': return;
+                                    case 'pp': return;
+                                    default: found = true;
+                                    }
+                                });
+            }
+            return found;
+        }
+
         /** Get highlighting information for one result.
          * Used in the results template.
          * @param id The document id of the search result.
@@ -226,6 +269,15 @@
                 !$.isEmptyObject($scope.result.highlighting[id])) {
                 return $scope.result.highlighting[id];
             } else return false;
+        };
+
+        /** Callback to clear the search query.
+         * Used in the results template.
+         * @memberof searchCtrl
+         */
+        $scope.clearQuery = function () {
+            $scope.form.query = '';
+            $scope.search();
         };
 
         /** Callback to toggle one filter.
@@ -330,6 +382,13 @@
                 // string; remove just this one value.
                 var index = $scope.filters[type].indexOf(value);
                 $scope.filters[type].splice(index, 1);
+                // And remove the key completely if we now have
+                // an empty array. This means $scope.anyFilters()
+                // can be written more easily (it doesn't have to
+                // check if arrays are empty).
+                if ($scope.filters[type].length == 0) {
+                    delete $scope.filters[type];
+                }
             }
             if (execute) {
                 $scope.search();

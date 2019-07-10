@@ -1,104 +1,262 @@
 <section class='section swatch-gray'>
-  <div class="container element-short-bottom element-short-top">
+  <div class="container-fluid element-short-bottom element-short-top">
     <div class="row">
 
-      <div class="col-md-4 col-lg-3 sidebar search-sidebar">
+      <div class="col-md-4 col-lg-3 sidebar search-sidebar break">
 
-        <div ng-if="facets.subject_labels.length > 0">
-          <h3>Subject</h3>
-          <ul class="list-unstyled">
-            <li ng-repeat="facet in facets.subject_labels.slice(0,8)">
-
-              <a href="" ng-click="toggleFilter('subject_labels', facet.name, true)">[[ facet.name ]] ([[facet.value]])</a>
-              <a href="" ng-click="toggleFilter('subject_labels', facet.name, true)" ng-if="isFacet('subject_labels',facet.name)"><i class="fa fa-remove"></i></a>
-            </li>
-
-            <div id="moresubject_labels" style="display:none">
-              <li ng-repeat="facet in facets.subject_labels.slice(8)">
-                <a href="" ng-click="toggleFilter('subject_labels', facet.name, true)">[[ facet.name ]] ([[facet.value]])</a>
-                <a href="" ng-click="toggleFilter('subject_labels', facet.name, true)" ng-if="isFacet('subject_labels',facet.name)"><i class="fa fa-remove"></i></a>
-
-              </li>
+        <div ng-if="anyFilters()"
+             class="panel panel-primary">
+          <div class="panel-heading">Current search</div>
+          <div class="panel-body swatch-white">
+            <div ng-if="filters.q.length > 0">
+              <h3>Query</h3>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="" ng-click="clearQuery()"
+                     title="[[ filters.q ]]">
+                    [[ filters.q | limitTo:25]][[ filters.q.length > 25 ? '...' : '' ]] <i class="fa fa-remove pull-right""></i></a>
+                </li>
+              </ul>
             </div>
-            <a href="" ng-click="toggleFacet('subject_labels')" ng-if="facets.subject_labels.length>8" id="linksubjects"  style="display:block">
-              <small>View
-                <span ng-if="isMoreVisible('subject_labels')">Less...</span>
-                <span ng-if="!isMoreVisible('subject_labels')">More...</span>
-              </small>
-            </a>
-          </ul>
-        </div>
-        <div ng-if="facets.publisher.length > 0">
-          <h3>Publisher</h3>
-          <ul class="list-unstyled">
-            <li ng-repeat="facet in facets.publisher.slice(0,8)">
-              <a href="" ng-click="toggleFilter('publisher', facet.name, true)">[[ facet.name ]] ([[facet.value]])</a>
-              <a href="" ng-click="toggleFilter('publisher', facet.name, true)" ng-if="isFacet('publisher',facet.name)"><i class="fa fa-remove"></i></a>
-            </li>
-            <div id="morepublisher" style="display:none">
-              <li ng-repeat="facet in facets.publisher.slice(8)">
-                <a href="" ng-click="toggleFilter('publisher', facet.name, true)">[[ facet.name ]] ([[facet.value]])</a>
-                <a href="" ng-click="toggleFilter('publisher', facet.name, true)" ng-if="isFacet('publisher',facet.name)"><i class="fa fa-remove"></i></a>
-              </li>
+            <div ng-if="filters.subject_labels.length > 0">
+              <h3>Subject</h3>
+              <ul class="list-unstyled">
+                <li ng-repeat="filter in filters.subject_labels
+                               | stringToArray track by $index">
+                  <a href=""
+                     ng-click="toggleFilter('subject_labels', filter, true)"
+                     title="[[ filter ]]">
+                    [[ filter | limitTo:25 ]][[ filter.length > 25 ? '...' : '' ]] <i class="fa fa-remove pull-right"></i></a>
+                </li>
+              </ul>
             </div>
-            <a href="" ng-click="toggleFacet('publisher')" ng-if="facets.publisher.length>8" id="linkpublisher"  style="display:block">
-              <small>View
-                <span ng-if="isMoreVisible('publisher')">Less...</span>
-                <span ng-if="!isMoreVisible('publisher')">More...</span>
-              </small>
-            </a>
-          </ul>
-        </div>
-        <div ng-if="facets.language.length > 0">
-          <h3>Language</h3>
-          <ul class="list-unstyled">
-            <li ng-repeat="facet in facets.language.slice(0,8)">
-              <a href="" ng-click="toggleFilter('language', facet.name, true)">[[ facet.name ]] ([[facet.value]])</a>
-              <a href="" ng-click="toggleFilter('language', facet.name, true)" ng-if="isFacet('language',facet.name)"><i class="fa fa-remove"></i></a>
-            </li>
-            <div id="morelanguage" style="display:none">
-              <li ng-repeat="facet in facets.language.slice(8)">
-                <a href="" ng-click="toggleFilter('language', facet.name, true)">[[ facet.name ]] ([[facet.value]])</a>
-                <a href="" ng-click="toggleFilter('language', facet.name, true)" ng-if="isFacet('language',facet.name)"><i class="fa fa-remove"></i></a>
-              </li>
+            <div ng-if="filters.publisher.length > 0">
+              <h3>Publisher</h3>
+              <ul class="list-unstyled">
+                <li ng-repeat="filter in filters.publisher
+                               | stringToArray track by $index">
+                  <a href=""
+                     ng-click="toggleFilter('publisher', filter, true)"
+                     title="[[ filter ]]">
+                    [[ filter | limitTo:25 ]][[ filter.length > 25 ? '...' : '' ]] <i class="fa fa-remove pull-right"></i></a>
+                </li>
+              </ul>
             </div>
-            <a href="" ng-click="toggleFacet('language')" ng-if="facets.language.length>8" id="linklanguage"  style="display:block">
-              <small>View
-                <span ng-if="isMoreVisible('language')">Less...</span>
-                <span ng-if="!isMoreVisible('language')">More...</span>
-              </small>
-            </a>
-          </ul>
+            <div ng-if="filters.language.length > 0">
+              <h3>Language</h3>
+              <ul class="list-unstyled">
+                <li ng-repeat="filter in filters.language
+                               | stringToArray track by $index">
+                  <a href=""
+                     ng-click="toggleFilter('language', filter, true)"
+                     title="[[ filter ]]">
+                    [[ filter | limitTo:25 ]][[ filter.length > 25 ? '...' : '' ]] <i class="fa fa-remove pull-right"></i></a>
+                </li>
+              </ul>
+            </div>
+            <div ng-if="filters.format.length > 0">
+              <h3>Format</h3>
+              <ul class="list-unstyled">
+                <li ng-repeat="filter in filters.format
+                               | stringToArray track by $index">
+                  <a href=""
+                     ng-click="toggleFilter('format', filter, true)"
+                     title="[[ filter ]]">
+                    [[ filter | limitTo:25 ]][[ filter.length > 25 ? '...' : '' ]] <i class="fa fa-remove pull-right"></i></a>
+                </li>
+              </ul>
+            </div>
+            <div ng-if="filters.access.length > 0">
+              <h3>Access</h3>
+              <ul class="list-unstyled">
+                <li ng-repeat="filter in filters.access
+                               | stringToArray track by $index">
+                  <a href=""
+                     ng-click="toggleFilter('access', filter, true)"
+                     title="[[ filter ]]">
+                    [[ filter | limitTo:25 ]][[ filter.length > 25 ? '...' : '' ]] <i class="fa fa-remove pull-right"></i></a>
+                </li>
+              </ul>
+            </div>
+            <div ng-if="filters.licence.length > 0">
+              <h3>Licence</h3>
+              <ul class="list-unstyled">
+                <li ng-repeat="filter in filters.licence
+                               | stringToArray track by $index">
+                  <a href=""
+                     ng-click="toggleFilter('licence', filter, true)"
+                     title="[[ filter ]]">
+                    [[ filter | limitTo:25 ]][[ filter.length > 25 ? '...' : '' ]] <i class="fa fa-remove pull-right"></i></a>
+                </li>
+              </ul>
+            </div>
+            <button id="button_reset_search"
+                    type="button"
+                    title="Clear search"
+                    class="btn btn-primary pull-right"
+                    ng-show="anyFilters()"
+                    ng-click="resetSearch()">
+              <i class="fa fa-remove"></i>
+              Clear search
+            </button>
+          </div>
         </div>
-        <div ng-if="facets.format.length > 0">
-          <h3>Format</h3>
-          <ul class="list-unstyled">
-            <li ng-repeat="facet in facets.format">
-              <a href="" ng-click="toggleFilter('format', facet.name, true)">[[ facet.name ]] ([[facet.value]])</a>
-              <a href="" ng-click="toggleFilter('format', facet.name, true)" ng-if="isFacet('format',facet.name)"><i class="fa fa-remove"></i></a>
-            </li>
-          </ul>
-        </div>
-        <div ng-if="facets.access.length > 0">
-          <h3>Access</h3>
-          <ul class="list-unstyled">
-            <li ng-repeat="facet in facets.access">
-              <a href="" ng-click="toggleFilter('access', facet.name, true)">[[ facet.name ]] ([[facet.value]])</a>
-              <a href="" ng-click="toggleFilter('access', facet.name, true)" ng-if="isFacet('access',facet.name)"><i class="fa fa-remove"></i></a>
-            </li>
-          </ul>
-        </div>
-        <div ng-if="facets.licence.length > 0">
-          <h3>Licence</h3>
-          <ul class="list-unstyled">
-            <li ng-repeat="facet in facets.licence">
-              <a href="" ng-click="toggleFilter('licence', facet.name, true)">[[ facet.name ]] ([[facet.value]])</a>
-              <a href="" ng-click="toggleFilter('licence', facet.name, true)" ng-if="isFacet('licence',facet.name)"><i class="fa fa-remove"></i></a>
-            </li>
-          </ul>
+
+        <!-- Don't need a more complicated test than
+             "result.response.numFound gt 0" here, because
+             _every_ result at least has a subject.
+        -->
+        <div ng-if="result.response.numFound > 0"
+             class="panel panel-primary">
+          <div class="panel-heading">Refine search results</div>
+          <div class="panel-body swatch-white">
+
+            <div ng-if="facets.subject_labels.length > 0">
+              <h3>Subject</h3>
+              <ul class="listy">
+                <li ng-repeat="facet in facets.subject_labels.slice(0,8)">
+                  <input type="checkbox" ng-checked="isFacet('subject_labels',facet.name)"
+                         ng-click="toggleFilter('subject_labels', facet.name, true)">
+                  <a href=""
+                     ng-click="toggleFilter('subject_labels', facet.name, true)"
+                     title="[[ facet.name ]]">
+                    [[ facet.name | limitTo: 22]][[ facet.name.length > 22 ? '...' : '' ]]
+                    <span class="count">([[facet.value]])</span></a>
+                </li>
+
+                <div id="moresubject_labels" style="display:none">
+                  <li ng-repeat="facet in facets.subject_labels.slice(8)">
+                    <input type="checkbox" ng-checked="isFacet('subject_labels',facet.name)"
+                           ng-click="toggleFilter('subject_labels', facet.name, true)">
+                    <a href=""
+                       ng-click="toggleFilter('subject_labels', facet.name, true)"
+                       title="[[ facet.name ]]">
+                      [[ facet.name | limitTo: 22]][[ facet.name.length > 22 ? '...' : '' ]]
+                      <span class="count">([[facet.value]])</span></a>
+                  </li>
+                </div>
+                <a href="" ng-click="toggleFacet('subject_labels')" ng-if="facets.subject_labels.length>8" id="linksubjects"  style="display:block">
+                  <small>View
+                    <span ng-if="isMoreVisible('subject_labels')">Less...</span>
+                    <span ng-if="!isMoreVisible('subject_labels')">More...</span>
+                  </small>
+                </a>
+              </ul>
+            </div>
+            <div ng-if="facets.publisher.length > 0">
+              <h3>Publisher</h3>
+              <ul class="listy">
+                <li ng-repeat="facet in facets.publisher.slice(0,8)">
+                  <input type="checkbox" ng-checked="isFacet('publisher',facet.name)"
+                         ng-click="toggleFilter('publisher', facet.name, true)">
+                  <a href=""
+                     ng-click="toggleFilter('publisher', facet.name, true)"
+                     title="[[ facet.name ]]">
+                    [[ facet.name | limitTo: 22]][[ facet.name.length > 22 ? '...' : '' ]]
+                    <span class="count">([[facet.value]])</span></a>
+                </li>
+
+                <div id="morepublisher" style="display:none">
+                  <li ng-repeat="facet in facets.publisher.slice(8)">
+                    <input type="checkbox" ng-checked="isFacet('publisher',facet.name)"
+                           ng-click="toggleFilter('publisher', facet.name, true)">
+                    <a href=""
+                       ng-click="toggleFilter('publisher', facet.name, true)"
+                       title="[[ facet.name ]]">
+                      [[ facet.name | limitTo: 22]][[ facet.name.length > 22 ? '...' : '' ]]
+                      <span class="count">([[facet.value]])</span></a>
+                  </li>
+                </div>
+                <a href="" ng-click="toggleFacet('publisher')" ng-if="facets.publisher.length>8" id="linkpublisher"  style="display:block">
+                  <small>View
+                    <span ng-if="isMoreVisible('publisher')">Less...</span>
+                    <span ng-if="!isMoreVisible('publisher')">More...</span>
+                  </small>
+                </a>
+              </ul>
+            </div>
+
+            <div ng-if="facets.language.length > 0">
+              <h3>Language</h3>
+              <ul class="listy">
+                <li ng-repeat="facet in facets.language.slice(0,8)">
+                  <input type="checkbox" ng-checked="isFacet('language',facet.name)"
+                         ng-click="toggleFilter('language', facet.name, true)">
+                  <a href=""
+                     ng-click="toggleFilter('language', facet.name, true)"
+                     title="[[ facet.name ]]">
+                    [[ facet.name | limitTo: 22]][[ facet.name.length > 22 ? '...' : '' ]]
+                    <span class="count">([[facet.value]])</span></a>
+                </li>
+
+                <div id="morelanguage" style="display:none">
+                  <li ng-repeat="facet in facets.language.slice(8)">
+                    <input type="checkbox" ng-checked="isFacet('language',facet.name)"
+                           ng-click="toggleFilter('language', facet.name, true)">
+                    <a href=""
+                       ng-click="toggleFilter('language', facet.name, true)"
+                       title="[[ facet.name ]]">
+                      [[ facet.name | limitTo: 22]][[ facet.name.length > 22 ? '...' : '' ]]
+                      <span class="count">([[facet.value]])</span></a>
+                  </li>
+                </div>
+                <a href="" ng-click="toggleFacet('language')" ng-if="facets.language.length>8" id="linklanguage"  style="display:block">
+                  <small>View
+                    <span ng-if="isMoreVisible('language')">Less...</span>
+                    <span ng-if="!isMoreVisible('language')">More...</span>
+                  </small>
+                </a>
+              </ul>
+            </div>
+
+            <div ng-if="facets.format.length > 0">
+              <h3>Format</h3>
+              <ul class="listy">
+                <li ng-repeat="facet in facets.format">
+                  <input type="checkbox" ng-checked="isFacet('format',facet.name)"
+                         ng-click="toggleFilter('format', facet.name, true)">
+
+                  <a href=""
+                     ng-click="toggleFilter('format', facet.name, true)"
+                     title="[[ facet.name ]]">
+                    [[ facet.name | limitTo: 22]][[ facet.name.length > 22 ? '...' : '' ]]
+                    <span class="count">([[facet.value]])</span></a>
+                </li>
+              </ul>
+            </div>
+            <div ng-if="facets.access.length > 0">
+              <h3>Access</h3>
+              <ul class="listy">
+                <li ng-repeat="facet in facets.access">
+                  <input type="checkbox" ng-checked="isFacet('access',facet.name)"
+                         ng-click="toggleFilter('access', facet.name, true)">
+
+                  <a href=""
+                     ng-click="toggleFilter('access', facet.name, true)"
+                     title="[[ facet.name ]]">
+                    [[ facet.name | limitTo: 22]][[ facet.name.length > 22 ? '...' : '' ]]
+                    <span class="count">([[facet.value]])</span></a>
+                </li>
+              </ul>
+            </div>
+            <div ng-if="facets.licence.length > 0">
+              <h3>Licence</h3>
+              <ul class="listy">
+                <li ng-repeat="facet in facets.licence">
+                  <input type="checkbox" ng-checked="isFacet('licence',facet.name)"
+                         ng-click="toggleFilter('licence', facet.name, true)">
+
+                  <a href=""
+                     ng-click="toggleFilter('licence', facet.name, true)"
+                     title="[[ facet.name ]]">
+                    [[ facet.name | limitTo: 22]][[ facet.name.length > 22 ? '...' : '' ]]
+                    <span class="count">([[facet.value]])</span></a>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
-
       <div class="col-md-8 col-lg-9">
 
         <div class="vocab-search-result ng-cloak"
