@@ -3069,6 +3069,17 @@ if (!Array.prototype.find) {
                 return text.replace("_search", "");
             }
         })
+        .filter('stringToArray', function(){
+            // Used by the search controller to support iterating over
+            // _either_ an array or just one string. (We want to
+            // treat a string value as a one-element array.)
+            return function (text) {
+                if (typeof text == 'string') {
+                    return [ text ];
+                }
+                return text;
+            }
+        })
         .filter('trim', function () {
            return function(text, length) {
                var trimmedString = text.substring(0, length);
@@ -3083,7 +3094,8 @@ if (!Array.prototype.find) {
            }
         });
     ;
-})();;(function () {
+})();
+;(function () {
     'use strict';
 
     angular
