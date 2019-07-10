@@ -2,7 +2,7 @@
   <div class="container-fluid element-short-bottom element-short-top">
     <div class="row">
 
-      <div class="col-md-4 col-lg-3 sidebar search-sidebar break">
+      <div class="col-md-4 col-lg-3 sidebar search-sidebar">
 
         <div ng-if="anyFilters()"
              class="panel panel-primary">
@@ -10,83 +10,90 @@
           <div class="panel-body swatch-white">
             <div ng-if="filters.q.length > 0">
               <h3>Query</h3>
-              <ul class="list-unstyled">
+              <ul class="list-current-search">
                 <li>
                   <a href="" ng-click="clearQuery()"
                      title="[[ filters.q ]]">
-                    [[ filters.q | limitTo:25]][[ filters.q.length > 25 ? '...' : '' ]] <i class="fa fa-remove pull-right""></i></a>
+                    [[ filters.q ]]
+                    <span class="clear"><i class="fa fa-remove"></i></span></a>
                 </li>
               </ul>
             </div>
             <div ng-if="filters.subject_labels.length > 0">
               <h3>Subject</h3>
-              <ul class="list-unstyled">
+              <ul class="list-current-search">
                 <li ng-repeat="filter in filters.subject_labels
                                | stringToArray track by $index">
                   <a href=""
                      ng-click="toggleFilter('subject_labels', filter, true)"
                      title="[[ filter ]]">
-                    [[ filter | limitTo:25 ]][[ filter.length > 25 ? '...' : '' ]] <i class="fa fa-remove pull-right"></i></a>
+                    [[ filter ]]
+                    <span class="clear"><i class="fa fa-remove"></i></span></a>
                 </li>
               </ul>
             </div>
             <div ng-if="filters.publisher.length > 0">
               <h3>Publisher</h3>
-              <ul class="list-unstyled">
+              <ul class="list-current-search">
                 <li ng-repeat="filter in filters.publisher
                                | stringToArray track by $index">
                   <a href=""
                      ng-click="toggleFilter('publisher', filter, true)"
                      title="[[ filter ]]">
-                    [[ filter | limitTo:25 ]][[ filter.length > 25 ? '...' : '' ]] <i class="fa fa-remove pull-right"></i></a>
+                    [[ filter ]]
+                    <span class="clear"><i class="fa fa-remove"></i></span></a>
                 </li>
               </ul>
             </div>
             <div ng-if="filters.language.length > 0">
               <h3>Language</h3>
-              <ul class="list-unstyled">
+              <ul class="list-current-search">
                 <li ng-repeat="filter in filters.language
                                | stringToArray track by $index">
                   <a href=""
                      ng-click="toggleFilter('language', filter, true)"
                      title="[[ filter ]]">
-                    [[ filter | limitTo:25 ]][[ filter.length > 25 ? '...' : '' ]] <i class="fa fa-remove pull-right"></i></a>
+                    [[ filter ]]
+                    <span class="clear"><i class="fa fa-remove"></i></span></a>
                 </li>
               </ul>
             </div>
             <div ng-if="filters.format.length > 0">
               <h3>Format</h3>
-              <ul class="list-unstyled">
+              <ul class="list-current-search">
                 <li ng-repeat="filter in filters.format
                                | stringToArray track by $index">
                   <a href=""
                      ng-click="toggleFilter('format', filter, true)"
                      title="[[ filter ]]">
-                    [[ filter | limitTo:25 ]][[ filter.length > 25 ? '...' : '' ]] <i class="fa fa-remove pull-right"></i></a>
+                    [[ filter ]]
+                    <span class="clear"><i class="fa fa-remove"></i></span></a>
                 </li>
               </ul>
             </div>
             <div ng-if="filters.access.length > 0">
               <h3>Access</h3>
-              <ul class="list-unstyled">
+              <ul class="list-current-search">
                 <li ng-repeat="filter in filters.access
                                | stringToArray track by $index">
                   <a href=""
                      ng-click="toggleFilter('access', filter, true)"
                      title="[[ filter ]]">
-                    [[ filter | limitTo:25 ]][[ filter.length > 25 ? '...' : '' ]] <i class="fa fa-remove pull-right"></i></a>
+                    [[ filter ]]
+                    <span class="clear"><i class="fa fa-remove"></i></span></a>
                 </li>
               </ul>
             </div>
             <div ng-if="filters.licence.length > 0">
               <h3>Licence</h3>
-              <ul class="list-unstyled">
+              <ul class="list-current-search">
                 <li ng-repeat="filter in filters.licence
                                | stringToArray track by $index">
                   <a href=""
                      ng-click="toggleFilter('licence', filter, true)"
                      title="[[ filter ]]">
-                    [[ filter | limitTo:25 ]][[ filter.length > 25 ? '...' : '' ]] <i class="fa fa-remove pull-right"></i></a>
+                    [[ filter ]]
+                    <span class="clear"><i class="fa fa-remove"></i></span></a>
                 </li>
               </ul>
             </div>
@@ -113,14 +120,14 @@
 
             <div ng-if="facets.subject_labels.length > 0">
               <h3>Subject</h3>
-              <ul class="listy">
+              <ul class="list-facet-filter">
                 <li ng-repeat="facet in facets.subject_labels.slice(0,8)">
                   <input type="checkbox" ng-checked="isFacet('subject_labels',facet.name)"
                          ng-click="toggleFilter('subject_labels', facet.name, true)">
                   <a href=""
                      ng-click="toggleFilter('subject_labels', facet.name, true)"
                      title="[[ facet.name ]]">
-                    [[ facet.name | limitTo: 22]][[ facet.name.length > 22 ? '...' : '' ]]
+                    [[ facet.name ]]
                     <span class="count">([[facet.value]])</span></a>
                 </li>
 
@@ -131,7 +138,7 @@
                     <a href=""
                        ng-click="toggleFilter('subject_labels', facet.name, true)"
                        title="[[ facet.name ]]">
-                      [[ facet.name | limitTo: 22]][[ facet.name.length > 22 ? '...' : '' ]]
+                      [[ facet.name ]]
                       <span class="count">([[facet.value]])</span></a>
                   </li>
                 </div>
@@ -145,14 +152,14 @@
             </div>
             <div ng-if="facets.publisher.length > 0">
               <h3>Publisher</h3>
-              <ul class="listy">
+              <ul class="list-facet-filter">
                 <li ng-repeat="facet in facets.publisher.slice(0,8)">
                   <input type="checkbox" ng-checked="isFacet('publisher',facet.name)"
                          ng-click="toggleFilter('publisher', facet.name, true)">
                   <a href=""
                      ng-click="toggleFilter('publisher', facet.name, true)"
                      title="[[ facet.name ]]">
-                    [[ facet.name | limitTo: 22]][[ facet.name.length > 22 ? '...' : '' ]]
+                    [[ facet.name ]]
                     <span class="count">([[facet.value]])</span></a>
                 </li>
 
@@ -163,7 +170,7 @@
                     <a href=""
                        ng-click="toggleFilter('publisher', facet.name, true)"
                        title="[[ facet.name ]]">
-                      [[ facet.name | limitTo: 22]][[ facet.name.length > 22 ? '...' : '' ]]
+                      [[ facet.name ]]
                       <span class="count">([[facet.value]])</span></a>
                   </li>
                 </div>
@@ -178,14 +185,14 @@
 
             <div ng-if="facets.language.length > 0">
               <h3>Language</h3>
-              <ul class="listy">
+              <ul class="list-facet-filter">
                 <li ng-repeat="facet in facets.language.slice(0,8)">
                   <input type="checkbox" ng-checked="isFacet('language',facet.name)"
                          ng-click="toggleFilter('language', facet.name, true)">
                   <a href=""
                      ng-click="toggleFilter('language', facet.name, true)"
                      title="[[ facet.name ]]">
-                    [[ facet.name | limitTo: 22]][[ facet.name.length > 22 ? '...' : '' ]]
+                    [[ facet.name ]]
                     <span class="count">([[facet.value]])</span></a>
                 </li>
 
@@ -196,7 +203,7 @@
                     <a href=""
                        ng-click="toggleFilter('language', facet.name, true)"
                        title="[[ facet.name ]]">
-                      [[ facet.name | limitTo: 22]][[ facet.name.length > 22 ? '...' : '' ]]
+                      [[ facet.name ]]
                       <span class="count">([[facet.value]])</span></a>
                   </li>
                 </div>
@@ -211,7 +218,7 @@
 
             <div ng-if="facets.format.length > 0">
               <h3>Format</h3>
-              <ul class="listy">
+              <ul class="list-facet-filter">
                 <li ng-repeat="facet in facets.format">
                   <input type="checkbox" ng-checked="isFacet('format',facet.name)"
                          ng-click="toggleFilter('format', facet.name, true)">
@@ -219,14 +226,14 @@
                   <a href=""
                      ng-click="toggleFilter('format', facet.name, true)"
                      title="[[ facet.name ]]">
-                    [[ facet.name | limitTo: 22]][[ facet.name.length > 22 ? '...' : '' ]]
+                    [[ facet.name ]]
                     <span class="count">([[facet.value]])</span></a>
                 </li>
               </ul>
             </div>
             <div ng-if="facets.access.length > 0">
               <h3>Access</h3>
-              <ul class="listy">
+              <ul class="list-facet-filter">
                 <li ng-repeat="facet in facets.access">
                   <input type="checkbox" ng-checked="isFacet('access',facet.name)"
                          ng-click="toggleFilter('access', facet.name, true)">
@@ -234,14 +241,14 @@
                   <a href=""
                      ng-click="toggleFilter('access', facet.name, true)"
                      title="[[ facet.name ]]">
-                    [[ facet.name | limitTo: 22]][[ facet.name.length > 22 ? '...' : '' ]]
+                    [[ facet.name ]]
                     <span class="count">([[facet.value]])</span></a>
                 </li>
               </ul>
             </div>
             <div ng-if="facets.licence.length > 0">
               <h3>Licence</h3>
-              <ul class="listy">
+              <ul class="list-facet-filter">
                 <li ng-repeat="facet in facets.licence">
                   <input type="checkbox" ng-checked="isFacet('licence',facet.name)"
                          ng-click="toggleFilter('licence', facet.name, true)">
@@ -249,7 +256,7 @@
                   <a href=""
                      ng-click="toggleFilter('licence', facet.name, true)"
                      title="[[ facet.name ]]">
-                    [[ facet.name | limitTo: 22]][[ facet.name.length > 22 ? '...' : '' ]]
+                    [[ facet.name ]]
                     <span class="count">([[facet.value]])</span></a>
                 </li>
               </ul>
@@ -289,7 +296,7 @@
                 style="margin-left:5px">deprecated</span>
 
           <a id="widget-link" class="pull-right" href="" ng-if="doc.widgetable" tip="&lt;b>Widgetable&lt;/b>&lt;br/>This vocabulary can be readily used for resource description or discovery in your system using our vocabulary widget.&lt;br/>&lt;a id='widget-link2' target='_blank' href='{{portal_url('vocabs/page/widget_explorer')}}'>Learn more&lt;/a>">
-            <span class="label label-default pull-right"><img class="widget-icon" height="16" width="16"src="{{asset_url('images/cogwheels_white.png', 'core')}}"/> widgetable</span>
+            <span class="label label-default pull-right"><img class="widget-icon" height="16" width="16" src="{{asset_url('images/cogwheels_white.png', 'core')}}"/> widgetable</span>
           </a>
 
           <h3 class="break"><a href="[[ base_url ]]viewById/[[ doc.id ]]">[[ doc.title ]]</a></h3>
