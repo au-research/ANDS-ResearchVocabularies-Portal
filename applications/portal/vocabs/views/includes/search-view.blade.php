@@ -4,8 +4,7 @@
 
       <div class="col-md-4 col-lg-3 sidebar search-sidebar">
 
-        <div ng-if="anyFilters()"
-             class="panel panel-primary">
+        <div class="panel panel-primary">
           <div class="panel-heading">Current search</div>
           <div class="panel-body swatch-white">
             <div ng-if="filters.q.length > 0">
@@ -99,12 +98,12 @@
             </div>
             <button id="button_reset_search"
                     type="button"
-                    title="Clear search"
+                    title="Reset search"
                     class="btn btn-primary pull-right"
-                    ng-show="anyFilters()"
+                    ng-disabled="!anyFilters()"
                     ng-click="resetSearch()">
               <i class="fa fa-remove"></i>
-              Clear search
+              Reset search
             </button>
           </div>
         </div>
@@ -266,27 +265,52 @@
       </div>
       <div class="col-md-8 col-lg-9">
 
-        <div class="vocab-search-result ng-cloak"
+        <div class="vocab-search-result swatch-white ng-cloak"
              ng-if="result.response.numFound > 0">
-          <span class="pull-left"><b>[[ result.response.numFound
-              ]]</b>
-            <ng-pluralize count="result.response.numFound"
-                          when="{'1': 'result',
-                                'other': 'results'}">
-            </ng-pluralize>
-            ([[ result.responseHeader.QTime ]]
-            <ng-pluralize count="result.responseHeader.QTime"
-                          when="{'1': 'millisecond',
-                                'other': 'milliseconds'}" >
-            </ng-pluralize>)</span>
+          <table width="100%">
+            <tbody>
+              <tr>
+                <td>
+                  <b>[[ result.response.numFound
+                    ]]</b>
+                  <ng-pluralize count="result.response.numFound"
+                                when="{'1': 'result',
+                                       'other': 'results'}">
+                  </ng-pluralize>
+                  ([[ result.responseHeader.QTime ]]
+                  <ng-pluralize count="result.responseHeader.QTime"
+                                when="{'1': 'millisecond',
+                                       'other': 'milliseconds'}" >
+                  </ng-pluralize>)
+                </td>
+                <td style="width:50%"></td>
+                <!--
+                     <td>Sort by: </td>
+                -->
+                <td>
+                  <select id="show-select" name="show-select"
+                          class="form-control caret-for-select"
+                          style="width:auto"
+                          ng-model="filters.pp"
+                          ng-change="search()">
+                    <option value="15">Show: 15</option>
+                    <option value="30">Show: 30</option>
+                    <option value="60">Show: 60</option>
+                    <option value="100">Show: 100</option>
+                  </select>
+                </td>
 
-          <ul class="pagi element pull-right" >
-            <li><small>Page [[ page.cur ]] / [[ page.end ]]</small></li>
-            <li ng-if="page.cur!=1"><a href="" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></li>
-            <li ng-repeat="x in page.pages"><a ng-class="{'active':page.cur==x}" href="" ng-click="goto(x)">[[x]]</a></li>
-            <li ng-if="page.cur!=page.end"><a href="" ng-click="goto(page.end)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Last</span></a></li>
-          </ul>
-          <div class="clearfix"></div>
+                <td style="padding: 4px"><small>Page [[ page.cur ]] / [[ page.end ]]</small></td>
+                <td ng-if="page.cur!=1"
+                    style="padding-right: 4px"><a href="" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></td>
+                <td ng-repeat="x in page.pages"
+                    style="padding: 4px"><a ng-class="{'active':page.cur==x}" href="" ng-click="goto(x)">[[x]]</a></td>
+                <td ng-if="page.cur!=page.end"
+                    style="padding-left: 4px"><a href="" ng-click="goto(page.end)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Last</span></a></td>
+
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <div ng-repeat="doc in result.response.docs" class="animated fadeInLeft vocab-search-result">
@@ -315,27 +339,52 @@
           </div>
         </div>
 
-        <div class="vocab-search-result ng-cloak"
+        <div class="vocab-search-result swatch-white ng-cloak"
              ng-if="result.response.numFound > 0">
-          <span class="pull-left"><b>[[ result.response.numFound
-              ]]</b>
-            <ng-pluralize count="result.response.numFound"
-                          when="{'1': 'result',
-                                'other': 'results'}">
-            </ng-pluralize>
-            ([[ result.responseHeader.QTime ]]
-            <ng-pluralize count="result.responseHeader.QTime"
-                          when="{'1': 'millisecond',
-                                'other': 'milliseconds'}" >
-            </ng-pluralize>)</span>
+          <table width="100%">
+            <tbody>
+              <tr>
+                <td>
+                  <b>[[ result.response.numFound
+                    ]]</b>
+                  <ng-pluralize count="result.response.numFound"
+                                when="{'1': 'result',
+                                       'other': 'results'}">
+                  </ng-pluralize>
+                  ([[ result.responseHeader.QTime ]]
+                  <ng-pluralize count="result.responseHeader.QTime"
+                                when="{'1': 'millisecond',
+                                       'other': 'milliseconds'}" >
+                  </ng-pluralize>)
+                </td>
+                <td style="width:50%"></td>
+                <!--
+                     <td>Sort by: </td>
+                -->
+                <td>
+                  <select id="show-select" name="show-select"
+                          class="form-control caret-for-select"
+                          style="width:auto"
+                          ng-model="filters.pp"
+                          ng-change="search()">
+                    <option value="15">Show: 15</option>
+                    <option value="30">Show: 30</option>
+                    <option value="60">Show: 60</option>
+                    <option value="100">Show: 100</option>
+                  </select>
+                </td>
 
-          <ul class="pagi element pull-right">
-            <li><small>Page [[ page.cur ]] / [[ page.end ]]</small></li>
-            <li ng-if="page.cur!=1"><a href="" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></li>
-            <li ng-repeat="x in page.pages"><a ng-class="{'active':page.cur==x}" href="" ng-click="goto(x)">[[x]]</a></li>
-            <li ng-if="page.cur!=page.end"><a href="" ng-click="goto(page.end)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Last</span></a></li>
-          </ul>
-          <div class="clearfix"></div>
+                <td style="padding: 4px"><small>Page [[ page.cur ]] / [[ page.end ]]</small></td>
+                <td ng-if="page.cur!=1"
+                    style="padding-right: 4px"><a href="" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></td>
+                <td ng-repeat="x in page.pages"
+                    style="padding: 4px"><a ng-class="{'active':page.cur==x}" href="" ng-click="goto(x)">[[x]]</a></td>
+                <td ng-if="page.cur!=page.end"
+                    style="padding-left: 4px"><a href="" ng-click="goto(page.end)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Last</span></a></td>
+
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <div ng-if="result.response.numFound == 0" class="animated fadeInLeft vocab-search-result">

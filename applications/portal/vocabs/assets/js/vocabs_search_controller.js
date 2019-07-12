@@ -16,6 +16,11 @@
         .module('app')
         .controller('searchCtrl', searchController);
 
+    /** Default (maximum) number of search results per page.
+     * @memberof searchCtrl
+     */
+    var defaultPageSize = '15';
+
     /** Search controller.  See `views/includes/search-view.blade.php`
      * for the AngularJS-enabled search results template.
      * @param $scope The AngularJS controller scope.
@@ -75,6 +80,9 @@
             if (!$scope.filters['q']) {
                 $scope.filters['q'] = '';
             }
+            if (!$scope.filters['pp']) {
+                $scope.filters['pp'] = defaultPageSize;
+            }
             // If no isPagination parameter was supplied, or if it is
             // false, then (re)set the p filter to 1.
             if (!isPagination || isPagination == undefined) {
@@ -84,7 +92,9 @@
                 // We're currently on a page _other than_
                 // a search results page. So we redirect
                 // to the Portal's PHP search() controller.
-                window.location = $scope.base_url + 'search/#!/?q=' +
+                // Use the default page size.
+                window.location = $scope.base_url + 'search/#!/?pp=' +
+                    defaultPageSize + '&q=' +
                     $scope.filters['q'];
             } else {
                 // See comment above about a change to AngularJS. Now,
@@ -100,11 +110,13 @@
             }
         };
 
-        /** Reset all search filters.
+        /** Reset all search filters. Reset the page size to the
+         * default, and show page 1 of results.
          * @memberof searchCtrl
          */
         $scope.resetSearch = function () {
             $scope.filters = {};
+            $scope.filters['pp'] = defaultPageSize;
             $scope.form.query = "";
             $scope.search();
         };
@@ -150,7 +162,7 @@
 
                     $scope.page = {
                         cur: ($scope.filters['p'] ? parseInt($scope.filters['p']) : 1),
-                        rows: ($scope.filters['rows'] ? parseInt($scope.filters['rows']) : 10),
+                        rows: ($scope.filters['pp'] ? parseInt($scope.filters['pp']) : 10),
                         range: 3,
                         pages: []
                     }
@@ -165,6 +177,8 @@
                     // We changed the model outside AngularJS's notice, so we
                     // need to cause a refresh of the form.
                     $scope.$apply();
+                    // And now scroll to the top of the page.
+                    $('html, body').animate({ 'scrollTop': 0 }, 'slow');
                 });
         }
 
@@ -204,6 +218,10 @@
                 if (url) {
                     $scope.filters = $location.search();
                     $scope.form.query = $scope.filters.q;
+                    // If no page size specified, set to the default.
+                    if (!$scope.filters['pp']) {
+                        $scope.filters['pp'] = defaultPageSize;
+                    }
                     performSearch();
                 }
             });
@@ -235,6 +253,10 @@
         // helpers.
 
         /** Are any search filters at all in play?
+         * More precisely: are the current search settings not
+         * the "defaults"? This is also the case if the user
+         * is not on the first page of results, or if they have
+         * changed the page size to something other than the default.
          * @returns {boolean} True, if there are any filters set.
          * @memberof searchCtrl
          */
@@ -250,8 +272,17 @@
                                             found = true;
                                         }
                                         return;
-                                    case 'p': return;
-                                    case 'pp': return;
+                                    case 'p':
+                                        if ($scope.filters['p'] != "1") {
+                                            found = true;
+                                        }
+                                        return;
+                                    case 'pp':
+                                        if ($scope.filters['pp'] !=
+                                            defaultPageSize) {
+                                            found = true;
+                                        }
+                                        return;
                                     default: found = true;
                                     }
                                 });
