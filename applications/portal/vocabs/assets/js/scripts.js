@@ -3545,6 +3545,12 @@ if (!Array.prototype.find) {
                         // results for a field "xyz" and also "xyz_search"
                         // and also "xyz_phrase". Remove such duplicates.
                         angular.forEach(highlights, function(value, key) {
+                            // Depending on the highlight method, value
+                            // might be an empty list. (This is the case
+                            // for the "unified" method.) If so, skip it.
+                            if (value.length == 0) {
+                                return;
+                            }
                             if (key.endsWith("_sort")) {
                                 // Ignore "*_sort" fields.
                                 return;
