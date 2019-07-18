@@ -295,7 +295,7 @@
                           ng-change="search()">
                   </select>
                 </td>
-                <td>
+                <td style="padding-right: 4px">
                   <select id="show-select" name="show-select"
                           class="form-control caret-for-select"
                           style="width:auto"
@@ -308,13 +308,13 @@
                   </select>
                 </td>
 
-                <td style="white-space: nowrap; padding: 4px"><small>Page [[ page.cur ]] / [[ page.end ]]</small></td>
+                <td style="white-space: nowrap; padding: 8px"><small>Page [[ page.cur ]] / [[ page.end ]]</small></td>
                 <td ng-if="page.cur!=1"
-                    style="padding-right: 4px"><a href="" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></td>
+                    style="padding: 4px"><a href="" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></td>
                 <td ng-repeat="x in page.pages"
                     class="pagi"><a ng-class="{'active':page.cur==x}" href="" ng-click="goto(x)">[[x]]</a></td>
                 <td ng-if="page.cur!=page.end"
-                    style="padding-left: 4px"><a href="" ng-click="goto(page.end)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Last</span></a></td>
+                    style="padding: 4px"><a href="" ng-click="goto(page.end)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Last</span></a></td>
 
               </tr>
             </tbody>
@@ -382,7 +382,7 @@
                           ng-change="search()">
                   </select>
                 </td>
-                <td>
+                <td style="padding-right: 4px">
                   <select id="show-select" name="show-select"
                           class="form-control caret-for-select"
                           style="width:auto"
@@ -395,13 +395,13 @@
                   </select>
                 </td>
 
-                <td style="white-space: nowrap; padding: 4px"><small>Page [[ page.cur ]] / [[ page.end ]]</small></td>
+                <td style="white-space: nowrap; padding: 8px"><small>Page [[ page.cur ]] / [[ page.end ]]</small></td>
                 <td ng-if="page.cur!=1"
-                    style="padding-right: 4px"><a href="" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></td>
+                    style="padding: 4px"><a href="" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></td>
                 <td ng-repeat="x in page.pages"
                     class="pagi"><a ng-class="{'active':page.cur==x}" href="" ng-click="goto(x)">[[x]]</a></td>
                 <td ng-if="page.cur!=page.end"
-                    style="padding-left: 4px"><a href="" ng-click="goto(page.end)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Last</span></a></td>
+                    style="padding: 4px"><a href="" ng-click="goto(page.end)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Last</span></a></td>
 
               </tr>
             </tbody>
