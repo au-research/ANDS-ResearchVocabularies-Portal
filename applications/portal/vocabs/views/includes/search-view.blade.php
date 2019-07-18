@@ -304,7 +304,7 @@
                 <td ng-if="page.cur!=1"
                     style="padding-right: 4px"><a href="" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></td>
                 <td ng-repeat="x in page.pages"
-                    style="padding: 4px"><a ng-class="{'active':page.cur==x}" href="" ng-click="goto(x)">[[x]]</a></td>
+                    class="pagi"><a ng-class="{'active':page.cur==x}" href="" ng-click="goto(x)">[[x]]</a></td>
                 <td ng-if="page.cur!=page.end"
                     style="padding-left: 4px"><a href="" ng-click="goto(page.end)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Last</span></a></td>
 
@@ -378,7 +378,7 @@
                 <td ng-if="page.cur!=1"
                     style="padding-right: 4px"><a href="" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></td>
                 <td ng-repeat="x in page.pages"
-                    style="padding: 4px"><a ng-class="{'active':page.cur==x}" href="" ng-click="goto(x)">[[x]]</a></td>
+                    class="pagi"><a ng-class="{'active':page.cur==x}" href="" ng-click="goto(x)">[[x]]</a></td>
                 <td ng-if="page.cur!=page.end"
                     style="padding-left: 4px"><a href="" ng-click="goto(page.end)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Last</span></a></td>
 

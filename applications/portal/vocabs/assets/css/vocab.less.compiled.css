@@ -432,17 +432,27 @@ input:disabled + label {
   word-wrap: break-word;
   color: #808080;
 }
+/* No longer used, as we now show
+   pagination links in td elements.
 ul.pagi {
-  margin: 0 auto;
-  padding: 0;
+  margin:0 auto;
+  padding:0;
+  li {
+    list-style-type:none;
+    display:inline;
+    margin:0px 5px;
+    a.active {
+      color: @secondaryColor !important;
+    }
+  }
 }
-ul.pagi li {
-  list-style-type: none;
-  display: inline;
-  margin: 0px 5px;
+*/
+td.pagi {
+  padding: 4px;
 }
-ul.pagi li a.active {
+td.pagi a.active {
   color: #46494c !important;
+  font-weight: bold;
 }
 .published_title {
   word-wrap: break-word;

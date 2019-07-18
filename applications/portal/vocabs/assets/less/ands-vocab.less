@@ -536,6 +536,8 @@ input:disabled+label{
 }
 
 
+/* No longer used, as we now show
+   pagination links in td elements.
 ul.pagi {
   margin:0 auto;
   padding:0;
@@ -548,8 +550,15 @@ ul.pagi {
     }
   }
 }
+*/
 
-
+td.pagi {
+    padding: 4px;
+    a.active {
+        color: @secondaryColor !important;
+        font-weight: bold;
+    }
+}
 
 .published_title{
   word-wrap: break-word;
