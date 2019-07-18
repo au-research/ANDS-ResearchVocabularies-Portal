@@ -270,7 +270,7 @@
           <table width="100%">
             <tbody>
               <tr>
-                <td>
+                <td style="white-space: nowrap;">
                   <b>[[ result.response.numFound
                     ]]</b>
                   <ng-pluralize count="result.response.numFound"
@@ -283,10 +283,18 @@
                                        'other': 'milliseconds'}" >
                   </ng-pluralize>)
                 </td>
-                <td style="width:50%"></td>
-                <!--
-                     <td>Sort by: </td>
-                -->
+                <td style="width:60%"></td>
+                <td style="padding-right: 4px">
+                  <select id="sort-select" name="sort-select"
+                          class="form-control caret-for-select"
+                          style="width:auto"
+                          ng-options="option.id as
+                              ('Sort by: ' + option.name)
+                              for option in sortOptions"
+                          ng-model="form.sort"
+                          ng-change="search()">
+                  </select>
+                </td>
                 <td>
                   <select id="show-select" name="show-select"
                           class="form-control caret-for-select"
@@ -300,7 +308,7 @@
                   </select>
                 </td>
 
-                <td style="padding: 4px"><small>Page [[ page.cur ]] / [[ page.end ]]</small></td>
+                <td style="white-space: nowrap; padding: 4px"><small>Page [[ page.cur ]] / [[ page.end ]]</small></td>
                 <td ng-if="page.cur!=1"
                     style="padding-right: 4px"><a href="" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></td>
                 <td ng-repeat="x in page.pages"
@@ -331,11 +339,16 @@
           <p ng-if="doc.publisher">
             Publisher: [[ doc.publisher.join(', ') ]]
           </p>
-          <p ng-if="getHighlight(doc.id)===false">[[ doc.description | limitTo:500 ]]<span ng-if="doc.description.length > 500">...</span></p>
+          <p ng-if="hasHighlight(doc.id)===false">[[ doc.description | limitTo:500 ]]<span ng-if="doc.description.length > 500">...</span></p>
           <div ng-repeat="(index, content) in getHighlight(doc.id)" class="element-shorter-bottom">
             <div ng-repeat="c in content track by $index" class="element-shortest-bottom">
               <span ng-bind-html="c | trustAsHtml"></span> <span class="muted">(in [[ index | removeSearchTail ]])</span>
             </div>
+          </div>
+          <div ng-if="doc.last_updated" class="pull-right">
+            <small>Last updated: [[ doc.last_updated ]]</small>
+          </div>
+          <div class="clearfix">
           </div>
         </div>
 
@@ -344,7 +357,7 @@
           <table width="100%">
             <tbody>
               <tr>
-                <td>
+                <td style="white-space: nowrap;">
                   <b>[[ result.response.numFound
                     ]]</b>
                   <ng-pluralize count="result.response.numFound"
@@ -357,10 +370,18 @@
                                        'other': 'milliseconds'}" >
                   </ng-pluralize>)
                 </td>
-                <td style="width:50%"></td>
-                <!--
-                     <td>Sort by: </td>
-                -->
+                <td style="width:60%"></td>
+                <td style="padding-right: 4px">
+                  <select id="sort-select" name="sort-select"
+                          class="form-control caret-for-select"
+                          style="width:auto"
+                          ng-options="option.id as
+                              ('Sort by: ' + option.name)
+                              for option in sortOptions"
+                          ng-model="form.sort"
+                          ng-change="search()">
+                  </select>
+                </td>
                 <td>
                   <select id="show-select" name="show-select"
                           class="form-control caret-for-select"
@@ -374,7 +395,7 @@
                   </select>
                 </td>
 
-                <td style="padding: 4px"><small>Page [[ page.cur ]] / [[ page.end ]]</small></td>
+                <td style="white-space: nowrap; padding: 4px"><small>Page [[ page.cur ]] / [[ page.end ]]</small></td>
                 <td ng-if="page.cur!=1"
                     style="padding-right: 4px"><a href="" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></td>
                 <td ng-repeat="x in page.pages"

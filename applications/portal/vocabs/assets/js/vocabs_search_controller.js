@@ -21,6 +21,35 @@
      */
     var defaultPageSize = '15';
 
+    /** List of available sort options, when there is no query term.
+     * The code relies on a convention that the default option
+     * is the first in the list.
+     * The id values must correspond with the values defined
+     * in the Registry Schema search-sort-order enumerated type.
+     * @memberof searchCtrl
+     */
+    var sortOptionsWhenNoQueryTerm = [
+        { 'id': 'aToZ', 'name': 'Title A-Z'},
+        { 'id': 'zToA', 'name': 'Title Z-A'},
+        { 'id': 'lastUpdatedAsc', 'name': 'Least-recently updated'},
+        { 'id': 'lastUpdatedDesc', 'name': 'Most-recently updated'}
+    ];
+
+    /** List of available sort options, when there is a query term.
+     * The code relies on a convention that the default option
+     * is the first in the list.
+     * The id values must correspond with the values defined
+     * in the Registry Schema search-sort-order enumerated type.
+     * @memberof searchCtrl
+     */
+    var sortOptionsWhenQueryTerm = [
+        { 'id': 'relevance', 'name': 'Relevance'},
+        { 'id': 'aToZ', 'name': 'Title A-Z'},
+        { 'id': 'zToA', 'name': 'Title Z-A'},
+        { 'id': 'lastUpdatedAsc', 'name': 'Least-recently updated'},
+        { 'id': 'lastUpdatedDesc', 'name': 'Most-recently updated'}
+    ];
+
     /** Search controller.  See `views/includes/search-view.blade.php`
      * for the AngularJS-enabled search results template.
      * @param $scope The AngularJS controller scope.
@@ -52,6 +81,9 @@
          * @memberof searchCtrl
          */
         $scope.form = {};
+
+        $scope.sortOptions = sortOptionsWhenNoQueryTerm;
+        $scope.form.sort = $scope.sortOptions[0].id;
 
         /** The form of the URL containing a search is:
          * `base_url+"search/#!/?"+filter+"="+value`, e.g.,
@@ -88,6 +120,12 @@
             if (!isPagination || isPagination == undefined) {
                 $scope.filters['p'] = 1;
             }
+            var sortFilter = sortSettingForCurrentSettings();
+            if (sortFilter === undefined) {
+                delete $scope.filters['sort'];
+            } else {
+                $scope.filters['sort'] = sortFilter;
+            }
             if (notAlreadyOnResultsPage()) {
                 // We're currently on a page _other than_
                 // a search results page. So we redirect
@@ -118,6 +156,10 @@
             $scope.filters = {};
             $scope.filters['pp'] = defaultPageSize;
             $scope.form.query = "";
+            // As noted in the comments for the sort option
+            // definitions, we rely on a convention that the default
+            // sort option is the first in the list.
+            $scope.form.sort = $scope.sortOptions[0].id;
             $scope.search();
         };
 
@@ -159,6 +201,8 @@
                             });
                         });
                     $scope.facets = facets;
+
+                    unpackHighlighting();
 
                     $scope.page = {
                         cur: ($scope.filters['p'] ? parseInt($scope.filters['p']) : 1),
@@ -222,6 +266,23 @@
                     if (!$scope.filters['pp']) {
                         $scope.filters['pp'] = defaultPageSize;
                     }
+                    // Set sort options based on whether or not
+                    // there is a search term.
+                    if ($scope.filters['q']) {
+                        $scope.sortOptions = sortOptionsWhenQueryTerm;
+                    } else {
+                        $scope.sortOptions = sortOptionsWhenNoQueryTerm;
+                    }
+                    // Restore the setting of the "Sort by" select.
+                    if ($scope.filters['sort']) {
+                        $scope.form.sort = $scope.filters['sort'];
+                    } else {
+                        // As noted in the comments for the sort
+                        // option definitions, we rely on a convention
+                        // that the default sort option is the first
+                        // in the list.
+                        $scope.form.sort = $scope.sortOptions[0].id;
+                    }
                     performSearch();
                 }
             });
@@ -234,6 +295,20 @@
             $scope.filters['p'] = ''+newPage;
             $scope.search(true);
             $("html, body").animate({ scrollTop: 0 }, 500);
+        }
+
+        /** Get the value to use for the sort filter, based on the
+         * current search settings. That value may be undefined,
+         * if the other settings have their default values.
+         * @memberof searchCtrl
+         */
+        var sortSettingForCurrentSettings = function() {
+            if ($scope.form.sort == $scope.sortOptions[0].id) {
+                // The select has been set to the default value.
+                return undefined;
+            } else {
+                return $scope.form.sort;
+            }
         }
 
         /** Are we on any page _other_ than a search results page?
@@ -252,11 +327,11 @@
         // Below are all the user-initiated callbacks and their
         // helpers.
 
-        /** Are any search filters at all in play?
-         * More precisely: are the current search settings not
-         * the "defaults"? This is also the case if the user
-         * is not on the first page of results, or if they have
-         * changed the page size to something other than the default.
+        /** Are any search filters at all in play?  More precisely:
+         * are the current search settings not the "defaults"? This is
+         * also the case if the user is not on the first page of
+         * results, or if they have changed the sort order or page
+         * size to something other than the default.
          * @returns {boolean} True, if there are any filters set.
          * @memberof searchCtrl
          */
@@ -283,6 +358,13 @@
                                             found = true;
                                         }
                                         return;
+                                    case 'sort':
+                                        if ($scope.filters['sort'] &&
+                                            $scope.filters['sort'] !=
+                                            $scope.sortOptions[0].id) {
+                                            found = true;
+                                        }
+                                        return;
                                     default: found = true;
                                     }
                                 });
@@ -290,16 +372,78 @@
             return found;
         }
 
+        /** Processed highlighting data for search results.
+         * Keys are document ids; values are the processed highlight
+         * data for that document.
+         * @memberof searchCtrl
+         */
+        var highlighting = {};
+
+        /** Unpack highlighting data contained in the search results
+         * and put it into highlighting.
+         * @memberof searchCtrl
+         */
+        var unpackHighlighting = function() {
+            highlighting = {};
+            if ($scope.result.highlighting) {
+                angular.forEach(
+                    $scope.result.highlighting, function(highlights, id) {
+                        var result = {};
+                        // The highlighting result for a document
+                        // can contain duplicate
+                        // results for a field, and it can contain "duplicate"
+                        // results for a field "xyz" and also "xyz_search"
+                        // and also "xyz_phrase". Remove such duplicates.
+                        angular.forEach(highlights, function(value, key) {
+                            if (key.endsWith("_sort")) {
+                                // Ignore "*_sort" fields.
+                                return;
+                            }
+                            key = key.replace("_search", "").
+                                replace("_phrase", "");
+                            if (key in result) {
+                                result[key] = result[key].concat(value);
+                            } else {
+                                result[key] = value;
+                            }
+                        });
+                        // Now go through each key/value pair and
+                        // ensure the values are unique. Naive quadratic-time
+                        // technique based on:
+                        // https://stackoverflow.com/questions/1960473/
+                        //   get-all-unique-values-in-a-javascript-array-
+                        //   remove-duplicates
+                        // When we no longer need to support IE, change
+                        // this to use the Set constructor:
+                        //   result[key] = [...new Set(result[key])];
+                        angular.forEach(result, function(value, key) {
+                            result[key] = result[key].filter(
+                                function(value, index, self) { 
+                                    return self.indexOf(value) === index;
+                                }
+                            );
+                        });
+                        highlighting[id] = result;
+                    });
+            }
+        }
+
+        /** Does a result have highlighting data?
+         * Used in the results template.
+         * @param id The document id of the search result.
+         * @memberof searchCtrl
+         */
+        $scope.hasHighlight = function (id) {
+            return (id in highlighting);
+        };
+
         /** Get highlighting information for one result.
          * Used in the results template.
          * @param id The document id of the search result.
          * @memberof searchCtrl
          */
         $scope.getHighlight = function (id) {
-            if ($scope.result.highlighting &&
-                !$.isEmptyObject($scope.result.highlighting[id])) {
-                return $scope.result.highlighting[id];
-            } else return false;
+            return highlighting[id];
         };
 
         /** Callback to clear the search query.
