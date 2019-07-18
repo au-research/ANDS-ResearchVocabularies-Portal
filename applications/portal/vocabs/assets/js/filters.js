@@ -19,11 +19,6 @@
                 return ln;
             }
         })
-        .filter('removeSearchTail', function(){
-            return function (text) {
-                return text.replace("_search", "");
-            }
-        })
         .filter('stringToArray', function(){
             // Used by the search controller to support iterating over
             // _either_ an array or just one string. (We want to
