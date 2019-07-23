@@ -288,22 +288,8 @@
            It overrides the content of the release date text field with
            the value we got from the database. */
         $scope.do_restore_release_date = function() {
-            $('#release_date').val($scope.formatDate(
-                $scope.original_version.release_date));
-        };
-
-        // Helper function for formating parsable date to yyyy-mm-dd
-        $scope.formatDate = function(date) {
-            var d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
-
-            return [year, month, day].join('-');
-        };
+            $('#release_date').val($scope.original_version.release_date);
+        }
 
         /* Watcher for the version.release_data field. If we got notification
            (via the restore_release_date_value flag) to reset the text
@@ -318,7 +304,7 @@
         });
 
         // Now invoke the special handling for release date.
-        $timeout($scope.set_release_date_textfield($scope), 0);
+        $scope.set_release_date_textfield($scope);
 
         // add format to the version.access_points
         // helper method for addformatform
