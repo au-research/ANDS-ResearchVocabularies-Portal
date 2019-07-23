@@ -836,7 +836,7 @@
         // and what URL this page is.
         defaultClient.defaultHeaders['portal-id'] = 'Portal-JS-browse';
         defaultClient.defaultHeaders['portal-referrer'] =
-            window.location;
+            truncateHeader(window.location.toString());
         var api = new VocabularyRegistryApi.ResourcesApi();
 
         api.getVersionArtefactConceptTree($attrs.versionid)

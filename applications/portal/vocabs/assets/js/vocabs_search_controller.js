@@ -66,7 +66,8 @@
         // Let the Registry know that we are the search controller,
         // and what URL this page is.
         defaultClient.defaultHeaders['portal-id'] = 'Portal-JS-search';
-        defaultClient.defaultHeaders['portal-referrer'] = window.location;
+        defaultClient.defaultHeaders['portal-referrer'] =
+            truncateHeader(window.location.toString());
         var api = new VocabularyRegistryApi.ServicesApi();
 
         /** Convenience reference to `base_url`; used in the results

@@ -1447,8 +1447,13 @@ class Vocabs extends MX_Controller
                       $_SERVER['REQUEST_URI'];
         }
         if (!empty($referrer)) {
+            // Typical header maximum length is 8192 characters.
+            // For now, truncate to 4000 characters.
+            // This allows for the maximum having been set to 4096,
+            // and allows for 96 characters for the header name.
             ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()->
-                addDefaultHeader('portal-referrer', $referrer);
+                addDefaultHeader('portal-referrer',
+                                 substr($referrer, 0, 4000));
         }
     }
 
