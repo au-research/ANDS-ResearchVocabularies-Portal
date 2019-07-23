@@ -3586,11 +3586,18 @@ if (!Array.prototype.find) {
 
         /** Does a result have highlighting data?
          * Used in the results template.
+         * Different Solr highlight methods give different
+         * structures of results. So if you change the highlight
+         * method, you need to change this method (and probably
+         * make other changes).
+         * The current implementation is good for the unified highlighter.
          * @param id The document id of the search result.
          * @memberof searchCtrl
          */
         $scope.hasHighlight = function (id) {
-            return (id in highlighting);
+            return ((id in highlighting) &&
+                    (typeof highlighting[id] === "object") &&
+                    (Object.keys(highlighting[id]).length > 0));
         };
 
         /** Get highlighting information for one result.
