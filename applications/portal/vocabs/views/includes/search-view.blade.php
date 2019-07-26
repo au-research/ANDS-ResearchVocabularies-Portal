@@ -339,7 +339,7 @@
           <p ng-if="doc.publisher">
             Publisher: [[ doc.publisher.join(', ') ]]
           </p>
-          <p ng-if="hasHighlight(doc.id)===false">[[ doc.description | limitTo:500 ]]<span ng-if="doc.description.length > 500">...</span></p>
+          <p style="margin-bottom:0px" ng-if="hasHighlight(doc.id)===false">[[ doc.description | limitTo:500 ]]<span ng-if="doc.description.length > 500">...</span></p>
           <div ng-repeat="(index, content) in getHighlight(doc.id)">
             <div ng-repeat="c in content track by $index">
               <span ng-bind-html="c | trustAsHtml"></span> <span class="muted">(in [[ index ]])</span>
