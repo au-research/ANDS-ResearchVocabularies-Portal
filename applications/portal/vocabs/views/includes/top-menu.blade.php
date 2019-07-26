@@ -1,7 +1,8 @@
 <div class="navbar swatch-blue" role="banner">
   <div class="container" style="z-index:10">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".main-navbar">
+      <button type="button" class="navbar-toggle collapsed"
+              data-toggle="collapse" data-target=".main-navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -43,10 +44,15 @@
 @if(!isset($customSearchBlock))
   <div class="swatch-dark-blue" style="position:relative">
     <div id="banner-image" class="background-media"></div>
-    <div class="background-overlay grid-overlay-30" style="background-color: rgba(0,0,0,0.4)"></div>
-    <div class="container">
+    <div class="background-overlay grid-overlay-30"
+         style="background-color: rgba(0,0,0,0.4)"></div>
+    <div class="container-fluid">
       <div class="row element-shorter-bottom element-shorter-top">
-        <div class="col-md-5">
+        <div class="col-md-4 col-lg-3">
+        </div>
+        <!-- Force z-index; need this with container-fluid, but
+             not container. -->
+        <div class="col-md-5" style="z-index: 3">
           <form action="" ng-submit="$event.preventDefault();search()">
             <div class="input-group">
               <input type="text" class="form-control"
