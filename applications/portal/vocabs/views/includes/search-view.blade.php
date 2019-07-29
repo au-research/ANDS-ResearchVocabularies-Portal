@@ -345,7 +345,8 @@
               <span ng-bind-html="c | trustAsHtml"></span> <span class="muted">(in [[ index ]])</span>
             </div>
           </div>
-          <div ng-if="doc.last_updated" class="pull-right">
+          <div ng-if="doc.last_updated" class="pull-right"
+               style="line-height: 1">
             <small>Last updated: [[ doc.last_updated ]]</small>
           </div>
           <div class="clearfix">
