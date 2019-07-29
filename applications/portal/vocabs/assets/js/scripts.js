@@ -3191,8 +3191,8 @@ if (!Array.prototype.find) {
     var sortOptionsWhenNoQueryTerm = [
         { 'id': 'aToZ', 'name': 'Title A-Z'},
         { 'id': 'zToA', 'name': 'Title Z-A'},
-        { 'id': 'lastUpdatedAsc', 'name': 'Least-recently updated'},
-        { 'id': 'lastUpdatedDesc', 'name': 'Most-recently updated'}
+        { 'id': 'lastUpdatedAsc', 'name': 'Least recently updated'},
+        { 'id': 'lastUpdatedDesc', 'name': 'Most recently updated'}
     ];
 
     /** List of available sort options, when there is a query term.
@@ -3206,8 +3206,8 @@ if (!Array.prototype.find) {
         { 'id': 'relevance', 'name': 'Relevance'},
         { 'id': 'aToZ', 'name': 'Title A-Z'},
         { 'id': 'zToA', 'name': 'Title Z-A'},
-        { 'id': 'lastUpdatedAsc', 'name': 'Least-recently updated'},
-        { 'id': 'lastUpdatedDesc', 'name': 'Most-recently updated'}
+        { 'id': 'lastUpdatedAsc', 'name': 'Least recently updated'},
+        { 'id': 'lastUpdatedDesc', 'name': 'Most recently updated'}
     ];
 
     /** Search controller.  See `views/includes/search-view.blade.php`
