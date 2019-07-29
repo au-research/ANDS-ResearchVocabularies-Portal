@@ -3294,7 +3294,7 @@ if (!Array.prototype.find) {
                 // Use the default page size.
                 window.location = $scope.base_url + 'search/#!/?pp=' +
                     defaultPageSize + '&q=' +
-                    $scope.filters['q'];
+                    encodeURIComponent($scope.filters['q']);
             } else {
                 // See comment above about a change to AngularJS. Now,
                 // put our $scope.filters into $location.search().
