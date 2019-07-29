@@ -52,15 +52,18 @@
         </div>
         <!-- Force z-index; need this with container-fluid, but
              not container. -->
-        <div class="col-md-5" style="z-index: 3">
+        <div class="col-md-6" style="z-index: 3">
           <form action="" ng-submit="$event.preventDefault();search()">
-            <div class="input-group">
+            <div class="input-group" style="max-width: 700px">
               <input type="text" class="form-control"
                      placeholder="Search for a vocabulary or a concept"
                      ng-model="form.query">
               <span class="input-group-btn">
                 <button class="btn btn-primary" type="button"
                         ng-click="search()"><i class="fa fa-search"></i> Search</button>
+              </span>
+              <span class="input-group-btn">
+                <a href="https://documentation.ands.org.au/display/DOC/Vocabulary+search" target="_blank" class="btn" style="color: white"><i class="fa fa-question-circle"></i> Using search</a>
               </span>
             </div>
           </form>
