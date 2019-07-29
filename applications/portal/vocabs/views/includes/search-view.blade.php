@@ -342,7 +342,7 @@
           <p style="margin-bottom:0px" ng-if="hasHighlight(doc.id)===false">[[ doc.description | limitTo:500 ]]<span ng-if="doc.description.length > 500">...</span></p>
           <div ng-repeat="(index, content) in getHighlight(doc.id)">
             <div ng-repeat="c in content track by $index">
-              <span ng-bind-html="c | trustAsHtml"></span> <span class="muted">(in [[ index ]])</span>
+              <span ng-bind-html="c | processSolrHighlight"></span> <span class="muted">(in [[ index ]])</span>
             </div>
           </div>
           <div ng-if="doc.last_updated" class="pull-right"
