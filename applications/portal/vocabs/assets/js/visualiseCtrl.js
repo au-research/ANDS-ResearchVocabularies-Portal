@@ -49,7 +49,7 @@
      * * a title, based on the concept's prefLabel (or 'No Title', if it
      *   doesn't have one)
      * * a titlesuffix, based on the number of this concept's child
-     *  concepts (or an empty string, if it doesn't have any)
+     *   concepts (or an empty string, if it doesn't have any)
      * * a tooltipText to use as the content of the qTip2 tooltip
      * * a setting for folder, if this concept has child concepts
      * * a setting for children, if this concept has child concepts
@@ -90,7 +90,8 @@
                 '\')" ' +
                 'href="' + sissvoc_endpoint +
                 '/resource?uri=' +
-                encodeURIComponent(element.iri) + '">View as linked data</a></p>';
+                encodeURIComponent(element.iri) +
+                '">View as linked data</a></p>';
         }
 
         // Closing the paragraph tag is essential to make
@@ -129,8 +130,8 @@
      * order of concepts, we can change _back_ to the original
      * sort order.
      * @param elements An array of tree nodes.
-     * @param key The key to use for the key/value pair to be inserted
-     *          into each node.
+     * @param {!string} key The key to use for the key/value pair to
+     *          be inserted into each node.
      * @memberof visualiseCtrl
      */
     function addSortOrder(elements, key) {
@@ -476,12 +477,28 @@
         return s;
     }
 
+    /** Perform an operation, with a spinner spinning to suggest
+     * to the user that they might need to wait for completion
+     * of the operation.
+     * @param {!function} f The operation to be performed.
+     * @memberof visualiseCtrl
+     */
+    function doWithSpinner(f) {
+        $("#fancytree-spinner").show();
+        setTimeout(function() {
+            f();
+            $("#fancytree-spinner").hide();
+        }, 50);
+    }
+
     /** Initialisation of the browse visualisation. This method
      * is invoked once the tree data has been successfully
      * fetched from the Registry. The function creates the
      * tree and attaches event handlers.
-     * @param $scope The AngularJS controller scope. $scope.tree
-     *          must contain the tree data as fetched from the
+     * @param {!object} $scope The AngularJS controller
+     *          scope. $scope.tree must contain the tree data as
+     *          fetched from the Registry.
+     * @param {!object} $scope.tree The tree data as fetched from the
      *          Registry.
      * @memberof visualiseCtrl
      */
@@ -516,8 +533,7 @@
             var tree = $.ui.fancytree.getTree();
             var filterFunc = tree.filterNodes;
 
-            $("#fancytree-spinner").show();
-            setTimeout(function() {
+            doWithSpinner(function() {
                 // Cancel any existing filter.
                 var searchField = $("input[name=tree_search]");
                 searchField.val("");
@@ -526,15 +542,13 @@
                 var n = filterFunc.call(tree, function(node) {
                     return iri == node.data.iri;
                 });
-                // There's now a filter in place, so change the placeholder, and
-                // enable the reset button.
+                // There's now a filter in place, so change the
+                // placeholder, and enable the reset button.
                 searchField.attr('placeholder', 'Filtering to duplicates');
                 $("button#button_reset_filter").attr("disabled", false);
                 showNumberOfMatches(n);
                 adjustCss();
-
-                $("#fancytree-spinner").hide();
-            }, 50);
+            });
         };
 
         conceptTreePostProcess($scope);
@@ -718,15 +732,12 @@
                         return res;
                     };
 
-                    $("#fancytree-spinner").show();
-                    setTimeout(function() {
+                    doWithSpinner(function() {
                         n = filterFunc.call(tree, filterImpl);
                         $("button#button_reset_filter").attr("disabled", false);
                         showNumberOfMatches(n);
                         adjustCss();
-
-                        $("#fancytree-spinner").hide();
-                    }, 50);
+                    });
 
                 }
             } // function(e)
@@ -744,13 +755,10 @@
             searchField.attr('placeholder', 'Filter...');
             $("span#tree_filter_matches").text("");
             $(e.currentTarget).attr("disabled", true);
-            $("#fancytree-spinner").show();
-            setTimeout(function() {
+            doWithSpinner(function() {
                 tree.clearFilter();
                 adjustCss();
-
-                $("#fancytree-spinner").hide();
-            }, 50);
+            });
         }).attr("disabled", true);
 
         // Callback for when the user has changed the sort dropdown.
@@ -777,22 +785,18 @@
         });
 
         $("button#expandAll").click(function(e) {
-            $("#fancytree-spinner").show();
-            setTimeout(function() {
+            doWithSpinner(function() {
                 $("#tree").fancytree("getTree").expandAll();
-                $("#fancytree-spinner").hide();
-            }, 50);
+            });
             // No need to do adjustCss() here, as it is done
             // for every expanded node by the expand event
             // handler specified in the tree's config.
             //    adjustCss();
         });
         $("button#collapseAll").click(function(e) {
-            $("#fancytree-spinner").show();
-            setTimeout(function() {
+            doWithSpinner(function() {
                 $("#tree").fancytree("getTree").expandAll(false);
-                $("#fancytree-spinner").hide();
-            }, 50);
+            });
             // Need to call adjustCss() even here, to cope with
             // the case that a filter is in operation (i.e., which
             // will still be in operation after collapsing).
@@ -803,8 +807,12 @@
 
         // Maybe display a warning, if too many nodes (either concepts
         // or concept refs). Adjust threshold as necessary.
+        // Also, in this case, disable the animation
+        // when expanding/collapsing nodes (i.e., for expand/collapse
+        // all, and when applying/cancelling a filter).
         if (nodeCount >= 2000) {
             $("#large_vocabulary_warning").show();
+            $.ui.fancytree.getTree().setOption("toggleEffect", false);
         }
 
         // Prevent the browser jumping to the "Filter..." input.
@@ -828,7 +836,7 @@
         // and what URL this page is.
         defaultClient.defaultHeaders['portal-id'] = 'Portal-JS-browse';
         defaultClient.defaultHeaders['portal-referrer'] =
-            window.location;
+            truncateHeader(window.location.toString());
         var api = new VocabularyRegistryApi.ResourcesApi();
 
         api.getVersionArtefactConceptTree($attrs.versionid)

@@ -20,7 +20,8 @@
         // Let the registry know that we are the CMS, and what URL this page is.
         defaultClient.defaultHeaders['portal-id'] =
             'Portal-JS-ManageSubscriptions';
-        defaultClient.defaultHeaders['portal-referrer'] = $window.location;
+        defaultClient.defaultHeaders['portal-referrer'] =
+            truncateHeader($window.location.toString());
         var ServicesAPI = new VocabularyRegistryApi.ServicesApi();
 
         // The form object is used to encapsulate various "one-off"

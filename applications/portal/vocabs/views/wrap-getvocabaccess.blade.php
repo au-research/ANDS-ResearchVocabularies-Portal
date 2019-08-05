@@ -223,6 +223,7 @@ function getIdForSissvocAccessPoint() {
                   "n3" => "Notation3",
                   "nq" => "N-Quads",
                   "json" => "RDF/JSON",
+                  "jsonld" => "JSON-LD",
                   "trix" => "TriX",
                   "trig" => "TriG",
                   "bin" => "Sesame Binary RDF"

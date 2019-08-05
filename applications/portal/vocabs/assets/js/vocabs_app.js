@@ -541,6 +541,16 @@ $(document).on(
     }
 );
 
+// Utility for truncating strings that are going into
+// HTTP headers.
+function truncateHeader(s) {
+    // Typical header maximum length is 8192 characters.
+    // For now, truncate to 4000 characters.
+    // This allows for the maximum having been set to 4096,
+    // and allows for 96 characters for the header name.
+    return s.substring(0,4000);
+}
+
 
 function showWidget()
 {

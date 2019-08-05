@@ -23,7 +23,7 @@
                 defaultClient.defaultHeaders['portal-id'] =
                     'Portal-JS-widget';
                 defaultClient.defaultHeaders['portal-referrer'] =
-                    window.location;
+                    truncateHeader(window.location.toString());
                 var api = new VocabularyRegistryApi.ServicesApi();
 
                 scope.vocabList = [];

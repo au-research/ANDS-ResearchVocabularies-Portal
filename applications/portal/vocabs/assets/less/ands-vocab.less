@@ -199,23 +199,32 @@ ul.vocab-prev-version-list {
 
 }
 
-ul.listy {
+ul.list-facet-filter {
     padding-left: 0;
     li {
         list-style-type: none;
-        padding: 8px 5px;
-        border-bottom: 1px solid #ececec;
+        //padding: 2px 2px;
         &:last-child {
             border: none;
         }
+        input {
+            margin: 0px;
+        }
         a {
-            height: 32px;
-            line-height: 32px;
+            display: inline-block;
+            vertical-align: middle;
+            white-space: nowrap;
             overflow: hidden;
-            display: inline;
-            padding: 8px 0px 8px 5px;
-            small {
+            text-overflow: ellipsis;
+            width: 80%;
+            // margin-top: 4px;
+            padding-left: 5px;
+            .count {
+                // margin-top to counteract 4px margin
+                // from somewhere else!
+                margin-top: -4px;
                 position: absolute;
+                vertical-align: middle;
                 right: 30px;
                 background: white;
                 height: 32px;
@@ -225,6 +234,40 @@ ul.listy {
         }
     }
 }
+
+ul.list-current-search {
+    padding-left: 0;
+    li {
+        list-style-type: none;
+        height: 24px;
+        //padding: 1px 1px;
+        &:last-child {
+            border: none;
+        }
+        a {
+            display: inline-block;
+            vertical-align: middle;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 92%;
+            // padding-left: 5px;
+            .clear {
+                // margin-top to counteract 4px margin
+                // from somewhere else!
+                //margin-top: -4px;
+                position: absolute;
+                right: 30px;
+                vertical-align: middle;
+                background: white;
+                height: 22px;
+                line-height: 22px;
+                padding-left: 10px;
+            }
+        }
+    }
+}
+
 
 .element-shorter-top {
     margin-top: 10px !important;
@@ -493,6 +536,8 @@ input:disabled+label{
 }
 
 
+/* No longer used, as we now show
+   pagination links in td elements.
 ul.pagi {
   margin:0 auto;
   padding:0;
@@ -505,8 +550,15 @@ ul.pagi {
     }
   }
 }
+*/
 
-
+td.pagi {
+    padding: 4px;
+    a.active {
+        color: @secondaryColor !important;
+        font-weight: bold;
+    }
+}
 
 .published_title{
   word-wrap: break-word;
