@@ -815,8 +815,10 @@
             $.ui.fancytree.getTree().setOption("toggleEffect", false);
         }
 
-        // Prevent the browser jumping to the "Filter..." input.
-        $("input[name=tree_search]").blur();
+        // CC-2599 We prevent the browser jumping to the "Filter..."
+        // input during page load by defining the input with
+        // display:none, then making the input visible only now.
+        $("input[name=tree_search]").css("display", "inline");
 
         $scope.$apply();
     }

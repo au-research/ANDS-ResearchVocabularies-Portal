@@ -19,9 +19,12 @@
             </button>
             &nbsp;
           </span>
+          <!-- CC-2599 To avoid scrolling to this input during page load,
+               set display:none here. This is set to display:inline
+               by visualiseCtrl.js at the end of initialization. -->
           <input id="browse_filter"
                  type="text"
-                 style="display:inline;vertical-align:middle;width:40%"
+                 style="display:none;vertical-align:middle;width:40%"
                  name="tree_search"
                  placeholder="Filter..." autocomplete="off"
                  class="form-control"
