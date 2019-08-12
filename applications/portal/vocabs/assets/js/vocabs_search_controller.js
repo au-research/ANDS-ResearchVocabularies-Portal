@@ -136,6 +136,14 @@
                     defaultPageSize + '&q=' +
                     encodeURIComponent($scope.filters['q']);
             } else {
+                // CC-2600 When coming back to this search result
+                // using the browser back button, don't scroll to
+                // where the user was, but come back to the top of the
+                // page.
+                if ('scrollRestoration' in history) {
+                    // Browser-dependent. Not IE/Edge (yet).
+                    history.scrollRestoration = 'manual';
+                }
                 // See comment above about a change to AngularJS. Now,
                 // put our $scope.filters into $location.search().
                 $location.search($scope.filters);
