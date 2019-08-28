@@ -155,6 +155,7 @@ ul.list-facet-filter {
 }
 ul.list-facet-filter li {
   list-style-type: none;
+  position: relative;
 }
 ul.list-facet-filter li:last-child {
   border: none;
@@ -175,11 +176,64 @@ ul.list-facet-filter li a .count {
   margin-top: -4px;
   position: absolute;
   vertical-align: middle;
-  right: 30px;
+  right: 0px;
   background: white;
   height: 32px;
   line-height: 32px;
   padding-left: 10px;
+}
+table.table-facet-filter {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 14px;
+}
+table.table-facet-filter tbody {
+  display: block;
+  max-width: 100%;
+}
+table.table-facet-filter tbody.facet-scrollbar {
+  max-height: 13em;
+  overflow-y: scroll;
+}
+table.table-facet-filter tr {
+  max-width: 100%;
+}
+table.table-facet-filter tr td {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-right: 1px;
+}
+table.table-facet-filter tr td:first-child {
+  width: 2%;
+  padding-left: 0px;
+  padding-right: 1px;
+}
+table.table-facet-filter tr:last-child {
+  border: none;
+}
+table.table-facet-filter tr input {
+  margin: 0px 2px 0px 0px;
+}
+table.table-facet-filter tr td.filter-value {
+  position: relative;
+}
+table.table-facet-filter tr td.filter-value a {
+  padding-left: 2px;
+  max-width: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 1px;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+table.table-facet-filter tr td.filter-count {
+  width: 5%;
+  text-align: right;
+  padding-left: 5px;
+  padding-right: 2px;
 }
 ul.list-current-search {
   padding-left: 0;

@@ -3257,9 +3257,11 @@ if (!Array.prototype.find) {
          */
         $scope.base_url = base_url;
 
-        /** Model for form elements. For now, that's just
-         * form.query, which is the input in which the user
-         * types their search query term(s).
+        /** Model for form elements. That includes:
+         * form.query, the input in which the user
+         * types their search query term(s);
+         * form.sort: the selected sort order;
+         * and the various xQuickFilter text inputs.
          * @memberof searchCtrl
          */
         $scope.form = {};
@@ -3290,6 +3292,8 @@ if (!Array.prototype.find) {
          * @memberof searchCtrl
          */
         $scope.search = function (isPagination) {
+            // Reset all quick filters to help prevent user confusion.
+            $scope.resetQuickFilters();
             $scope.filters.q = $scope.form.query;
             if (!$scope.filters['q']) {
                 $scope.filters['q'] = '';
@@ -3330,6 +3334,14 @@ if (!Array.prototype.find) {
             }
         };
 
+        /** Reset all quick filters.
+         * @memberof searchCtrl
+         */
+        $scope.resetQuickFilters = function () {
+            $scope.form.subjectQuickFilter = {};
+            $scope.form.publisherQuickFilter = {};
+        };
+
         /** Reset all search filters. Reset the page size to the
          * default, and show page 1 of results.
          * @memberof searchCtrl
@@ -3342,6 +3354,7 @@ if (!Array.prototype.find) {
             // definitions, we rely on a convention that the default
             // sort option is the first in the list.
             $scope.form.sort = $scope.sortOptions[0].id;
+            // $scope.search also resets quick filters.
             $scope.search();
         };
 

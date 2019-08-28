@@ -117,76 +117,116 @@
           <div class="panel-heading">Refine search results</div>
           <div class="panel-body swatch-white">
 
+            <!-- Subjects -->
             <div ng-if="facets.subject_labels.length > 0">
               <h3>Subject</h3>
-              <ul class="list-facet-filter">
-                <li ng-repeat="facet in facets.subject_labels.slice(0,8)">
-                  <input type="checkbox" ng-checked="isFacet('subject_labels',facet.name)"
-                         ng-click="toggleFilter('subject_labels', facet.name, true)">
-                  <a href=""
-                     ng-click="toggleFilter('subject_labels', facet.name, true)"
-                     title="[[ facet.name ]]">
-                    [[ facet.name ]]
-                    <span class="count">([[facet.value]])</span></a>
-                </li>
-
-                <div id="moresubject_labels" style="display:none">
-                  <li ng-repeat="facet in facets.subject_labels.slice(8)">
-                    <input type="checkbox" ng-checked="isFacet('subject_labels',facet.name)"
-                           ng-click="toggleFilter('subject_labels', facet.name, true)">
-                    <a href=""
-                       ng-click="toggleFilter('subject_labels', facet.name, true)"
-                       title="[[ facet.name ]]">
-                      [[ facet.name ]]
-                      <span class="count">([[facet.value]])</span></a>
-                  </li>
-                </div>
-                <a href="" ng-click="toggleFacet('subject_labels')" ng-if="facets.subject_labels.length>8" id="linksubjects"  style="display:block">
-                  <small>View
-                    <span ng-if="isMoreVisible('subject_labels')">Less...</span>
-                    <span ng-if="!isMoreVisible('subject_labels')">More...</span>
-                  </small>
-                </a>
-              </ul>
+                   <!-- On focus, text input's box-shadow is 3px high, so
+                   set padding-bottom to 5px to avoid it. -->
+              <div class="input-group"
+                   style="padding-bottom:5px">
+                <!-- Use model ".name" so as to filter only on name property -->
+                <input id="subject-quick-filter"
+                       type="text"
+                       autocomplete="off" class="form-control"
+                       placeholder="Filter subjects..."
+                       ng-model="form.subjectQuickFilter.name">
+                <span class="input-group-btn">
+                  <button id="button-reset-subject-quick-filter"
+                          class="btn btn-primary btn-primary-warning"
+                          ng-disabled="!form.subjectQuickFilter.name"
+                          ng-click="form.subjectQuickFilter.name = ''">
+                    <i class="fa fa-remove"></i>
+                  </button>
+                </span>
+              </div>
+              <table class="table-facet-filter">
+                <tbody class="facet-scrollbar">
+                  <tr ng-repeat="facet in facets.subject_labels |
+                                 filter:form.subjectQuickFilter">
+                    <td>
+                      <input type="checkbox"
+                             ng-checked="isFacet('subject_labels',facet.name)"
+                             ng-click="toggleFilter('subject_labels',
+                                   facet.name, true)">
+                    </td>
+                    <td class="filter-value">
+                      <a href=""
+                         ng-click="toggleFilter('subject_labels', facet.name, true)"
+                         title="[[ facet.name ]]">
+                        [[ facet.name ]]</a>
+                    </td>
+                    <td class="filter-count">
+                      <a href=""
+                         ng-click="toggleFilter('subject_labels', facet.name, true)"
+                         title="[[ facet.name ]]">
+                        <span class="count"
+                              style="right:2px">
+                          ([[facet.value]])</span></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
+
+            <!-- Publishers -->
             <div ng-if="facets.publisher.length > 0">
               <h3>Publisher</h3>
-              <ul class="list-facet-filter">
-                <li ng-repeat="facet in facets.publisher.slice(0,8)">
-                  <input type="checkbox" ng-checked="isFacet('publisher',facet.name)"
-                         ng-click="toggleFilter('publisher', facet.name, true)">
-                  <a href=""
-                     ng-click="toggleFilter('publisher', facet.name, true)"
-                     title="[[ facet.name ]]">
-                    [[ facet.name ]]
-                    <span class="count">([[facet.value]])</span></a>
-                </li>
-
-                <div id="morepublisher" style="display:none">
-                  <li ng-repeat="facet in facets.publisher.slice(8)">
-                    <input type="checkbox" ng-checked="isFacet('publisher',facet.name)"
-                           ng-click="toggleFilter('publisher', facet.name, true)">
-                    <a href=""
-                       ng-click="toggleFilter('publisher', facet.name, true)"
-                       title="[[ facet.name ]]">
-                      [[ facet.name ]]
-                      <span class="count">([[facet.value]])</span></a>
-                  </li>
-                </div>
-                <a href="" ng-click="toggleFacet('publisher')" ng-if="facets.publisher.length>8" id="linkpublisher"  style="display:block">
-                  <small>View
-                    <span ng-if="isMoreVisible('publisher')">Less...</span>
-                    <span ng-if="!isMoreVisible('publisher')">More...</span>
-                  </small>
-                </a>
-              </ul>
+              <!-- On focus, text input's box-shadow is 3px high, so
+                   set padding-bottom to 5px to avoid it. -->
+              <div class="input-group"
+                   style="padding-bottom:5px">
+                <!-- Use model ".name" so as to filter only on name property -->
+                <input id="publisher-quick-filter"
+                       type="text"
+                       autocomplete="off" class="form-control"
+                       placeholder="Filter publishers..."
+                       ng-model="form.publisherQuickFilter.name">
+                <span class="input-group-btn">
+                  <button id="button-reset-publisher-quick-filter"
+                          class="btn btn-primary btn-primary-warning"
+                          ng-disabled="!form.publisherQuickFilter.name"
+                          ng-click="form.publisherQuickFilter.name = ''">
+                    <i class="fa fa-remove"></i>
+                  </button>
+                </span>
+              </div>
+              <table class="table-facet-filter">
+                <tbody class="facet-scrollbar">
+                  <tr ng-repeat="facet in facets.publisher |
+                                 filter:form.publisherQuickFilter">
+                    <td>
+                      <input type="checkbox"
+                             ng-checked="isFacet('publisher',facet.name)"
+                             ng-click="toggleFilter('publisher',
+                                   facet.name, true)">
+                    </td>
+                    <td class="filter-value">
+                      <a href=""
+                         style="width:80%"
+                         ng-click="toggleFilter('publisher', facet.name, true)"
+                         title="[[ facet.name ]]">
+                        [[ facet.name ]]</a>
+                    </td>
+                    <td class="filter-count">
+                      <a href=""
+                         ng-click="toggleFilter('publisher', facet.name, true)"
+                         title="[[ facet.name ]]">
+                        <span class="count"
+                              style="right:2px">
+                          ([[facet.value]])</span></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
+            <!-- Languages -->
             <div ng-if="facets.language.length > 0">
               <h3>Language</h3>
               <ul class="list-facet-filter">
-                <li ng-repeat="facet in facets.language.slice(0,8)">
-                  <input type="checkbox" ng-checked="isFacet('language',facet.name)"
+                <li ng-repeat="facet in facets.language">
+                  <input type="checkbox"
+                         ng-checked="isFacet('language',facet.name)"
                          ng-click="toggleFilter('language', facet.name, true)">
                   <a href=""
                      ng-click="toggleFilter('language', facet.name, true)"
@@ -194,34 +234,17 @@
                     [[ facet.name ]]
                     <span class="count">([[facet.value]])</span></a>
                 </li>
-
-                <div id="morelanguage" style="display:none">
-                  <li ng-repeat="facet in facets.language.slice(8)">
-                    <input type="checkbox" ng-checked="isFacet('language',facet.name)"
-                           ng-click="toggleFilter('language', facet.name, true)">
-                    <a href=""
-                       ng-click="toggleFilter('language', facet.name, true)"
-                       title="[[ facet.name ]]">
-                      [[ facet.name ]]
-                      <span class="count">([[facet.value]])</span></a>
-                  </li>
-                </div>
-                <a href="" ng-click="toggleFacet('language')" ng-if="facets.language.length>8" id="linklanguage"  style="display:block">
-                  <small>View
-                    <span ng-if="isMoreVisible('language')">Less...</span>
-                    <span ng-if="!isMoreVisible('language')">More...</span>
-                  </small>
-                </a>
               </ul>
             </div>
 
+            <!-- Formats -->
             <div ng-if="facets.format.length > 0">
               <h3>Format</h3>
               <ul class="list-facet-filter">
                 <li ng-repeat="facet in facets.format">
-                  <input type="checkbox" ng-checked="isFacet('format',facet.name)"
+                  <input type="checkbox"
+                         ng-checked="isFacet('format',facet.name)"
                          ng-click="toggleFilter('format', facet.name, true)">
-
                   <a href=""
                      ng-click="toggleFilter('format', facet.name, true)"
                      title="[[ facet.name ]]">
@@ -230,13 +253,15 @@
                 </li>
               </ul>
             </div>
+
+            <!-- Access -->
             <div ng-if="facets.access.length > 0">
               <h3>Access</h3>
               <ul class="list-facet-filter">
                 <li ng-repeat="facet in facets.access">
-                  <input type="checkbox" ng-checked="isFacet('access',facet.name)"
+                  <input type="checkbox"
+                         ng-checked="isFacet('access',facet.name)"
                          ng-click="toggleFilter('access', facet.name, true)">
-
                   <a href=""
                      ng-click="toggleFilter('access', facet.name, true)"
                      title="[[ facet.name ]]">
@@ -245,6 +270,8 @@
                 </li>
               </ul>
             </div>
+
+            <!-- Licences -->
             <div ng-if="facets.licence.length > 0">
               <h3>Licence</h3>
               <ul class="list-facet-filter">
@@ -260,9 +287,11 @@
                 </li>
               </ul>
             </div>
+
           </div>
         </div>
       </div>
+
       <div class="col-md-8 col-lg-9">
 
         <div class="vocab-search-result swatch-white ng-cloak"

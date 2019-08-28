@@ -203,7 +203,7 @@ ul.list-facet-filter {
     padding-left: 0;
     li {
         list-style-type: none;
-        //padding: 2px 2px;
+        position:relative;
         &:last-child {
             border: none;
         }
@@ -225,13 +225,73 @@ ul.list-facet-filter {
                 margin-top: -4px;
                 position: absolute;
                 vertical-align: middle;
-                right: 30px;
+                right: 0px;
                 background: white;
                 height: 32px;
                 line-height: 32px;
                 padding-left: 10px;
             }
         }
+    }
+}
+
+table.table-facet-filter {
+    width:100%;
+    max-width:100%;
+    margin-bottom: 14px;
+    tbody {
+        // Need display:block here to ensure we get the scrollbar.
+        display: block;
+        max-width: 100%;
+        &.facet-scrollbar {
+            max-height: 13em;
+            overflow-y: scroll;
+        }
+    }
+    tr {
+        max-width: 100%;
+        // Can't apply padding to tr, so apply it (carefully)
+        // to all td elements instead.
+        td {
+            padding-top: 1px;
+            padding-bottom: 1px;
+            padding-right: 1px;
+        }
+        // The first td is the checkbox.
+        td:first-child {
+            width: 2%;
+            padding-left: 0px;
+            padding-right: 1px;
+        }
+        &:last-child {
+            border: none;
+        }
+        input {
+            margin: 0px 2px 0px 0px;
+        }
+        td.filter-value {
+            position: relative;
+            a {
+                padding-left: 2px;
+                max-width: 100%;
+                position:absolute;
+                left: 0;
+                right: 0;
+                // top value must match td padding
+                top: 1px;
+                display: inline-block;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+        td.filter-count {
+            width: 5%;
+            text-align: right;
+            padding-left: 5px;
+            padding-right: 2px;
+        }
+
     }
 }
 
