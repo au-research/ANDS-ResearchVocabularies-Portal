@@ -150,38 +150,6 @@ ul.vocab-prev-version-list ul li {
 .swatch-dark-blue .btn-primary {
   background-color: #f58f29;
 }
-ul.list-facet-filter {
-  padding-left: 0;
-}
-ul.list-facet-filter li {
-  list-style-type: none;
-  position: relative;
-}
-ul.list-facet-filter li:last-child {
-  border: none;
-}
-ul.list-facet-filter li input {
-  margin: 0px;
-}
-ul.list-facet-filter li a {
-  display: inline-block;
-  vertical-align: middle;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 80%;
-  padding-left: 5px;
-}
-ul.list-facet-filter li a .count {
-  margin-top: -4px;
-  position: absolute;
-  vertical-align: middle;
-  right: 0px;
-  background: white;
-  height: 32px;
-  line-height: 32px;
-  padding-left: 10px;
-}
 table.table-facet-filter {
   width: 100%;
   max-width: 100%;
@@ -205,16 +173,30 @@ table.table-facet-filter tr td {
 }
 table.table-facet-filter tr td:first-child {
   width: 2%;
+  padding-left: 5px;
+  padding-right: 2px;
+}
+table.table-facet-filter tr td:last-child {
+  width: 5%;
+  text-align: right;
   padding-left: 0px;
-  padding-right: 1px;
+  padding-right: 2px;
 }
 table.table-facet-filter tr:last-child {
   border: none;
 }
 table.table-facet-filter tr input {
+  font-size: 133%;
   margin: 0px 2px 0px 0px;
 }
+table.table-facet-filter tr .label-extra-count {
+  background-color: #e9e9e9;
+  color: #888888;
+  padding: 0px;
+  padding: 1px 3px 1px 3px;
+}
 table.table-facet-filter tr td.filter-value {
+  width: 80%;
   position: relative;
 }
 table.table-facet-filter tr td.filter-value a {
@@ -229,11 +211,11 @@ table.table-facet-filter tr td.filter-value a {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-table.table-facet-filter tr td.filter-count {
-  width: 5%;
-  text-align: right;
-  padding-left: 5px;
-  padding-right: 2px;
+table.table-facet-filter tr .filter-extra {
+  vertical-align: text-bottom;
+  height: 24px;
+  line-height: 24px;
+  background-color: #e9e9e9;
 }
 ul.list-current-search {
   padding-left: 0;
@@ -675,5 +657,74 @@ td.pagi a.active {
   margin-left: 0;
 }
 .ands-switch .ands-switch-checkbox:checked + .ands-switch-label .ands-switch-switch {
+  right: 0px;
+}
+.ands-switch-any-all {
+  position: relative;
+  width: 70px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.ands-switch-any-all .ands-switch-any-all-checkbox {
+  display: none;
+}
+.ands-switch-any-all .ands-switch-any-all-label {
+  display: block;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid #82C9ED;
+  border-radius: 0px;
+}
+.ands-switch-any-all .ands-switch-any-all-inner {
+  display: block;
+  width: 200%;
+  margin-left: -100%;
+  transition: margin 0.3s ease-in 0s;
+}
+.ands-switch-any-all .ands-switch-any-all-inner:before,
+.ands-switch-any-all .ands-switch-any-all-inner:after {
+  display: block;
+  float: left;
+  width: 50%;
+  height: 36px;
+  padding: 0;
+  line-height: 36px;
+  font-size: 16px;
+  color: white;
+  font-weight: normal;
+  box-sizing: border-box;
+}
+.ands-switch-any-all .ands-switch-any-all-inner:before {
+  content: "Any";
+  padding-left: 10px;
+  background-color: #82C9ED;
+  color: #FFFFFF;
+}
+.ands-switch-any-all .ands-switch-any-all-inner:after {
+  content: "All";
+  padding-right: 10px;
+  background-color: #FFFFFF;
+  color: #82C9ED;
+  text-align: right;
+}
+.ands-switch-any-all .ands-switch-any-all-switch {
+  display: block;
+  width: 14px;
+  margin: 6.5px;
+  color: #999999;
+  background: #FFFFFF;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 39px;
+  border: 2px solid ;
+  border-radius: 3px;
+  transition: all 0.3s ease-in 0s;
+}
+.ands-switch-any-all .ands-switch-any-all-checkbox:checked + .ands-switch-any-all-label .ands-switch-any-all-inner {
+  margin-left: 0;
+}
+.ands-switch-any-all .ands-switch-any-all-checkbox:checked + .ands-switch-any-all-label .ands-switch-any-all-switch {
   right: 0px;
 }
