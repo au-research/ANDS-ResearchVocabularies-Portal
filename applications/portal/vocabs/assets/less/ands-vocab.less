@@ -199,38 +199,79 @@ ul.vocab-prev-version-list {
 
 }
 
-ul.list-facet-filter {
-    padding-left: 0;
-    li {
-        list-style-type: none;
-        //padding: 2px 2px;
+table.table-facet-filter {
+    width:100%;
+    max-width:100%;
+    margin-bottom: 14px;
+    tbody {
+        // Need display:block here to ensure we get the scrollbar.
+        display: block;
+        max-width: 100%;
+        &.facet-scrollbar {
+            max-height: 13em;
+            overflow-y: scroll;
+        }
+    }
+    tr {
+        max-width: 100%;
+        // Can't apply padding to tr, so apply it (carefully)
+        // to all td elements instead.
+        td {
+            padding-top: 1px;
+            padding-bottom: 1px;
+            padding-right: 1px;
+        }
+        // The first td is the checkbox.
+        td:first-child {
+            width: 2%;
+            padding-left: 5px;
+            padding-right: 2px;
+        }
+        // The last td is the facet count.
+        td:last-child {
+            width: 5%;
+            text-align: right;
+            padding-left: 0px;
+            padding-right: 2px;
+        }
         &:last-child {
             border: none;
         }
         input {
-            margin: 0px;
+            margin: 0px 2px 0px 0px;
+            // Set font-size to 133% to undo label's 75%
+            font-size: 133%;
+            margin: 0px 2px 0px 0px;
         }
-        a {
-            display: inline-block;
-            vertical-align: middle;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .label-extra-count {
+            background-color: @gray;
+            color: #888888;
+            padding: 0px;
+            padding: 1px 3px 1px 3px;
+        }
+        td.filter-value {
             width: 80%;
-            // margin-top: 4px;
-            padding-left: 5px;
-            .count {
-                // margin-top to counteract 4px margin
-                // from somewhere else!
-                margin-top: -4px;
-                position: absolute;
-                vertical-align: middle;
-                right: 30px;
-                background: white;
-                height: 32px;
-                line-height: 32px;
-                padding-left: 10px;
+            position: relative;
+            a {
+                padding-left: 2px;
+                max-width: 100%;
+                position:absolute;
+                left: 0;
+                right: 0;
+                // top value must match td padding
+                top: 1px;
+                display: inline-block;
+                // Need all these three to get the desired text overflow.
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
+        }
+        .filter-extra {
+            vertical-align: text-bottom;
+            height: 24px;
+            line-height: 24px;
+            background-color: rgb(233, 233, 233);
         }
     }
 }
