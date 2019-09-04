@@ -140,10 +140,8 @@
                 // using the browser back button, don't scroll to
                 // where the user was, but come back to the top of the
                 // page.
-                if ('scrollRestoration' in history) {
-                    // Browser-dependent. Not IE/Edge (yet).
-                    history.scrollRestoration = 'manual';
-                }
+                setScrollRestoration();
+                scrollToTop();
                 // See comment above about a change to AngularJS. Now,
                 // put our $scope.filters into $location.search().
                 $location.search($scope.filters);
@@ -156,6 +154,37 @@
                 // would then get an extra call to api.search().
             }
         };
+
+        /** If the browser supports it, set history scroll restoration
+         * to "manual".
+         * @memberof searchCtrl
+         */
+        function setScrollRestoration() {
+            if ('scrollRestoration' in history) {
+                // Browser-dependent. Not IE/Edge (yet).
+                history.scrollRestoration = 'manual';
+            }
+        }
+
+        /** If the browser supports it, set history scroll restoration
+         * (back) to "auto". We need this on search result links
+         * for Chrome. Without using this, the setting would
+         * remain 'manual'.
+         * @memberof searchCtrl
+         */
+        $scope.unsetScrollRestoration = function() {
+            if ('scrollRestoration' in history) {
+                // Browser-dependent. Not IE/Edge (yet).
+                history.scrollRestoration = 'auto';
+            }
+        }
+
+        /** Scroll to the top of the page.
+         * @memberof searchCtrl
+         */
+        function scrollToTop() {
+            $('html, body').animate({ 'scrollTop': 0 }, 500);
+        }
 
         /** Reset all search filters. Reset the page size to the
          * default, and show page 1 of results.
@@ -230,8 +259,18 @@
                     // We changed the model outside AngularJS's notice, so we
                     // need to cause a refresh of the form.
                     $scope.$apply();
-                    // And now scroll to the top of the page.
-                    $('html, body').animate({ 'scrollTop': 0 }, 'slow');
+                    // Scroll to top, if we've come back/forward to a
+                    // page we already set to "manual" scroll
+                    // restoration.  This happens going back/forward
+                    // to one of "our" pages, except when that's the
+                    // _last_ page in the contiguous sequence of
+                    // search results pages.
+                    if ('scrollRestoration' in history) {
+                        // Browser-dependent. Not IE/Edge (yet).
+                        if (history.scrollRestoration == 'manual') {
+                            scrollToTop();
+                        }
+                    }
                 });
         }
 
@@ -303,7 +342,6 @@
         $scope.goto = function(newPage) {
             $scope.filters['p'] = ''+newPage;
             $scope.search(true);
-            $("html, body").animate({ scrollTop: 0 }, 500);
         }
 
         /** Get the value to use for the sort filter, based on the
@@ -504,7 +542,9 @@
                 $scope.addFilter(type, value);
             }
             $scope.filters['p'] = 1;
-            if (execute) $scope.search();
+            if (execute) {
+                $scope.search();
+            }
         };
 
         /** Callback to toggle the visibility of additional filter
