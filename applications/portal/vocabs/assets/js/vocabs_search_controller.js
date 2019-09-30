@@ -222,7 +222,9 @@
             // icons in the current search breadbox, this would avoid
             // "blinking" of those warning icons.  (But we don't yet
             // have warning icons ...)
-            $scope.facets = undefined;
+            // Oops, let's comment this out for now, as it _causes_
+            // "blinking" of the "Refine" section!
+            //    $scope.vocabularies.facets = undefined;
 
             api.search(JSON.stringify($scope.filters)).
                 then(function (data) {
