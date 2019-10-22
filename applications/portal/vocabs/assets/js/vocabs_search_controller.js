@@ -866,8 +866,9 @@
         /** Are any search filters at all in play?  More precisely:
          * are the current search settings not the "defaults"? This is
          * also the case if the user is not on the first page of
-         * results, or if they have changed the sort order or page
-         * size to something other than the default.
+         * results, or if they have changed the sort order, page size,
+         * or collapse/expand setting to something other than the
+         * default.
          * @returns {boolean} True, if there are any filters set.
          * @memberof searchCtrl
          */
@@ -893,6 +894,12 @@
                                         return;
                                     case 'r_p':
                                         if ($scope.filters['r_p'] != "1") {
+                                            found = true;
+                                        }
+                                        return;
+                                    case 'r_collapse_expand':
+                                        if ($scope.filters['r_collapse_expand']
+                                            != "vocabularyIdIri") {
                                             found = true;
                                         }
                                         return;
