@@ -24,7 +24,8 @@
                                             replace(/&/g, '&amp;').
                                             replace(/</g, '&lt;').
                                             replace(/>/g, '&gt;').
-                                            replace(/HL_START/g, '<b>').
+                                            replace(/HL_START/g,
+                                                    '<b class="vocab-search-result-highlight">').
                                             replace(/HL_END/g, '</b>'));
                 }
                 return '';
