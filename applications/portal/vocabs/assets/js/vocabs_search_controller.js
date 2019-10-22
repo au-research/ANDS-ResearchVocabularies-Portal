@@ -1403,6 +1403,7 @@
                 $scope.resources.result.response.docs = [];
             }
             $scope.filters.activeTab = newTab;
+            scrollToTop();
             $location.search($scope.filters);
         }
 
