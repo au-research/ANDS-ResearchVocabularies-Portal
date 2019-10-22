@@ -1315,27 +1315,6 @@
           </table>
         </div>
 
-
-
-        <!-- Result count, selectors for sort order, pagination
-             (at the bottom): old version -->
-
-        <!--
-             <td class="text-nowrap">
-             <b>[[ vocabularies.result.response.numFound
-             ]]</b>
-             <ng-pluralize count="vocabularies.result.response.numFound"
-             when="{'1': 'result',
-             'other': 'results'}">
-             </ng-pluralize>
-             ([[ vocabularies.result.responseHeader.QTime ]]
-             <ng-pluralize count="vocabularies.result.responseHeader.QTime"
-             when="{'1': 'millisecond',
-             'other': 'milliseconds'}" >
-             </ng-pluralize>)
-             </td>
-        -->
-
         <div ng-if="activeContainer().result.response.numFound == 0"
              class="animated fadeInLeft vocab-search-result">
           Your search did not return any results
