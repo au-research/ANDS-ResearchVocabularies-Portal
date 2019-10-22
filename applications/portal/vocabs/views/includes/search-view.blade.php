@@ -1341,7 +1341,9 @@
             <div ng-repeat="doc in
                             repackagedExpanded[docTop.collapse_id].same"
                  class="modal fade"
-                 id="viewResource_same_[[ $parent.$index ]]_[[ $index ]]" >
+                 id="viewResource_same_[[ $parent.$index ]]_[[ $index ]]"
+                 tabindex="-1" role="dialog"
+                 aria-labelledby="viewResource_same_[[ $parent.$index ]]_[[ $index ]]">
               @yield('modal-popup')
             </div>
           </div>
@@ -1350,7 +1352,9 @@
                             repackagedExpanded[docTop.collapse_id].other">
               <div ng-repeat="doc in edocs"
                    class="modal fade"
-                   id="viewResource_other_[[ $parent.$index ]]_[[ $index ]]">
+                   id="viewResource_other_[[ $parent.$index ]]_[[ $index ]]"
+                   tabindex="-1" role="dialog"
+                   aria-labelledby="viewResource_other_[[ $parent.$index ]]_[[ $index ]]">
                 @yield('modal-popup')
               </div>
             </div>
