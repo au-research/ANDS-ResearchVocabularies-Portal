@@ -1255,13 +1255,15 @@
                 <td class="text-nowrap" style="width:80%">
                   <uib-tabset active="filters.activeTab"
                               template-url="tabset-hidden.html">
-                    <uib-tab index="'vocabularies'">
+                    <uib-tab index="'vocabularies'"
+                             select="tabChanged('vocabularies')">
                       <uib-tab-heading>
                         Vocabularies
                         ([[ vocabularies.result.response.numFound ]])
                       </uib-tab-heading>
                     </uib-tab>
-                    <uib-tab index="'resources'">
+                    <uib-tab index="'resources'"
+                             select="tabChanged('resources')">
                       <uib-tab-heading>
                         Concepts, etc.
                         ([[ resources.result.response.numFound ]])
