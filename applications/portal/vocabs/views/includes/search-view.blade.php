@@ -962,7 +962,8 @@
               <!-- Search results for vocabularies tab -->
 
               <div ng-repeat="doc in vocabularies.result.response.docs"
-                   class="animated fadeInLeft vocab-search-result search-results-vocabularies">
+                   class="animated fadeInLeft vocab-search-result
+                              search-results-vocabularies">
 
                 <span class="label label-default pull-right"
                       ng-if="doc.status=='deprecated' || doc.status=='DEPRECATED'"
@@ -1210,7 +1211,7 @@
               </div> <!-- End search results for resources tab -->
 
               <!-- Advanced options for resource search -->
-              <div class="vocab-search-result">
+              <div ng-if="resources.result.response.docs" class="vocab-search-result">
                 <div style="margin-bottom: 4px">
                   <button class="btn btn-xs btn-default collapsed"
                           data-toggle="collapse"

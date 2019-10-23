@@ -680,6 +680,21 @@
                         // in the list.
                         $scope.form.collapse = $scope.collapseOptions[0].id;
                     }
+                    // Prevent "blinking" of results in the case when
+                    // using browser back/forward where that switches
+                    // between the different tabs. Note: we remove
+                    // just the docs of the response for each tab, not
+                    // the whole response.  Being this picky helps
+                    // prevent blinking of the breadbox and filter
+                    // side panel!
+                    if ('result' in $scope.vocabularies &&
+                        'response' in $scope.vocabularies.result) {
+                        delete $scope.vocabularies.result.response.docs;
+                    }
+                    if ('result' in $scope.resources &&
+                        'response' in $scope.resources.result) {
+                        delete $scope.resources.result.response.docs;
+                    }
                     performVocabulariesSearch();
                     performResourcesSearch();
                 }
