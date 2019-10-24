@@ -1308,7 +1308,6 @@
                     </uib-tab>
                   </uib-tabset>
                 </td>
-                <td style="width:10%"></td>
                 <td ng-if="activeContainer().result.response.numFound > 0"
                     style="padding-right: 4px">
                   <select id="sort-select" name="sort-select"
