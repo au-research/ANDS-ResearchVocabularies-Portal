@@ -217,8 +217,7 @@ table.table-resource > tbody > tr:first-child > th {
   padding: 8px 15px 8px 15px;
 }
 /* Backfill from newer FA. */
-.modal-header i.fa-sm,
-.modal-body i.fa-sm {
+i.fa-sm {
   font-size: 0.875em;
 }
 .current-version-ap-block {

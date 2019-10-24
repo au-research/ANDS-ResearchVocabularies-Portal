@@ -662,7 +662,19 @@
 
               <!-- Subjects -->
               <div ng-if="resources.facets.subject_labels.length > 0">
-                <h3>Subject</h3>
+                <h3>Subject
+                  <a ng-if="form.collapse == 'iri'"
+                     href=""
+                     tip="Because collapsing of search results is active,
+                            these facet counts may not accurately predict
+                            the number of records that will
+                            be returned if you add or remove a filter. See
+                            &lt;a href=&quot;https://documentation.ands.org.au/display/DOC/Vocabulary+search#Vocabularysearch-Collapsingofresults&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;fa fa-question-circle&quot;&gt;&lt;/i&gt; Using search&lt;/a&gt;
+                            for more information.">
+                    <i class="fa fa-sm fa-info-circle"
+                       style="color: #17649a"></i>
+                  </a>
+                </h3>
                 <!-- On focus, text input's box-shadow is 3px high, so
                      set padding-bottom to 5px to avoid it. -->
                 <div class="input-group"
@@ -732,7 +744,19 @@
 
               <!-- Publishers -->
               <div ng-if="resources.facets.publisher.length > 0">
-                <h3>Publisher</h3>
+                <h3>Publisher
+                  <a ng-if="form.collapse == 'iri'"
+                     href=""
+                     tip="Because collapsing of search results is active,
+                            these facet counts may not accurately predict
+                            the number of records that will
+                            be returned if you add or remove a filter. See
+                            &lt;a href=&quot;https://documentation.ands.org.au/display/DOC/Vocabulary+search#Vocabularysearch-Collapsingofresults&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;fa fa-question-circle&quot;&gt;&lt;/i&gt; Using search&lt;/a&gt;
+                            for more information.">
+                    <i class="fa fa-sm fa-info-circle"
+                       style="color: #17649a"></i>
+                  </a>
+                </h3>
                 <!-- On focus, text input's box-shadow is 3px high, so
                      set padding-bottom to 5px to avoid it. -->
                 <div class="input-group"
@@ -846,7 +870,19 @@
 
               <!-- Version status -->
               <div ng-if="resources.facets.status.length > 0">
-                <h3>Version status</h3>
+                <h3>Version status
+                  <a ng-if="form.collapse != 'none'"
+                     href=""
+                     tip="Because collapsing of search results is active,
+                            these facet counts may not accurately predict
+                            the number of records that will
+                            be returned if you add or remove a filter. See
+                            &lt;a href=&quot;https://documentation.ands.org.au/display/DOC/Vocabulary+search#Vocabularysearch-Collapsingofresults&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;fa fa-question-circle&quot;&gt;&lt;/i&gt; Using search&lt;/a&gt;
+                            for more information.">
+                    <i class="fa fa-sm fa-info-circle"
+                       style="color: #17649a"></i>
+                  </a>
+                </h3>
                 <table class="table-facet-filter">
                   <tbody>
                     <tr ng-repeat="facet in resources.facets.status">
