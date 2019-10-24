@@ -3508,11 +3508,31 @@ if (!Array.prototype.find) {
             }
         }
 
-        /** Scroll to the top of the page.
+
+        /** Primitive (but good enough) lock used by scrollToTop() to
+         * make sure we don't try to scroll more than once.
+         * @memberof searchCtrl
+         */
+        var scrollingToTop = false;
+
+        /** Scroll to the top of the page, but only if there isn't
+         * already scrolling in progress. (Without "multiple-scrolling
+         * prevention", you may have to "fight" the browser if you use
+         * the mousewheel "too soon" after adding/clearing a filter.)
          * @memberof searchCtrl
          */
         function scrollToTop() {
-            $('html, body').animate({ 'scrollTop': 0 }, 500);
+            if (scrollingToTop) {
+                // Don't do anything if we're already scrolling!
+                return;
+            }
+            scrollingToTop = true;
+            $('html, body').animate({ 'scrollTop': 0 }, {
+                'duration' : 500,
+                'always': function() {
+                    scrollingToTop = false;
+                }
+            });
         }
 
         /** Reset all search filters. Reset the page size to the
