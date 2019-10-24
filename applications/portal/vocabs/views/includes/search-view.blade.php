@@ -1318,7 +1318,11 @@
           </table>
         </div>
 
-        <div ng-if="activeContainer().result.response.numFound == 0"
+        <!-- Need the first condition of this conjunction to avoid
+             "flickering" when going back/forward in browser
+             (especially Chrome). -->
+        <div ng-if="activeContainer().result.response.docs &&
+                    activeContainer().result.response.numFound == 0"
              class="animated fadeInLeft vocab-search-result">
           Your search did not return any results
         </div>
