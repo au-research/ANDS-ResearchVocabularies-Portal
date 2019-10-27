@@ -1220,7 +1220,7 @@
                         [[ doc.publisher.join(', ') ]]
                         <ul>
                           <li ng-repeat="edoc in edocs">
-                            <b>Version:</b> [[ edocs[0].version_title ]]
+                            <b>Version:</b> [[ edoc.version_title ]]
                             ([[ versionStatusPretty(edoc.status) ]])
                             <button type="button" class="btn btn-xs btn-default"
                                     style="margin-right: 4px"
