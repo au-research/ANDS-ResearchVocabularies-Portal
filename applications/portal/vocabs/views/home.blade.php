@@ -29,7 +29,9 @@
           <div class="pull-right">
             <a href="https://documentation.ands.org.au/display/DOC/Vocabulary+search" target="_blank"><i class="fa fa-question-circle"></i> Using search</a>
             &emsp;
-            <a href="{{ portal_url('search') }}">Browse all vocabularies</a>
+            <a href="{{ portal_url('search/#!/?activeTab=vocabularies') }}">Browse all vocabularies</a>
+            |
+            <a href="{{ portal_url('search/#!/?activeTab=resources') }}">concepts</a>
           </div>
         </div>
 

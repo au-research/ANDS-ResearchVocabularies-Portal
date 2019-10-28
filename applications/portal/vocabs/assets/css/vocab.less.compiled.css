@@ -96,17 +96,129 @@
 .search-section a:hover {
   color: #e9e9e9;
 }
-.vocab-search-result {
+/* Overrides for swatch-gray, for search results. */
+.swatch-gray .tab-pane.active .vocab-search-result {
   background: white;
   padding: 10px;
-  margin: 0px 0px 10px 0px;
+  margin: 0px;
   position: relative;
 }
-.vocab-search-result h3 {
+.swatch-gray .tab-pane.active .vocab-search-result h3 {
   margin: 7px 0px;
 }
-.vocab-search-result a {
+.swatch-gray .tab-pane.active .vocab-search-result a {
   color: #17649a;
+  text-decoration: none;
+}
+.swatch-gray .tab-pane.active .vocab-search-result a:hover {
+  color: #4f9bc2;
+}
+.swatch-gray .tab-pane.active .vocab-search-result div,
+.swatch-gray .tab-pane.active .vocab-search-result p {
+  color: #4c4c4c;
+}
+.vocab-search-result .tab-content {
+  padding: 0px;
+  background: #e9e9e9;
+}
+/* Top-level div of each search result */
+div.tab-pane > div {
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #eaeaea;
+}
+/* Tab headings */
+ul.nav.nav-tabs {
+  display: inline-block;
+  vertical-align: top;
+}
+.swatch-gray .nav-tabs .active a,
+.swatch-gray .nav-tabs > li > a:focus,
+.swatch-gray .nav-tabs .active a:hover,
+.swatch-gray .nav-tabs > li > a:hover {
+  background: #ffffff;
+}
+.swatch-gray .nav-tabs > li > a:focus {
+  color: #8c8c8c;
+}
+.swatch-gray .nav-tabs > li.active > a {
+  color: #17649a;
+}
+.swatch-gray .nav-tabs > li.active > a:hover {
+  color: #82c9ed;
+}
+.swatch-gray .nav-tabs > li > a {
+  color: #8c8c8c;
+}
+.swatch-gray .nav-tabs > li > a:hover {
+  color: #82c9ed;
+}
+li.uib-tab.active a,
+li.uib-tab.active a:hover,
+li.uib-tab.active a:focus {
+  border-style: none none solid none;
+  border-width: 3px;
+  border-color: #82c9ed;
+}
+li.uib-tab:not(.active) a,
+li.uib-tab:not(.active) a:focus {
+  background: #ffffff;
+  border-style: none none solid none;
+  border-width: 3px;
+  border-color: #e9e9e9;
+}
+.swatch-gray .vocab-search-result .btn.btn-default {
+  color: #333 !important;
+  background: #fff !important;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.swatch-gray .vocab-search-result .btn.btn-default i {
+  color: #333 !important;
+  /* Backfill from newer FA. */
+}
+.swatch-gray .vocab-search-result .btn.btn-default i.fa-xs {
+  font-size: 0.75em;
+}
+.swatch-gray .vocab-search-result i.fa-xs {
+  font-size: 0.75em;
+}
+b.vocab-search-result-highlight {
+  background-color: #d9e7ec;
+}
+/* Show/hide specific content for a Bootstrap collapse. */
+.collapsed > .when-opened,
+:not(.collapsed) > .when-closed {
+  display: none;
+}
+table.table-resource {
+  width: 100%;
+}
+table.table-resource tbody tr th {
+  width: 15%;
+}
+table.table-resource > tbody > tr > td,
+table.table-resource > tbody > tr > th,
+table.table-resource > tfoot > tr > td,
+table.table-resource > tfoot > tr > th,
+table.table-resource > thead > tr > td,
+table.table-resource > thead > tr > th {
+  padding: 8px;
+  line-height: 1.2;
+  vertical-align: top;
+  border-top: 1px solid #ddd;
+}
+table.table-resource > tbody > tr:first-child > td,
+table.table-resource > tbody > tr:first-child > th {
+  border-top: 0px;
+}
+.modal-body {
+  padding: 8px 15px 8px 15px;
+}
+/* Backfill from newer FA. */
+i.fa-sm {
+  font-size: 0.875em;
 }
 .current-version-ap-block {
   width: 25%;
@@ -150,36 +262,72 @@ ul.vocab-prev-version-list ul li {
 .swatch-dark-blue .btn-primary {
   background-color: #f58f29;
 }
-ul.list-facet-filter {
-  padding-left: 0;
+table.table-facet-filter {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 14px;
 }
-ul.list-facet-filter li {
-  list-style-type: none;
+table.table-facet-filter tbody {
+  display: block;
+  max-width: 100%;
 }
-ul.list-facet-filter li:last-child {
+table.table-facet-filter tbody.facet-scrollbar {
+  max-height: 13em;
+  overflow-y: scroll;
+}
+table.table-facet-filter tr {
+  max-width: 100%;
+}
+table.table-facet-filter tr td {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-right: 1px;
+}
+table.table-facet-filter tr td:first-child {
+  width: 2%;
+  padding-left: 5px;
+  padding-right: 2px;
+}
+table.table-facet-filter tr td:last-child {
+  width: 5%;
+  text-align: right;
+  padding-left: 0px;
+  padding-right: 2px;
+}
+table.table-facet-filter tr:last-child {
   border: none;
 }
-ul.list-facet-filter li input {
-  margin: 0px;
+table.table-facet-filter tr input {
+  font-size: 133%;
+  margin: 0px 2px 0px 0px;
 }
-ul.list-facet-filter li a {
+table.table-facet-filter tr .label-extra-count {
+  background-color: #e9e9e9;
+  color: #888888;
+  padding: 0px;
+  padding: 1px 3px 1px 3px;
+}
+table.table-facet-filter tr td.filter-value {
+  width: 80%;
+  position: relative;
+}
+table.table-facet-filter tr td.filter-value a {
+  padding-left: 2px;
+  max-width: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 1px;
   display: inline-block;
-  vertical-align: middle;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 80%;
-  padding-left: 5px;
 }
-ul.list-facet-filter li a .count {
-  margin-top: -4px;
-  position: absolute;
-  vertical-align: middle;
-  right: 30px;
-  background: white;
-  height: 32px;
-  line-height: 32px;
-  padding-left: 10px;
+table.table-facet-filter tr .filter-extra {
+  vertical-align: text-bottom;
+  height: 24px;
+  line-height: 24px;
+  background-color: #e9e9e9;
 }
 ul.list-current-search {
   padding-left: 0;
@@ -443,6 +591,7 @@ ul.pagi {
     margin:0px 5px;
     a.active {
       color: @secondaryColor !important;
+      font-weight: bold;
     }
   }
 }

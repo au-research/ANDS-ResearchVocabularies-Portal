@@ -240,7 +240,7 @@ foreach ($vocab->getVersion() as $version) {
                         <?php $sub_count=0; ?>
                         @foreach($vocab->getSubject() as $subject)
                             <?php $sub_count++; ?>
-                            <a href="{{base_url()}}search/#!/?subject_labels={{rawurlencode($subject->getLabel())}}">
+                            <a href="{{base_url()}}search/#!/?v_subject_labels={{rawurlencode($subject->getLabel())}}">
                                 {{htmlspecialchars($subject->getLabel())}} </a>
                             <?php if($sub_count<count($vocab->getSubject())) echo " | "; ?>
                         @endforeach
