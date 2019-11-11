@@ -55,6 +55,7 @@ define("MAX_RESULTS", 200); #sisvoc only returns 200 items
 
 // logging of calls to legacy version of our services and widgets to flat file logging - added 09/02/2016
 
+require_once ('applications/portal/vocabs/helpers/vocabs_helper.php');
 require_once (API_APP_PATH.'core/helpers/api_helper.php');
 $terms = array(
     'event' => 'api_hit',
@@ -233,17 +234,28 @@ class VocabProxy
 		if ($url) {
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, $url);
-			# Allow following redirection (e.g., http -> https), up to
-			# 5 hops
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-			curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
+			# Limit protocols for initial connect and for redirects.
+			curl_setopt($ch, CURLOPT_PROTOCOLS,
+						CURLPROTO_HTTP | CURLPROTO_HTTPS);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($ch, CURLOPT_FAILONERROR, TRUE);
 			curl_setopt($ch, CURLOPT_BINARYTRANSFER, TRUE);
-			$data = json_decode(curl_exec($ch), true) or die(curl_error($ch));
+			$data = json_decode(curl_exec($ch), true);
+			# Allow a redirect, just from http -> https, but otherwise
+			# with exactly the same URL.
+			$redirect_url = curl_getinfo($ch, CURLINFO_REDIRECT_URL);
+			if (substr($url, 0, 5) === "http:" &&
+				substr($redirect_url, 0, 6) === "https:" &&
+				substr($url, 5) ===  substr($redirect_url, 6)) {
+				curl_setopt($ch, CURLOPT_URL, $redirect_url);
+				$data = json_decode(curl_exec($ch), true) or die(curl_error($ch));
+			}
 			if ($data != null) {
 				$this->jsonData['status'] = 'OK';
+			} else {
+				die('Got nothing from LDA server');
 			}
+			curl_close($ch);
 		}
 		if ($data && $this->jsonData['status'] == "OK") {
 			$items = (array)$data['result']['items'];
