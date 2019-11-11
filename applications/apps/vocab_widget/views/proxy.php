@@ -55,7 +55,6 @@ define("MAX_RESULTS", 200); #sisvoc only returns 200 items
 
 // logging of calls to legacy version of our services and widgets to flat file logging - added 09/02/2016
 
-require_once ('applications/portal/vocabs/helpers/vocabs_helper.php');
 require_once (API_APP_PATH.'core/helpers/api_helper.php');
 $terms = array(
     'event' => 'api_hit',
