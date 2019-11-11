@@ -233,6 +233,10 @@ class VocabProxy
 		if ($url) {
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, $url);
+			# Allow following redirection (e.g., http -> https), up to
+			# 5 hops
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+			curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($ch, CURLOPT_FAILONERROR, TRUE);
 			curl_setopt($ch, CURLOPT_BINARYTRANSFER, TRUE);
