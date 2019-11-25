@@ -350,6 +350,21 @@
         case 'notationFloat':
         case 'notationDotted':
             $scope.enhanceTitle = function(e, data) {
+                // This callback may be called more than once, so we
+                // need the following to make sure that the
+                // "enhancements" are only applied once.  We insert
+                // <span class="enhanced"></span> within the
+                // title. Note: it _doesn't_ work to do just
+                // data.$title.addClass('enhanced'), as the top-level
+                // span is not iself _removed_ by filtering, but just
+                // the inner text is, leaving the class untouched.
+                if (data.$title.find('span.enhanced').length > 0) {
+                    // We already did this node.
+                    return;
+                } else {
+                    data.$title.prepend('<span class="enhanced"></span>');
+                }
+                // First, add notation as prefix.
                 var nodedata = data.node.data;
                 var notation = nodedata.notation;
                 if (notation !== undefined) {
@@ -367,6 +382,7 @@
                                 escapeHtml(notation) + '</i>: </span>');
                     }
                 }
+                // Second, append child count as suffix.
                 data.$title.append(nodedata.titlesuffix);
             };
             break;
