@@ -1186,7 +1186,7 @@
                       <ul>
                         <li ng-repeat="edoc in
                                        repackagedExpanded[doc.collapse_id].same">
-                          Version: [[ edoc.version_title ]]
+                          <b>Version:</b> [[ edoc.version_title ]]
                           ([[ versionStatusPretty(edoc.status) ]])
                           <button type="button" class="btn btn-xs btn-default"
                                   style="margin-right: 4px"
