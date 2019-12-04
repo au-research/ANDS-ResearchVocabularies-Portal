@@ -393,6 +393,12 @@
                 }
             });
 
+            if ($scope.activeContainer() === $scope.resources) {
+                // The vocabularies tab is active, so only get
+                // the _count_ of results; don't get the results themselves.
+                filtersToSend["count_only"] = true;
+            }
+
             api.search(JSON.stringify(filtersToSend)).
                 then(function (data) {
                     // $log.debug(data);
@@ -408,7 +414,10 @@
                     if (facet_counts_extra == undefined) {
                         facet_counts_extra = {};
                     }
-                    angular.forEach(facet_counts.facet_fields,
+                    // We will have facet_counts iff we didn't specify
+                    // "count_only" above.
+                    if (facet_counts !== undefined) {
+                      angular.forEach(facet_counts.facet_fields,
                         function (item, index) {
                             facets[index] = [];
                             for (var i = 0;
@@ -434,6 +443,7 @@
                             // from Solr sorted case-sensitively.
                             facets[index].sort(caseInsensitiveCompare);
                         });
+                    }
                     $scope.vocabularies.facets = facets;
 
                     unpackHighlighting($scope.vocabularies);
@@ -534,6 +544,11 @@
                     filtersToSend[key.replace(/^r_/, '')] = value;
                 }
             });
+            if ($scope.activeContainer() === $scope.vocabularies) {
+                // The vocabularies tab is active, so only get
+                // the _count_ of results; don't get the results themselves.
+                filtersToSend["count_only"] = true;
+            }
 
             api.searchResources(JSON.stringify(filtersToSend)).
                 then(function (data) {
@@ -550,8 +565,11 @@
                     if (facet_counts_extra == undefined) {
                         facet_counts_extra = {};
                     }
-                    angular.forEach(facet_counts.facet_fields,
-                        function (item, index) {
+                    // We will have facet_counts iff we didn't specify
+                    // "count_only" above.
+                    if (facet_counts !== undefined) {
+                      angular.forEach(facet_counts.facet_fields,
+                          function (item, index) {
                             facets[index] = [];
                             for (var i = 0;
                                  i < facet_counts.facet_fields[index].length;
@@ -576,6 +594,7 @@
                             // from Solr sorted case-sensitively.
                             facets[index].sort(caseInsensitiveCompare);
                         });
+                    }
                     $scope.resources.facets = facets;
 
                     unpackHighlighting($scope.resources,
