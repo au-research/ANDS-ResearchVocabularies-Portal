@@ -1306,6 +1306,51 @@ class Vocabs extends MX_Controller
     }
 
     /**
+     * Log the viewing of the details of one resource.
+     * Called from the "View resource details" buttons on the resource
+     * search results tab.
+     * @return string JSON object indicating OK status.
+     * @throws Exception
+     */
+    public function logResourceDetails()
+    {
+        // Collect the data to be logged, from the
+        // query parameters.
+
+        $vocab_id = (int) ($this->input->get('vocab_id') ?: 0);
+        $vocab_title = $this->input->get('vocab_title') ?: 'unknown';
+        $vocab_owner = $this->input->get('vocab_owner') ?: 'unknown';
+
+        $version_id = (int) ($this->input->get('version_id') ?: 0);
+        $version_status = $this->input->get('version_status') ?: 'unknown';
+        $version_title = $this->input->get('version_title') ?: 'unknown';
+
+        $resource_iri = $this->input->get('resource_iri') ?: 'unknown';
+        $resource_title = $this->input->get('resource_title') ?: 'unknown';
+
+        // Log the event.
+        $event = [
+            'event' => 'portal_resource_details',
+            'vocabulary' => [
+                'id' => $vocab_id,
+                'title' => $vocab_title,
+                'owner' => $vocab_owner,
+            ],
+            'version' => [
+                'id' => $version_id,
+                'status' => $version_status,
+                'title' => $version_title
+            ],
+            'resource' => [
+                'iri' => $resource_iri,
+                'title' => $resource_title
+            ]
+        ];
+        vocabs_portal_log($event);
+        echo '{"status": "OK"}';
+    }
+
+    /**
      * Log unsubscription.
      * @return string JSON object indicating OK status.
      * @throws Exception

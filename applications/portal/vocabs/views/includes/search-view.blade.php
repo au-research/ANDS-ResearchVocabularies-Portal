@@ -1149,6 +1149,7 @@
                 <div>
                   <button type="button" class="btn btn-xs btn-default"
                           style="margin-right: 4px"
+                          ng-click="logViewResourceDetails(doc)"
                           data-toggle="modal"
                           data-target="#viewResource_[[ $index ]]">
                     View resource details
@@ -1190,6 +1191,7 @@
                           ([[ versionStatusPretty(edoc.status) ]])
                           <button type="button" class="btn btn-xs btn-default"
                                   style="margin-right: 4px"
+                                  ng-click="logViewResourceDetails(edoc)"
                                   data-toggle="modal"
                                   data-target="#viewResource_same_[[ $parent.$index ]]_[[ $index ]]">
                             View resource details
@@ -1224,6 +1226,7 @@
                             ([[ versionStatusPretty(edoc.status) ]])
                             <button type="button" class="btn btn-xs btn-default"
                                     style="margin-right: 4px"
+                                    ng-click="logViewResourceDetails(edoc)"
                                     data-toggle="modal"
                                     data-target="#viewResource_other_[[ $parent.$index ]]_[[ $index ]]">
                               View resource details

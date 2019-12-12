@@ -1481,6 +1481,30 @@
         // }
 
         /** Callback invoked when the user clicks a
+         * "View resource details" button, to have the Portal log
+         * the fact that the user did that.
+         * @param {object} doc The Solr document for the resource
+         *   for which the user has requested to view details.
+         * @memberof searchCtrl
+         */
+        $scope.logViewResourceDetails = function(doc) {
+            var params = {
+                'vocab_id': doc.vocabulary_id,
+                'vocab_owner': doc.owner,
+                'vocab_title': doc.vocabulary_title,
+                'version_id': doc.version_id,
+                'version_status': doc.status.toLowerCase(),
+                'version_title': doc.version_title,
+                'resource_iri': doc.iri,
+                'resource_title': doc.title
+            };
+            // $.param does percent-encoding for us.
+            var portal_callback = base_url + 'vocabs/logResourceDetails?' +
+                $.param(params);
+            $.ajax(portal_callback);
+        }
+
+        /** Callback invoked when the user clicks a
          * "View resource as linked data" button, to have the Portal log
          * the fact that the user did that.
          * @param {object} doc The Solr document for the resource
