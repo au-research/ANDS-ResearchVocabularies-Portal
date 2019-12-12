@@ -1461,21 +1461,50 @@
             $location.search($scope.filters);
         }
 
-        /**
-         * @param {object} doc The Solr document to be analysed.
-         * @param {string} fieldName The base field name, e.g.,
-         *   'skos_prefLabel'.
+        // Possible future work, when we support multilingual
+        // resource search results better.
+        // /**
+        //  * @param {object} doc The Solr document to be analysed.
+        //  * @param {string} fieldName The base field name, e.g.,
+        //  *   'skos_prefLabel'.
+        //  * @memberof searchCtrl
+        //  */
+        // $scope.getFieldValuesForField = function(doc, fieldName) {
+        //     // In the following, we use a running example of
+        //     // fieldName=='skos_prefLabel'.
+        //     // There are three possibilities:
+        //     // (1) doc contains a field skos_prefLabel_all.
+        //     //
+        //     // (2) doc _doesn't_ contain a field skos_prefLabel_all,
+        //     // (3) doc _doesn't_ contain any fields skos_prefLabel*.
+
+        // }
+
+        /** Callback invoked when the user clicks a
+         * "View resource as linked data" button, to have the Portal log
+         * the fact that the user did that.
+         * @param {object} doc The Solr document for the resource
+         *   for which the user has requested to view details.
          * @memberof searchCtrl
          */
-        $scope.getFieldValuesForField = function(doc, fieldName) {
-            // In the following, we use a running example of
-            // fieldName=='skos_prefLabel'.
-            // There are three possibilities:
-            // (1) doc contains a field skos_prefLabel_all.
-            //
-            // (2) doc _doesn't_ contain a field skos_prefLabel_all,
-            // (3) doc _doesn't_ contain any fields skos_prefLabel*.
-
+        $scope.logViewInLDA = function(doc) {
+            var params = {
+                'vocab_id': doc.vocabulary_id,
+                'vocab_owner': doc.owner,
+                'vocab_title': doc.vocabulary_title,
+                'version_id': doc.version_id,
+                'version_status': doc.status.toLowerCase(),
+                'version_title': doc.version_title,
+                'ap_url': doc.sissvoc_endpoint + '/concept',
+                'ap_type': 'sissvoc',
+                'resource_iri': doc.iri,
+                'resource_title': doc.title,
+                'referrer_type': 'search'
+            };
+            // $.param does percent-encoding for us.
+            var portal_callback = base_url + 'vocabs/logAccessPoint?' +
+                $.param(params);
+            $.ajax(portal_callback);
         }
 
         // Deal with one specific case here: we've come to the page

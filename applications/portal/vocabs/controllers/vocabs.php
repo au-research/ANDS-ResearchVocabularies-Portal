@@ -1262,6 +1262,14 @@ class Vocabs extends MX_Controller
         $ap_url = $this->input->get('ap_url') ?: 'unknown';
         $ap_type = $this->input->get('ap_type') ?: 'unknown';
 
+        // Optional: for type="sissvoc", an individual resource
+        $resource_iri = $this->input->get('resource_iri') ?: 'unknown';
+        $resource_title = $this->input->get('resource_title') ?: 'unknown';
+
+        // Optional: enumerated type of referrer pages, e.g.,
+        // "view", "search".
+        $referrer_type = $this->input->get('referrer_type') ?: 'unknown';
+
         // Log the event.
         $event = [
             'event' => 'portal_accessed',
@@ -1284,6 +1292,15 @@ class Vocabs extends MX_Controller
                 'url' => $ap_url
             ]
         ];
+        if ($referrer_type != 'unknown') {
+            $event['referrer_type'] = $referrer_type;
+        }
+        if ($resource_title != 'unknown') {
+            $event['resource'] = [
+                'iri' => $resource_iri,
+                'title' => $resource_title
+            ];
+        }
         vocabs_portal_log($event);
         echo '{"status": "OK"}';
     }

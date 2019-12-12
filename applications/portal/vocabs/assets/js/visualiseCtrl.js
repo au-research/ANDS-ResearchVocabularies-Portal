@@ -87,6 +87,8 @@
             tipText = tipText + '<p><a class="pull-right" target="_blank" ' +
                 'onclick="clickLinkedData(\'' +
                 escapeHtml(element.iri).replace(/&#39;/g, "\\&#39;") +
+                '\',\'' +
+                escapeHtml(element.title) +
                 '\')" ' +
                 'href="' + sissvoc_endpoint +
                 '/resource?uri=' +
@@ -525,23 +527,6 @@
         $scope.$apply(function() {
             $scope.hasTree = true;
         });
-
-        // Onclick function for the "View as linked data" link embedded
-        // within browse tree concept tooltips. It does analytics logging
-        // of the user's click.
-        // We take advantage of the fact that the SISSVoc endpoint
-        // for the current version is being displayed on the same page,
-        // and there's an onclick event on it that has pretty much what
-        // we want.
-        $scope.clickLinkedData = function(uri) {
-            var sissvoc_onclick =
-                document.querySelector("a#current_version_sissvoc").
-                getAttribute("onclick");
-            // FIXME: it may be that we want to append uri to the
-            // "ap_url" value.  Make a decision, then implement it.
-            var ajax_command = sissvoc_onclick.replace(/return true/, '');
-            eval(ajax_command);
-        };
 
         // Cancel any existing filter, and apply filtering to show
         // all of the instances (clones) of a concept, based on its IRI.

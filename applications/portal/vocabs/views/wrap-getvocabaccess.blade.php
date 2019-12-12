@@ -62,7 +62,8 @@ function onclickURL($vocab, $version, $ap) {
       'version_slug' => $version->getSlug(),
       'ap_id' => $ap->getId(),
       'ap_type' => $ap->getDiscriminator(),
-      'ap_url' => $ap_url
+      'ap_url' => $ap_url,
+      'referrer_type' => 'view_concept_list'
     ];
     return htmlspecialchars(portal_url('vocabs/logAccessPoint') . '?' . http_build_query($share_params));
 }
@@ -167,6 +168,9 @@ function getIdForSissvocAccessPoint() {
             <a {{ getIdForSissvocAccessPoint() }}
               target="_blank"
               class="btn btn-sm btn-default {{$ap->getDiscriminator()}}"
+              vocab="{{ htmlspecialchars($vocab) }}"
+              current_version="{{ htmlspecialchars($current_version) }}"
+              ap="{{ htmlspecialchars($ap) }}"
               onclick="$.ajax('{{ onclickURL($vocab, $current_version, $ap) }}'); return true"
               sissvoc_endpoint="{{ $ap->getApSissvoc()->getUrlPrefix() }}"
               href="{{ $ap->getApSissvoc()->getUrlPrefix() }}/concept"><i

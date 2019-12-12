@@ -192,6 +192,72 @@ $(document).on(
     }
 );
 
+// Helper function for the clickLinkedData() function below.  Note
+// (and make sure!) that this matches the definition in
+// wrap-getvocabaccess.blade.php. One exception: this version adds support
+// for optional iri and title parameters.
+function onclickURL(vocabObject, versionObject, apObject, iri, title) {
+    // Require the Registry API.
+    // Defining/accessing a "static" variable in this way means we
+    // don't need to rely on a particular load order of the JS files.
+    // (If we defined "var VocabularyRegistryApi = require(...)" at the
+    // top level, we would need to move the loading of
+    // vocabs-registry-client-bundle.js further up in scripts.blade.php.)
+    if (typeof onclickURL.api == 'undefined' ) {
+        onclickURL.api = require('vocabulary_registry_api');
+    }
+    var discriminator = onclickURL.api.AccessPoint.DiscriminatorEnum;
+    var vocab = onclickURL.api.Vocabulary.constructFromObject(
+        vocabObject);
+    var version = onclickURL.api.Version.constructFromObject(
+        versionObject);
+    var ap = onclickURL.api.AccessPoint.constructFromObject(apObject);
+    var ap_url;
+    switch (ap.getDiscriminator()) {
+    case discriminator.apiSparql:
+        ap_url = ap.getApApiSparql().getUrl();
+        break;
+    case discriminator.file:
+        ap_url = ap.getApFile().getUrl();
+        break;
+    case discriminator.sesameDownload:
+        ap_url = ap.getApSesameDownload().getUrlPrefix();
+        break;
+    case discriminator.sissvoc:
+        ap_url = ap.getApSissvoc().getUrlPrefix() + '/concept';
+        break;
+    case discriminator.webPage:
+        ap_url = ap.getApWebPage().getUrl();
+        break;
+    default:
+        ap_url = 'unknown';
+    }
+    var params = {
+        'vocab_id': vocab.getId(),
+        'vocab_status': vocab.getStatus(),
+        'vocab_title': vocab.getTitle(),
+        'vocab_slug': vocab.getSlug(),
+        'vocab_owner': vocab.getOwner(),
+        'version_id': version.getId(),
+        'version_status': version.getStatus(),
+        'version_title': version.getTitle(),
+        'version_slug': version.getSlug(),
+        'ap_id': ap.getId(),
+        'ap_type': ap.getDiscriminator(),
+        'ap_url': ap_url,
+        'referrer_type': 'view_resource'
+    };
+    // The iri and title parameters are optional.
+    if (iri !== undefined) {
+        params.resource_iri = iri;
+    }
+    if (title !== undefined) {
+        params.resource_title = title;
+    }
+    // $.param does percent-encoding for us.
+    return base_url + 'vocabs/logAccessPoint?' + $.param(params);
+}
+
 // Onclick function for the "View as linked data" link embedded
 // within browse tree concept tooltips. It does analytics logging
 // of the user's click.
@@ -199,13 +265,24 @@ $(document).on(
 // for the current version is being displayed on the same page,
 // and there's an onclick event on it that has pretty much what
 // we want.
-function clickLinkedData(uri) {
-    var sissvoc_onclick = document.querySelector("a#current_version_sissvoc").
-        getAttribute("onclick");
-    // FIXME: it may be that we want to append uri to the "ap_url" value.
-    // Make a decision, then implement it.
-    var ajax_command = sissvoc_onclick.replace(/return true/, '');
-    eval(ajax_command);
+// The value of the title parameter should be some sort of label
+// of the resource. (E.g., it could be a SKOS prefLabel.)
+// This function "should" be defined in visualiseCtrl, within
+// the controller (i.e., as $scope.clickLinkedData, and used as
+// ng-click="clickLinkedData(...)"), but it can't be,
+// as the tooltips are DOM elements that aren't within the scope
+// of that controller.
+function clickLinkedData(iri, title) {
+    var current_version_sissvoc = document.querySelector(
+        "a#current_version_sissvoc");
+    var vocab = JSON.parse(current_version_sissvoc.getAttribute("vocab"));
+    var current_version = JSON.parse(current_version_sissvoc.getAttribute(
+        "current_version"));
+    var ap = JSON.parse(current_version_sissvoc.getAttribute("ap"));
+
+    var portal_callback = onclickURL(vocab, current_version, ap, iri, title);
+
+    $.ajax(portal_callback);
 }
 
 $(document).on(
