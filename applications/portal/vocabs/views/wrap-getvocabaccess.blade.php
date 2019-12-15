@@ -30,7 +30,8 @@ foreach ($vocab->getVersion() as $version) {
     }
 }
 
-function onclickURL($vocab, $version, $ap) {
+function onclickURL($vocab, $version, $ap, $key = '') {
+    // $key is currently only for sesameDownload.
     switch ($ap->getDiscriminator()) {
     case AP_API_SPARQL:
         $ap_url = $ap->getApApiSparql()->getUrl();
@@ -39,7 +40,7 @@ function onclickURL($vocab, $version, $ap) {
         $ap_url = $ap->getApFile()->getUrl();
         break;
     case AP_SESAME_DOWNLOAD:
-        $ap_url = $ap->getApSesameDownload()->getUrlPrefix();
+        $ap_url = $ap->getApSesameDownload()->getUrlPrefix() . $key;
         break;
     case AP_SISSVOC:
         $ap_url = $ap->getApSissvoc()->getUrlPrefix() . '/concept';
@@ -235,7 +236,7 @@ function getIdForSissvocAccessPoint() {
               ?>
               @foreach($sesameFormats as $key=>$val)
                 <li><a class="download-link" target="_blank"
-                  onclick="$.ajax('{{ onclickURL($vocab, $current_version, $ap) }}{{$key}}'); return true"
+                  onclick="$.ajax('{{ onclickURL($vocab, $current_version, $ap, $key) }}'); return true"
                   href="{{ $ap->getApSesameDownload()->getUrlPrefix() }}{{$key}}">{{ $val }}</a></li>
               @endforeach
             </ul>
@@ -369,7 +370,7 @@ function getIdForSissvocAccessPoint() {
                 ?>
                 @foreach($sesameFormats as $key=>$val)
                   <li><a class="download-link" target="_blank"
-                    onclick="$.ajax('{{ onclickURL($vocab, $version, $ap) }}{{$key}}'); return true"
+                    onclick="$.ajax('{{ onclickURL($vocab, $version, $ap, $key) }}'); return true"
                     href="{{ $ap->getApSesameDownload()->getUrlPrefix() }}{{$key}}">{{ $val }}</a></li>
                 @endforeach
               </ul>
