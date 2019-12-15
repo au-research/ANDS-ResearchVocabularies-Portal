@@ -2622,6 +2622,8 @@ $(document).on(
 // (and make sure!) that this matches the definition in
 // wrap-getvocabaccess.blade.php. One exception: this version adds support
 // for optional iri and title parameters.
+// (Well, it doesn't match. We don't support the key parameter of the PHP
+// function, used for Sesame downloads.)
 function onclickURL(vocabObject, versionObject, apObject, iri, title) {
     // Require the Registry API.
     // Defining/accessing a "static" variable in this way means we
@@ -2639,6 +2641,7 @@ function onclickURL(vocabObject, versionObject, apObject, iri, title) {
         versionObject);
     var ap = onclickURL.api.AccessPoint.constructFromObject(apObject);
     var ap_url;
+    var params = { };
     switch (ap.getDiscriminator()) {
     case discriminator.apiSparql:
         ap_url = ap.getApApiSparql().getUrl();
@@ -2651,6 +2654,8 @@ function onclickURL(vocabObject, versionObject, apObject, iri, title) {
         break;
     case discriminator.sissvoc:
         ap_url = ap.getApSissvoc().getUrlPrefix() + '/concept';
+        // referrer_type only for sissvoc, so far.
+        params.referrer_type = 'view_resource';
         break;
     case discriminator.webPage:
         ap_url = ap.getApWebPage().getUrl();
@@ -2658,21 +2663,19 @@ function onclickURL(vocabObject, versionObject, apObject, iri, title) {
     default:
         ap_url = 'unknown';
     }
-    var params = {
-        'vocab_id': vocab.getId(),
-        'vocab_status': vocab.getStatus(),
-        'vocab_title': vocab.getTitle(),
-        'vocab_slug': vocab.getSlug(),
-        'vocab_owner': vocab.getOwner(),
-        'version_id': version.getId(),
-        'version_status': version.getStatus(),
-        'version_title': version.getTitle(),
-        'version_slug': version.getSlug(),
-        'ap_id': ap.getId(),
-        'ap_type': ap.getDiscriminator(),
-        'ap_url': ap_url,
-        'referrer_type': 'view_resource'
-    };
+    params.vocab_id = vocab.getId();
+    params.vocab_status = vocab.getStatus();
+    params.vocab_title = vocab.getTitle();
+    params.vocab_slug = vocab.getSlug();
+    params.vocab_owner = vocab.getOwner();
+    params.version_id = version.getId();
+    params.version_status = version.getStatus();
+    params.version_title = version.getTitle();
+    params.version_slug = version.getSlug();
+    params.ap_id = ap.getId();
+    params.ap_type = ap.getDiscriminator();
+    params.ap_url = ap_url;
+
     // The iri and title parameters are optional.
     if (iri !== undefined) {
         params.resource_iri = iri;

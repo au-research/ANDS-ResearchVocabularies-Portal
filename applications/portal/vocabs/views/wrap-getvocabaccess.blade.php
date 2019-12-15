@@ -32,6 +32,7 @@ foreach ($vocab->getVersion() as $version) {
 
 function onclickURL($vocab, $version, $ap, $key = '') {
     // $key is currently only for sesameDownload.
+    $share_params = [ ];
     switch ($ap->getDiscriminator()) {
     case AP_API_SPARQL:
         $ap_url = $ap->getApApiSparql()->getUrl();
@@ -44,6 +45,8 @@ function onclickURL($vocab, $version, $ap, $key = '') {
         break;
     case AP_SISSVOC:
         $ap_url = $ap->getApSissvoc()->getUrlPrefix() . '/concept';
+        // referrer_type only for sissvoc, so far.
+        $share_params['referrer_type'] = 'view_concept_list';
         break;
     case AP_WEB_PAGE:
         $ap_url = $ap->getApWebPage()->getUrl();
@@ -51,21 +54,19 @@ function onclickURL($vocab, $version, $ap, $key = '') {
     default:
         $ap_url = 'unknown';
     }
-    $share_params = [
-      'vocab_id' => $vocab->getId(),
-      'vocab_status' => $vocab->getStatus(),
-      'vocab_title' => $vocab->getTitle(),
-      'vocab_slug' => $vocab->getSlug(),
-      'vocab_owner' => $vocab->getOwner(),
-      'version_id' => $version->getId(),
-      'version_status' => $version->getStatus(),
-      'version_title' => $version->getTitle(),
-      'version_slug' => $version->getSlug(),
-      'ap_id' => $ap->getId(),
-      'ap_type' => $ap->getDiscriminator(),
-      'ap_url' => $ap_url,
-      'referrer_type' => 'view_concept_list'
-    ];
+    $share_params['vocab_id'] = $vocab->getId();
+    $share_params['vocab_status'] = $vocab->getStatus();
+    $share_params['vocab_title'] = $vocab->getTitle();
+    $share_params['vocab_slug'] = $vocab->getSlug();
+    $share_params['vocab_owner'] = $vocab->getOwner();
+    $share_params['version_id'] = $version->getId();
+    $share_params['version_status'] = $version->getStatus();
+    $share_params['version_title'] = $version->getTitle();
+    $share_params['version_slug'] = $version->getSlug();
+    $share_params['ap_id'] = $ap->getId();
+    $share_params['ap_type'] = $ap->getDiscriminator();
+    $share_params['ap_url'] = $ap_url;
+
     return htmlspecialchars(portal_url('vocabs/logAccessPoint') . '?' . http_build_query($share_params));
 }
 
