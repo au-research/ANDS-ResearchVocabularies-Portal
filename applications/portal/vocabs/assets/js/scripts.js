@@ -2618,6 +2618,75 @@ $(document).on(
     }
 );
 
+// Helper function for the clickLinkedData() function below.  Note
+// (and make sure!) that this matches the definition in
+// wrap-getvocabaccess.blade.php. One exception: this version adds support
+// for optional iri and title parameters.
+// (Well, it doesn't match. We don't support the key parameter of the PHP
+// function, used for Sesame downloads.)
+function onclickURL(vocabObject, versionObject, apObject, iri, title) {
+    // Require the Registry API.
+    // Defining/accessing a "static" variable in this way means we
+    // don't need to rely on a particular load order of the JS files.
+    // (If we defined "var VocabularyRegistryApi = require(...)" at the
+    // top level, we would need to move the loading of
+    // vocabs-registry-client-bundle.js further up in scripts.blade.php.)
+    if (typeof onclickURL.api == 'undefined' ) {
+        onclickURL.api = require('vocabulary_registry_api');
+    }
+    var discriminator = onclickURL.api.AccessPoint.DiscriminatorEnum;
+    var vocab = onclickURL.api.Vocabulary.constructFromObject(
+        vocabObject);
+    var version = onclickURL.api.Version.constructFromObject(
+        versionObject);
+    var ap = onclickURL.api.AccessPoint.constructFromObject(apObject);
+    var ap_url;
+    var params = { };
+    switch (ap.getDiscriminator()) {
+    case discriminator.apiSparql:
+        ap_url = ap.getApApiSparql().getUrl();
+        break;
+    case discriminator.file:
+        ap_url = ap.getApFile().getUrl();
+        break;
+    case discriminator.sesameDownload:
+        ap_url = ap.getApSesameDownload().getUrlPrefix();
+        break;
+    case discriminator.sissvoc:
+        ap_url = ap.getApSissvoc().getUrlPrefix() + '/concept';
+        // referrer_type only for sissvoc, so far.
+        params.referrer_type = 'view_resource';
+        break;
+    case discriminator.webPage:
+        ap_url = ap.getApWebPage().getUrl();
+        break;
+    default:
+        ap_url = 'unknown';
+    }
+    params.vocab_id = vocab.getId();
+    params.vocab_status = vocab.getStatus();
+    params.vocab_title = vocab.getTitle();
+    params.vocab_slug = vocab.getSlug();
+    params.vocab_owner = vocab.getOwner();
+    params.version_id = version.getId();
+    params.version_status = version.getStatus();
+    params.version_title = version.getTitle();
+    params.version_slug = version.getSlug();
+    params.ap_id = ap.getId();
+    params.ap_type = ap.getDiscriminator();
+    params.ap_url = ap_url;
+
+    // The iri and title parameters are optional.
+    if (iri !== undefined) {
+        params.resource_iri = iri;
+    }
+    if (title !== undefined) {
+        params.resource_title = title;
+    }
+    // $.param does percent-encoding for us.
+    return base_url + 'vocabs/logAccessPoint?' + $.param(params);
+}
+
 // Onclick function for the "View as linked data" link embedded
 // within browse tree concept tooltips. It does analytics logging
 // of the user's click.
@@ -2625,13 +2694,24 @@ $(document).on(
 // for the current version is being displayed on the same page,
 // and there's an onclick event on it that has pretty much what
 // we want.
-function clickLinkedData(uri) {
-    var sissvoc_onclick = document.querySelector("a#current_version_sissvoc").
-        getAttribute("onclick");
-    // FIXME: it may be that we want to append uri to the "ap_url" value.
-    // Make a decision, then implement it.
-    var ajax_command = sissvoc_onclick.replace(/return true/, '');
-    eval(ajax_command);
+// The value of the title parameter should be some sort of label
+// of the resource. (E.g., it could be a SKOS prefLabel.)
+// This function "should" be defined in visualiseCtrl, within
+// the controller (i.e., as $scope.clickLinkedData, and used as
+// ng-click="clickLinkedData(...)"), but it can't be,
+// as the tooltips are DOM elements that aren't within the scope
+// of that controller.
+function clickLinkedData(iri, title) {
+    var current_version_sissvoc = document.querySelector(
+        "a#current_version_sissvoc");
+    var vocab = JSON.parse(current_version_sissvoc.getAttribute("vocab"));
+    var current_version = JSON.parse(current_version_sissvoc.getAttribute(
+        "current_version"));
+    var ap = JSON.parse(current_version_sissvoc.getAttribute("ap"));
+
+    var portal_callback = onclickURL(vocab, current_version, ap, iri, title);
+
+    $.ajax(portal_callback);
 }
 
 $(document).on(
@@ -3575,6 +3655,12 @@ if (!Array.prototype.find) {
                 }
             });
 
+            if ($scope.activeContainer() === $scope.resources) {
+                // The vocabularies tab is active, so only get
+                // the _count_ of results; don't get the results themselves.
+                filtersToSend["count_only"] = true;
+            }
+
             api.search(JSON.stringify(filtersToSend)).
                 then(function (data) {
                     // $log.debug(data);
@@ -3590,7 +3676,10 @@ if (!Array.prototype.find) {
                     if (facet_counts_extra == undefined) {
                         facet_counts_extra = {};
                     }
-                    angular.forEach(facet_counts.facet_fields,
+                    // We will have facet_counts iff we didn't specify
+                    // "count_only" above.
+                    if (facet_counts !== undefined) {
+                      angular.forEach(facet_counts.facet_fields,
                         function (item, index) {
                             facets[index] = [];
                             for (var i = 0;
@@ -3616,6 +3705,7 @@ if (!Array.prototype.find) {
                             // from Solr sorted case-sensitively.
                             facets[index].sort(caseInsensitiveCompare);
                         });
+                    }
                     $scope.vocabularies.facets = facets;
 
                     unpackHighlighting($scope.vocabularies);
@@ -3716,6 +3806,11 @@ if (!Array.prototype.find) {
                     filtersToSend[key.replace(/^r_/, '')] = value;
                 }
             });
+            if ($scope.activeContainer() === $scope.vocabularies) {
+                // The vocabularies tab is active, so only get
+                // the _count_ of results; don't get the results themselves.
+                filtersToSend["count_only"] = true;
+            }
 
             api.searchResources(JSON.stringify(filtersToSend)).
                 then(function (data) {
@@ -3732,8 +3827,11 @@ if (!Array.prototype.find) {
                     if (facet_counts_extra == undefined) {
                         facet_counts_extra = {};
                     }
-                    angular.forEach(facet_counts.facet_fields,
-                        function (item, index) {
+                    // We will have facet_counts iff we didn't specify
+                    // "count_only" above.
+                    if (facet_counts !== undefined) {
+                      angular.forEach(facet_counts.facet_fields,
+                          function (item, index) {
                             facets[index] = [];
                             for (var i = 0;
                                  i < facet_counts.facet_fields[index].length;
@@ -3758,6 +3856,7 @@ if (!Array.prototype.find) {
                             // from Solr sorted case-sensitively.
                             facets[index].sort(caseInsensitiveCompare);
                         });
+                    }
                     $scope.resources.facets = facets;
 
                     unpackHighlighting($scope.resources,
@@ -4624,21 +4723,74 @@ if (!Array.prototype.find) {
             $location.search($scope.filters);
         }
 
-        /**
-         * @param {object} doc The Solr document to be analysed.
-         * @param {string} fieldName The base field name, e.g.,
-         *   'skos_prefLabel'.
+        // Possible future work, when we support multilingual
+        // resource search results better.
+        // /**
+        //  * @param {object} doc The Solr document to be analysed.
+        //  * @param {string} fieldName The base field name, e.g.,
+        //  *   'skos_prefLabel'.
+        //  * @memberof searchCtrl
+        //  */
+        // $scope.getFieldValuesForField = function(doc, fieldName) {
+        //     // In the following, we use a running example of
+        //     // fieldName=='skos_prefLabel'.
+        //     // There are three possibilities:
+        //     // (1) doc contains a field skos_prefLabel_all.
+        //     //
+        //     // (2) doc _doesn't_ contain a field skos_prefLabel_all,
+        //     // (3) doc _doesn't_ contain any fields skos_prefLabel*.
+
+        // }
+
+        /** Callback invoked when the user clicks a
+         * "View resource details" button, to have the Portal log
+         * the fact that the user did that.
+         * @param {object} doc The Solr document for the resource
+         *   for which the user has requested to view details.
          * @memberof searchCtrl
          */
-        $scope.getFieldValuesForField = function(doc, fieldName) {
-            // In the following, we use a running example of
-            // fieldName=='skos_prefLabel'.
-            // There are three possibilities:
-            // (1) doc contains a field skos_prefLabel_all.
-            //
-            // (2) doc _doesn't_ contain a field skos_prefLabel_all,
-            // (3) doc _doesn't_ contain any fields skos_prefLabel*.
+        $scope.logViewResourceDetails = function(doc) {
+            var params = {
+                'vocab_id': doc.vocabulary_id,
+                'vocab_owner': doc.owner,
+                'vocab_title': doc.vocabulary_title,
+                'version_id': doc.version_id,
+                'version_status': doc.status.toLowerCase(),
+                'version_title': doc.version_title,
+                'resource_iri': doc.iri,
+                'resource_title': doc.title
+            };
+            // $.param does percent-encoding for us.
+            var portal_callback = base_url + 'vocabs/logResourceDetails?' +
+                $.param(params);
+            $.ajax(portal_callback);
+        }
 
+        /** Callback invoked when the user clicks a
+         * "View resource as linked data" button, to have the Portal log
+         * the fact that the user did that.
+         * @param {object} doc The Solr document for the resource
+         *   for which the user has requested to view details.
+         * @memberof searchCtrl
+         */
+        $scope.logViewInLDA = function(doc) {
+            var params = {
+                'vocab_id': doc.vocabulary_id,
+                'vocab_owner': doc.owner,
+                'vocab_title': doc.vocabulary_title,
+                'version_id': doc.version_id,
+                'version_status': doc.status.toLowerCase(),
+                'version_title': doc.version_title,
+                'ap_url': doc.sissvoc_endpoint + '/concept',
+                'ap_type': 'sissvoc',
+                'resource_iri': doc.iri,
+                'resource_title': doc.title,
+                'referrer_type': 'search'
+            };
+            // $.param does percent-encoding for us.
+            var portal_callback = base_url + 'vocabs/logAccessPoint?' +
+                $.param(params);
+            $.ajax(portal_callback);
         }
 
         // Deal with one specific case here: we've come to the page

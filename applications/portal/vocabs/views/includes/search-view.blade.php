@@ -8,7 +8,7 @@
           <span aria-hidden="true">&times;</span></button>
         <span ng-if="doc.sissvoc_endpoint" class="pull-right"
               style="padding-right: 8px">
-          <a ng-click="unsetScrollRestoration()"
+          <a ng-click="unsetScrollRestoration(); logViewInLDA(doc)"
              target="_blank"
              href="[[ doc.sissvoc_endpoint ]]/resource?uri=[[ doc.iri ]]"><i class="fa fa-sm fa-share-alt"></i> View resource as linked data</a>
           &emsp;
@@ -1149,6 +1149,7 @@
                 <div>
                   <button type="button" class="btn btn-xs btn-default"
                           style="margin-right: 4px"
+                          ng-click="logViewResourceDetails(doc)"
                           data-toggle="modal"
                           data-target="#viewResource_[[ $index ]]">
                     View resource details
@@ -1174,7 +1175,7 @@
                     </button>
                   </span>
                   <span ng-if="doc.sissvoc_endpoint" class="small">
-                    <a ng-click="unsetScrollRestoration()"
+                    <a ng-click="unsetScrollRestoration(); logViewInLDA(doc)"
                        target="_blank"
                        href="[[ doc.sissvoc_endpoint ]]/resource?uri=[[ doc.iri ]]"><i class="fa fa-xs fa-share-alt"></i> View resource as linked data</a>
                   </span>
@@ -1186,16 +1187,17 @@
                       <ul>
                         <li ng-repeat="edoc in
                                        repackagedExpanded[doc.collapse_id].same">
-                          Version: [[ edoc.version_title ]]
+                          <b>Version:</b> [[ edoc.version_title ]]
                           ([[ versionStatusPretty(edoc.status) ]])
                           <button type="button" class="btn btn-xs btn-default"
                                   style="margin-right: 4px"
+                                  ng-click="logViewResourceDetails(edoc)"
                                   data-toggle="modal"
                                   data-target="#viewResource_same_[[ $parent.$index ]]_[[ $index ]]">
                             View resource details
                           </button>
                           <span ng-if="edoc.sissvoc_endpoint" class="small">
-                            <a ng-click="unsetScrollRestoration()"
+                            <a ng-click="unsetScrollRestoration(); logViewInLDA(edoc)"
                                target="_blank"
                                href="[[ edoc.sissvoc_endpoint ]]/resource?uri=[[ edoc.iri ]]"><i class="fa fa-xs fa-share-alt"></i> View resource as linked data</a>
                           </span>
@@ -1224,12 +1226,13 @@
                             ([[ versionStatusPretty(edoc.status) ]])
                             <button type="button" class="btn btn-xs btn-default"
                                     style="margin-right: 4px"
+                                    ng-click="logViewResourceDetails(edoc)"
                                     data-toggle="modal"
                                     data-target="#viewResource_other_[[ $parent.$index ]]_[[ $index ]]">
                               View resource details
                             </button>
                             <span ng-if="edoc.sissvoc_endpoint" class="small">
-                              <a ng-click="unsetScrollRestoration()"
+                              <a ng-click="unsetScrollRestoration(); logViewInLDA(edoc)"
                                  target="_blank"
                                  href="[[ edoc.sissvoc_endpoint ]]/resource?uri=[[ edoc.iri ]]"><i class="fa fa-xs fa-share-alt"></i> View resource as linked data</a>
                             </span>
