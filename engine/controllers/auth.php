@@ -36,7 +36,9 @@ class Auth extends CI_Controller {
 		// var_dump(get_config_item('aaf_rapidconnect_url'));
 		// var_dump(get_config_item('aaf_rapidconnect_secret'));
 
-		if(get_config_item('aaf_rapidconnect_url') && get_config_item('aaf_rapidconnect_secret')) {
+		$config = \ANDS\Util\Config::get('oauth');
+		if (isset($config['providers']['AAF_RapidConnect']['enabled']) &&
+			$config['providers']['AAF_RapidConnect']['enabled'] === true) {
 			$rapid_connect = array(
 				'slug'		=> 'aaf_rapid',
 				'default'	=> true,
@@ -48,7 +50,7 @@ class Auth extends CI_Controller {
 
 		$data['default_authenticator'] = false;
 		foreach($data['authenticators'] as $auth) {
-			if(isset($auth['default']) && $auth['default']===true) {
+			if(isset($auth['default']) && $auth['default'] === true) {
 				$data['default_authenticator'] = $auth['slug'];
 				break;
 			}
@@ -65,10 +67,38 @@ class Auth extends CI_Controller {
 		$this->load->view('login', $data);
 	}
 
+    /**
+     * /registry/authenticate/:method
+     *
+     * TODO Deprecate in favor of explicit controllers
+     * TODO BuiltInAuthenticator
+     *
+     * @param string $method
+     * @throws \Abraham\TwitterOAuth\TwitterOAuthException
+     * @throws Exception
+     */
 	public function authenticate($method = 'built_in') {
 		header('Cache-Control: no-cache, must-revalidate');
 		header('Content-type: application/json');
 		set_exception_handler('json_exception_handler');
+
+		if ($method === "twitter") {
+			$url = \ANDS\Authenticator\TwitterAuthenticator::getOauthLink();
+			redirect($url);
+		}
+
+		if ($method === "facebook") {
+			$url =\ANDS\Authenticator\FacebookAuthenticator::getOauthLink();
+			redirect($url);
+		}
+
+		if ($method === "google") {
+			$url = \ANDS\Authenticator\GoogleAuthenticator::getOauthLink();
+			redirect($url);
+		}
+
+		// built_in, aaf-rapid, linkedin, shibboleth_sp
+
 		$authenticator_class = $method.'_authenticator';
 		
 		if (!file_exists('engine/models/authenticators/'.$authenticator_class.'.php')) {
@@ -87,10 +117,13 @@ class Auth extends CI_Controller {
 		try {
 			$this->load->model('authenticators/'.$authenticator_class, 'auth');
 			$this->auth->load_params($params);
-			$response = $this->auth->authenticate();
-			$this->user->refreshAffiliations($this->user->localIdentifier());
+			$this->auth->authenticate();
 
-			if ($this->input->get('redirect')) redirect($redirect);
+			// we don't need to refresh affiliation anymore since the authenticator authComplete already
+			// set the required authentication cookie
+			//$this->user->refreshAffiliations($this->user->localIdentifier());
+
+			if ($this->input->get('redirect')) redirect($this->input->get('redirect'));
 
 		} catch (Exception $e) {
 			// $this->auth->post_authentication_hook();
@@ -99,6 +132,83 @@ class Auth extends CI_Controller {
 		
 	}
 
+	/**
+	 * Callback to /registry/auth/twitter
+	 * oauth1
+	 *
+	 * @throws Exception
+	 */
+	public function twitter()
+	{
+		$oauthToken = $_GET['oauth_token'];
+		$oauthVerifier = $_GET['oauth_verifier'];
+		$profile = \ANDS\Authenticator\TwitterAuthenticator::getProfile($oauthToken, $oauthVerifier);
+
+		$this->load->model('authenticator', 'auth');
+		$this->auth->getUserByProfile($profile);
+		$this->user->refreshAffiliations($this->user->localIdentifier());
+	}
+
+	/**
+	 * Callback to /registry/auth/rapidconnect
+	 * AAF RapidConnect
+	 *
+	 * @throws Exception
+	 */
+	public function rapidconnect()
+	{
+		$jwt = $_POST['assertion'];
+		$profile = \ANDS\Authenticator\AAFRapidConnectAuthenticator::getProfile($jwt);
+
+		$this->load->model('authenticator', 'auth');
+		$this->auth->getUserByProfile($profile);
+		$this->user->refreshAffiliations($this->user->localIdentifier());
+	}
+
+	/**
+	 * Callback to /registry/auth/facebook
+	 * oauth2
+	 *
+	 * @throws \Facebook\Exceptions\FacebookSDKException
+	 */
+	public function facebook()
+	{
+		/**
+		 * starting the session to prevent csrf failing
+		 * @url https://stackoverflow.com/questions/32029116/facebook-sdk-returned-an-error-cross-site-request-forgery-validation-failed-th
+		 */
+		if (!session_id()) {
+			session_start();
+		}
+
+		$profile = \ANDS\Authenticator\FacebookAuthenticator::getProfile();
+
+		$this->load->model('authenticator', 'auth');
+		$this->auth->getUserByProfile($profile);
+		$this->user->refreshAffiliations($this->user->localIdentifier());
+	}
+
+	/**
+	 * Callback to /registry/auth/facebook
+	 * oauth2
+	 *
+	 * @throws Exception
+	 */
+	public function google()
+	{
+		$profile = \ANDS\Authenticator\GoogleAuthenticator::getProfile($_GET['code']);
+
+		$this->load->model('authenticator', 'auth');
+		$this->auth->getUserByProfile($profile);
+		$this->user->refreshAffiliations($this->user->localIdentifier());
+	}
+
+	/**
+	 * registry/oauth/auth
+	 * Legacy OAUTH endpoint, uses hybridauth library
+	 * DEPRECATED
+	 * TODO Remove
+	 */
 	public function oauth(){
 		if ($_SERVER['REQUEST_METHOD'] === 'GET'){
 			$_GET = $_REQUEST;

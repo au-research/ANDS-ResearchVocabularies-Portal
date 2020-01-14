@@ -47,6 +47,14 @@ $application_directives = array(
 			"active_application" => "registry",
 			"default_controller" => "auth/dashboard",
 		),
+	// Use "portal_auth" for authentication URLs instead of "registry",
+	// so that we can use "registry" for the Vocabs Registry.
+	"portal_auth" =>
+		array(
+			"base_url" => "%%BASEURL%%/portal_auth/",
+			"active_application" => "portal_auth",
+			"default_controller" => "auth/dashboard",
+		),
 	"portal" =>
 		array(
 			"base_url" => "%%BASEURL%%/",

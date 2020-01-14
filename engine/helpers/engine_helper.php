@@ -306,6 +306,12 @@ function portal_url($suffix='')
 	return $CI->config->item('default_base_url') . $suffix;
 }
 
+function portal_auth_url($suffix='')
+{
+	$CI =& get_instance();
+	return $CI->config->item('default_base_url') . 'portal_auth/' . $suffix;
+}
+
 function roles_url($suffix=''){
 	$CI =& get_instance();
 
