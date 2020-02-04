@@ -679,13 +679,7 @@
         $scope.choose = function (mess) {
 
             //the order we should look
-            // CC-1799: now need to support both TriG and Turtle.
-            // Future work: just strip the file suffixes, in
-            // both Toolkit GetMetadataTransformProvider (i.e.,
-            // don't put it into the generated JSON), and then here.
-            var order_trig = ['concepts.ttl', 'concepts.trig',
-                              'adms.ttl', 'adms.trig',
-                              'void.ttl', 'void.trig'];
+            var order_trig = ['adms', 'void', 'concepts'];
             var order_lang = ['value_en', 'value'];
 
             //find the one with the right trig, default to the first one if none was found
