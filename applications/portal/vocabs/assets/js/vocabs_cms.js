@@ -679,7 +679,7 @@
         $scope.choose = function (mess) {
 
             //the order we should look
-            var order_trig = ['adms', 'void', 'concepts'];
+            var order_trig = ['concepts', 'adms', 'void'];
             var order_lang = ['value_en', 'value'];
 
             //find the one with the right trig, default to the first one if none was found
