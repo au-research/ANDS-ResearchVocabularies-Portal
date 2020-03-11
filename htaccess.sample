@@ -11,7 +11,7 @@ RewriteRule ^\.env ./index.php [L]
 
 RewriteRule ^services/ registry/ [R=301,L]
 
-# ANDS-specific deploy rules (not needed in third-party deployment)
+# ARDC-specific deploy rules (not needed in third-party deployment)
 # RewriteRule ^apps/mydois/doi_(.*?)\.php api/doi/$1 [R=301,L,QSA]
 # RewriteRule ^apps/mydois/(.*)\.(.*) https://researchdata.ands.org.au/api/doi/$1.$2 [NC,P]
 # RewriteRule ^registry/orca/services/oai\.php registry/services/oai [R=301,L,QSA]
@@ -21,7 +21,7 @@ RewriteRule ^assets/(.*?)/(.*)$ assets/$1/$2 [L]
 RewriteRule ^assets/templates/(.*?)/(.*)$ applications/portal/templates/$1/assets/$2 [L]
 RewriteRule ^assets/(.*?)/(.*)$ applications/portal/$1/assets/$2 [L]
 
-RewriteCond $1 ^(registry|roles|apps|developer)
+RewriteCond $1 ^(registry|roles|apps|developer|portal_auth)
 RewriteCond $2 ^(css|img|js|less|lib)
 RewriteRule ^(.*?)/assets/(.*?)/(.*)$ assets/$2/$3 [L]
 

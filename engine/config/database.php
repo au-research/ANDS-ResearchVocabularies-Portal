@@ -13,6 +13,7 @@
 | -------------------------------------------------------------------
 |
 |	['hostname'] The hostname of your database server.
+|	['port']     The port of your database server.
 |	['username'] The username used to connect to the database
 |	['password'] The password used to connect to the database
 |	['database'] The name of the database you want to connect to
@@ -54,6 +55,7 @@ $eDBCONF = include(BASE . "config/database.php");
 foreach($eDBCONF as $groupname=>$value)
 {
 	if(!isset($eDBCONF[$groupname]['hostname'])) $eDBCONF[$groupname]['hostname'] = $eDBCONF['default']['hostname'];
+	if(!isset($eDBCONF[$groupname]['port']))     $eDBCONF[$groupname]['port']     = $eDBCONF['default']['port'];
 	if(!isset($eDBCONF[$groupname]['username'])) $eDBCONF[$groupname]['username'] = $eDBCONF['default']['username'];
 	if(!isset($eDBCONF[$groupname]['password'])) $eDBCONF[$groupname]['password'] = $eDBCONF['default']['password'];
 	if(!isset($eDBCONF[$groupname]['dbdriver'])) $eDBCONF[$groupname]['dbdriver'] = $eDBCONF['default']['dbdriver'];

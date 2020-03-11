@@ -2,6 +2,7 @@
 return [
     'default' => [
         'hostname' => env('DB_HOSTNAME', 'localhost'),
+        'port'     => env('DB_PORT',     3306),
         'username' => env('DB_USERNAME', 'webuser'),
         'password' => env('DB_PASSWORD', ''),
         'dbdriver' => 'mysqli'
@@ -15,6 +16,7 @@ return [
     'roles' => [
         'database' => env('DB_DATABASE_ROLES', 'dbs_roles'),
         'hostname' => env('DB_HOSTNAME_ROLES', null),
+        'port'     => env('DB_PORT_ROLES',     null),
         'username' => env('DB_USERNAME_ROLES', null),
         'password' => env('DB_PASSWORD_ROLES', null)
     ],

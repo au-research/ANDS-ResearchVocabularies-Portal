@@ -107,7 +107,7 @@ class ANDSLogging
         }
 
         // Load the user library if it's not loaded already
-        if (!class_exists('User') || $CI->user === null) {
+        if (!class_exists('User') || !property_exists($CI, 'user')) {
             $CI->load->library('user');
         }
 

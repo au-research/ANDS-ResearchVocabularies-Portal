@@ -19,6 +19,15 @@
         "clearTestReports": "rm -rf tests-reports/*",
         "dumpAutoload": "composer dump-autoload --optimize"
     },
+    "autoload": {
+        "psr-4": {
+            "ANDS\\": "applications/ANDS"
+        },
+        "files": [
+            "applications/ANDS/Helpers.php",
+            "engine/helpers/engine_helper.php"
+        ]
+    },
 
     "require": {
         "monolog/monolog": "^1.19",
@@ -26,6 +35,10 @@
         "jaybizzle/crawler-detect": "1.*",
         "vlucas/phpdotenv": "^2.4",
         "google/recaptcha": "~1.1",
+        "google/apiclient": "^2.2",
+        "abraham/twitteroauth": "^0.9.2",
+        "facebook/graph-sdk": "^5.6",
+        "illuminate/support": "~5.2.0",
         "au-research/vocabs-php-client": "@dev"
     },
 

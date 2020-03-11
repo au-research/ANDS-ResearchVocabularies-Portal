@@ -679,13 +679,7 @@
         $scope.choose = function (mess) {
 
             //the order we should look
-            // CC-1799: now need to support both TriG and Turtle.
-            // Future work: just strip the file suffixes, in
-            // both Toolkit GetMetadataTransformProvider (i.e.,
-            // don't put it into the generated JSON), and then here.
-            var order_trig = ['concepts.ttl', 'concepts.trig',
-                              'adms.ttl', 'adms.trig',
-                              'void.ttl', 'void.trig'];
+            var order_trig = ['concepts', 'adms', 'void'];
             var order_lang = ['value_en', 'value'];
 
             //find the one with the right trig, default to the first one if none was found
@@ -761,6 +755,27 @@
                 return;
             }
 
+            // Get the primary language, so we can use it to fetch
+            // other values. Defaults to 'en'.
+            // Get the other languages while we're here.
+            var primaryLanguage = 'en';
+            if (data['dcterms:language']) {
+                var primaryLanguage = $scope.choose(
+                    data['dcterms:language'])[0];
+                $scope.vocab.language = [];
+                $scope.vocab.language.push(primaryLanguage);
+                if (data['ppcl:availablelanguages']) {
+                    var otherLanguages = $scope.choose(
+                        data['ppcl:availablelanguages']); {
+                            angular.forEach(otherLanguages, function (lang) {
+                                if (lang != primaryLanguage) {
+                                    $scope.vocab.language.push(lang);
+                                }
+                            });
+                        }
+                }
+            }
+
             if (data['dcterms:title']) {
                 $scope.vocab.title = $scope.choose(data['dcterms:title']);
                 if (angular.isArray($scope.vocab.title)) $scope.vocab.title = $scope.vocab.title[0];
@@ -783,14 +798,6 @@
                             subject_iri: '',
                             subject_notation: ''
                         });
-                });
-            }
-
-            if (data['dcterms:language']) {
-                var chosen = $scope.choose(data['dcterms:language']);
-                $scope.vocab.language = [];
-                angular.forEach(chosen, function (lang) {
-                    $scope.vocab.language.push(lang);
                 });
             }
 

@@ -226,46 +226,6 @@ $ENV['tracking'] =
             )
     );
 
-//OAUTH Configuration
-$ENV['oauth_config'] =
-	array(
-		// set on "base_url" the relative url that point to HybridAuth Endpoint
-		'base_url' => $ENV['default_base_url'].'auth/oauth',
-
-		"providers" => array (
-			// openid providers
-			"OpenID" => array (
-				"enabled" => false
-			),
-
-			"Yahoo" => array (
-				"enabled" => false,
-				"keys"    => array ( "id" => "", "secret" => "" ),
-			),
-
-			"Google" => array (
-				"enabled" => false,
-				"keys"    => array ( "id" => "", "secret" => "" ),
-			),
-
-			"Facebook" => array (
-				"enabled" => false,
-				"keys"    => array ( "id" => "", "secret" => "" ),
-			),
-
-			"Twitter" => array (
-				"enabled" => false,
-				"keys"    => array ( "key" => "", "secret" => "" )
-			),
-
-			"LinkedIn" => array (
-				"enabled" => false,
-				"keys"    => array ( "key" => "", "secret" => "" )
-			),
-
-		)
-	);
-
 // ReCAPTCHA keys, used on the subscription modal dialog.
 // Provide both the site key and the secret key.
 $ENV['reCAPTCHA'] = array(
