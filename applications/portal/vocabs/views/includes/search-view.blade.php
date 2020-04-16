@@ -1093,7 +1093,7 @@
                                     when="{'1': 'hiddenLabel',
                                            'other': 'hiddenLabels'}">
                       </ng-pluralize>:</b>
-                    hiddenLabel: [[ doc.skos_hiddenLabel_all.join(', ') ]]
+                    [[ doc.skos_hiddenLabel_all.join(', ') ]]
                   </p>
 
                   <p ng-repeat="dcTitle in doc.dcterms_title_all
