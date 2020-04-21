@@ -3,7 +3,7 @@ ANDS-ResearchVocabularies-Portal
 
 Repository of the ANDS Research Vocabularies Portal (currently
 maintained by the Australian National Data Service)
-http://documentation.ands.org.au/
+https://documentation.ardc.edu.au/
 
 ### ANDS Research Vocabularies Repository Structure
 

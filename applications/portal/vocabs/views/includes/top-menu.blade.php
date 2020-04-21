@@ -63,7 +63,7 @@
                         ng-click="search()"><i class="fa fa-search"></i> Search</button>
               </span>
               <span class="input-group-btn">
-                <a href="https://documentation.ands.org.au/display/DOC/Vocabulary+search" target="_blank" class="btn" style="color: white"><i class="fa fa-question-circle"></i> Using search</a>
+                <a href="https://documentation.ardc.edu.au/display/DOC/Vocabulary+search" target="_blank" class="btn" style="color: white"><i class="fa fa-question-circle"></i> Using search</a>
               </span>
             </div>
           </form>
@@ -73,4 +73,4 @@
   </div>
 @endif
 <button class="yellow_button feedback_button">Feedback</button>
-<a href="https://documentation.ands.org.au/display/DOC/Research+Vocabularies" target="_blank" class="yellow_button help_button"><i class="fa fa-question-circle"></i> Help</a>
+<a href="https://documentation.ardc.edu.au/display/DOC/Research+Vocabularies" target="_blank" class="yellow_button help_button"><i class="fa fa-question-circle"></i> Help</a>
