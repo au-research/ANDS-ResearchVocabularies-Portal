@@ -951,7 +951,7 @@
                                     'version of the vocabulary (version Id = ' +
                                     taskOutcome.getVersionId() +
                                     '). Please contact ' +
-                                    'services@ands.org.au for more ' +
+                                    'services@ardc.edu.au for more ' +
                                     'information.');
                     }
                     var subtaskOutcomes = taskOutcome.getSubtaskOutcome();
