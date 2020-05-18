@@ -669,7 +669,7 @@
                             these facet counts may not accurately predict
                             the number of records that will
                             be returned if you add or remove a filter. See
-                            &lt;a href=&quot;https://documentation.ands.org.au/display/DOC/Vocabulary+search#Vocabularysearch-Collapsingofresults&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;fa fa-question-circle&quot;&gt;&lt;/i&gt; Using search&lt;/a&gt;
+                            &lt;a href=&quot;https://documentation.ardc.edu.au/display/DOC/Vocabulary+search#Vocabularysearch-Collapsingofresults&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;fa fa-question-circle&quot;&gt;&lt;/i&gt; Using search&lt;/a&gt;
                             for more information.">
                     <i class="fa fa-sm fa-info-circle"
                        style="color: #17649a"></i>
@@ -751,7 +751,7 @@
                             these facet counts may not accurately predict
                             the number of records that will
                             be returned if you add or remove a filter. See
-                            &lt;a href=&quot;https://documentation.ands.org.au/display/DOC/Vocabulary+search#Vocabularysearch-Collapsingofresults&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;fa fa-question-circle&quot;&gt;&lt;/i&gt; Using search&lt;/a&gt;
+                            &lt;a href=&quot;https://documentation.ardc.edu.au/display/DOC/Vocabulary+search#Vocabularysearch-Collapsingofresults&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;fa fa-question-circle&quot;&gt;&lt;/i&gt; Using search&lt;/a&gt;
                             for more information.">
                     <i class="fa fa-sm fa-info-circle"
                        style="color: #17649a"></i>
@@ -877,7 +877,7 @@
                             these facet counts may not accurately predict
                             the number of records that will
                             be returned if you add or remove a filter. See
-                            &lt;a href=&quot;https://documentation.ands.org.au/display/DOC/Vocabulary+search#Vocabularysearch-Collapsingofresults&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;fa fa-question-circle&quot;&gt;&lt;/i&gt; Using search&lt;/a&gt;
+                            &lt;a href=&quot;https://documentation.ardc.edu.au/display/DOC/Vocabulary+search#Vocabularysearch-Collapsingofresults&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;fa fa-question-circle&quot;&gt;&lt;/i&gt; Using search&lt;/a&gt;
                             for more information.">
                     <i class="fa fa-sm fa-info-circle"
                        style="color: #17649a"></i>
@@ -1093,7 +1093,7 @@
                                     when="{'1': 'hiddenLabel',
                                            'other': 'hiddenLabels'}">
                       </ng-pluralize>:</b>
-                    hiddenLabel: [[ doc.skos_hiddenLabel_all.join(', ') ]]
+                    [[ doc.skos_hiddenLabel_all.join(', ') ]]
                   </p>
 
                   <p ng-repeat="dcTitle in doc.dcterms_title_all

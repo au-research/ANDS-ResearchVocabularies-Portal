@@ -65,8 +65,8 @@
                         <h3 class="sidebar-header">External Resources</h3>
                         <ul>
                             <li class="cat-item"> <a href="https://ardc.edu.au/" title="" target="_blank">ARDC Website</a> </li>
-                            <li class="cat-item"> <a href="http://developers.ands.org.au" title="" target="_blank">Developers</a> </li>
-                            <li class="cat-item"> <a href="{{base_url('registry/')}}" title="">ARDC Online Services</a> </li>
+                            <li class="cat-item"> <a href="https://documentation.ardc.edu.au" title="" target="_blank">Developers</a> </li>
+                            <!-- <li class="cat-item"> <a href="{{base_url('registry/')}}" title="">ARDC Online Services</a> </li> -->
                             @if(isset($ro) && $ro->core['id'])
                             <li class="cat-item"> <a href="{{base_url('registry/registry_object/view/')}}/<?=$this->ro->id?>" title="">Registry View</a> </li>
                             @endif

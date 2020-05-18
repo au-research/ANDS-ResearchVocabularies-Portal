@@ -38,15 +38,15 @@
                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                     <h3 class="normal light bordered">Consume a vocabulary in your own system</h3>
                     <p>Users of Research Vocabularies Australia have several options for using an Australian Research Data Commons (ARDC)-hosted vocabulary in their own data centres, portals, data generation tools, vocabulary services or other applications. The Linked Data API allows developers to integrate with the vocabulary service using HTTP and a variety of data representations (including XML, JSON and RDF) and the Vocabulary Widget allows you to add Data Classification capabilities to your data capture tools via Research Vocabularies Australia.</p>
-                    <p>Learn more about <a href="https://documentation.ands.org.au/display/DOC/Research+Vocabularies" target="_blank">Research Vocabularies Australia</a>,
-                        the <a href="https://documentation.ands.org.au/display/DOC/Linked+Data+API" target="_blank">Linked Data API</a>,
-                        <a href="https://documentation.ands.org.au/display/DOC/SPARQL+endpoint" target="_blank">SPARQL endpoints</a>, and
+                    <p>Learn more about <a href="https://documentation.ardc.edu.au/display/DOC/Research+Vocabularies" target="_blank">Research Vocabularies Australia</a>,
+                        the <a href="https://documentation.ardc.edu.au/display/DOC/Linked+Data+API" target="_blank">Linked Data API</a>,
+                        <a href="https://documentation.ardc.edu.au/display/DOC/SPARQL+endpoint" target="_blank">SPARQL endpoints</a>, and
                         the <a href="{{portal_url('vocabs/page/widget_explorer')}}" target="_blank">Vocabulary Widget Explorer</a>.</p>
                 </div>
                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                     <h3 class="normal light bordered">Subscribe to a vocabulary</h3>
                     <p>The subscription functionality within Research Vocabularies Australia allows users to subscribe to notifications for specific vocabularies, vocabulary owners, or all vocabularies. Once subscribed, users will begin receiving weekly digest emails which detail the changes that have occurred during the last week. Subscribing is a great way to keep up to date with changes and ensure you are using the latest version of a vocabulary.</p>
-                    <p>Learn more about <a href="https://documentation.ands.org.au/display/DOC/Subscribing+to+vocabularies" target="_blank">subscribing to vocabularies</a>.</p>
+                    <p>Learn more about <a href="https://documentation.ardc.edu.au/display/DOC/Subscribing+to+vocabularies" target="_blank">subscribing to vocabularies</a>.</p>
                 </div>
             </div>
         </div>

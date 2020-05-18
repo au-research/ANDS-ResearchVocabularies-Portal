@@ -45,8 +45,8 @@ function format_relationship($from_class, $relationship_type, $origin=false, $to
 		"presents" =>array("Presents", "Presented by"),
 		"isDerivedFrom" =>array("Derived from", "Derives"),
 		"hasDerivedCollection" =>array("Derives", "Derived From"),
-		"supports" =>array("Supports", "Supported by"),	
-		"isAvailableThrough" =>array("Available through", "Makes available"),	
+		"supports" =>array("Supports", "Supported by"),
+		"isAvailableThrough" =>array("Available through", "Makes available"),
 		"isProducedBy" =>array("Produced by", "Produces"),
 		"produces" =>array("Produces", "Produced by"),
 		"isOperatedOnBy" =>array("Is operated on by", "Operates on"),
@@ -94,7 +94,7 @@ function format_relationship($from_class, $relationship_type, $origin=false, $to
 		"produces" =>array("Produces", "Produced by"),
 		"isProducedBy" =>array("Produced by", "Produces"),
 		"operatesOn" =>array("Operates on", "Operated on"),
-		"isOperatedOnBy" =>array("Operated on", "Operates on"),		
+		"isOperatedOnBy" =>array("Operated on", "Operates on"),
 		"addsValueTo" =>array("Adds value to", "Value added by"),
 		"hasPrincipalInvestigator" =>array("Principal investigator", "Principal investigator of"),
 		"isPrincipalInvestigator" =>array("Principal investigator of", "Principal investigator"),
@@ -262,6 +262,14 @@ function getResolvedLinkForIdentifier($type, $value) {
                 $value .
                 ' <img src="' . asset_url('assets/core/images/icons/thomsonreuters.png',
                 'base_path') . '" alt="ResearcherID icon"></a>';
+            break;
+        case RelatedEntityIdentifier::IDENTIFIER_TYPE_ROR:
+            return 'ROR: <a class="identifier" href="https://ror.org/' .
+                rawurlencode($value) .
+                '" title="Resolve this ROR" target="_blank">https://ror.org/' .
+                htmlspecialchars($value) .
+                ' <img src="' . asset_url('assets/core/images/icons/ror_icon.png',
+                'base_path') . '" style="height: 16px" alt="ROR icon"></a>';
             break;
         case RelatedEntityIdentifier::IDENTIFIER_TYPE_URI:
             return 'URI: <a class="identifier" href="' .

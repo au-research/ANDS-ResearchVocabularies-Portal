@@ -10,9 +10,9 @@
 /*
 /*					Vocabs Software Configuration
 /*
-/*		Release Version :	28
-/*		Contact Person  :	services@ands.org.au
-/*		Help/support    :	http://documentation.ands.org.au/
+/*		Release Version :	36
+/*		Contact Person  :	services@ardc.edu.au
+/*		Help/support    :	https://documentation.ardc.edu.au/
 /*
 /*************************************************************************/
 
@@ -20,7 +20,7 @@
 /* (SECTION 1) REQUIRED CONFIGURATION OPTIONS
 /*************************************************************************/
 // The Release Version
-$ENV['release_version'] = 'r28';
+$ENV['release_version'] = 'r36';
 
 // Details of your database server (note: advanced settings can be modified in Sect 4)
 $eDBCONF['default']['hostname'] = 'localhost';  // hostname or IP address
@@ -43,7 +43,7 @@ $eDBCONF['roles']['database'] = 'dbs_roles';
 
 // The Server Base URL is the URL via which users access the software installation
 // (for example: http://vocabs.your.org.au/myportal/
-$ENV['protocol'] = 'http://';
+$ENV['protocol'] = 'https://';
 $ENV['default_base_url'] = $ENV['protocol']."{CONFIGURE ME}";
 
 
@@ -111,7 +111,7 @@ $ENV['vocab_config'] = array(
 	// Location of the Solr search index core which you have installed
 	'solr_url' => 'http://localhost:8983/solr/vocabs/',
 	// This can point to localhost, or to another installation
-	// of the ANDS Registry.
+	// of the ARDC Registry.
 	'auth_url' => 'https://{CONFIGURE ME}/registry/auth/',
 	// This should be a subdirectory within the Vocab Toolkit's
 	// Toolkit.tempPath setting.
@@ -148,7 +148,7 @@ $ENV['subject_vocab_proxy'] = $ENV['default_base_url']
 // Based on the RDA-style vocab_resolving_services setting.
 // Note the addition of an entry for 'local'.
 // Supported modes: freetext, tree, and search.
-// Please note: it is an ANDS business rule (CC-1623)
+// Please note: it is an ARDC business rule (CC-1623)
 // that every vocabulary have
 // at least one subject taken from ANZSRC-FOR. This rule is
 // implemented in vocabs_cms.js as a test for the presence of a
