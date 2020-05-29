@@ -28,6 +28,6 @@
   },
   "dependencies": {
     "browserify": "^14.4.0",
-    "vocabulary_registry_api": "/opt/ands/vocabs-clients/js"
+    "vocabulary_registry_api": "/opt/ands/vocabs-clients/js/vocabulary_registry_api-0.2.0.tgz"
   }
 }
