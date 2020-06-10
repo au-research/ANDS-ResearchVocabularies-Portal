@@ -16,7 +16,7 @@ That directive pulls in the template         applications/portal/vocabs/assets/t
         <div class="row element-short-bottom">
             <div class="col-md-12">
                 <header class="text-center">
-                    <h1 class="bigger hairline bordered bordered-normal">Widget Explorer</h1>
+                    <h2 class="bordered bordered-normal">Widget Explorer</h2>
                 </header>
             </div>
         </div>

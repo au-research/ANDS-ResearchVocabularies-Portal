@@ -1,280 +1,286 @@
 <div>
-    <div class="modal-header">
-        <button type="button" class="close" ng-click="dismiss()"><span aria-hidden="true">&times;</span><span
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="dismiss()"><span aria-hidden="true">&times;</span><span
                 class="sr-only">Close</span></button>
-        <h4 class="modal-title"><span ng-if="version.title">Edit</span> <span ng-if="!version.title">Add a new</span>
-            version</h4>
-    </div>
-    <div class="modal-body swatch-white" ng-cloak>
+    <h4 class="modal-title"><span ng-if="version.title">Edit</span> <span ng-if="!version.title">Add a new</span>
+      version</h4>
+  </div>
+  <div class="modal-body swatch-white" ng-cloak>
 
-        <div class="container-fluid">
+    <!-- Added "swatch-white" here also,
+         to give priority to our CSS rule
+         that gives a rounded button -->
+    <div class="swatch-white container-fluid">
 
-            <form class="form" name="form.versionForm" novalidate>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group" ng-class="{ 'has-error' : form.versionForm.status.$invalid }">
-                            <label for="">Status
-                                <span ng-bind-html="confluenceTip('Status')"></span>
-                            </label>
-                            <select required name="status" id="" class="form-control caret-for-select"
-                                    ng-options="status.id as status.label for status in versionStatuses"
-                                    ng-model="version.status"><option value="">Select
-                                a version status</option></select>
+      <form class="form" name="form.versionForm" novalidate>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group" ng-class="{ 'has-error' : form.versionForm.status.$invalid }">
+              <label for="">Status
+                <span ng-bind-html="confluenceTip('Status')"></span>
+              </label>
+              <select required name="status" id="" class="form-control caret-for-select"
+                      ng-options="status.id as status.label for status in versionStatuses"
+                      ng-model="version.status"><option value="">Select
+                a version status</option></select>
 
-                            <p ng-show="form.versionForm.status.$invalid" class="help-block">Version status is required.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group" ng-class="{ 'has-error' : form.versionForm.release_date.$invalid }">
-                            <label for="">Release Date
-                                <span ng-bind-html="confluenceTip('ReleaseDate')"></span>
-                            </label>
-
-                            <p class="input-group">
-                                <input required type="text" id="release_date" name="release_date" class="form-control"
-                                       ng-model="version.release_date" placeholder="Release Date (supported formats: YYYY-MM-DD, YYYY-MM, YYYY)"
-                                       uib-datepicker-popup="yyyy-MM-dd" alt-input-formats="['yyyy-MM', 'yyyy']"
-                                       is-open="opened" on-open-focus="false" ng-focus="opened = true">
-                                <span class="input-group-btn">
-                                  <button type="button" class="btn btn-default" ng-click="opened = !opened"><i
-                                          class="glyphicon glyphicon-calendar"></i></button>
-                                </span>
-                            </p>
-                            <p ng-show="form.versionForm.release_date.$invalid" class="help-block">Release Date is
-                                required. Supported formats: YYYY-MM-DD, YYYY-MM, YYYY.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="alert alert-warning" ng-if="version.status == 'current' && currentVersion">
-                    Note: The status of version [[ currentVersion.title ]] will be set to superseded upon adding this version.
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group" ng-class="{ 'has-error' : form.versionForm.title.$invalid }">
-                            <label for="">Title
-                                <span ng-bind-html="confluenceTip('VersionTitle')"></span>
-                            </label>
-                            <input required type="text" name="title" class="form-control" placeholder="Title"
-                                   ng-model="version.title">
-
-                            <p ng-show="form.versionForm.title.$invalid" class="help-block">Title is required.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-
-                        <div class="form-group">
-                            <label for="">Notes
-                                <span ng-bind-html="confluenceTip('Notes')"></span>
-                            </label>
-                            <textarea ui-tinymce="tinymceOptions" ng-model="version.note" class="form-control"></textarea>
-                        </div>
-                    </div>
-                </div>
-            </form>
-
-            <hr>
-
-            <!-- Hidden form for validation outside of the table -->
-            <form name="form.apForm" class="hidden">
-                <input type="hidden" name="type" required
-                       ng-model="newValue.ap.type">
-                <input type="hidden" name="format" required
-                       ng-model="newValue.ap.format"
-                       ng-if="newValue.ap.type === 'file'">
-                <input type="url" name="uri" required
-                       ng-model="newValue.ap.uri">
-            </form>
-
-            <!--<p>form validation: [[ form.apForm.$valid ]]</p>-->
-
-            <div class="row">
-                <div class="col-md-12">
-                    <label>Access Points <span ng-bind-html="confluenceTip('AccessPoints')"></span></label>
-                    <table class="table">
-                        <thead>
-                            <th>Type</th>
-                            <th>Resource</th>
-                            <th>&nbsp;</th>
-                        </thead>
-                        <tbody>
-
-                        <tr ng-if="!version.access_points.length">
-                            <td colspan="3">
-                                No access points available
-                            </td>
-                        </tr>
-
-                        <tr ng-repeat="ap in version.access_points track by $index">
-                            <td>[[ ap.type === 'file' ? 'File - ' + ap.format : ap.type ]]</td>
-                            <td>
-                                <a href="[[ ap.uri ]]" title="[[ ap.uri ]]">
-                                    <span ng-if="!ap.name">URI</span>
-                                    <span ng-if="ap.name">[[ ap.name | trim:30 ]]</span>
-                                </a>
-                            </td>
-                            <td>
-                                <a href=""
-                                   class="btn btn-primary btn-primary-warning"
-                                   ng-click="list_remove('access_points', $index)">
-                                    <i class="fa fa-remove"></i>
-                                </a>
-                            </td>
-                        </tr>
-
-                        <tr ng-show="showNewAPForm">
-                            <td>
-                                <div class="form-group"
-                                     ng-class="{ 'has-error' : form.apForm.type.$invalid && form.apForm.$submitted  }">
-                                    <select class="form-control caret-for-select" required name="type"
-                                            ng-options="option.value as option.name group by option.group for option in typeFormatOptions"
-                                            ng-change="updateNewAPTypeFormat(selectedOption)"
-                                            ng-model="selectedOption">
-                                        <option disabled value="">Type</option>
-                                    </select>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="form-group"
-                                     ng-class="{ 'has-error' : form.apForm.uri.$invalid && form.apForm.$submitted  }"
-                                     ng-if="newValue.ap.type && newValue.ap.type != 'file'">
-                                    <input id="newValueApUri" type="url" required name="uri"
-                                           class="form-control"
-                                           placeholder="URI"
-                                           ng-model="newValue.ap.uri">
-                                </div>
-                                <div class="form-group"
-                                     ng-class="{ 'has-error' : form.apForm.uri.$invalid && form.apForm.$submitted  }"
-                                     ng-if="newValue.ap.type && newValue.ap.type == 'file'">
-                                    <div class="input-group">
-                                            <button type="button"
-                                                    class="btn btn-primary form-control"
-                                                    ngf-select
-                                                    ngf-change="upload($files, newValue.ap)"><i
-                                                    class="fa fa-upload"></i>
-                                                <span ng-if="!newValue.ap.name">Upload File</span>
-                                                <span ng-if="newValue.ap.name"><i class="fa fa-ok"></i> [[ newValue.ap.name | trim:30 ]]</span>
-                                            </button>
-                                    </div>
-
-                                    <div class="alert alert-danger alert-important"
-                                         ng-if="error_upload_msg">
-                                        <span ng-bind-html="error_upload_msg"></span>
-                                    </div>
-
-                                    <progressbar
-                                            ng-if="newValue.ap.type=='file' && uploadPercentage != 0"
-                                            animate="true"
-                                            value="uploadPercentage"
-                                            type="success">
-                                        <b>[[uploadPercentage]]%</b>
-                                    </progressbar>
-                                </div>
-                            </td>
-                            <td>
-                                <a href="" class="btn btn-primary"
-                                   ng-disabled="form.apForm.$invalid"
-                                   ng-click="addformatform(newValue.ap)">
-                                    <i class="fa fa-check"></i> Add
-                                </a>
-                                <a href="" class="btn btn-primary btn-primary-warning"
-                                   ng-click="resetAPForm()">
-                                    <i class="fa fa-remove"></i>
-                                </a>
-                            </td>
-                        </tr>
-
-                        </tbody>
-                    </table>
-
-                    <a href="" class="btn btn-primary"
-                       ng-show="!showNewAPForm"
-                       ng-click="showNewAPForm = !showNewAPForm">
-                        <i class="fa fa-plus"></i> Add Access Point
-                    </a>
-
-                </div>
+              <p ng-show="form.versionForm.status.$invalid" class="help-block">Version status is required.</p>
             </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group" ng-class="{ 'has-error' : form.versionForm.release_date.$invalid }">
+              <label for="">Release Date
+                <span ng-bind-html="confluenceTip('ReleaseDate')"></span>
+              </label>
+
+              <p class="input-group">
+                <input required type="text" id="release_date" name="release_date" class="form-control"
+                       ng-model="version.release_date" placeholder="Release Date (supported formats: YYYY-MM-DD, YYYY-MM, YYYY)"
+                       uib-datepicker-popup="yyyy-MM-dd" alt-input-formats="['yyyy-MM', 'yyyy']"
+                       is-open="opened" on-open-focus="false" ng-focus="opened = true">
+                <span class="input-group-btn" style="z-index: 3">
+                  <button type="button" class="btn btn-default" ng-click="opened = !opened"><i
+                                        class="glyphicon glyphicon-calendar"></i></button>
+                </span>
+              </p>
+              <p ng-show="form.versionForm.release_date.$invalid" class="help-block">Release Date is
+                required. Supported formats: YYYY-MM-DD, YYYY-MM, YYYY.</p>
+            </div>
+          </div>
         </div>
-        </form>
+        <div class="alert alert-warning" ng-if="version.status == 'current' && currentVersion">
+          Note: The status of version [[ currentVersion.title ]] will be set to superseded upon adding this version.
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group" ng-class="{ 'has-error' : form.versionForm.title.$invalid }">
+              <label for="">Title
+                <span ng-bind-html="confluenceTip('VersionTitle')"></span>
+              </label>
+              <input required type="text" name="title" class="form-control" placeholder="Title"
+                     ng-model="version.title">
 
-        <hr>
-
-        <div class="container-fluid" ng-if="isPP() || canImportPublish || canReapplyVersion">
-            <label>Version Settings</label>
-
-            <table style="width:100%">
-
-              <tr ng-if="isPP()">
-                <td><label>Harvest version from PoolParty</label></td>
-                <td class="pull-right"><ands-switch model="version.doPoolpartyHarvest" name="harvestChkbx"></ands-switch></td>
-              </tr>
-
-              <tr ng-if="canImportPublish">
-                <td><label>Import version into the ARDC Vocabulary Repository</label></td>
-                <td class="pull-right"><ands-switch model="version.doImport" name="importChkbx"></ands-switch></td>
-              </tr>
-
-              <tr ng-if="canImportPublish">
-                <td><label>Publish version via the ARDC Linked Data API</label></td>
-                <td class="pull-right"><ands-switch model="version.doPublish" name="publishChkbx"></ands-switch></td>
-              </tr>
-
-              <!-- Browse flags. -->
-              <tr ng-if="canImportPublish">
-                <td>
-                  <label>Notation format
-                    <span ng-bind-html="confluenceTip('NotationFormat')"></span>
-                  </label>
-                </td>
-                <td class="pull-right" style="padding-bottom: 5px;width: 90%">
-                  <select required name="notationFormat" id="notationFormatSelect"
-                          class="form-control caret-for-select"
-                          ng-options="notationFormat.value as notationFormat.name for notationFormat in notationFormatOptions"
-                          ng-model="browseFlags.notationFormatSelection"></select>
-                </td>
-              </tr>
-
-              <tr ng-if="browseFlags.notationFormatSelection != 'none'">
-                <td>
-                  <label>Default display sort order
-                    <span ng-bind-html="confluenceTip('DefaultSortOrder')"></span>
-                  </label>
-                </td>
-                <td class="pull-right" style="padding-bottom: 5px;width:90%">
-                  <select required name="defaultSortOrder" id="defaultSortOrder"
-                          class="form-control col-md-6
-                                 caret-for-select"
-                          ng-options="defaultSortOrder.value as defaultSortOrder.name for defaultSortOrder in defaultSortOrderOptions"
-                          ng-model="browseFlags.defaultSortOrderSelection"></select>
-                </td>
-              </tr>
-
-              <tr ng-if="canReapplyVersion">
-                <td><label>Reapply version settings on publish</label></td>
-                <td class="pull-right"><ands-switch model="version.forceWorkflow" name="reapplyChkbx"></ands-switch></td>
-              </tr>
-
-            </table>
-
+              <p ng-show="form.versionForm.title.$invalid" class="help-block">Title is required.</p>
+            </div>
+          </div>
         </div>
 
+        <div class="row">
+          <div class="col-md-12">
+
+            <div class="form-group">
+              <label for="">Notes
+                <span ng-bind-html="confluenceTip('Notes')"></span>
+              </label>
+              <textarea ui-tinymce="tinymceOptions" ng-model="version.note" class="form-control"></textarea>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <hr>
+
+      <!-- Hidden form for validation outside of the table -->
+      <form name="form.apForm" class="hidden">
+        <input type="hidden" name="type" required
+               ng-model="newValue.ap.type">
+        <input type="hidden" name="format" required
+               ng-model="newValue.ap.format"
+               ng-if="newValue.ap.type === 'file'">
+        <input type="url" name="uri" required
+               ng-model="newValue.ap.uri">
+      </form>
+
+      <!--<p>form validation: [[ form.apForm.$valid ]]</p>-->
+
+      <div class="row">
+        <div class="col-md-12">
+          <label>Access Points <span ng-bind-html="confluenceTip('AccessPoints')"></span></label>
+          <table class="table">
+            <thead>
+              <th>Type</th>
+              <th>Resource</th>
+              <th>&nbsp;</th>
+            </thead>
+            <tbody>
+
+              <tr ng-if="!version.access_points.length">
+                <td colspan="3">
+                  No access points available
+                </td>
+              </tr>
+
+              <tr ng-repeat="ap in version.access_points track by $index">
+                <td>[[ ap.type === 'file' ? 'File - ' + ap.format : ap.type ]]</td>
+                <td>
+                  <a href="[[ ap.uri ]]" title="[[ ap.uri ]]">
+                    <span ng-if="!ap.name">URI</span>
+                    <span ng-if="ap.name">[[ ap.name | trim:30 ]]</span>
+                  </a>
+                </td>
+                <td>
+                  <a href=""
+                     class="btn btn-primary
+                           btn-primary-warning btn-non-rounded"
+                     ng-click="list_remove('access_points', $index)">
+                    <i class="fa fa-remove"></i>
+                  </a>
+                </td>
+              </tr>
+
+              <tr ng-show="showNewAPForm">
+                <td>
+                  <div class="form-group"
+                       ng-class="{ 'has-error' : form.apForm.type.$invalid && form.apForm.$submitted  }">
+                    <select class="form-control caret-for-select" required name="type"
+                            ng-options="option.value as option.name group by option.group for option in typeFormatOptions"
+                            ng-change="updateNewAPTypeFormat(selectedOption)"
+                            ng-model="selectedOption">
+                      <option disabled value="">Type</option>
+                    </select>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group"
+                       ng-class="{ 'has-error' : form.apForm.uri.$invalid && form.apForm.$submitted  }"
+                       ng-if="newValue.ap.type && newValue.ap.type != 'file'">
+                    <input id="newValueApUri" type="url" required name="uri"
+                           class="form-control"
+                           placeholder="URI"
+                           ng-model="newValue.ap.uri">
+                  </div>
+                  <div class="form-group"
+                       ng-class="{ 'has-error' : form.apForm.uri.$invalid && form.apForm.$submitted  }"
+                       ng-if="newValue.ap.type && newValue.ap.type == 'file'">
+                    <div class="input-group">
+                      <button type="button"
+                              class="btn btn-primary form-control"
+                              ngf-select
+                              ngf-change="upload($files, newValue.ap)"><i
+                                                    class="fa fa-upload"></i>
+                        <span ng-if="!newValue.ap.name">Upload File</span>
+                        <span ng-if="newValue.ap.name"><i class="fa fa-ok"></i> [[ newValue.ap.name | trim:30 ]]</span>
+                      </button>
+                    </div>
+
+                    <div class="alert alert-danger alert-important"
+                         ng-if="error_upload_msg">
+                      <span ng-bind-html="error_upload_msg"></span>
+                    </div>
+
+                    <progressbar
+                        ng-if="newValue.ap.type=='file' && uploadPercentage != 0"
+                        animate="true"
+                        value="uploadPercentage"
+                        type="success">
+                      <b>[[uploadPercentage]]%</b>
+                    </progressbar>
+                  </div>
+                </td>
+                <td>
+                  <a role="button" href="" class="btn btn-primary"
+                     ng-disabled="form.apForm.$invalid"
+                     ng-click="addformatform(newValue.ap)">
+                    <i class="fa fa-check"></i> Add
+                  </a>
+                  <a href="" class="btn btn-primary
+                           btn-primary-warning
+                           btn-non-rounded"
+                     ng-click="resetAPForm()">
+                    <i class="fa fa-remove"></i>
+                  </a>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+
+          <a role="button" href="" class="btn btn-primary"
+                  ng-show="!showNewAPForm"
+                  ng-click="showNewAPForm = !showNewAPForm">
+            <i class="fa fa-plus"></i> Add Access Point
+          </a>
+
+        </div>
+      </div>
     </div>
+      </form>
+
+      <hr>
+
+      <div class="container-fluid" ng-if="isPP() || canImportPublish || canReapplyVersion">
+        <label>Version Settings</label>
+
+        <table style="width:100%">
+
+          <tr ng-if="isPP()">
+            <td><label>Harvest version from PoolParty</label></td>
+            <td class="pull-right"><ands-switch model="version.doPoolpartyHarvest" name="harvestChkbx"></ands-switch></td>
+          </tr>
+
+          <tr ng-if="canImportPublish">
+            <td><label>Import version into the ARDC Vocabulary Repository</label></td>
+            <td class="pull-right"><ands-switch model="version.doImport" name="importChkbx"></ands-switch></td>
+          </tr>
+
+          <tr ng-if="canImportPublish">
+            <td><label>Publish version via the ARDC Linked Data API</label></td>
+            <td class="pull-right"><ands-switch model="version.doPublish" name="publishChkbx"></ands-switch></td>
+          </tr>
+
+          <!-- Browse flags. -->
+          <tr ng-if="canImportPublish">
+            <td>
+              <label>Notation format
+                <span ng-bind-html="confluenceTip('NotationFormat')"></span>
+              </label>
+            </td>
+            <td class="pull-right" style="padding-bottom: 5px;width: 90%">
+              <select required name="notationFormat" id="notationFormatSelect"
+                      class="form-control caret-for-select"
+                      ng-options="notationFormat.value as notationFormat.name for notationFormat in notationFormatOptions"
+                      ng-model="browseFlags.notationFormatSelection"></select>
+            </td>
+          </tr>
+
+          <tr ng-if="browseFlags.notationFormatSelection != 'none'">
+            <td>
+              <label>Default display sort order
+                <span ng-bind-html="confluenceTip('DefaultSortOrder')"></span>
+              </label>
+            </td>
+            <td class="pull-right" style="padding-bottom: 5px;width:90%">
+              <select required name="defaultSortOrder" id="defaultSortOrder"
+                      class="form-control col-md-6
+                             caret-for-select"
+                      ng-options="defaultSortOrder.value as defaultSortOrder.name for defaultSortOrder in defaultSortOrderOptions"
+                      ng-model="browseFlags.defaultSortOrderSelection"></select>
+            </td>
+          </tr>
+
+          <tr ng-if="canReapplyVersion">
+            <td><label>Reapply version settings on publish</label></td>
+            <td class="pull-right"><ands-switch model="version.forceWorkflow" name="reapplyChkbx"></ands-switch></td>
+          </tr>
+
+        </table>
+
+      </div>
+
+  </div>
 
 
 
-    <div class="modal-footer swatch-white">
-        <div class="alert alert-danger" ng-show="error_message">[[error_message]]</div>
-        <button class="btn btn-link" type="button" ng-click="dismiss()">Cancel</button>
-        <button class="btn btn-primary"
-                type="button" ng-if="action=='add'"
-                ng-click="save()"
-                ng-disabled="!validated">Add this Version</button>
-        <button class="btn btn-primary"
-                type="button" ng-if="action=='save'"
-                ng-click="save()"
-                ng-disabled="!validated">Save</button>
-    </div>
+  <div class="modal-footer swatch-white">
+    <div class="alert alert-danger" ng-show="error_message">[[error_message]]</div>
+    <button class="btn btn-link" type="button" ng-click="dismiss()">Cancel</button>
+    <button class="btn btn-primary"
+            type="button" ng-if="action=='add'"
+            ng-click="save()"
+            ng-disabled="!validated">Add this Version</button>
+    <button class="btn btn-primary"
+            type="button" ng-if="action=='save'"
+            ng-click="save()"
+            ng-disabled="!validated">Save</button>
+  </div>
 </div>

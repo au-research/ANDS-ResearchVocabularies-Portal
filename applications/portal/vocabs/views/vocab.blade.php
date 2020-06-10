@@ -126,8 +126,10 @@ foreach ($vocab->getVersion() as $version) {
 
 
                         <div class="col-md-8 panel-body">
-                            {{ $vocab->getDescription() }}
-                            <h4>Languages</h4>
+                            <!-- Use element-bottom-same-as-p to cancel Bootstrap's gobbling
+                                 of the space after a last p of the description. -->
+                            <div class="element-bottom-same-as-p">{{ $vocab->getDescription() }}</div>
+                            <h5>Languages</h5>
                             <p>
                                 <?php
                                 echo(readable($vocab->getPrimaryLanguage()));
@@ -140,11 +142,11 @@ foreach ($vocab->getVersion() as $version) {
 
                             </p>
                             @if(!empty($vocab->getNote()))
-                                <h4>Notes</h4>
+                                <h5>Notes</h5>
                                 <p>{{ $vocab->getNote() }}</p>
                             @endif
                             @if(isset($cc)&&$cc!='')
-                                <h4>Licence</h4>
+                                <h5>Licence</h5>
                                 <p>
                                     @if($cc=='CC-BY')
                                         <a href="http://creativecommons.org/licenses/by/3.0/au/" tip="Attribution"><img src="{{asset_url('images/icons/CC-BY.png', 'core')}}" class="img-cc" alt="CC-BY"></a> <br/>
@@ -280,7 +282,7 @@ foreach ($vocab->getVersion() as $version) {
             <div class="panel-body">
 
                 @if($related_people)
-                    <h4>Related people and organisations</h4>
+                    <h5>Related people and organisations</h5>
                     @foreach($related_people as $relatedRef)
 
                         <p>
@@ -296,7 +298,7 @@ foreach ($vocab->getVersion() as $version) {
         @endforeach
         @endif
         @if($related_vocabs||$related_internal_vocabs)
-        <h4>Related vocabularies</h4>
+        <h5>Related vocabularies</h5>
         @foreach($related_vocabs as $relatedRef)
         <p>
             <small>

@@ -9,7 +9,10 @@
   </div>
   <div class="modal-body swatch-white" ng-cloak>
     <form action="" class="form" name="form.reForm">
-      <div class="container-fluid">
+    <!-- Added "swatch-white" here also,
+         to give priority to our CSS rule
+         that gives a rounded button -->
+      <div class="swatch-white container-fluid">
         <input name="type" value="[[ type ]]" type="hidden"/>
 
 
@@ -48,7 +51,7 @@
                 <input type="text"
                        class="form-control"
                        ng-model="entity.title">
-                <span class="input-group-btn">
+                <span class="input-group-btn" style="z-index: 3">
                       <button type="button" class="btn btn-default"
                               ng-click="inputReady = !inputReady">
                         <i class="glyphicon glyphicon-search"></i> Search</button>
@@ -163,9 +166,9 @@
                              >
                       <p ng-show="form.reForm.[['website_'+$index]].$invalid" class="help-block">Valid URL is required</p>
                     </td>
-                    <td>
+                    <td style="border:none">
                       <button class="btn btn-primary btn-primary-warning
-                              align-top"
+                              btn-non-rounded align-top"
                               type="button"
                               ng-click="list_remove('urls', $index)"
                               ng-disabled="!allowEdits"><i
@@ -223,7 +226,8 @@
                   <option value="">Select a relationship</option>
                 </select>
                 <span class="input-group-btn">
-                  <button class="btn btn-primary btn-primary-warning"
+                  <button class="btn btn-primary btn-primary-warning
+                                 btn-non-rounded"
                           type="button"
                           ng-click="list_remove('relationship',
                                     $index)"><i

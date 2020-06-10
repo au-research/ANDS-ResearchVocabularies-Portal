@@ -128,7 +128,7 @@ function getIdForSissvocAccessPoint() {
 
       @foreach($current_version->getAccessPoint() as $ap)
         @if(($ap->getDiscriminator() === AP_FILE && !$singleFile) || ($hasSesameDownloads))
-        <a class="btn btn-lg btn-block btn-primary download-chooser"><i
+        <a role="button" class="btn btn-lg btn-block btn-primary download-chooser"><i
           class="fa fa-download"></i> Download <i
           class="fa fa-chevron-right"></i></a>
         <?php break; ?>
@@ -138,7 +138,8 @@ function getIdForSissvocAccessPoint() {
       @if($singleFile)
         @foreach($current_version->getAccessPoint() as $ap)
           @if($ap->getDiscriminator() === AP_FILE)
-            <a class="download-link btn btn-lg btn-block btn-primary"
+            <a role="button" class="download-link btn btn-lg btn-block btn-primary"
+                    style="white-space: normal;"
                onclick="$.ajax('{{ onclickURL($vocab, $current_version, $ap) }}'); return true"
                href="{{ $ap->getApFile()->getUrl() }}"><i class="fa fa-download"></i>
                Download ({{ htmlspecialchars($ap->getApFile()->getFormat()) }})</a>
@@ -148,10 +149,10 @@ function getIdForSissvocAccessPoint() {
       @foreach($current_version->getAccessPoint() as $ap)
         @if($ap->getDiscriminator() === AP_WEB_PAGE)
           <div
-            class="btn-group btn-group-justified element element-no-bottom element-no-top"
+            class="btn-group btn-group-justified text-center element element-no-bottom element-no-top"
             role="group" aria-label="...">
             <a target="_blank"
-              class="btn btn-sm btn-default {{$ap->getDiscriminator()}}"
+              class="{{$ap->getDiscriminator()}}"
               onclick="$.ajax('{{ onclickURL($vocab, $current_version, $ap) }}'); return true"
               href="{{ $ap->getApWebPage()->getUrl() }}"><i
               class="fa fa-external-link"></i> Access Web Page</a>
@@ -161,7 +162,7 @@ function getIdForSissvocAccessPoint() {
       @foreach($current_version->getAccessPoint() as $ap)
         @if($ap->getDiscriminator() === AP_SISSVOC)
           <div
-            class="btn-group btn-group-justified element element-no-bottom element-no-top"
+            class="btn-group btn-group-justified text-center element element-no-bottom element-no-top"
             role="group" aria-label="...">
             {{-- The id attribute with value "current_version_sissvoc" --}}
             {{-- goes on the first such match. This assignment must match --}
@@ -169,14 +170,14 @@ function getIdForSissvocAccessPoint() {
             {{-- the vocabs controller method displayTree(). --}}
             <a {{ getIdForSissvocAccessPoint() }}
               target="_blank"
-              class="btn btn-sm btn-default {{$ap->getDiscriminator()}}"
+              class="{{$ap->getDiscriminator()}}"
               vocab="{{ htmlspecialchars($vocab) }}"
               current_version="{{ htmlspecialchars($current_version) }}"
               ap="{{ htmlspecialchars($ap) }}"
               onclick="$.ajax('{{ onclickURL($vocab, $current_version, $ap) }}'); return true"
               sissvoc_endpoint="{{ $ap->getApSissvoc()->getUrlPrefix() }}"
               href="{{ $ap->getApSissvoc()->getUrlPrefix() }}/concept"><i
-              class="fa fa-external-link"></i> Access Linked Data API</a>
+              class="fa fa-share-alt"></i> Access Linked Data API</a>
           </div>
         @endif
       @endforeach
@@ -191,7 +192,8 @@ function getIdForSissvocAccessPoint() {
             <p style="word-break: break-all">
               <a target="_blank"
                 onclick="$.ajax('{{ onclickURL($vocab, $current_version, $ap) }}'); return true"
-                href="{{ $ap->getApApiSparql()->getUrl() }}">{{ htmlspecialchars($ap->getApApiSparql()->getUrl()) }}</a>
+                href="{{ $ap->getApApiSparql()->getUrl() }}"><i
+                class="fa fa-cog"></i> {{ htmlspecialchars($ap->getApApiSparql()->getUrl()) }}</a>
             </p>
             <p>
               <a target="_blank" href="https://documentation.ardc.edu.au/display/DOC/SPARQL+endpoint">Learn More</a>
@@ -280,7 +282,7 @@ function getIdForSissvocAccessPoint() {
       <div class="box-content <?=$collapse?>">
         @foreach($version->getAccessPoint() as $ap)
           @if(($ap->getDiscriminator() == AP_FILE && !$singleFile) || ($hasSesameDownloads))
-            <a class="btn btn-lg btn-block btn-primary download-chooser"><i class="fa fa-download"></i> Download <i class="fa fa-chevron-right"></i></a>
+            <a role="button" class="btn btn-lg btn-block btn-primary download-chooser"><i class="fa fa-download"></i> Download <i class="fa fa-chevron-right"></i></a>
               <?php break; ?>
           @endif
         @endforeach
@@ -288,7 +290,7 @@ function getIdForSissvocAccessPoint() {
         @if($singleFile)
           @foreach($version->getAccessPoint() as $ap)
             @if($ap->getDiscriminator() === AP_FILE)
-              <a class="download-link btn btn-lg btn-block btn-primary"
+              <a role="button" class="download-link btn btn-lg btn-block btn-primary"
                 onclick="$.ajax('{{ onclickURL($vocab, $version, $ap) }}'); return true"
                 href="{{ $ap->getApFile()->getUrl() }}"><i class="fa fa-download"></i> Download ({{ htmlspecialchars($ap->getApFile()->getFormat()) }})</a>
             @endif
@@ -297,8 +299,8 @@ function getIdForSissvocAccessPoint() {
 
         @foreach($version->getAccessPoint() as $ap)
           @if($ap->getDiscriminator() === AP_WEB_PAGE)
-            <div class="btn-group btn-group-justified element element-no-bottom element-no-top" role="group" aria-label="...">
-                <a target="_blank" class="btn btn-sm btn-default {{htmlspecialchars($ap->getDiscriminator())}}"
+            <div class="btn-group btn-group-justified text-center element element-no-bottom element-no-top" role="group" aria-label="...">
+                <a target="_blank" class="{{htmlspecialchars($ap->getDiscriminator())}}"
                   onclick="$.ajax('{{ onclickURL($vocab, $version, $ap) }}'); return true"
                   href="{{ $ap->getApWebPage()->getUrl() }}"><i class="fa fa-external-link"></i> Access Web Page</a>
             </div>
@@ -307,10 +309,10 @@ function getIdForSissvocAccessPoint() {
 
         @foreach($version->getAccessPoint() as $ap)
           @if($ap->getDiscriminator() === AP_SISSVOC)
-            <div class="btn-group btn-group-justified element element-no-bottom element-no-top" role="group" aria-label="...">
-              <a target="_blank" class="btn btn-sm btn-default {{htmlspecialchars($ap->getDiscriminator())}}"
+            <div class="btn-group btn-group-justified text-center element element-no-bottom element-no-top" role="group" aria-label="...">
+              <a target="_blank" class="text-center {{htmlspecialchars($ap->getDiscriminator())}}"
                 onclick="$.ajax('{{ onclickURL($vocab, $version, $ap) }}'); return true"
-                href="{{ $ap->getApSissvoc()->getUrlPrefix() }}/concept"><i class="fa fa-external-link"></i> Access Linked Data API</a>
+                href="{{ $ap->getApSissvoc()->getUrlPrefix() }}/concept"><i class="fa fa-share-alt"></i> Access Linked Data API</a>
             </div>
           @endif
         @endforeach
@@ -326,7 +328,8 @@ function getIdForSissvocAccessPoint() {
               <p style="word-break:break-all">
                 <a target="_blank"
                   onclick="$.ajax('{{ onclickURL($vocab, $version, $ap) }}'); return true"
-                  href="{{ $ap->getApApiSparql()->getUrl() }}">{{ htmlspecialchars($ap->getApApiSparql()->getUrl()) }}</a>
+                  href="{{ $ap->getApApiSparql()->getUrl() }}"><i
+                  class="fa fa-cog"></i> {{ htmlspecialchars($ap->getApApiSparql()->getUrl()) }}</a>
               </p>
               <p>
                 <a target="_blank" href="https://documentation.ardc.edu.au/display/DOC/SPARQL+endpoint">Learn More</a>

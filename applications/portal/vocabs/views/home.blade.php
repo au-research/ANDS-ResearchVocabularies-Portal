@@ -7,11 +7,12 @@
     <div id="banner-image" class="background-media"></div>
 
     <div class="background-overlay grid-overlay-30"
-         style="background-color: rgba(0,0,0,0.4);"></div>
+         style="background-color: rgba(0,0,0,0.3);"></div>
     <div class="container element-tall-top element-normal-bottom">
       <div class="row">
 
-        <div class="col-md-6">
+        <!-- padding-bottom comes into play for narrow browser window -->
+        <div class="col-md-6" style="padding-bottom:55px">
           <form ng-submit="$event.preventDefault();search()"
                 style="padding-top:55px">
             <div class="input-group">
@@ -27,8 +28,7 @@
             </div>
           </form>
           <div class="pull-right">
-            <a href="https://documentation.ardc.edu.au/display/DOC/Vocabulary+search" target="_blank"><i class="fa fa-question-circle"></i> Using search</a>
-            &emsp;
+            <a href="https://documentation.ardc.edu.au/display/DOC/Vocabulary+search" target="_blank"><i class="fa fa-question-circle"></i> Using search</a><span class="emsp"></span>
             <a href="{{ portal_url('search/#!/?activeTab=vocabularies') }}">Browse all vocabularies</a>
             |
             <a href="{{ portal_url('search/#!/?activeTab=resources') }}">concepts</a>
@@ -37,10 +37,9 @@
 
         <div class="col-md-6">
           <header class="animated fadeIn">
-            <h1 class="big">Research Vocabularies Australia</h1>
-            <p class="big hairline">
+            <h3 class="non-bold"><b>Research Vocabularies Australia</b>
               helps you find, access, and reuse vocabularies for
-              research.</p>
+              research.</h3>
           </header>
         </div>
 
@@ -57,7 +56,7 @@
                          condensed animated fadeIn"
                   data-os-animation="fadeIn" data-os-animation-delay="0s"
                   style="-webkit-animation: 0s;">
-            <h1 class="big">Get Involved</h1>
+            <h4>Get Involved</h4>
           </header>
           <div class="row">
             <div class="col-md-3">
@@ -74,8 +73,8 @@
                       <i class="fa fa-cloud-upload icon-portal"></i>
                     </div>
                   </div>
-                  <h3 class="normal bold bordered bordered-small">Publish a
-                    vocabulary</h3>
+                  <h5 class="normal bold bordered bordered-small">Publish a
+                    vocabulary</h5>
                   <p>Upload, describe and publish your
                     vocabularies to Research Vocabularies Australia</p>
                 </div>
@@ -95,8 +94,8 @@
                       <i class="fa fa-language icon-portal"></i>
                     </div>
                   </div>
-                  <h3 class="normal bold bordered
-                             bordered-small">Use a vocabulary</h3>
+                  <h5 class="normal bold bordered
+                             bordered-small">Use a vocabulary</h5>
                   <p>Understand how you can utilise Research
                     Vocabulary Australia vocabularies</p>
                 </div>
@@ -116,9 +115,9 @@
                       <i class="fa fa-cogs icon-portal"></i>
                     </div>
                   </div>
-                  <h3 class="normal bold bordered
+                  <h5 class="normal bold bordered
                              bordered-small">Explore widgetable
-                    vocabularies</h3>
+                    vocabularies</h5>
                   <p>Discover vocabularies that can be
                     readily used in your system using our vocabulary
                     widget</p>
@@ -140,8 +139,8 @@
                                 icon-portal"></i>
                     </div>
                   </div>
-                  <h3 class="normal bold bordered
-                             bordered-small">Provide feedback</h3>
+                  <h5 class="normal bold bordered
+                             bordered-small">Provide feedback</h5>
                   <p>Help Research Vocabularies Australia to
                     grow into a comprehensive vocabulary portal</p>
                 </div>

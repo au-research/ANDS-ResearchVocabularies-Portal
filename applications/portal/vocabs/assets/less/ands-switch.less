@@ -12,7 +12,7 @@
 
     & &-label {
         display: block; overflow: hidden; cursor: pointer;
-        border: 1px solid #82C9ED; border-radius: 0px;
+        border: 1px solid @secondaryColor; border-radius: 0px;
     }
 
     & &-inner {
@@ -28,12 +28,12 @@
         &:before {
             content: "Yes";
             padding-left: 10px;
-            background-color: #82C9ED; color: #FFFFFF;
+            background-color: @secondaryColor; color: #FFFFFF;
         }
         &:after {
             content: "No";
             padding-right: 10px;
-            background-color: #FFFFFF; color: #82C9ED;
+            background-color: #FFFFFF; color: @secondaryColor;
             text-align: right;
         }
     }

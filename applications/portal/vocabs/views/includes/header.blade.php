@@ -3,7 +3,7 @@
 
 	<title>{{ isset($title) ? $title : 'ARDC Research Vocabularies Australia' }}</title>
 
-	<link rel="icon" href="{{asset_url('images/cropped-ardc_favicon-32x32.png', 'core')}}" sizes="32x32">
+	<link rel="icon" href="{{asset_url('images/favicon-32x32.png', 'core')}}" sizes="32x32">
 
 	<meta content="width=device-width, initial-scale=1.0" name="viewport">
 	<meta content="yes" name="apple-mobile-web-app-capable">
@@ -49,6 +49,6 @@
 <!-- Environment Indicator -->
 @if(ENVIRONMENT!='production')
 	<div class="environment" style="background:{{get_config_item('environment_colour')}};color:white;padding:5px 10px;">
-		<h3>{{get_config_item('environment_name')}} - {{ENVIRONMENT}}</h3>
+		<h5>{{get_config_item('environment_name')}} - {{ENVIRONMENT}}</h5>
 	</div>
 @endif

@@ -70,7 +70,7 @@ $share_query_params = http_build_query($share_params);
                                         </a>
                                     </div>
                                 </div>
-                                <h1 class="hairline bordered-normal break" style="line-height:1.1em"><span itemprop="name" ng-non-bindable>{{ htmlspecialchars($vocab->getTitle()) }} </span></h1>
+                                <h4 class="bordered-normal break" style="line-height:1.1em"><span itemprop="name" ng-non-bindable>{{ htmlspecialchars($vocab->getTitle()) }} </span></h4>
                                 @if (!empty($vocab->getAcronym()))
                                 <small>Acronym: {{ htmlspecialchars($vocab->getAcronym()) }}</small><br>
                                 @endif

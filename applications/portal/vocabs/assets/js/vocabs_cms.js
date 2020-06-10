@@ -1334,7 +1334,7 @@
             return $sce.trustAsHtml('<span confluence_tip="' +
               'PopulatingRVAPortalMetadataFields(OptimisedforRVATooltips)-' +
               anchor + '"><span class="fa fa-info-circle" ' +
-              'style="color: #17649a; font-size: 13px"></span></span>');
+              'style="color: #7e408a; font-size: 13px"></span></span>');
         };
 
         // CC-1518 Need the related entity index, because we send a

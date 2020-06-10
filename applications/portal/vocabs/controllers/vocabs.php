@@ -208,6 +208,93 @@ class Vocabs extends MX_Controller
              ->render($slug);
     }
 
+
+    /** Login, migrated from the top-level and adapted to use a blade.
+     * @return view
+     */
+	public function login(){
+		$data['authenticators'] = array(
+			'built-in' => array(
+				'slug'		=> 'built_in',
+				'display' 	=> 'Built In',
+				'view' 		=>  $this->load->view('authenticators/built_in',
+                                                  false, true)
+			),
+			'ldap' => array(
+				'slug'		=> 'ldap',
+				'display' 	=> 'LDAP',
+				'view' 		=>  $this->load->view('authenticators/ldap',
+                                                  false, true)
+			),
+			'social' => array(
+				'slug' 		=> 'social',
+				'display'	=> 'Social',
+				'view' 		=> $this->load->view('authenticators/social',
+                                                 false, true)
+			)
+		);
+
+		if(get_config_item('shibboleth_sp')) {
+			$shibboleth_sp =  array(
+				'slug' =>'shibboleth_sp',
+				'display' => 'Shibboleth SP',
+				'view' => $this->load->view('authenticators/shibboleth_sp',
+                                            false, true)
+			);
+			array_push($data['authenticators'], $shibboleth_sp);
+		}
+
+		$config = \ANDS\Util\Config::get('oauth');
+		if (isset($config['providers']['AAF_RapidConnect']['enabled']) &&
+			$config['providers']['AAF_RapidConnect']['enabled'] === true) {
+			$rapid_connect = array(
+				'slug'		=> 'aaf_rapid',
+				'default'	=> true,
+				'display' 	=> 'AAF Rapid Connect',
+				'view' 		=>  $this->load->view('authenticators/aaf_rapid',
+                                                  false, true)
+			);
+			array_push($data['authenticators'], $rapid_connect);
+		}
+
+		$data['default_authenticator'] = false;
+		foreach($data['authenticators'] as $auth) {
+			if(isset($auth['default']) && $auth['default'] === true) {
+				$data['default_authenticator'] = $auth['slug'];
+				break;
+			}
+		}
+		if(!$data['default_authenticator']) {
+            $data['default_authenticator'] = 'built_in';
+        }
+
+		$this->load->helper('cookie');
+		delete_cookie('auth_redirect');
+		if ($this->input->get('redirect')) {
+			// CC-1294 Use "set_cookie", not "setcookie".
+			set_cookie('auth_redirect', $this->input->get('redirect'),
+                       time()+3600, '','/', '', TRUE);
+		}
+
+        $this
+            ->blade
+            ->set('title', 'Login - Research Vocabularies Australia')
+            ->set('scripts', array('login'))
+            ->set('page', 'login')
+            ->set('authenticators', $data['authenticators'])
+            ->set('default_authenticator', $data['default_authenticator'])
+            ->render('login');
+	}
+
+    /** Logout, migrated from the top-level and adapted.
+     * @return view
+     */
+    public function logout(){
+        // Logs the user out and redirects them to the homepage.
+        $redirect = portal_url();
+        $this->user->logout($redirect);
+    }
+
     /**
      * MyVocabs functionality
      * If the user is not logged in, redirects them to the login screen
@@ -280,17 +367,6 @@ class Vocabs extends MX_Controller
             ->set('title', 'My Vocabs - Research Vocabularies Australia')
             ->set('page', 'myvocabs')
             ->render('myvocabs');
-    }
-
-    /**
-     * Logging the user out via a the auth_url
-     * Redirects the user back to the home page after logging out
-     * @return redirection to home page
-     */
-    public function logout()
-    {
-        redirect(get_vocab_config('auth_url')
-                 . 'logout?redirect=' . portal_url());
     }
 
     /**

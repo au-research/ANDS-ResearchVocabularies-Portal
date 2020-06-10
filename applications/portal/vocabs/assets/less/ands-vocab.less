@@ -1,35 +1,104 @@
-// @primaryColor : #7F7EFF;
-@primaryColor : #487577;
-@secondaryColor: #5353AA;
-@secondaryColor: #A4B0F5;
-@ternaryColor: #F58F29;
+@primaryColor: #17649A;
+@primaryBackgroundColor: #ffffff;
+@secondaryColor: #7e408a;
+@secondaryColorHover: #326f8f;
+//@secondaryColorFiftyPercent: lighten(@secondaryColor, 50%);
+// The percentage names (FiftyPercent, etc.) come
+// from the branding guidelines.
+@secondaryColorNonCompliant: #8e489b;
+@secondaryColorNonCompliantFiftyPercent: tint(@secondaryColorNonCompliant, 50%);
+@secondaryColorNonCompliantTwentyPercent: tint(@secondaryColorNonCompliant, 80%);
+@secondaryColorNonCompliantFifteenPercent: tint(@secondaryColorNonCompliant, 85%);
+// @boxColor: #487577;
+@boxColor: @secondaryColorNonCompliantFiftyPercent;
+@blackTwentyPercent: lighten(black, 80%);
+
+@ternaryColor: #f8b20e;
+@ternaryColorHover: #e2a20c;
 @gray: #e9e9e9;
 @darkGray: #e9e9e9;
 @current: #6AA84F;
 @superseded: #F1C232;
+// @superseded: #00819D;
 @deprecated: #CC0000;
 
-//second
+@placeholder: #686868;
 
-// 2018-07-26 Restored primaryColor to state before commit
-// a1bf4b364355a12868b4c43542ea66d191a4ea68, introduced
-// primaryBackgroundColor for what was then intended.
-
-@primaryColor: #17649A;
-@primaryBackgroundColor: #0c415a;
-@secondaryColor: #46494C;
-@boxColor: #487577;
-
-.swatch-blue {
-    background: @primaryBackgroundColor;
+// Just background colours
+.current-fore-and-back {
+    color: black;
+    background-color: @current;
+}
+.superseded-fore-and-back {
+    color: black;
+    background-color: @superseded;
+}
+.deprecated-fore-and-back {
     color: white;
-    a {
+    background-color: @deprecated;
+}
+
+// Placeholder text color
+// https://stackoverflow.com/questions/2610497/change-an-html5-inputs-placeholder-color-with-css
+.form-control::placeholder {
+    color: @placeholder !important;
+    opacity: 1;
+}
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:    @placeholder;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color:    @placeholder;
+    opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color:    @placeholder;
+    opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color:    @placeholder;
+}
+::-ms-input-placeholder { /* Microsoft Edge */
+    color:    @placeholder;
+}
+
+::placeholder { /* Most modern browsers support this now. */
+    color:    @placeholder;
+}
+
+// Widget explorer, "Select a vocabulary"
+.text-muted {
+    color: @placeholder;
+}
+:hover > .text-muted, .text-muted:hover {
+    color: white;
+}
+
+// ui-select
+.ui-select-bootstrap .ui-select-choices-row.active > span {
+    color: #fff;
+    text-decoration: none;
+    outline: 0;
+    background-color: @secondaryColor;
+}
+
+// CMS PoolParty Search
+.swatch-gray ul[id^="typeahead-"].dropdown-menu > li > a,
+[class*="swatch-"] .swatch-gray ul[id^="typeahead-"].dropdown-menu > li > a {
+    color: @secondaryColor;
+    background: white;
+    &:hover {
         color: white;
+        background: @secondaryColor;
     }
+}
+
+// Top menu
+.swatch-white.navbar {
     .nav {
         li {
             a {
-                color: white;
+                color: @secondaryColor;
                 &:hover, &:focus {
                     background: @primaryBackgroundColor;
                 }
@@ -39,10 +108,44 @@
     .dropdown-menu {
         li {
             a {
-                color: grey;
+                color: @secondaryColor;
                 &:hover {
                     color: white;
+                    background: @secondaryColor;
+                }
+            }
+        }
+    }
+}
+// Top menu dropdown and second-level items
+.swatch-white.navbar .dropdown-menu {
+    background: white;
+}
+.swatch-white.navbar .open .dropdown-toggle.btn-primary,
+[class*="swatch-"] .swatch-white.navbar .open .dropdown-toggle.btn-primary {
+    background-color: @secondaryColor;
+    color: white;
+}
+
+.swatch-blue {
+    background: @primaryBackgroundColor;
+    color: black;
+    .nav {
+        li {
+            a {
+                &:hover, &:focus {
                     background: @primaryBackgroundColor;
+                }
+            }
+        }
+    }
+    .dropdown-menu {
+        li {
+            a {
+                color: @secondaryColor;
+                &:hover {
+                    color: white;
+                    background: @secondaryColor;
                 }
             }
         }
@@ -87,8 +190,52 @@
 
 .swatch-gray .btn-default, .swatch-white .btn-default {
     i {
-        color: white !important;
+        color: @secondaryColor !important;
     }
+}
+
+// The CMS "Add a publisher" dropdown triangle button
+.swatch-gray .open .dropdown-toggle.btn-primary,
+[class*="swatch-"] .swatch-gray .open .dropdown-toggle.btn-primary {
+    background-color: @secondaryColor;
+    color: white;
+}
+// The items in the CMS "Add a publisher" dropdown
+.swatch-gray .btn-group .dropdown-menu > li > a,
+[class*="swatch-"] .swatch-gray .btn-group .dropdown-menu > li > a {
+    color: @secondaryColor;
+    background: white;
+    &:hover {
+        color: white;
+        background: @secondaryColor;
+    }
+}
+
+// fa icons within btn-primary on modals
+.swatch-white .btn-primary i, [class*="swatch-"] .swatch-white .btn-primary i {
+    color: @secondaryColor;
+}
+
+// Set box-shadow color underneath dropdowns, on focus.
+// First, swatch-white:
+.swatch-white input:focus, .swatch-white textarea:focus,
+.swatch-white select.form-control:focus,
+[class*="swatch-"] .swatch-white input:focus,
+[class*="swatch-"] .swatch-white textarea:focus,
+[class*="swatch-"] .swatch-white select.form-control:focus,
+// Then, swatch-gray:
+.swatch-gray input:focus, .swatch-gray textarea:focus,
+.swatch-gray select.form-control:focus,
+[class*="swatch-"] .swatch-gray input:focus,
+[class*="swatch-"] .swatch-gray textarea:focus,
+[class*="swatch-"] .swatch-gray select.form-control:focus {
+    box-shadow: 0px 3px 0px @secondaryColor;
+}
+// The same for ui-select on widget explorer
+.swatch-white .dropdown-menu, [class*="swatch-"] .swatch-white .dropdown-menu {
+    -webkit-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1), 0px 3px 0px @secondaryColor inset;
+    -moz-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1), 0px 3px 0px @secondaryColor inset;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1), 0px 3px 0px @secondaryColor inset;
 }
 
 .search-bar {
@@ -142,8 +289,12 @@
         margin: 7px 0px;
     }
     a {
-        color: @primaryColor;
-        text-decoration: none;
+        color: @secondaryColor;
+        &:not(:hover) {
+            // We don't underline links by default;
+            // only on hover.
+            text-decoration: none;
+        }
         &:hover {
             color: #4f9bc2;
         }
@@ -165,7 +316,6 @@ div.tab-pane > div {
     border-bottom-color: #eaeaea;
 }
 
-
 /* Tab headings */
 ul.nav.nav-tabs {
     // Keep tabs together. Prevents the second one going down _and_
@@ -180,6 +330,8 @@ ul.nav.nav-tabs {
 .swatch-gray .nav-tabs > li > a:hover
 {
     background: #ffffff;
+    // Don't underline these links.
+    text-decoration: none;
 }
 
 .swatch-gray .nav-tabs > li > a:focus
@@ -192,10 +344,10 @@ ul.nav.nav-tabs {
 // Heading for active tab
 .swatch-gray .nav-tabs > li.active > a {
     // Without hover
-    color: @primaryColor;
+    color: @secondaryColor;
     &:hover {
         // With hover
-        color: #82c9ed;
+        color: @secondaryColor;
     }
 }
 
@@ -207,7 +359,7 @@ ul.nav.nav-tabs {
     color: #8c8c8c;
     &:hover {
         // With hover
-        color: #82c9ed;
+        color: @secondaryColor;
     }
 }
 
@@ -215,7 +367,7 @@ ul.nav.nav-tabs {
 li.uib-tab.active a, li.uib-tab.active a:hover, li.uib-tab.active a:focus {
     border-style: none none solid none;
     border-width: 3px;
-    border-color: #82c9ed;
+    border-color: @secondaryColor;
 }
 
 // Heading for inactive tab
@@ -252,7 +404,6 @@ li.uib-tab:not(.active) a, li.uib-tab:not(.active) a:focus {
 b.vocab-search-result-highlight {
     background-color: #d9e7ec;
 }
-
 
 /* Show/hide specific content for a Bootstrap collapse. */
 .collapsed > .when-opened,
@@ -344,13 +495,30 @@ ul.vocab-prev-version-list {
     margin-bottom: 0px;
 }
 
+// Front page upper section with text
+// "Research Vocabularies Australia helps you find ..."
 .swatch-dark-blue {
-    background: @secondaryColor;
+    background: black;
     color: white;
+    .btn-primary {
+        color: black;
+        background-color: @ternaryColor;
+    }
+    .btn-primary:hover {
+        background-color: @ternaryColorHover;
+    }
+}
+
+// Footer colour scheme
+footer .swatch-dark-blue {
+    background: @blackTwentyPercent;
+    color: black;
     .btn-primary {
         background-color: @ternaryColor;
     }
-
+    a {
+        color: black;
+    }
 }
 
 table.table-facet-filter {
@@ -463,7 +631,6 @@ ul.list-current-search {
     }
 }
 
-
 .element-shorter-top {
     margin-top: 10px !important;
 }
@@ -478,6 +645,12 @@ ul.list-current-search {
 
 .element-shortest-bottom {
     margin-bottom: 5px !important;
+}
+
+// Imitate Bootstrap's default margin-bottom
+// setting used for p tags.
+.element-bottom-same-as-p {
+    margin-bottom: 14px; // !important;
 }
 
 .maxheight500 {
@@ -503,14 +676,20 @@ ul.list-current-search {
 }
 
 .alert-info {
-    color: white;
+    background-color: @secondaryColorNonCompliantFifteenPercent;
+    color: black;
 }
 
 .swatch-white a, [class*="swatch-"] .swatch-white a {
-    color: @primaryColor;
+    color: @secondaryColor;
+}
+// div used as a button, containing a link; settings for hovering.
+// For non-hover, see the settings for ".swatch-white .btn-link:hover"
+.swatch-white .btn:hover a, [class*="swatch-"] .swatch-white .btn:hover a {
+    color: white;
 }
 .swatch-white small a, [class*="swatch-"] .swatch-white small a {
-    color: @primaryColor;
+    color: @secondaryColor;
 }
 
 .swatch-white {
@@ -520,6 +699,160 @@ ul.list-current-search {
     a.btn-default {
         color: white;
     }
+}
+
+// Search results breadbox heading
+.swatch-gray .panel-primary .panel-heading,
+[class*="swatch-"] .swatch-gray .panel-primary .panel-heading {
+    background: @secondaryColor;
+}
+// "Reset search" button
+.swatch-white .btn-primary, .swatch-white button,
+.swatch-white input[type="submit"],
+[class*="swatch-"] .swatch-white .btn-primary,
+[class*="swatch-"] .swatch-white button,
+[class*="swatch-"] .swatch-white input[type="submit"] {
+     background: @secondaryColor;
+    color: @secondaryColor;
+    background: white;
+}
+.swatch-gray .btn-primary:not(:hover) i,
+[class*="swatch-"] .swatch-gray .btn-primary:not(:hover) i {
+    color: @secondaryColor !important;
+}
+/*
+.swatch-gray .btn-primary i:hover,
+[class*="swatch-"] .swatch-gray .btn-primary i:hover {
+    color: white !important;
+}
+*/
+.swatch-white .btn-primary:hover, .swatch-white button:hover,
+.swatch-white input[type="submit"]:hover,
+[class*="swatch-"] .swatch-white .btn-primary:hover,
+[class*="swatch-"] .swatch-white button:hover,
+[class*="swatch-"] .swatch-white input[type="submit"]:hover {
+    color: white;
+    background: @secondaryColor;
+    i {
+        color: white !important;
+    }
+}
+
+// Search results pagination first/last page
+a {
+    color: @secondaryColor;
+}
+
+// Hover for links
+.swatch-white a:hover, [class*="swatch-"] .swatch-white a:hover {
+    // was: color: #4f9bc2;
+    color: #4f9bc2;
+    // color: @secondaryColorHover;
+}
+
+// Underline links on hover, but not links that
+// are being styled as buttons.
+a:not([role="button"]):hover {
+    text-decoration: underline;
+}
+
+// Primary, and submit-type buttons, e.g., "Close" on modals.
+// Also, CMS calendar icon buttons.
+// But _not_ close buttons that are just icons (which
+// have class ".close")!
+.swatch-gray .btn-primary, .swatch-gray button:not(.close),
+.swatch-gray input[type="submit"],
+[class*="swatch-"] .swatch-gray .btn-primary,
+[class*="swatch-"] .swatch-gray button:not(.close),
+[class*="swatch-"] .swatch-gray input[type="submit"] {
+    color: @secondaryColor;
+    background: white;
+    border: 1px solid @secondaryColor;
+}
+
+.swatch-gray .btn-primary, .swatch-gray button:not(.close),
+.swatch-gray input[type="submit"],
+[class*="swatch-"] .swatch-gray :not(.btn-group) > .btn-primary,
+[class*="swatch-"] .swatch-gray :not(.btn-group) > button:not(.close),
+[class*="swatch-"] .swatch-gray input[type="submit"] {
+    border-radius: 5px;
+}
+
+.swatch-gray .btn-primary:hover, .swatch-gray button:not(.close):hover,
+.swatch-gray input[type="submit"]:hover,
+[class*="swatch-"] .swatch-gray .btn-primary:hover,
+[class*="swatch-"] .swatch-gray button:not(.close):hover,
+[class*="swatch-"] .swatch-gray input[type="submit"]:hover {
+    color: white;
+    background: @secondaryColor;
+    border: 1px solid @secondaryColor;
+}
+
+.swatch-gray :not(.btn-group) > .btn-primary:hover,
+.swatch-gray :not(.btn-group) > button:not(.close):hover,
+.swatch-gray input[type="submit"]:hover,
+[class*="swatch-"] .swatch-gray :not(.btn-group) > .btn-primary:hover,
+[class*="swatch-"] .swatch-gray :not(.btn-group) > button:not(.close):hover,
+[class*="swatch-"] .swatch-gray input[type="submit"]:hover {
+    border-radius: 5px;
+}
+
+// Same as above, but for swatch-white, used on modals.
+.swatch-white .btn-primary, .swatch-white button:not(.close),
+.swatch-white input[type="submit"],
+[class*="swatch-"] .swatch-white .btn-primary,
+[class*="swatch-"] .swatch-white button:not(.close),
+[class*="swatch-"] .swatch-white input[type="submit"] {
+//    background: @secondaryColor;
+    color: @secondaryColor;
+    background: white;
+    border: 1px solid @secondaryColor;
+    border-radius: 5px;
+}
+.swatch-white .btn-primary:hover, .swatch-white button:not(.close):hover,
+.swatch-white input[type="submit"]:hover,
+[class*="swatch-"] .swatch-white .btn-primary:hover,
+[class*="swatch-"] .swatch-white button:not(.close):hover,
+[class*="swatch-"] .swatch-white input[type="submit"]:hover {
+    color: white;
+    background: @secondaryColor;
+    border: 1px solid @secondaryColor;
+}
+
+.swatch-white :not(.btn-group) > .btn-primary:hover,
+.swatch-white :not(.btn-group) > button:not(.close):hover,
+.swatch-white input[type="submit"]:hover,
+[class*="swatch-"] .swatch-white :not(.btn-group) > .btn-primary:hover,
+[class*="swatch-"] .swatch-white :not(.btn-group) > button:not(.close):hover,
+[class*="swatch-"] .swatch-white input[type="submit"]:hover {
+    border-radius: 5px;
+}
+
+// "View vocabulary" button on popup for related vocabularies (btn-link_,
+// "Add Access Point" on CMS version modal (btn-primary)
+.swatch-white .btn-link, [class*="swatch-"] .swatch-white .btn-link,
+.swatch-white .btn-primary, [class*="swatch-"] .swatch-white .btn-primary {
+    color: @secondaryColor;
+    border: 1px solid @secondaryColor;
+    border-radius: 5px;
+    box-shadow: none;
+}
+.swatch-white .btn-link:hover, [class*="swatch-"] .swatch-white .btn-link:hover {
+    background: @secondaryColor;
+    color: white;
+    border: 1px solid @secondaryColor;
+    border-radius: 5px;
+    // NB: hovering over button and over text in button works differently!
+    // For that, see the settings for ".swatch-white .btn:hover a"
+}
+
+// CMS popup table headings
+// .swatch-white ::selection, [class*="swatch-"] .swatch-white ::selection {
+//     background: @secondaryColor;
+// }
+
+.swatch-white .table th, [class*="swatch-"] .swatch-white .table th {
+    background-color: @secondaryColor;
 }
 
 .alert-success {
@@ -543,15 +876,15 @@ ul.list-current-search {
 }
 
 .yellow_button {
-  color: #fff;
-  font-size: 14px;
-  font-weight: bold;
-  background: #f58000;
-  border: none;
-  padding: 5px 10px;
-  margin: 10px 0;
-  width: 105px;
-  text-decoration: none;
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    background: @ternaryColor;
+    border: none;
+    padding: 5px 10px;
+    margin: 10px 0;
+    width: 105px;
+    text-decoration: none;
 }
 
 .help_button {
@@ -571,14 +904,15 @@ ul.list-current-search {
 }
 
 .yellow_button:hover {
-  background: #F58072;
-  color: #fff;
+    background: @ternaryColorHover;
+    color: black;
 }
 
 span.current{
   display: block;
   background-color: @current;
-  color:white;
+  // color:white;
+  color:black;
   overflow: auto;
   position: relative;
   top: -4px;
@@ -601,7 +935,8 @@ span.current{
 span.superseded{
   display: block;
   background-color: @superseded;
-  color: white;
+  // color: white;
+  color: black;
   overflow: auto;
   position: relative;
   top: -4px;
@@ -619,7 +954,8 @@ span.deprecated{
 small.current{
   background-color: @current;
   border-radius: 6px;
-  color: white !important;
+  // color: white !important;
+  color: black !important;
   width: 14em;
   padding-left:5px;
   padding-right:5px;
@@ -629,7 +965,8 @@ small.current{
 small.superseded{
   background-color: @superseded;
   border-radius: 6px;
-  font-color: white !important;
+  // font-color: white !important;
+  font-color: black !important;
   padding-left:5px;
   padding-right:5px;
 }
@@ -659,12 +996,17 @@ input:disabled+label{
 }
 
 .btn-widget-link{
-  background-color: #aaaaaa;
-  display: block;
-  color: white;
-  padding-left:5px;
-  padding-right:5px;
-  width:90px;
+    background-color: #767676;
+    display: block;
+    color: white;
+    padding-left:5px;
+    padding-right:5px;
+    width:90px;
+}
+
+// Search results deprecated xxx
+.label-default {
+    background-color: #767676;
 }
 
 .widget-icon{
@@ -672,7 +1014,7 @@ input:disabled+label{
 }
 
 .btn-subscribe-link{
-  background-color: #82c9ed;
+  background-color: @secondaryColor;
   display: block;
   color: white;
   padding-left:0px;
@@ -717,17 +1059,42 @@ input:disabled+label{
 
 /* Use this, in combination with .btn-primary, to
    get the correct warning color. This is needed because
-   swatch-gray tends to override everything with its blue. */
-.btn-primary-warning {
-  background-color: #f18d38 !important;
+   swatch-gray tends to override everything with its blue.
+   Also, this gives non-rounded buttons.
+ */
+[class*="swatch-"] .btn-primary-warning.btn-non-rounded {
+    // background-color: #f18d38 !important;
+    background-color: @ternaryColor !important;
+    border: none !important;
+    border-radius: 0px !important;
+    i {
+        color: black !important;
+    }
+}
+// Make this exactly the same as above, except for background-color
+[class*="swatch-"] .btn-primary-warning.btn-non-rounded:hover {
+    // background-color: #f18d38 !important;
+    background-color: @ternaryColorHover !important;
+    border: none !important;
+    border-radius: 0px !important;
+    i {
+        color: black !important;
+    }
 }
 
-.concept-tip{
-  font-size: 16px;
-  max-width: 520px;
-  line-height: 24px;
-  word-wrap: break-word;
-  color:grey
+// Widget explorer alert warning for
+// "While optional, ARDC recommends ..."
+.label-warning, .alert-warning {
+    background-color: #fcdb8c;
+}
+
+
+.concept-tip {
+    font-size: 14px;
+    max-width: 520px;
+    line-height: 20px;
+    word-wrap: break-word;
+    color:grey
 }
 
 
@@ -769,9 +1136,10 @@ td.pagi {
 }
 
 #banner-image {
-  background-image: url(../images/vocabbanner.jpg);
+  background-image: url(../images/vocabbanner2.jpg);
   background-size: cover;
-  background-position: 50% 60%;
+//  background-position: 50% 60%;
+  background-position: 50% 70%;
   background-repeat: no-repeat;
 }
 
@@ -779,9 +1147,80 @@ td.pagi {
     border: 1px solid #a94442;
 }
 
-.mce-panel button{
+.mce-panel button {
     background-color: inherit !important;
     color: inherit !important;
+}
+
+// Make the font family of TinyMCE
+// match everything else. Be careful not to override
+// the font used for the toolbar icons.
+.mce-container, .mce-container *:not(.mce-ico), {
+    font-family: 'Roboto',sans-serif !important;
+}
+
+// Make the font size of the TinyMCE "Formats" label
+// match everything else.
+// The value for font-size is copied from that for the body.
+.mce-btn .mce-txt {
+    font-size: 14px !important;
+}
+
+// TinyMCE buttons on the "Source code" popup.
+// First, cancel borders on the div. We put rounded borders
+// on the button elements.
+div.mce-btn {
+    border: 0px;
+}
+// Set color of the TinyMCE "Ok" button on the "Source code" popup,
+// and make rounded.
+.mce-primary {
+    background-color: inherit !important;
+}
+.mce-primary button {
+    background-color: @secondaryColor !important;
+    border: 1px solid @secondaryColor !important;
+    border-radius: 5px !important;
+}
+.mce-primary:hover button {
+    background-color: white !important;
+    border: 1px solid @secondaryColor;
+    border-radius: 5px;
+}
+
+// Make TinyMCE "Cancel" button on the "Source code" popup rounded,
+// to match the other buttons.
+// Be careful not to affect the close button on the popup.
+.mce-container div:not(.mce-primary) > button:not(.mce-close) {
+    background-color: white !important;
+    border: 1px solid @secondaryColor;
+    border-radius: 5px;
+}
+.mce-container div:not(.mce-primary) > button:not(.mce-close):hover {
+    background-color: @secondaryColor !important;
+    color: white !important;
+    border: 1px solid @secondaryColor;
+    border-radius: 5px;
+}
+
+/* Re-styled login page. */
+.swatch-gray .login .tab-content {
+    background: white;
+    padding: 10px;
+    margin: 0px;
+    .tab-pane .btn, .tab-pane .btn-primary {
+        color: @secondaryColor !important;
+        background-color: white !important;
+    }
+    .tab-pane .btn-primary:hover {
+        color: white !important;
+        background-color: @secondaryColor !important;
+    }
+}
+/* fa icons for social login tab */
+.swatch-white .btn-primary.btn-icon-left:hover span,
+[class*="swatch-"] .swatch-white .btn-primary.btn-icon-left:hover span {
+    background-color: @secondaryColor;
 }
 
 @import "ands-vocabs-box";
