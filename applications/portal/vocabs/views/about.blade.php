@@ -21,8 +21,8 @@ About ARDC Vocabulary Services
                         Some vocabularies are hosted by the Australian Research Data Commons (ARDC) and can be accessed directly through Research Vocabularies Australia.
                         Otherwise Research Vocabularies Australia provides a link to the vocabulary owner’s web page.
 					</p>
-                    <p>Research Vocabularies Australia also allows you to <a href="https://vocabs.ands.org.au/vocabs/page/contribute">create and/or publish a vocabulary </a>
-                        as well as <a href="https://vocabs.ands.org.au/vocabs/page/use">integrate an existing vocabulary into your own system</a>.
+                    <p>Research Vocabularies Australia also allows you to <a href="{{ portal_url('vocabs/page/contribute') }}">create and/or publish a vocabulary </a>
+                        as well as <a href="{{ portal_url('vocabs/page/use') }}">integrate an existing vocabulary into your own system</a>.
                 </div>
 				<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-md-offset-2 col-lg-offset-2 animated fadeInUp">
 					<h4>Vocabularies for the research community</h4>
