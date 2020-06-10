@@ -29,7 +29,7 @@
                  placeholder="Filter..." autocomplete="off"
                  class="form-control"
                  ><button id="button_reset_filter"
-                          class="btn btn-primary btn-primary-warning">
+                          class="btn btn-primary btn-primary-warning btn-non-rounded">
             <i class="fa fa-remove"></i>
           </button>
           <span id="tree_filter_matches" style="vertical-align: middle"></span>

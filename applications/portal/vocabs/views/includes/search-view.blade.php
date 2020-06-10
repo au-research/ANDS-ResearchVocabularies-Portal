@@ -10,10 +10,9 @@
               style="padding-right: 8px">
           <a ng-click="unsetScrollRestoration(); logViewInLDA(doc)"
              target="_blank"
-             href="[[ doc.sissvoc_endpoint ]]/resource?uri=[[ doc.iri ]]"><i class="fa fa-sm fa-share-alt"></i> View resource as linked data</a>
-          &emsp;
+             href="[[ doc.sissvoc_endpoint ]]/resource?uri=[[ doc.iri ]]"><i class="fa fa-sm fa-share-alt"></i> View resource as linked data</a><span class="emsp"></span>
         </span>
-        <h4 class="modal-title" id="myModalLabel">[[ doc.title ]]</h4>
+        <h5 class="modal-title" id="myModalLabel">[[ doc.title ]]</h5>
       </div>
       <div class="modal-body">
         <table class="table-resource">
@@ -116,7 +115,7 @@
             <!-- Breadbox contents for vocabularies tab -->
             <div ng-if="filters.activeTab == 'vocabularies'">
               <div ng-if="filters.q.length > 0">
-                <h3>Query</h3>
+                <h5>Query</h5>
                 <ul class="list-current-search">
                   <li>
                     <a href="" ng-click="clearQuery()"
@@ -128,7 +127,7 @@
                 </ul>
               </div>
               <div ng-if="filters.v_subject_labels.length > 0">
-                <h3>Subject</h3>
+                <h5>Subject</h5>
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.v_subject_labels
                                  | stringToArray track by $index">
@@ -142,7 +141,7 @@
                 </ul>
               </div>
               <div ng-if="filters.v_publisher.length > 0">
-                <h3>Publisher</h3>
+                <h5>Publisher</h5>
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.v_publisher
                                  | stringToArray track by $index">
@@ -156,7 +155,7 @@
                 </ul>
               </div>
               <div ng-if="filters.v_language.length > 0">
-                <h3>Language</h3>
+                <h5>Language</h5>
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.v_language
                                  | stringToArray track by $index">
@@ -170,7 +169,7 @@
                 </ul>
               </div>
               <div ng-if="filters.v_format.length > 0">
-                <h3>Format</h3>
+                <h5>Format</h5>
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.v_format
                                  | stringToArray track by $index">
@@ -184,7 +183,7 @@
                 </ul>
               </div>
               <div ng-if="filters.v_access.length > 0">
-                <h3>Access</h3>
+                <h5>Access</h5>
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.v_access
                                  | stringToArray track by $index">
@@ -198,7 +197,7 @@
                 </ul>
               </div>
               <div ng-if="filters.v_licence.length > 0">
-                <h3>Licence</h3>
+                <h5>Licence</h5>
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.v_licence
                                  | stringToArray track by $index">
@@ -216,7 +215,7 @@
             <!-- Breadbox contents for resources tab -->
             <div ng-if="filters.activeTab == 'resources'">
               <div ng-if="filters.q.length > 0">
-                <h3>Query</h3>
+                <h5>Query</h5>
                 <ul class="list-current-search">
                   <li>
                     <a href="" ng-click="clearQuery()"
@@ -228,7 +227,7 @@
                 </ul>
               </div>
               <div ng-if="filters.r_subject_labels.length > 0">
-                <h3>Subject</h3>
+                <h5>Subject</h5>
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.r_subject_labels
                                  | stringToArray track by $index">
@@ -242,7 +241,7 @@
                 </ul>
               </div>
               <div ng-if="filters.r_publisher.length > 0">
-                <h3>Publisher</h3>
+                <h5>Publisher</h5>
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.r_publisher
                                  | stringToArray track by $index">
@@ -256,7 +255,7 @@
                 </ul>
               </div>
               <div ng-if="filters.r_rdf_type.length > 0">
-                <h3>RDF Type</h3>
+                <h5>RDF Type</h5>
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.r_rdf_type
                                  | stringToArray track by $index">
@@ -270,7 +269,7 @@
                 </ul>
               </div>
               <div ng-if="filters.r_status.length > 0">
-                <h3>Version status</h3>
+                <h5>Version status</h5>
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.r_status
                                  | stringToArray track by $index">
@@ -285,7 +284,7 @@
               </div>
               <!-- TODO: language  -->
               <div ng-if="filters.r_collapse_expand && filters.r_collapse_expand != 'vocabularyIdIri'">
-                <h3>Collapse</h3>
+                <h5>Collapse</h5>
                 <ul class="list-current-search">
                   <li>
                     <a href=""
@@ -326,7 +325,7 @@
 
               <!-- Subjects -->
               <div ng-if="vocabularies.facets.subject_labels.length > 0">
-                <h3>Subject</h3>
+                <h5>Subject</h5>
                 <!-- On focus, text input's box-shadow is 3px high, so
                      set padding-bottom to 5px to avoid it. -->
                 <div class="input-group"
@@ -340,7 +339,7 @@
                          ng-model="form.v_subjectQuickFilter.name">
                   <span class="input-group-btn">
                     <button id="button-reset-subject-quick-filter"
-                            class="btn btn-primary btn-primary-warning"
+                            class="btn btn-primary-warning btn-non-rounded"
                             ng-disabled="!form.v_subjectQuickFilter.name"
                             ng-click="form.v_subjectQuickFilter.name = ''">
                       <i class="fa fa-remove"></i>
@@ -396,7 +395,7 @@
 
               <!-- Publishers -->
               <div ng-if="vocabularies.facets.publisher.length > 0">
-                <h3>Publisher</h3>
+                <h5>Publisher</h5>
                 <!-- On focus, text input's box-shadow is 3px high, so
                      set padding-bottom to 5px to avoid it. -->
                 <div class="input-group"
@@ -410,7 +409,7 @@
                          ng-model="form.v_publisherQuickFilter.name">
                   <span class="input-group-btn">
                     <button id="button-reset-publisher-quick-filter"
-                            class="btn btn-primary btn-primary-warning"
+                            class="btn btn-primary btn-primary-warning btn-non-rounded"
                             ng-disabled="!form.v_publisherQuickFilter.name"
                             ng-click="form.v_publisherQuickFilter.name = ''">
                       <i class="fa fa-remove"></i>
@@ -464,7 +463,7 @@
 
               <!-- Languages -->
               <div ng-if="vocabularies.facets.language.length > 0">
-                <h3>Language</h3>
+                <h5>Language</h5>
                 <table class="table-facet-filter">
                   <tbody>
                     <tr ng-repeat="facet in vocabularies.facets.language">
@@ -510,7 +509,7 @@
 
               <!-- Formats -->
               <div ng-if="vocabularies.facets.format.length > 0">
-                <h3>Format</h3>
+                <h5>Format</h5>
                 <table class="table-facet-filter">
                   <tbody>
                     <tr ng-repeat="facet in vocabularies.facets.format">
@@ -556,7 +555,7 @@
 
               <!-- Access -->
               <div ng-if="vocabularies.facets.access.length > 0">
-                <h3>Access</h3>
+                <h5>Access</h5>
                 <table class="table-facet-filter">
                   <tbody>
                     <tr ng-repeat="facet in vocabularies.facets.access">
@@ -600,7 +599,7 @@
 
               <!-- Licences -->
               <div ng-if="vocabularies.facets.licence.length > 0">
-                <h3>Licence</h3>
+                <h5>Licence</h5>
                 <table class="table-facet-filter">
                   <tbody>
                     <tr ng-repeat="facet in vocabularies.facets.licence">
@@ -662,7 +661,7 @@
 
               <!-- Subjects -->
               <div ng-if="resources.facets.subject_labels.length > 0">
-                <h3>Subject
+                <h5>Subject
                   <a ng-if="form.collapse == 'iri'"
                      href=""
                      tip="Because collapsing of search results is active,
@@ -672,9 +671,9 @@
                             &lt;a href=&quot;https://documentation.ardc.edu.au/display/DOC/Vocabulary+search#Vocabularysearch-Collapsingofresults&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;fa fa-question-circle&quot;&gt;&lt;/i&gt; Using search&lt;/a&gt;
                             for more information.">
                     <i class="fa fa-sm fa-info-circle"
-                       style="color: #17649a"></i>
+                       style="color: #7e408a"></i>
                   </a>
-                </h3>
+                </h5>
                 <!-- On focus, text input's box-shadow is 3px high, so
                      set padding-bottom to 5px to avoid it. -->
                 <div class="input-group"
@@ -688,7 +687,7 @@
                          ng-model="form.r_subjectQuickFilter.name">
                   <span class="input-group-btn">
                     <button id="button-reset-subject-quick-filter"
-                            class="btn btn-primary btn-primary-warning"
+                            class="btn btn-primary btn-primary-warning btn-non-rounded"
                             ng-disabled="!form.r_subjectQuickFilter.name"
                             ng-click="form.r_subjectQuickFilter.name = ''">
                       <i class="fa fa-remove"></i>
@@ -744,7 +743,7 @@
 
               <!-- Publishers -->
               <div ng-if="resources.facets.publisher.length > 0">
-                <h3>Publisher
+                <h5>Publisher
                   <a ng-if="form.collapse == 'iri'"
                      href=""
                      tip="Because collapsing of search results is active,
@@ -754,9 +753,9 @@
                             &lt;a href=&quot;https://documentation.ardc.edu.au/display/DOC/Vocabulary+search#Vocabularysearch-Collapsingofresults&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;fa fa-question-circle&quot;&gt;&lt;/i&gt; Using search&lt;/a&gt;
                             for more information.">
                     <i class="fa fa-sm fa-info-circle"
-                       style="color: #17649a"></i>
+                       style="color: #7e408a"></i>
                   </a>
-                </h3>
+                </h5>
                 <!-- On focus, text input's box-shadow is 3px high, so
                      set padding-bottom to 5px to avoid it. -->
                 <div class="input-group"
@@ -770,7 +769,7 @@
                          ng-model="form.r_publisherQuickFilter.name">
                   <span class="input-group-btn">
                     <button id="button-reset-publisher-quick-filter"
-                            class="btn btn-primary btn-primary-warning"
+                            class="btn btn-primary btn-primary-warning btn-non-rounded"
                             ng-disabled="!form.r_publisherQuickFilter.name"
                             ng-click="form.r_publisherQuickFilter.name = ''">
                       <i class="fa fa-remove"></i>
@@ -824,7 +823,7 @@
 
               <!-- RDF Type -->
               <div ng-if="resources.facets.rdf_type.length > 0">
-                <h3>RDF Type</h3>
+                <h5>RDF Type</h5>
                 <table class="table-facet-filter">
                   <tbody>
                     <tr ng-repeat="facet in resources.facets.rdf_type">
@@ -870,7 +869,7 @@
 
               <!-- Version status -->
               <div ng-if="resources.facets.status.length > 0">
-                <h3>Version status
+                <h5>Version status
                   <a ng-if="form.collapse != 'none'"
                      href=""
                      tip="Because collapsing of search results is active,
@@ -880,9 +879,9 @@
                             &lt;a href=&quot;https://documentation.ardc.edu.au/display/DOC/Vocabulary+search#Vocabularysearch-Collapsingofresults&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;fa fa-question-circle&quot;&gt;&lt;/i&gt; Using search&lt;/a&gt;
                             for more information.">
                     <i class="fa fa-sm fa-info-circle"
-                       style="color: #17649a"></i>
+                       style="color: #7e408a"></i>
                   </a>
-                </h3>
+                </h5>
                 <table class="table-facet-filter">
                   <tbody>
                     <tr ng-repeat="facet in resources.facets.status">
@@ -1006,10 +1005,10 @@
                       style="margin-left:5px">deprecated</span>
 
                 <a id="widget-link" class="pull-right" href="" ng-if="doc.widgetable" tip="&lt;b>Widgetable&lt;/b>&lt;br/>This vocabulary can be readily used for resource description or discovery in your system using our vocabulary widget.&lt;br/>&lt;a id='widget-link2' target='_blank' href='{{portal_url('vocabs/page/widget_explorer')}}'>Learn more&lt;/a>">
-                  <span class="label label-default pull-right"><img class="widget-icon" height="16" width="16" src="{{asset_url('images/cogwheels_white.png', 'core')}}"/> widgetable</span>
+                  <span class="label label-default pull-right btn-widget-link"><img class="widget-icon" height="16" width="16" src="{{asset_url('images/cogwheels_white.png', 'core')}}"/> widgetable</span>
                 </a>
 
-                <h3 class="break"><a ng-click="unsetScrollRestoration()" href="[[ base_url ]]viewById/[[ doc.id ]]">[[ doc.title ]]</a></h3>
+                <h5 class="break"><a ng-click="unsetScrollRestoration()" href="[[ base_url ]]viewById/[[ doc.id ]]">[[ doc.title ]]</a></h5>
 
                 <p ng-if="doc.acronym">
                   <small>Acronym: [[ doc.acronym ]]</small>
@@ -1053,8 +1052,8 @@
                 <span ng-repeat="type in doc.rdf_type"
                       class="label label-default pull-right">[[ rdfTypePrettyForLozenge(type) ]]</span>
 
-                <h3 class="break"><a ng-click="unsetScrollRestoration()"
-                                     href="[[ base_url ]]viewById/[[ doc.vocabulary_id ]]">[[ doc.title ]]</a></h3>
+                <h5 class="break"><a ng-click="unsetScrollRestoration()"
+                                     href="[[ base_url ]]viewById/[[ doc.vocabulary_id ]]">[[ doc.title ]]</a></h5>
 
                 <p ng-if="doc.top_concept" class="small">
                   This is a manually-entered concept in the

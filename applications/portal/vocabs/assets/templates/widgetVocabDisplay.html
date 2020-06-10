@@ -2,7 +2,7 @@
 
   <div class="row">
     <div class="col-md-12">
-      <h3><a href="{{ base_url }}{{ vocab.slug }}" target="_blank">{{ vocab.title }}</a></h3>
+      <h4><a href="{{ base_url }}{{ vocab.slug }}" target="_blank">{{ vocab.title }}</a></h4>
       <!-- small>{{ vocab.owner }}</small> -->
       <p>{{ vocab.description }}</p>
       <a href="{{ base_url }}{{ vocab.slug }}" target="_blank">View Vocabulary</a>
@@ -14,7 +14,7 @@
   <div class="row">
     <div class="col-md-12">
 
-      <h3>2. Select a widget mode</h3>
+      <h4>2. Select a widget mode</h4>
 
       <ul style="list-style-type: none;">
         <li ng-repeat="widgetMode in widgetModes">
@@ -30,7 +30,7 @@
 
   <div class="row">
     <div class="col-md-12">
-      <h3>3. Try out the widget</h3>
+      <h4>3. Try out the widget</h4>
       <div id="widgetExplorerStep3">
         <span class="label label-warning" ng-if="mode == 'tree'">
           Click on the following input to expand the tree view
@@ -43,7 +43,7 @@
       </div>
 
       <div class="alert alert-danger" ng-if="error">
-        <h4>There's an error loading the vocabulary widget:</h4>
+        <h5>There's an error loading the vocabulary widget:</h5>
         <p>
           {{ error }}
         </p>

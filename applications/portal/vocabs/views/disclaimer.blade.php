@@ -6,7 +6,7 @@
            <div class="row">
                <div class="col-md-12">
                    <header class="text-center element-short-top not-condensed os-animation animated fadeInUp" data-os-animation="fadeInUp" data-os-animation-delay="0s" style="-webkit-animation: 0s;">
-                       <h1 class="bigger hairline bordered bordered-normal os-animation animated fadeIn" data-os-animation="fadeIn" data-os-animation-delay="0s" style="-webkit-animation: 0s;">Disclaimer</h1>
+                       <h2 class="bordered bordered-normal os-animation animated fadeIn" data-os-animation="fadeIn" data-os-animation-delay="0s" style="-webkit-animation: 0s;">Disclaimer</h2>
                    </header>
 
                    <p>The information provided by Research Vocabularies Australia is generally supplied to the Australian Research Data Commons (ARDC) by the owners and managers of the data collections registered. ARDC presents this material 'as is' without comment or change. ARDC encourages information providers to provide good quality information and to maintain information currency.</p>

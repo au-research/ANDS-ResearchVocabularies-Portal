@@ -5,9 +5,9 @@
         <div class="form-group">
           <!-- -label for="">Title</label><br />{{htmlspecialchars($related['title'])}} -->
           @if(isset($related['vocab_id']))
-            <h3><a href="{{base_url().'viewById/'.$related['vocab_id']}}" target="_blank">{{htmlspecialchars($related['title'])}}</a></h3>
+            <h4><a href="{{base_url().'viewById/'.$related['vocab_id']}}" target="_blank">{{htmlspecialchars($related['title'])}}</a></h4>
           @else
-            <h3>{{htmlspecialchars($related['title'])}}</h3>
+            <h4>{{htmlspecialchars($related['title'])}}</h4>
           @endif
         </div>
         @if(isset($related['description']))
@@ -65,7 +65,7 @@
             <ul class="list-unstyled">
               @foreach($related['other_vocabs'] as $other_vocab)
                 <li><a target="_blank" href="{{base_url().'viewById/'.$other_vocab->getId()}}">{{htmlspecialchars($other_vocab->getTitle())}}</a></li>
-            @endforeach
+              @endforeach
             </ul>
           </div>
         @endif
