@@ -390,14 +390,14 @@ ul.vocab-prev-version-list ul li {
   background-color: #e2a20c;
 }
 footer .swatch-dark-blue {
-  background: #cccccc;
-  color: black;
+  background: black;
+  color: white;
 }
 footer .swatch-dark-blue .btn-primary {
   background-color: #f8b20e;
 }
 footer .swatch-dark-blue a {
-  color: black;
+  color: white;
 }
 table.table-facet-filter {
   width: 100%;
