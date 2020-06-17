@@ -12664,7 +12664,7 @@ p.stars span a.star-5.active:after, p.stars span a.star-5:hover:after, p.stars s
   background: #84a07b;
   color: white;
 }
-body{font-family:'Source Sans Pro',sans-serif;font-weight:400}body .btn,body button,body input,body textarea{font-family:'Source Sans Pro',sans-serif}blockquote p{font-weight:300}.light{font-weight:300!important}.hairline{font-weight:200!important}.hairline strong{font-weight:400}h1,h2,h3,h4,h5,h6{font-family:'Source Sans Pro',sans-serif;font-weight:600}.lead{font-weight:300}.lead strong{font-weight:600}/*
+body{font-family:Roboto,sans-serif;font-size:14px;line-height:24px}body input,body textarea,body .btn,body button{font-family:Roboto,sans-serif}blockquote{font-weight:300}h1,h2{// font-family:'Source Sans Pro',sans-serif;font-family:Spectral,serif;font-weight:700}h3,h4,h5,h6{// font-family:'Source Sans Pro',sans-serif;font-family:Roboto,sans-serif;font-weight:700}h3.non-bold{font-weight:400}h1{font-size:80px}h2{color:#7E408A!important;font-size:40px;line-height:44px}h3{font-size:32px;line-height:36px}h4{font-size:24px;// line-height:36px}h5{font-size:16px;// line-height:36px}small{font-size:12px}.image-caption-credit{font-size:10px;line-height:15px}.emsp{display:inline-block;width:.7em}/*
  * qTip2 - Pretty powerful tooltips - v2.2.1
  * http://qtip2.com
  *

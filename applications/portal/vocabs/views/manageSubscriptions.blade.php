@@ -15,7 +15,7 @@
   <section class="section element-short-top element-short-bottom swatch-white">
     <div class="container">
       <header class="text-center">
-        <h1 class="hairline bigger">Manage Subscriptions</h1>
+        <h3>Manage Subscriptions</h3>
       </header>
 
       <div class="row">
@@ -31,7 +31,7 @@
 
               <table style="width:100%">
                 <tr ng-if-start="vocabularySubscriptions.length &gt; 0">
-                  <td colspan="2" class="h3 padding-top"
+                  <td colspan="2" class="h4 padding-top"
                       >Vocabularies you are subscribed to</td>
                 </tr>
                 <tr ng-if="vocabularySubscriptions.length > 1">
@@ -59,7 +59,7 @@
 
                 <tr ng-if-start="hasOwnerAllSubscription
                                  || ownerSubscriptions.length &gt; 0">
-                  <td colspan="2" class="h3 padding-top"
+                  <td colspan="2" class="h4 padding-top"
                       style="padding-bottom: 10px">Publishers
                     you are subscribed to</td>
                 </tr>
@@ -91,7 +91,7 @@
                 </tr>
 
                 <tr ng-if-start="hasSystemSubscription">
-                  <td colspan="2" class="h3 padding-top">Service notifications</td>
+                  <td colspan="2" class="h4 padding-top">Service notifications</td>
                 </tr>
                 <tr ng-if-end="">
                   <td class="text-right" style="padding-top: 10px">
@@ -105,7 +105,7 @@
                 <tr>
                   <td></td>
                   <td class="text-right padding-top">
-                    <input type="button" value="Unsubscribe"
+                    <input type="submit" value="Unsubscribe"
                            id="unsubscribe"
                            class="btn btn-large btn-primary"
                            ng-disabled="!anyChecked() || loading"

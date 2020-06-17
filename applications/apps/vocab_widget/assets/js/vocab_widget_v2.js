@@ -27,7 +27,7 @@
 
 	var defaults = {
 	    //location (absolute URL) of the jsonp proxy
-	    endpoint: 'https://vocabs.ands.org.au/api/v1.0/vocab.jsonp/',
+	    endpoint: 'https://vocabs.ardc.edu.au/api/v1.0/vocab.jsonp/',
 
 	    //api_key set when instantiated
 	    api_key: 'public',

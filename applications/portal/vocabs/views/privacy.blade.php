@@ -6,10 +6,10 @@
             <div class="row">
                 <div class="col-md-12">
                     <header class="text-center element-short-top not-condensed os-animation animated fadeInUp" data-os-animation="fadeInUp" data-os-animation-delay="0s" style="-webkit-animation: 0s;">
-                        <h1 class="bigger hairline bordered bordered-normal os-animation animated fadeIn" data-os-animation="fadeIn" data-os-animation-delay="0s" style="-webkit-animation: 0s;">Privacy Policy</h1>
+                        <h2 class="bordered bordered-normal os-animation animated fadeIn" data-os-animation="fadeIn" data-os-animation-delay="0s" style="-webkit-animation: 0s;">Privacy Policy</h2>
                     </header>
 
-                    <p>The following document sets forth the Privacy Policy for the ARDC website Research Vocabularies Australia, <a href="https://vocabs.ands.org.au/" target="_blank">https://vocabs.ands.org.au</a>.</p>
+                    <p>The following document sets forth the Privacy Policy for the ARDC website Research Vocabularies Australia, <a href="{{ portal_url('') }}" target="_blank">{{ portal_url('') }}</a>.</p>
 
                     <p>ARDC is bound by the <a href="http://www.comlaw.gov.au/Details/C2013C00482" target="_blank">Privacy Act 1988</a> (Privacy Act), which sets out a number of principles concerning the privacy of individuals.</p>
 

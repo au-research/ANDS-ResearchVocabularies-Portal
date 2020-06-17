@@ -29,15 +29,15 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
     <div class="container">
       <div class="row">
         <div class="col-md-12">
-          <header class="section-text-shadow element-short-top
+          <header class="element-short-top
                          element-short-bottom">
-            <h1 class="hairline bordered-normal break" ng-non-bindable>
+            <h4 class="bordered-normal break" ng-non-bindable>
               @if($vocab)
                 {{ htmlspecialchars($vocab->getTitle()) }}
               @else
                 Add a new Vocabulary
               @endif
-            </h1>
+            </h4>
           </header>
         </div>
       </div>
@@ -76,7 +76,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
               </div>
             </div>
             <div class="panel-footer">
-              <a href="" class="btn btn-primary"
+              <a role="button" href="" class="btn btn-primary"
                  ng-click="selectPoolPartyProject(project)">Use this PoolParty Project</a>
             </div>
           </div>
@@ -126,7 +126,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                       your organisation, please select the appropriate
                       organisational Owner.</p>
                   </div>
-                  <a href="javascript:;"
+                  <a role="button" href="javascript:;"
                      class="btn btn-primary"
                      ng-show="!commitVocabOwner"
                      ng-disabled="!vocab.owner"
@@ -203,7 +203,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                            alt-input-formats="['yyyy-MM', 'yyyy']"
                            is-open="opened" on-open-focus="false"
                            ng-focus="opened = true">
-                    <span class="input-group-btn">
+                    <span class="input-group-btn" style="z-index: 3">
                       <button type="button" class="btn btn-default"
                               ng-click="opened = !opened"><i class="glyphicon glyphicon-calendar"></i></button>
                     </span>
@@ -240,7 +240,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                 <div class="input-group" ng-repeat="concept in vocab.top_concept track by $index" top-concepts-enter>
                   <input type="text" class="form-control" placeholder="New Top Concept" ng-model="vocab.top_concept[$index]">
                   <span class="input-group-btn">
-                    <button class="btn btn-primary btn-primary-warning" type="button"
+                    <button class="btn btn-primary btn-primary-warning btn-non-rounded" type="button"
                             ng-click="list_remove('top_concept', $index)" title="Remove this top concept"><i class="fa fa-remove"></i></button>
                   </span>
                 </div>
@@ -271,7 +271,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                           placeholder="Select a language" ng-options="lang.value as lang.text for lang in langs" ng-model="vocab.language[$index]"
                   ><option value="">Select a language</option></select>
                   <span class="input-group-btn">
-                    <button class="btn btn-primary btn-primary-warning" type="button"
+                    <button class="btn btn-primary btn-primary-warning btn-non-rounded" type="button"
                             ng-click="list_remove('language', $index)" title="Remove this language"><i class="fa fa-remove"></i></button>
                   </span>
                 </div>
@@ -346,13 +346,13 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                   <tbody>
                     <tr ng-repeat="version in vocab.versions track by $index">
                       <td><a href="" ng-click="versionmodal('edit', $index)">[[ version.title ]] </a></td>
-                      <td><span class="label" ng-class="{'deprecated': 'label-danger', 'current': 'label-success', 'superseded': 'label-warning', 'depreciated': 'label-danger'}[version.status]">[[ version.status ]]</span></td>
+                      <td><span class="label" ng-class="{'deprecated': 'deprecated-fore-and-back', 'current': 'current-fore-and-back', 'superseded': 'superseded-fore-and-back'}[version.status]">[[ version.status ]]</span></td>
                       <td><a href="" ng-click="list_remove('versions', $index)"
                              title="Remove this version"><i class="fa fa-remove"></i></a></td>
                     </tr>
                   </tbody>
                 </table>
-                <a href="" class="btn btn-primary" ng-click="versionmodal('add')"><i class="fa fa-plus"></i> Add a version</a>
+                <a role="button" href="" class="btn btn-primary" ng-click="versionmodal('add')"><i class="fa fa-plus"></i> Add a version</a>
               </div>
             </div>
 
@@ -389,10 +389,10 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                   <button type="button" class="btn btn-primary dropdown-toggle"
                           data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
                   <ul class="dropdown-menu" role="menu">
-                    <li><a href="" ng-click="relatedvocabularymodal()">Related Internal Vocabulary</a></li>
-                    <li><a href="" ng-click="relatedmodal('add', 'vocabulary')">Related External Vocabulary</a></li>
-                    <li><a href="" ng-click="relatedmodal('add', 'party')">Related Party</a></li>
-                    <li><a href="" ng-click="relatedmodal('add', 'service')">Related Service</a></li>
+                    <li><a role="button" href="" ng-click="relatedvocabularymodal()">Related Internal Vocabulary</a></li>
+                    <li><a role="button" href="" ng-click="relatedmodal('add', 'vocabulary')">Related External Vocabulary</a></li>
+                    <li><a role="button" href="" ng-click="relatedmodal('add', 'party')">Related Party</a></li>
+                    <li><a role="button" href="" ng-click="relatedmodal('add', 'service')">Related Service</a></li>
                   </ul>
                 </div>
 
@@ -410,18 +410,18 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
             <div class="panel swatch-gray">
               <div class="panel-body" ng-if="status=='idle'">
 
-                <a href=""
+                <a role="button" href=""
                    class="btn btn-large btn-primary"
                    ng-click="save('draft')"
                    ng-disabled="form.cms.$invalid || loading">Save
                   to draft</a>
 
-                <a href=""
+                <a role="button" href=""
                    class="btn btn-large btn-primary"
                    ng-click="save('published')"
                    ng-disabled="form.cms.$invalid || loading">Publish</a>
 
-                <a href=""
+                <a role="button" href=""
                    class="btn btn-large btn-primary"
                    ng-click="save('deprecated')"
                    ng-disabled="form.cms.$invalid || loading">Deprecate</a>
@@ -445,8 +445,8 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                   [[ error ]]
                 </div>
 
-                <a ng-if="!form.cms.$dirty && !confirmationRequiredOnExit" href="" class="btn btn-large btn-primary btn-discard" ng-click="exitNoConfirmation()">Exit</a>
-                <a ng-if="form.cms.$dirty || confirmationRequiredOnExit" href="" class="btn btn-large btn-primary btn-discard" ng-click="exitWithConfirmation()">Exit Without Saving</a>
+                <a ng-if="!form.cms.$dirty && !confirmationRequiredOnExit" href="" role="button" class="btn btn-large btn-primary btn-discard" ng-click="exitNoConfirmation()">Exit</a>
+                <a ng-if="form.cms.$dirty || confirmationRequiredOnExit" href="" role="button" class="btn btn-large btn-primary btn-discard" ng-click="exitWithConfirmation()">Exit Without Saving</a>
               </div>
               <div class="panel-body" ng-if="status=='saving'">
                 <i class="fa fa-refresh fa-spin"></i> Saving...

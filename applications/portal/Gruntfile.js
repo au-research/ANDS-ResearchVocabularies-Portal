@@ -15,8 +15,8 @@ module.exports = function(grunt){
                 report:'min'
             },
             minify:{
-                src:'<%= yeoman.assets %>/css/portal.combine.css',
-                dest:'<%= yeoman.assets %>/css/portal.combine.min.css'
+                src:'<%= yeoman.templates %>/ands-green/assets/css/fonts.css',
+                dest:'<%= yeoman.templates %>/ands-green/assets/css/fonts.min.css'
             }
         },
         concat:{
@@ -158,6 +158,7 @@ module.exports = function(grunt){
 
     //define your tasks
     grunt.registerTask('default', [
+        'cssmin',
         'less',
         'concat',
         'uglify'

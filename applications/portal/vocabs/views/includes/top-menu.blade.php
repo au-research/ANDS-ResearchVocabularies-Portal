@@ -1,30 +1,35 @@
-<div class="navbar swatch-blue" role="banner">
+<div class="navbar swatch-white" role="banner">
   <div class="container" style="z-index:10">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed"
-              data-toggle="collapse" data-target=".main-navbar">
+
+      <button type="button" class="navbar-toggle collapsed close" data-toggle="collapse" data-target=".main-navbar" aria-expanded="false">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <div>
-        <a href="{{portal_url()}}" class="navbar-brand">
-          Research Vocabularies Australia
+
+      <div style="display: inline-flex">
+        <span style="display: inline-block; height: 100%; vertical-align: middle"></span>
+        <a style="vertical-align: middle" href="{{portal_url()}}" >
+          <img style="vertical-align: middle; min-width: 150px" src="{{ asset_url('images/ARDC_Research_Vocabularies_RGB_FA_Master.svg') }}"
+               width="300px">
         </a>
       </div>
-    </div>
+    </div> <!-- row -->
+
     <nav class="collapse navbar-collapse main-navbar" role="navigation">
-      <ul class="nav navbar-nav navbar-right">
+      <ul class="nav navbar-nav navbar-right h5 text-uppercase">
         <li><a href="{{portal_url('vocabs/page/about')}}">About</a></li>
         <li><a href="{{portal_url('vocabs/page/widget_explorer')}}">Widget Explorer</a></li>
-        <li> <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Get Involved <i class="fa fa-caret-down"></i></a>
+        <li> <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"
+                aria-expanded="false">Get Involved <i class="fa fa-caret-down"></i></a>
           <ul class="dropdown-menu" role="menu">
             <li><a href="{{portal_url('vocabs/page/contribute')}}">Publish a vocabulary</a></li>
             <li><a href="{{portal_url('vocabs/page/use')}}">Use a vocabulary</a></li>
             <li><a href="{{portal_url('vocabs/page/feedback')}}">Give feedback on vocabularies</a></li>
           </ul></li>
         @if(!$this->user->loggedIn())
-          <li><a href="{{ get_vocab_config('auth_url') }}login?redirect={{ portal_url('vocabs/myvocabs') }}#?redirect={{ portal_url('vocabs/myvocabs') }}" class="login_btn">My Vocabs Login</a></li>
+          <li><a href="{{ get_vocab_config('auth_url') }}login?redirect={{ portal_url('vocabs/myvocabs') }}#!/?redirect={{ portal_url('vocabs/myvocabs') }}" class="login_btn">My Vocabs Login</a></li>
         @else
           <li><a href="{{ portal_url('vocabs/myvocabs') }}">My Vocabs</a></li>
         @endif
@@ -36,8 +41,9 @@
         @endif
       </ul>
     </nav>
-  </div>
-</div>
+
+  </div> <!-- container -->
+</div> <!-- swatch-white -->
 @if(isset($search_app))
   <input type="hidden" id="search_app" value="true">
 @endif
@@ -45,7 +51,7 @@
   <div class="swatch-dark-blue" style="position:relative">
     <div id="banner-image" class="background-media"></div>
     <div class="background-overlay grid-overlay-30"
-         style="background-color: rgba(0,0,0,0.4)"></div>
+         style="background-color: rgba(0,0,0,0.3)"></div>
     <div class="container-fluid">
       <div class="row element-shorter-bottom element-shorter-top">
         <div class="col-md-4 col-lg-3">

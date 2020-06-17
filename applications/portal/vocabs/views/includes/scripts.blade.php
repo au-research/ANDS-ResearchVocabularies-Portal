@@ -34,6 +34,14 @@
 
 <!-- fancytree requires JQuery, so include here. -->
 <script src='//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.js'></script>
+
+<!-- JQuery UI used for draggable modal dialogs on CMS, and on
+           ARDC-branded login page. Must be included before Bootstrap;
+see https://stackoverflow.com/questions/30190437/uncaught-error-cannot-call-methods-on-button-prior-to-initialization-attempted
+-->
+<script src='//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
+
+
 @if(is_dev())
     <script src="{{ asset_url('js/ie-polyfill.js') }} "></script>
     <script src="{{ asset_url('js/lib/angular/angular.min.js') }} "></script>
@@ -54,8 +62,6 @@
     <script src="{{ asset_url('js/lib.js').'?'.getReleaseVersion() }}"></script>
 @endif
 
-<!-- JQuery UI used for draggable modal dialogs on CMS. -->
-<script src='//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
 <script src="{{asset_url('lib/qtip2/jquery.qtip.js', 'core').'?'.getReleaseVersion() }}"></script>
 <script type="text/javascript" src="{{ base_url() }}apps/assets/vocab_widget/js/vocab_widget_v2.js?{{ getReleaseVersion() }}"></script>
 

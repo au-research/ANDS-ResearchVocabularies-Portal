@@ -6,13 +6,13 @@
       <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
           <header class="text-center element-short-top element-no-bottom  os-animation animated fadeInUp" data-os-animation="fadeInUp" data-os-animation-delay="0s" style="-webkit-animation: 0s;">
-            <h1 class="bigger hairline bordered bordered-normal os-animation animated fadeIn" data-os-animation="fadeIn" data-os-animation-delay="0s" style="-webkit-animation: 0s;"> Give feedback on vocabularies </h1>
+            <h2 class="bordered bordered-normal os-animation animated fadeIn" data-os-animation="fadeIn" data-os-animation-delay="0s" style="-webkit-animation: 0s;"> Give feedback on vocabularies </h2>
           </header>
         </div>
       </div>
       <div class="row element element-short-top element-short-bottom">
         <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-md-offset-2 col-lg-offset-2  os-animation animated fadeInUp">
-          <h3 class="text-center hairline bordered animated fadeIn"> A service built on collaboration</h3>
+          <h4 class="text-center bordered animated fadeIn"> A service built on collaboration</h4>
           <p>Through engagement with the research community, Research
             Vocabularies Australia will grow to cover a broad spectrum
             of research fields, across sciences, social sciences,
@@ -24,7 +24,7 @@
       </div>
       <div class="row element element-short-top element-short-bottom">
         <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2  col-md-offset-2 col-lg-offset-2  os-animation animated fadeInUp">
-          <h3 class="text-center hairline bordered animated fadeIn">Request the addition of a vocabulary</h3>
+          <h4 class="text-center bordered animated fadeIn">Request the addition of a vocabulary</h4>
           <p>The inclusion of vocabularies which may be of use to the
             Australian research community is within the scope of
             Research Vocabularies Australia. If you know of a
@@ -37,7 +37,7 @@
       </div>
       <div class="row element element-short-top element-short-bottom">
         <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2  col-md-offset-2 col-lg-offset-2  os-animation animated fadeInUp">
-          <h3 class="text-center hairline bordered animated fadeIn">Suggest changes to a vocabulary</h3>
+          <h4 class="text-center bordered animated fadeIn">Suggest changes to a vocabulary</h4>
           <p>Suggestions for improving the vocabularies within
             Research Vocabularies Australia are welcome.  Such
             suggestions can include:

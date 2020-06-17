@@ -78,10 +78,7 @@ class Auth extends CI_Controller {
      * @throws Exception
      */
 	public function authenticate($method = 'built_in') {
-		header('Cache-Control: no-cache, must-revalidate');
-		header('Content-type: application/json');
-		set_exception_handler('json_exception_handler');
-
+		/* For social logins, redirect to the appropriate provider. */
 		if ($method === "twitter") {
 			$url = \ANDS\Authenticator\TwitterAuthenticator::getOauthLink();
 			redirect($url);
@@ -96,6 +93,11 @@ class Auth extends CI_Controller {
 			$url = \ANDS\Authenticator\GoogleAuthenticator::getOauthLink();
 			redirect($url);
 		}
+
+		/* Other authentication methods may return JSON. */
+		header('Cache-Control: no-cache, must-revalidate');
+		header('Content-type: application/json');
+		set_exception_handler('json_exception_handler');
 
 		// built_in, aaf-rapid, linkedin, shibboleth_sp
 

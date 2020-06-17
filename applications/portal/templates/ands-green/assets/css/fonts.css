@@ -1,34 +1,103 @@
 body {
-  font-family: 'Source Sans Pro', sans-serif;
-  font-weight: 400;
-}
-body input, body textarea, body .btn, body button {
-  font-family: 'Source Sans Pro', sans-serif;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    line-height: 24px;
 }
 
-blockquote p {
-  font-weight: 300;
+body input, body textarea, body .btn, body button {
+    font-family: 'Roboto', sans-serif;
 }
+
+blockquote {
+    font-weight: 300;
+}
+
+/* Since introduction of ARDC style guide, these are no longer used:
 
 .light {
-  font-weight: 300 !important;
+    font-weight: 300 !important;
 }
 
 .hairline {
-  font-weight: 200 !important;
+    font-weight: 200 !important;
 }
+
 .hairline strong {
-  font-weight: 400;
+    font-weight: 400;
+}
+*/
+
+h1, h2 {
+    //  font-family: 'Source Sans Pro', sans-serif;
+    font-family: 'Spectral', serif;
+    font-weight: bold;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Source Sans Pro', sans-serif;
-  font-weight: 600;
+h3, h4, h5, h6 {
+    //  font-family: 'Source Sans Pro', sans-serif;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
 }
 
+h3.non-bold {
+    font-weight: normal;
+}
+
+h1 {
+    font-size: 80px;
+}
+
+h2 {
+    color: #7E408A !important;
+    font-size: 40px;
+    line-height: 44px;
+}
+
+h3 {
+    font-size: 32px;
+    line-height: 36px;
+}
+
+h4 {
+    font-size: 24px;
+    //    line-height: 36px;
+}
+
+h5 {
+    font-size: 16px;
+    //    line-height: 36px;
+}
+
+/*
+p {
+    font-size: 14px;
+    line-height: 24px;
+}
+*/
+
+small {
+    font-size: 12px;
+}
+
+.image-caption-credit {
+    font-size: 10px;
+    line-height: 15px;
+}
+
+
+/* Not used.
 .lead {
-  font-weight: 300;
+    font-weight: 300;
 }
 .lead strong {
-  font-weight: 600;
+    font-weight: 600;
+}
+*/
+
+/* To get an em-space, instead of &emsp;
+   use <span class="emsp"></span>.
+*/
+.emsp {
+    display: inline-block;
+    width: 0.7em;
 }

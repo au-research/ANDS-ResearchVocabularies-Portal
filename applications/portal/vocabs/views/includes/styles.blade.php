@@ -1,4 +1,6 @@
-<link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900,300italic,400italic,600italic' rel='stylesheet' type='text/css' />
+<link href='//fonts.googleapis.com/css?family=Spectral:700' rel='stylesheet' type='text/css' />
+<!-- Roboto weights used: 300 (light, used for blockquote para in user HTML), 400, 700. -->
+<link href='//fonts.googleapis.com/css?family=Roboto:300,400,700,300italic,400italic,700italic' rel='stylesheet' type='text/css' />
 <link rel="stylesheet" type="text/css" href="{{ base_url() }}apps/assets/vocab_widget/css/vocab_widget.css?{{ getReleaseVersion() }}" media="screen" />
 @if(is_dev())
 <link rel="stylesheet" href="{{asset_url('ands-green/css/bootstrap.min.css','templates')}}" />
@@ -19,3 +21,4 @@
 
 @endif
 <link rel="stylesheet" type="text/css" href="{{ asset_url('css/fancytree.compiled.css') }}" media="screen" />
+@yield('styles')
