@@ -35,6 +35,7 @@ class Authenticator extends CI_Model {
     {
         $serviceID = $profile['authentication_service_id'];
         $user = $this->cosi_db->get_where('roles',[
+            'enabled' => DB_TRUE,
             'role_id' => $profile['identifier'],
             'authentication_service_id' => $serviceID
         ]);
@@ -49,7 +50,7 @@ class Authenticator extends CI_Model {
                 'name' => $profile['displayName'],
                 'oauth_access_token' => $profile['accessToken'],
                 'oauth_data' => json_encode($profile),
-                'email' => ''
+                'email' => $profile['email']
             ];
             $this->cosi_db->insert('roles',$data);
             $user = $this->cosi_db->get_where('roles', [
@@ -57,7 +58,7 @@ class Authenticator extends CI_Model {
                 'authentication_service_id' => $serviceID
             ]);
         }
-        $user = $user->row(1);
+        $user = $user->first_row();
         $this->return_roles($user);
     }
 
