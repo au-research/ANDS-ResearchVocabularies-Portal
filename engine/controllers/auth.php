@@ -163,9 +163,7 @@ class Auth extends CI_Controller {
 		$profile = \ANDS\Authenticator\AAFRapidConnectAuthenticator::getProfile($jwt);
 		// We use some fuzzy matching to find an existing user.
 		// See the legacy aaf_rapid_authenticator.php for the ideas.
-		// NB: for now, add matching by email.
-		// NB: legacy also has matching by display name; we're not
-		// doing that at this stage, but could do so later.
+		// NB: for now, add matching by email and display name.
 		$found_user = FALSE;
 
 		// We need the database.
@@ -201,6 +199,21 @@ class Auth extends CI_Controller {
 					// Rewrite our $profile.
 					$profile['identifier'] = $matchedProfile->role_id;
 					// error_log('rapidconnect: found user in the db by email');
+				}
+			}
+			if (!$found_user) {
+				// Try to match by displayName.
+				$result = $this->cosi_db->get_where('roles',
+					array('enabled' => DB_TRUE,
+						  'authentication_service_id'=>
+						  gCOSI_AUTH_METHOD_SHIBBOLETH,
+						  'name' => $profile['displayName']));
+				if ($result->num_rows() > 0) {
+					$found_user = TRUE;
+					$matchedProfile = $result->first_row();
+					// Rewrite our $profile.
+					$profile['identifier'] = $matchedProfile->role_id;
+					// error_log('rapidconnect: found user in the db by display_name');
 				}
 			}
 		} catch (Exception $e) {
