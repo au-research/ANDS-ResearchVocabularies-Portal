@@ -161,6 +161,59 @@ class Auth extends CI_Controller {
 	{
 		$jwt = $_POST['assertion'];
 		$profile = \ANDS\Authenticator\AAFRapidConnectAuthenticator::getProfile($jwt);
+		// We use some fuzzy matching to find an existing user.
+		// See the legacy aaf_rapid_authenticator.php for the ideas.
+		// NB: for now, add matching by email.
+		// NB: legacy also has matching by display name; we're not
+		// doing that at this stage, but could do so later.
+		$found_user = FALSE;
+
+		// We need the database.
+		$this->cosi_db = $this->load->database('roles', TRUE);
+
+		$serviceID = $profile['authentication_service_id'];
+		/* In fact, we know $serviceID == gCOSI_AUTH_METHOD_SHIBBOLETH. */
+
+		try {
+			// Do a straight match against role_id.
+			// (Tip: For Rapid Connect users, this is the SHA1 of
+			// the edupersontargetedid.)
+			$user = $this->cosi_db->get_where('roles',[
+				'enabled' => DB_TRUE,
+				'role_id' => $profile['identifier'],
+				'authentication_service_id' => $serviceID
+			]);
+			if ($user->num_rows() > 0) {
+				$found_user = TRUE;
+				// The $profile is OK as it is.
+				// error_log('rapidconnect: found user in the db as is');
+			}
+			if (!$found_user) {
+				// Try to match by email.
+				$result = $this->cosi_db->get_where('roles',
+					array('enabled' => DB_TRUE,
+						  'authentication_service_id'=>
+						  gCOSI_AUTH_METHOD_SHIBBOLETH,
+						  'email' => $profile['email']));
+				if ($result->num_rows() > 0) {
+					$found_user = TRUE;
+					$matchedProfile = $result->first_row();
+					// Rewrite our $profile.
+					$profile['identifier'] = $matchedProfile->role_id;
+					// error_log('rapidconnect: found user in the db by email');
+				}
+			}
+		} catch (Exception $e) {
+			error_log('auth.php/rapidconnect exception: ' .
+					  var_export($e, TRUE));
+		}
+
+		/* At this point, either $found_user == TRUE, and
+		   $profile['identifier'] is an existing role_id,
+		   or $found_user == FALSE, and the following call
+		   to $this->auth->getUserByProfile($profile)
+		   will create a new user.
+		*/
 
 		$this->load->model('authenticator', 'auth');
 		$this->auth->getUserByProfile($profile);

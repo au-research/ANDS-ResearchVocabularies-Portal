@@ -1,5 +1,14 @@
 <?php
 
+/*
+          THIS IS DEAD CODE.
+
+(The same goes for the other files in this directory.)
+
+See AAFRapidConnectAuthenticator.php and auth.php
+for the code that is in play.
+*/
+
 /**
  * Authenticator for AAF Rapid Connect
  * @author  Minh Duc Nguyen <minh.nguyen@ands.org.au>
@@ -11,6 +20,9 @@ class Aaf_rapid_authenticator extends Authenticator {
 
 	// TODO use AAFRapidAuthenticator class instead
 	public function authenticate() {
+
+		exit('You will never see this, because this code is dead.');
+
 		try{
 			$this->auth_domain = 'aaf.edu.au';
 
