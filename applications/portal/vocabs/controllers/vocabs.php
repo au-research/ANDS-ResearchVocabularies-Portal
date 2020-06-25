@@ -704,6 +704,14 @@ class Vocabs extends MX_Controller
             }
         }
 
+        // SD-467670 CC-2729 RVA-90
+        // Sort $others alphabetically by title, case-insensitively.
+        usort($others,
+              function ($a, $b) {
+                  return strcasecmp($a->getTitle(), $b->getTitle());
+              }
+        );
+
         $related['other_vocabs'] = $others;
         $this->blade
         ->set('related', $related)
