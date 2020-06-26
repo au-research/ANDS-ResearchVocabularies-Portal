@@ -129,6 +129,10 @@ foreach ($vocab->getVersion() as $version) {
                             <!-- Use element-bottom-same-as-p to cancel Bootstrap's gobbling
                                  of the space after a last p of the description. -->
                             <div class="element-bottom-same-as-p">{{ $vocab->getDescription() }}</div>
+                            @if(!empty($vocab->getRevisionCycle()))
+                                <h5>Revision Cycle</h5>
+                                <p>{{ $vocab->getRevisionCycle() }}</p>
+                            @endif
                             <h5>Languages</h5>
                             <p>
                                 <?php
