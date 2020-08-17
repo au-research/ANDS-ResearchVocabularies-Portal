@@ -24,7 +24,19 @@
     };
 
     function addVocabsCtrl($log, $scope, $sce, $timeout,
-                           $location, $uibModal, vocabs_factory) {
+                           $location, $uibModal,
+                           $templateCache, vocabs_factory) {
+
+        /* Define our template for the PoolParty project typeahead.
+           The difference from the default template is our use of
+           [[ ... ]] instead of {{ ... }} for embedded AngularJS.
+        */
+        $templateCache.put("uib/template/typeahead/typeahead-match.html",
+           "<a href\n" +
+           "   tabindex=\"-1\"\n" +
+           "   ng-bind-html=\"match.label | uibTypeaheadHighlight:query\"\n" +
+           "   ng-attr-title=\"[[match.label]]\"></a>\n" +
+           "");
 
         // Initialise Registry API access.
         var VocabularyRegistryApi = require('vocabulary_registry_api');
