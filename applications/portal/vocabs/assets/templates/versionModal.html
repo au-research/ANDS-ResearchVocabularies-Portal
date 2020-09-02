@@ -231,6 +231,33 @@
           <!-- Browse flags. -->
           <tr ng-if="canImportPublish">
             <td>
+              <label>Display SKOS Concept Schemes
+                <span ng-bind-html="confluenceTip('BrowseFlagConceptSchemes')"></span>
+              </label>
+            </td>
+            <td class="pull-right"><ands-switch model="browseFlags.includeConceptSchemes" name="includeConceptSchemesChkbx"></ands-switch></td>
+          </tr>
+
+          <tr ng-if="canImportPublish">
+            <td>
+              <label>Display SKOS Collections
+                <span ng-bind-html="confluenceTip('BrowseFlagCollections')"></span>
+              </label>
+            </td>
+            <td class="pull-right"><ands-switch model="browseFlags.includeCollections" name="includeCollectionsChkbx"></ands-switch></td>
+          </tr>
+
+          <tr ng-if="canImportPublish">
+            <td>
+              <label>Display hyperlinked resource URLs
+                <span ng-bind-html="confluenceTip('BrowseFlagHyperlinkURLs')"></span>
+              </label>
+            </td>
+            <td class="pull-right"><ands-switch model="browseFlags.mayResolveResources" name="mayResolveResourcesChkbx"></ands-switch></td>
+          </tr>
+
+          <tr ng-if="canImportPublish">
+            <td>
               <label>Notation format
                 <span ng-bind-html="confluenceTip('NotationFormat')"></span>
               </label>

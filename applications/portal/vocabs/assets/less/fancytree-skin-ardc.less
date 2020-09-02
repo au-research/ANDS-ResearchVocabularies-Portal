@@ -47,6 +47,7 @@
 @fancy-icon-ofs-top: 2px;      // extra vertical offset for expander, checkbox and icon
 @fancy-title-ofs-top: 0px;     // extra vertical offset for title
 @fancy-node-border-width: 1px;
+@fancy-node-border-width-selected: 2px;
 @fancy-node-border-radius: 5px;
 @fancy-node-outline-width: 0px;
 
@@ -74,6 +75,20 @@
 @fancy-font-color: #17649a;
 @bordercolor: #ccc;
 @fancy-font-color-dimm: #202020;
+
+// concepts have background-color aliceblue = #F0F8FF
+@node-concept-background-color: aliceblue;
+@node-concept-scheme-background-color: #AFDBEF;
+@node-concept-scheme-background-color-active: #79A0EA;
+@node-unordered-collection-background-color: #FFDAA1;
+@node-unordered-collection-background-color-active: #FFB0A1;
+@node-ordered-collection-background-color: #C0DCC0;
+@node-ordered-collection-background-color-active: #C0B000;
+
+// NB: wherever we say:
+//  border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
+// we say "!important" to override the border-color used for :hover.
+
 
 /* Remove border */
 ul.fancytree-container {
@@ -206,33 +221,121 @@ ul.fancytree-container ul > li.fancytree-last-visible::before {
 	&.fancytree-container.fancytree-treefocus span.fancytree-focused span.fancytree-title {
 		border-color: #3399ff;
 	}
+
 	span.fancytree-active span.fancytree-title,
-	span.fancytree-selected span.fancytree-title { // active/selcted nodes inside inactive tree
-		background-color: #f7f7f7;
-		border-color: #dedede;
+	span.fancytree-selected span.fancytree-title { // active/selected nodes inside inactive tree
+	    border-color: #dedede;
+            border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
+            font-weight: bold;
 	}
+        // same again, for concept schemes and collections
+	span.fancytree-active.node-concept-scheme span.fancytree-title,
+	span.fancytree-selected.node-concept-scheme span.fancytree-title { // active/selected nodes inside inactive tree
+            background-color: @node-concept-scheme-background-color;
+            border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
+            font-weight: bold;
+        }
+	span.fancytree-active.node-unordered-collection span.fancytree-title,
+	span.fancytree-selected.node-unordered-collection span.fancytree-title { // active/selected nodes inside inactive tree
+            background-color: @node-unordered-collection-background-color;
+            border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
+            font-weight: bold;
+        }
+	span.fancytree-active.node-ordered-collection span.fancytree-title,
+	span.fancytree-selected.node-ordered-collection span.fancytree-title { // active/selected nodes inside inactive tree
+            background-color: @node-ordered-collection-background-color;
+            border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
+            font-weight: bold;
+        }
+
 	span.fancytree-node span.fancytree-selected span.fancytree-title {
 		font-style: italic;
 	}
+
+        // hover
 	span.fancytree-node:hover span.fancytree-title {
 		background-color: #eff9fe; // hover is always colored, even if tree is unfocused
 		border-color: #70c0e7;
 	}
+        // same again, for concept schemes and collections
+	span.fancytree-node.node-concept-scheme:hover span.fancytree-title {
+            background-color: @node-concept-scheme-background-color;
+		border-color: #70c0e7;
+	}
+	span.fancytree-node.node-unordered-collection:hover span.fancytree-title {
+            background-color: @node-unordered-collection-background-color;
+		border-color: #70c0e7;
+	}
+	span.fancytree-node.node-ordered-collection:hover span.fancytree-title {
+            background-color: @node-ordered-collection-background-color;
+		border-color: #70c0e7;
+	}
 
+
+        // treefocus
 	&.fancytree-container.fancytree-treefocus {
-		span.fancytree-active span.fancytree-title,
-		span.fancytree-selected span.fancytree-title {
-			background-color: #cbe8f6;
-			border-color: #26a0da;
-		}
+	    span.fancytree-active span.fancytree-title,
+	    span.fancytree-selected span.fancytree-title {
+		border-color: #26a0da;
+                border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
+                font-weight: bold;
+	    }
+	}
+        // same again, for concept schemes and collections
+	&.fancytree-container.fancytree-treefocus {
+	    span.fancytree-active.node-concept-scheme span.fancytree-title,
+	    span.fancytree-selected.node-concept-scheme span.fancytree-title {
+		border-color: #26a0da;
+                border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
+                font-weight: bold;
+	    }
+	}
+	&.fancytree-container.fancytree-treefocus {
+	    span.fancytree-active.node-unordered-collection span.fancytree-title,
+	    span.fancytree-selected.node-unordered-collection span.fancytree-title {
+		border-color: #26a0da;
+                border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
+                font-weight: bold;
+	    }
+	}
+	&.fancytree-container.fancytree-treefocus {
+	    span.fancytree-active.node-ordered-collection span.fancytree-title,
+	    span.fancytree-selected.node-ordered-collection span.fancytree-title {
+		border-color: #26a0da;
+                border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
+                font-weight: bold;
+	    }
 	}
 
         // When a node is selected, also add selection styling on descendants
 	&.fancytree-container.fancytree-treefocus {
-		span.fancytree-active + ul li span.fancytree-title {
-			background-color: #cbe8f6;
-			border-color: #26a0da;
-		}
+	    span.fancytree-active + ul li span.fancytree-title {
+		border-color: #26a0da;
+                border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
+                font-weight: bold;
+	    }
+	}
+        // same again, for concept schemes and collections
+	&.fancytree-container.fancytree-treefocus {
+	    span.fancytree-active + ul li span.node-concept-scheme span.fancytree-title {
+		border-color: #26a0da;
+                border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
+                font-weight: bold;
+	    }
+	}
+	&.fancytree-container.fancytree-treefocus {
+	    span.fancytree-active + ul li span.node-unordered-collection span.fancytree-title {
+		border-color: #26a0da;
+                border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
+                font-weight: bold;
+	    }
+	}
+	&.fancytree-container.fancytree-treefocus {
+	    span.fancytree-active + ul li span.node-ordered-collection span.fancytree-title {
+		border-color: #26a0da;
+                border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
+                font-weight: bold;
+	    }
 	}
 
 }
@@ -297,4 +400,73 @@ table.fancytree-ext-table.fancytree-treefocus tbody {
 	tr.fancytree-selected {
 		background-color: #CBE8F6;
 	}
+}
+
+
+// Concept schemes and collections
+
+.node-concept-scheme span.fancytree-title {
+    background-color: @node-concept-scheme-background-color;
+}
+.node-unordered-collection span.fancytree-title {
+    background-color: @node-unordered-collection-background-color;
+}
+.node-ordered-collection span.fancytree-title {
+    background-color: @node-ordered-collection-background-color;
+}
+
+.node-concept-scheme span.fancytree-title {
+    background-color: @node-concept-scheme-background-color;
+}
+.node-unordered-collection span.fancytree-title {
+    background-color: @node-unordered-collection-background-color;
+}
+.node-ordered-collection span.fancytree-title {
+    background-color: @node-ordered-collection-background-color;
+}
+
+#node_colour_legend .node-concept {
+    // Give this legend node the same width as its height
+    width: @fancy-line-height;
+    background-color: @node-concept-background-color;
+    border: 1px solid #ccc;
+    border-color: @bordercolor;
+}
+#node_colour_legend .node-concept-scheme {
+    // Give this legend node the same width as its height
+    width: @fancy-line-height;
+    background-color: @node-concept-scheme-background-color;
+    border: 1px solid #ccc;
+    border-color: @bordercolor;
+}
+#node_colour_legend .node-unordered-collection {
+    // Give this legend node the same width as its height
+    width: @fancy-line-height;
+    background-color: @node-unordered-collection-background-color;
+    border: 1px solid #ccc;
+    border-color: @bordercolor;
+}
+#node_colour_legend .node-ordered-collection {
+    // Give this legend node the same width as its height
+    width: @fancy-line-height;
+    background-color: @node-ordered-collection-background-color;
+    border: 1px solid #ccc;
+    border-color: @bordercolor;
+}
+
+@fancy-font-size-t: @fancy-font-size - 2px;
+
+span.t-for-top-concept {
+    font-size: @fancy-font-size-t;
+    padding-left: 2px;
+    padding-right: 2px;
+    border: 1px solid ;
+    border-radius: 2px ;
+}
+
+// In node titles, match colour that gets used for icons, e.g., fa-clone,
+// which is (sigh) ".swatch-white i".
+.fancytree-title span.t-for-top-concept {
+    color: #4C4C4C;
+    border-color: #4C4C4C;
 }

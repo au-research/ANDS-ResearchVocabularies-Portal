@@ -67,6 +67,9 @@
         // The container contains:
         //   $scope.browseFlags.notationFormatSelection
         //   $scope.browseFlags.defaultSortOrderSelection
+        //   $scope.browseFlags.includeConceptSchemes
+        //   $scope.browseFlags.includeCollections
+        //   $scope.browseFlags.mayResolveResources
         $scope.browseFlags = {};
 
         // Possible notation formats, including a special
@@ -83,8 +86,8 @@
 
         // Possible default sort orders.
         $scope.defaultSortOrderOptions = [
-            { name: 'Concept preferred label', value: 'prefLabel'},
-            { name: 'Concept notation', value: 'notation'}
+            { name: 'Label', value: 'prefLabel'},
+            { name: 'Notation', value: 'notation'}
         ];
 
         // Reset all browse flags. Used for initialization, and
@@ -93,6 +96,9 @@
         $scope.clearBrowseFlags = function() {
             $scope.browseFlags.notationFormatSelection = 'none';
             $scope.browseFlags.defaultSortOrderSelection = 'prefLabel';
+            delete $scope.browseFlags.includeConceptSchemes;
+            delete $scope.browseFlags.includeCollections;
+            delete $scope.browseFlags.mayResolveResources;
         }
 
         // Parse an existing version's browse flags into our
@@ -118,6 +124,15 @@
                 case 'defaultSortByNotation':
                     $scope.browseFlags.defaultSortOrderSelection = 'notation';
                     break;
+                case 'includeConceptSchemes':
+                    $scope.browseFlags.includeConceptSchemes = true;
+                    break;
+                case 'includeCollections':
+                    $scope.browseFlags.includeCollections = true;
+                    break;
+                case 'mayResolveResources':
+                    $scope.browseFlags.mayResolveResources = true;
+                    break;
                 default:
                     // Unknown flag.
                     break;
@@ -130,9 +145,20 @@
         $scope.unparseBrowseFlags = function() {
             // Start by resetting.
             $scope.version.browseFlags = [];
+
+            if ($scope.browseFlags.includeConceptSchemes == true) {
+                $scope.version.browseFlags.push('includeConceptSchemes');
+            }
+            if ($scope.browseFlags.includeCollections == true) {
+                $scope.version.browseFlags.push('includeCollections');
+            }
+            if ($scope.browseFlags.mayResolveResources == true) {
+                $scope.version.browseFlags.push('mayResolveResources');
+            }
+
             // Now use the form elements to populate the flags.
             if ($scope.browseFlags.notationFormatSelection == 'none') {
-                // There will be no flags.
+                // There will be no more flags.
                 return;
             }
             // There's notation format.
