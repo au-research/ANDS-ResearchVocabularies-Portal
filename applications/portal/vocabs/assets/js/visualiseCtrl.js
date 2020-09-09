@@ -1413,15 +1413,19 @@
            based on the vocabulary content. */
         if (showConceptSchemeLegend) {
             $("#concept_scheme_colour_legend").show();
-            $("#node_colour_legend").show();
+            // In the first draft of the implementation, we only
+            // showed the legend if there were any resources other
+            // than concepts. We later decided always to show the
+            // legend.
+            // $("#node_colour_legend").show();
         }
         if (showUnorderedCollectionLegend) {
             $("#unordered_collection_colour_legend").show();
-            $("#node_colour_legend").show();
+            // $("#node_colour_legend").show();
         }
         if (showOrderedCollectionLegend) {
             $("#ordered_collection_colour_legend").show();
-            $("#node_colour_legend").show();
+            // $("#node_colour_legend").show();
         }
 
         // CC-2599 We prevent the browser jumping to the "Filter..."

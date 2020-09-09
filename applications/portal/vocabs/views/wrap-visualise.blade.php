@@ -74,7 +74,7 @@
         </td>
 
       </tr>
-      <tr id="node_colour_legend" style="width:100%; display:none">
+      <tr id="node_colour_legend" style="width:100%">
         <td colspan="6" style="padding-top: 10px; padding-bottom: 6px">
           <span id="concept_colour_legend" style="padding-right: 10px">
             <span class="fancytree-title node-concept"></span> Concept
