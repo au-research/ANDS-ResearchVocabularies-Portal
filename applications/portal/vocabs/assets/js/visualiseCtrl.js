@@ -180,6 +180,32 @@
         }
     }
 
+    /** Given a resource type, return a human-readable description of
+     * the type. This is used in tooltips when the node is a clone.
+     * @param {string} resourceType The resource type to consider.
+     * @returns {string} A human-readable representation of the node
+     *     type.  If the node type is not recognized, an empty string
+     *     is returned.
+     * @memberof visualiseCtrl
+     */
+    function typeAsText(resourceType) {
+        switch (resourceType) {
+        case 'concept':
+        case 'concept_ref':
+            return 'concept';
+        case 'concept_scheme':
+            return 'concept scheme';
+        case 'unordered_collection':
+        case 'unordered_collection_ref':
+        case 'ordered_collection':
+        case 'ordered_collection_ref':
+            return 'collection';
+        default:
+            // Unknown!
+            return 'resource';
+        }
+    }
+
     /** Given a resource type, return the CSS class to be added to the
      * HTML element for the title.
      * @param {string} resourceType The resource type to consider.
@@ -1171,7 +1197,9 @@
                                     tip = tip +
                                         '<p style="clear: both">' +
                                         '<i class="fa fa-clone"></i> ' +
-                                        'This concept is present in multiple locations ' +
+                                        'This ' +
+                                        typeAsText(node.type) +
+                                        ' is present in multiple locations ' +
                                         'within this vocabulary. <br />' +
                                         '<a href="#" role="button" ' +
                                         'style="padding: 0px" ' +
