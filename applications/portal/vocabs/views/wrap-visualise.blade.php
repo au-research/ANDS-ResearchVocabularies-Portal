@@ -87,6 +87,10 @@
           </span>
           <span id="ordered_collection_colour_legend" style="display:none">
             <span class="fancytree-title node-ordered-collection"></span> Ordered collection
+            <a tip="To preserve the semantics of ordered collections, their members are always
+                    displayed in the sequence specified by their member lists.">
+              <i class="fa fa-warning" style="color: #7e408a"></i>
+            </a>
           </span>
         </td>
       </tr>
