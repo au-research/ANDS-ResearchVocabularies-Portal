@@ -268,6 +268,16 @@
                     ng-model="browseFlags.defaultSortOrderSelection"></select>
           </td>
         </tr>
+
+        <tr ng-if="browseFlags.notationFormatSelection != 'none'">
+          <td>
+            <label>Display notations on page load
+              <span ng-bind-html="confluenceTip('DefaultDisplayNotation')"></span>
+            </label>
+          </td>
+          <td class="pull-right"><ands-switch model="browseFlags.defaultDisplayNotation" name="defaultDisplayNotationChkbx"></ands-switch></td>
+        </tr>
+
       </table>
 
       <hr ng-if="canImportPublish" style="margin: 12px 0px" />

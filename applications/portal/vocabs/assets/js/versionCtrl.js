@@ -67,6 +67,7 @@
         // The container contains:
         //   $scope.browseFlags.notationFormatSelection
         //   $scope.browseFlags.defaultSortOrderSelection
+        //   $scope.browseFlags.defaultDisplayNotation
         //   $scope.browseFlags.includeConceptSchemes
         //   $scope.browseFlags.includeCollections
         //   $scope.browseFlags.mayResolveResources
@@ -96,6 +97,7 @@
         $scope.clearBrowseFlags = function() {
             $scope.browseFlags.notationFormatSelection = 'none';
             $scope.browseFlags.defaultSortOrderSelection = 'prefLabel';
+            delete $scope.browseFlags.defaultDisplayNotation;
             delete $scope.browseFlags.includeConceptSchemes;
             delete $scope.browseFlags.includeCollections;
             delete $scope.browseFlags.mayResolveResources;
@@ -123,6 +125,9 @@
                     break;
                 case 'defaultSortByNotation':
                     $scope.browseFlags.defaultSortOrderSelection = 'notation';
+                    break;
+                case 'defaultDisplayNotation':
+                    $scope.browseFlags.defaultDisplayNotation = true;
                     break;
                 case 'includeConceptSchemes':
                     $scope.browseFlags.includeConceptSchemes = true;
@@ -167,6 +172,9 @@
                 $scope.browseFlags.notationFormatSelection);
             if ($scope.browseFlags.defaultSortOrderSelection == 'notation') {
                 $scope.version.browseFlags.push('defaultSortByNotation');
+            }
+            if ($scope.browseFlags.defaultDisplayNotation == true) {
+                $scope.version.browseFlags.push('defaultDisplayNotation');
             }
         }
 

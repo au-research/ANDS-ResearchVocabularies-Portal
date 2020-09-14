@@ -490,6 +490,10 @@
             var label_show_notation = $('#label_show_notation');
             label_show_notation.show();
             var p_show_notation = $('#p_show_notation');
+            if (data.defaultDisplayNotation) {
+                // Browse flag says show notations on page load.
+                $('#show_notation').click();
+            }
             p_show_notation.show();
             // Pay attention to sort orders here, so that loadChildrenHandler_v3
             // will include them when it makes copies.
