@@ -89,7 +89,13 @@ class Authenticator extends CI_Model {
 			'last_login' => $role->last_login,
 			'organisational_roles' => $ret['organisational_roles'],
 			'functional_roles' => $ret['functional_roles'],
-			'redirect_to'=>base_url()
+			// CC-2733 RVA-103
+			// Set 'redirect_to' to be the user's "home page".
+			// This value comes into play when, for example, the
+			// user has a browser tab on their "home page",
+			// but leaves it long enough for their authentication
+			// cookie to expire, and they then reload that page.
+			'redirect_to'=>portal_url('vocabs/myvocabs')
 		);
 
 		$this->user->authComplete($result);
