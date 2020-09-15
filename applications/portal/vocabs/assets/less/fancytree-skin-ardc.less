@@ -271,44 +271,10 @@ ul.fancytree-container ul > li.fancytree-last-visible::before {
 		border-color: #70c0e7;
 	}
 
-
-        // treefocus
-	&.fancytree-container.fancytree-treefocus {
-	    span.fancytree-active span.fancytree-title,
-	    span.fancytree-selected span.fancytree-title {
-		border-color: #26a0da;
-                border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
-                font-weight: bold;
-	    }
-	}
-        // same again, for concept schemes and collections
-	&.fancytree-container.fancytree-treefocus {
-	    span.fancytree-active.node-concept-scheme span.fancytree-title,
-	    span.fancytree-selected.node-concept-scheme span.fancytree-title {
-		border-color: #26a0da;
-                border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
-                font-weight: bold;
-	    }
-	}
-	&.fancytree-container.fancytree-treefocus {
-	    span.fancytree-active.node-unordered-collection span.fancytree-title,
-	    span.fancytree-selected.node-unordered-collection span.fancytree-title {
-		border-color: #26a0da;
-                border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
-                font-weight: bold;
-	    }
-	}
-	&.fancytree-container.fancytree-treefocus {
-	    span.fancytree-active.node-ordered-collection span.fancytree-title,
-	    span.fancytree-selected.node-ordered-collection span.fancytree-title {
-		border-color: #26a0da;
-                border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
-                font-weight: bold;
-	    }
-	}
-
-        // When a node is selected, also add selection styling on descendants
-	&.fancytree-container.fancytree-treefocus {
+        // When a node is active, also add selection styling on descendants.
+        // (Note: we don't also specify .fancytree-treefocus; it seems
+        // we probably don't need to -- or needed to above, either.)
+	&.fancytree-container {
 	    span.fancytree-active + ul li span.fancytree-title {
 		border-color: #26a0da;
                 border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
@@ -316,21 +282,21 @@ ul.fancytree-container ul > li.fancytree-last-visible::before {
 	    }
 	}
         // same again, for concept schemes and collections
-	&.fancytree-container.fancytree-treefocus {
+	&.fancytree-container {
 	    span.fancytree-active + ul li span.node-concept-scheme span.fancytree-title {
 		border-color: #26a0da;
                 border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
                 font-weight: bold;
 	    }
 	}
-	&.fancytree-container.fancytree-treefocus {
+	&.fancytree-container {
 	    span.fancytree-active + ul li span.node-unordered-collection span.fancytree-title {
 		border-color: #26a0da;
                 border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
                 font-weight: bold;
 	    }
 	}
-	&.fancytree-container.fancytree-treefocus {
+	&.fancytree-container {
 	    span.fancytree-active + ul li span.node-ordered-collection span.fancytree-title {
 		border-color: #26a0da;
                 border-bottom: @fancy-node-border-width-selected solid @fancy-font-color !important;
