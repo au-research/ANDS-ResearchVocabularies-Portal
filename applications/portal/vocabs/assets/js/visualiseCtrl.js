@@ -515,6 +515,71 @@
         });
     }
 
+    /** A queue of nodes, used by fixConceptRefs_v2() and
+     * fixConceptRefs_v2_Visitor, and by loadChildren_v3() and
+     * loadChildren_v3_Visitor(). Used to store nodes created during
+     * visiting which themselves need to be visited.
+     * @memberof visualiseCtrl
+     */
+    var loadChildrenRefsQueue;
+
+    /** This is the visitor function invoked by fixConceptRefs_v2().
+     * @param node A node to be visited.
+     * @memberof visualiseCtrl
+     */
+    var fixConceptRefs_v2_Visitor = function(node) {
+        if (node.type === 'concept_ref') {
+            var clones = node.getCloneList();
+            $.each(clones, function(i, c) {
+                // Only consider non-cloned nodes further.
+                if ('isClonedFromRef' in c) {
+                    return;
+                }
+                if (c.type === 'concept') {
+                    var children = c.getChildren();
+                    if (children != null && children.length > 0) {
+                        // We now know that node has children,
+                        // so we set folder to true, so that
+                        // clicking on the label opens to show the children.
+                        // (I.e., the clickFolderMode setting applies to
+                        // node.)
+                        node.folder = true;
+
+                        $.each(children, function(j, child) {
+                            // Can't just feed the value of getChildren()
+                            // into addChildren(), because there are then
+                            // duplicate "key" values.
+                            var newChild = child.toDict(true, function(d) {
+                                delete d.key;
+                                // We assign our own (sequential)
+                                // keys, because the auto-generated
+                                // ones sometimes aren't unique.
+                                d.key = makeUniqueKey();
+                            });
+                            var newNode = node.addChildren(newChild);
+                            // Set a custom property isClonedFromRef to
+                            // prevent multiple additions of the same
+                            // child. We test for it above.
+                            newNode['isClonedFromRef'] = true;
+                            // We must visit this new node.
+                            if (newChild.type === 'concept_ref') {
+                                loadChildrenRefsQueue.push(newNode);
+                            }
+                        });
+
+                        // When the node was originally processed (by
+                        // postProcessOneConcept_v2), there
+                        // were no children, so the titlesuffix (saying
+                        // indicating the number of children) was empty.
+                        // Fix up the titlesuffix now.
+                        node.data.titlesuffix = ' <i>(' +
+                            c.getChildren().length + ')</i>';
+                    }
+                }
+            });
+        }
+    }
+
     /** There may be concepts in the incoming data that are of
      * type "concept_ref". These are concepts that have children,
      * but for which the children aren't included in the data.
@@ -529,46 +594,13 @@
      * @memberof visualiseCtrl
      */
     function fixConceptRefs_v2(event, data) {
-        data.tree.visit(function(node) {
-            if (node.type === 'concept_ref') {
-                var clones = node.getCloneList();
-                $.each(clones, function(i, c) {
-                    if (c.type === 'concept') {
-                        var children = c.getChildren();
-                        if (children != null && children.length > 0) {
-                            // We now know that node has children,
-                            // so we set folder to true, so that
-                            // clicking on the label opens to show the children.
-                            // (I.e., the clickFolderMode setting applies to
-                            // node.)
-                            node.folder = true;
-
-                            $.each(children, function(j, child) {
-                                // Can't just feed the value of getChildren()
-                                // into addChildren(), because there are then
-                                // duplicate "key" values.
-                                var newChild = child.toDict(true, function(d) {
-                                    delete d.key;
-                                    // We assign our own (sequential)
-                                    // keys, because the auto-generated
-                                    // ones sometimes aren't unique.
-                                    d.key = makeUniqueKey();
-                                });
-                                node.addChildren(newChild);
-                            });
-
-                            // When the node was originally processed (by
-                            // postProcessOneConcept_v2), there
-                            // were no children, so the titlesuffix (saying
-                            // indicating the number of children) was empty.
-                            // Fix up the titlesuffix now.
-                            node.data.titlesuffix = ' <i>(' +
-                                c.getChildren().length + ')</i>';
-                        }
-                    }
-                });
-            }
-        });
+        loadChildrenRefsQueue = [];
+        data.tree.visit(fixConceptRefs_v2_Visitor);
+        while (loadChildrenRefsQueue.length > 0) {
+            var resource_ref = loadChildrenRefsQueue.shift();
+            // console.log('Also visiting: ' + concept_ref.getPath());
+            resource_ref.visit(fixConceptRefs_v2_Visitor, true);
+        }
 
         // Delete ourself from the tree options, so that
         // we are no longer invoked.
@@ -605,13 +637,6 @@
         }
         return node;
     }
-
-    /** A queue of nodes, used by fixConceptRefs() and
-     * fixConceptRefsVisitor. Used to store nodes created during
-     * visiting which themselves need to be visited.
-     * @memberof visualiseCtrl
-     */
-    var loadChildrenRefsQueue;
 
     /** This is the visitor function invoked by
      * loadChildrenHandler_v3().
