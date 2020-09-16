@@ -181,6 +181,18 @@
 
         $scope.vocab = vocab;
         $scope.confluenceTip = confluenceTip;
+
+        // CC-2756 Handle the case that the user has already worked
+        // with this version, clicked "Save" on this modal, and has
+        // now reopened it. The release date field needs to be
+        // patched, just as it will be on the main page's save action.
+        if (version) {
+            if ('release_date_val' in version) {
+                version['release_date'] = version['release_date_val'];
+                delete version['release_date_val'];
+            }
+        }
+
         // Preserve the original data for later. We need this
         // specifically for the release_date value.
         $scope.original_version = angular.copy(version);
