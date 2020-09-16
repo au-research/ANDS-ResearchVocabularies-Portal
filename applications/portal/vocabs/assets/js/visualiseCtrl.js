@@ -645,6 +645,9 @@
      */
     var loadChildren_v3_Visitor = function(node) {
         // Add node-type-specific additional CSS classes.
+        // Note that these few lines also occur further down,
+        // when cloning a node, when the new node _won't_
+        // then be visited.
         var extraClass = extraCssClass(node.type);
         if (extraClass != null) {
             node.addClass(extraClass);
@@ -716,6 +719,14 @@
                         // We must visit this new node.
                         if (newChild.type.endsWith('_ref')) {
                             loadChildrenRefsQueue.push(newNode);
+                        } else {
+                            // RVA-147 We won't be visiting this new
+                            // node, so we must add node-type-specific
+                            // additional CSS classes here.
+                            var extraClass = extraCssClass(newNode.type);
+                            if (extraClass != null) {
+                                newNode.addClass(extraClass);
+                            }
                         }
                     });
 
