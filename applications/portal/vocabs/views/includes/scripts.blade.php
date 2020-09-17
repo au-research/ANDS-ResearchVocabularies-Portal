@@ -36,11 +36,18 @@
 <script src='//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.js'></script>
 
 <!-- JQuery UI used for draggable modal dialogs on CMS, and on
-           ARDC-branded login page. Must be included before Bootstrap;
+     ARDC-branded login page. Must be included before Bootstrap;
 see https://stackoverflow.com/questions/30190437/uncaught-error-cannot-call-methods-on-button-prior-to-initialization-attempted
 -->
 <script src='//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
-
+<!-- But including JQuery UI at this point doesn't seem to work;
+     the methods get "lost" (due to overwriting by AngularJS?).
+     Keep a copy of the original $, so we can use it later in
+     the modal dialogs.
+-->
+<script>
+     var jQueryWithUI = $;
+</script>
 
 @if(is_dev())
     <script src="{{ asset_url('js/ie-polyfill.js') }} "></script>

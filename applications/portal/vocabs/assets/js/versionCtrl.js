@@ -35,7 +35,7 @@
         // Make the modal dialog (at least, temporarily) movable,
         // as per request in SD-11572, CC-2050.
         $timeout(function(){
-            $('.modal-content').draggable({ revert: true });
+            jQueryWithUI('.modal-content').draggable({ revert: true });
         });
 
         $scope.tinymceOptions = tinymceOptions;
