@@ -139,7 +139,7 @@ function getIdForSissvocAccessPoint() {
         @foreach($current_version->getAccessPoint() as $ap)
           @if($ap->getDiscriminator() === AP_FILE)
             <a role="button" class="download-link btn btn-lg btn-block btn-primary"
-                    style="white-space: normal;"
+               style="white-space: normal;"
                onclick="$.ajax('{{ onclickURL($vocab, $current_version, $ap) }}'); return true"
                href="{{ $ap->getApFile()->getUrl() }}"><i class="fa fa-download"></i>
                Download ({{ htmlspecialchars($ap->getApFile()->getFormat()) }})</a>
@@ -291,6 +291,7 @@ function getIdForSissvocAccessPoint() {
           @foreach($version->getAccessPoint() as $ap)
             @if($ap->getDiscriminator() === AP_FILE)
               <a role="button" class="download-link btn btn-lg btn-block btn-primary"
+                 style="white-space: normal;"
                 onclick="$.ajax('{{ onclickURL($vocab, $version, $ap) }}'); return true"
                 href="{{ $ap->getApFile()->getUrl() }}"><i class="fa fa-download"></i> Download ({{ htmlspecialchars($ap->getApFile()->getFormat()) }})</a>
             @endif
