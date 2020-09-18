@@ -1458,14 +1458,17 @@
             // than concepts. We later decided always to show the
             // legend.
             // $("#node_colour_legend").show();
+            $("#tip_sort").show();
         }
         if (showUnorderedCollectionLegend) {
             $("#unordered_collection_colour_legend").show();
             // $("#node_colour_legend").show();
+            $("#tip_sort").show();
         }
         if (showOrderedCollectionLegend) {
             $("#ordered_collection_colour_legend").show();
             // $("#node_colour_legend").show();
+            $("#tip_sort").show();
         }
 
         // CC-2599 We prevent the browser jumping to the "Filter..."

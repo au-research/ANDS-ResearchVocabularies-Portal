@@ -47,7 +47,13 @@
 
         <td style="width:25%">
           <span id="sort_dropdown" style="display: none">
-            <label>Sort by</label>
+            <label>Sort by
+              <a id="tip_sort" style="display:none"
+                  tip="Resources of the same type are grouped together
+                      first, then each group is sorted.">
+                <i class="fa fa-info-circle" style="color: #7e408a"></i>
+              </a>
+            </label>
             <select name="tree_sort" id="tree_sort"
                     class="form-control caret-for-select"
                     style="display:inline; width: auto; float: none">
