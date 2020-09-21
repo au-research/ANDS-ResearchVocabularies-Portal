@@ -856,8 +856,18 @@
     function setBasicEnhanceTitle($scope) {
         $scope.enhanceTitle = function(e, data) {
             data.$title.append(data.node.data.titlesuffix);
-            // Add clone icon where needed.
+            // NB: this code also appears in setEnhanceTitle, q.v.
+            // Customize the titles: add notation as prefix,
+            // add icons as appropriate.
             var datanode = data.node;
+            var nodedata = datanode.data;
+            // T for top concept.
+            if (('isTopConceptOfContext' in nodedata) &&
+                (nodedata.isTopConceptOfContext == true)) {
+                data.$title.append(
+                    ' <span class="t-for-top-concept">T</span>');
+            }
+            // Clones.
             if (datanode.isClone()) {
                 data.$title.append(
                     ' <i class="fa fa-clone"></i>');
@@ -910,6 +920,8 @@
                 } else {
                     data.$title.prepend('<span class="enhanced"></span>');
                 }
+                // NB: some of this code also appears in
+                // setBasicEnhanceTitle, q.v.
                 // Customize the titles: add notation as prefix,
                 // add icons as appropriate.
                 var datanode = data.node;
