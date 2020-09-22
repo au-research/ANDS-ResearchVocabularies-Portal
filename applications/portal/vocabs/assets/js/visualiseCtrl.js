@@ -464,7 +464,8 @@
         }
         $scope.tree = data.forest;
         // Process browse flags.
-        if ('mayResolveResources' in data) {
+        if (('mayResolveResources' in data) &&
+            (data.mayResolveResources == true)) {
             makeIRIsActive = true;
         }
         var maySortByNotation = data.maySortByNotation;
