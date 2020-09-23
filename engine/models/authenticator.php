@@ -114,7 +114,11 @@ class Authenticator extends CI_Model {
 	}
 
 	public function post_authentication_hook(){
-		$redirect = $this->input->get('redirect') ? $this->input->get('redirect') : 'auth/dashboard';
+		// For Vocabs, fallback is "My Vocabs".  This comes into play
+		// if you are logged in via Social or AAF, then use browser
+		// back to return to the log in page, then log in again.  You
+		// will have "lost" the auth_redirect cookie in this case.
+		$redirect = $this->input->get('redirect') ? $this->input->get('redirect') : portal_url('vocabs/myvocabs');
 
 		$this->load->helper('cookie');
 		if(get_cookie('auth_redirect')) {
