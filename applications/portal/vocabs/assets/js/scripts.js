@@ -2780,8 +2780,8 @@ $(document).on(
                     text: function (e, api) {
                         var tip     = $(this).attr('confluence_tip');
                         var content = tip;
-                        if ($('h2[id="' + tip.toString() + '"]').length) {
-                            content = ($('h2[id="' + tip.toString()
+                        if ($('h4[id="' + tip.toString() + '"]').length) {
+                            content = ($('h4[id="' + tip.toString()
                                          + '"]').parent().parent().parent()
                                        .next().html());
                         }
