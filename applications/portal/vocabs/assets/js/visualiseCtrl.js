@@ -645,6 +645,7 @@
      * @memberof visualiseCtrl
      */
     var loadChildren_v3_Visitor = function(node) {
+        // console.log('Visiting: ' + node.getPath());
         // Add node-type-specific additional CSS classes.
         // Note that these few lines also occur further down,
         // when cloning a node, when the new node _won't_
@@ -686,9 +687,8 @@
                          cAncestor.type !== 'concept')) {
                         return;
                     }
-                    // console.log('Cloned ' + node.title + ';
-                    // nodeAncestor title:' + nodeAncestor.title + ';
-                    // cAncestor title: ' + cAncestor.title );
+                    // console.log('Cloning: ' + node.getPath() +
+                    //    ' from original: ' + c.getPath());
                 }
                 // If we reached this point, c is the correct node
                 // to copy.
@@ -700,6 +700,7 @@
                     // (I.e., the clickFolderMode setting applies to
                     // node.)
                     node.folder = true;
+                    // console.log('Adding children for node:' + node.getPath());
 
                     $.each(children, function(j, child) {
                         // Can't just feed the value of getChildren()
@@ -713,10 +714,19 @@
                             d.key = makeUniqueKey();
                         });
                         var newNode = node.addChildren(newChild);
+                        // console.log('For clone of: ' + node.getPath() +
+                        //   ', added child newNode: ' + newNode.getPath());
                         // Set a custom property isClonedFromRef to
                         // prevent multiple additions of the same
                         // child. We test for it above.
-                        newNode['isClonedFromRef'] = true;
+                        // Add the property to this node, and to all
+                        // descendants. This makes sure that the newly-generated
+                        // nodes don't get used as sources for cloning,
+                        // even though they may have types _not_ ending
+                        // in "...ref".
+                        newNode.visit(function(newNodeAndDescendants) {
+                            newNodeAndDescendants['isClonedFromRef'] = true;
+                        }, true);
                         // We must visit this new node.
                         if (newChild.type.endsWith('_ref')) {
                             loadChildrenRefsQueue.push(newNode);
@@ -767,7 +777,7 @@
         data.tree.visit(loadChildren_v3_Visitor);
         while (loadChildrenRefsQueue.length > 0) {
             var resource_ref = loadChildrenRefsQueue.shift();
-            // console.log('Also visiting: ' + concept_ref.getPath());
+            // console.log('Also visiting: ' + resource_ref.getPath());
             resource_ref.visit(loadChildren_v3_Visitor, true);
         }
 
