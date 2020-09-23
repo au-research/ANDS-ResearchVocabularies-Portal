@@ -561,7 +561,14 @@
                             // Set a custom property isClonedFromRef to
                             // prevent multiple additions of the same
                             // child. We test for it above.
-                            newNode['isClonedFromRef'] = true;
+                            // Add the property to this node, and to all
+                            // descendants. This makes sure that the newly-generated
+                            // nodes don't get used as sources for cloning,
+                            // even though they may have types _not_ ending
+                            // in "...ref".
+                            newNode.visit(function(newNodeAndDescendants) {
+                                newNodeAndDescendants['isClonedFromRef'] = true;
+                            }, true);
                             // We must visit this new node.
                             if (newChild.type === 'concept_ref') {
                                 loadChildrenRefsQueue.push(newNode);
