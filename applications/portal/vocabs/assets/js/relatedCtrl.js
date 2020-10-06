@@ -13,7 +13,7 @@
         // to be consistent with the version modal (which was
         // as per request in SD-11572, CC-2050).
         $timeout(function() {
-            $('.modal-content').draggable({ revert: true });
+            jQueryWithUI('.modal-content').draggable({ revert: true });
         });
         // Set up access to the Registry API.
         var VocabularyRegistryApi = require('vocabulary_registry_api');

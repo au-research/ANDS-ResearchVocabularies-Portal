@@ -35,7 +35,7 @@
         // Make the modal dialog (at least, temporarily) movable,
         // as per request in SD-11572, CC-2050.
         $timeout(function(){
-            $('.modal-content').draggable({ revert: true });
+            jQueryWithUI('.modal-content').draggable({ revert: true });
         });
 
         $scope.tinymceOptions = tinymceOptions;
@@ -67,6 +67,10 @@
         // The container contains:
         //   $scope.browseFlags.notationFormatSelection
         //   $scope.browseFlags.defaultSortOrderSelection
+        //   $scope.browseFlags.defaultDisplayNotation
+        //   $scope.browseFlags.includeConceptSchemes
+        //   $scope.browseFlags.includeCollections
+        //   $scope.browseFlags.mayResolveResources
         $scope.browseFlags = {};
 
         // Possible notation formats, including a special
@@ -83,8 +87,8 @@
 
         // Possible default sort orders.
         $scope.defaultSortOrderOptions = [
-            { name: 'Concept preferred label', value: 'prefLabel'},
-            { name: 'Concept notation', value: 'notation'}
+            { name: 'Label', value: 'prefLabel'},
+            { name: 'Notation', value: 'notation'}
         ];
 
         // Reset all browse flags. Used for initialization, and
@@ -93,6 +97,10 @@
         $scope.clearBrowseFlags = function() {
             $scope.browseFlags.notationFormatSelection = 'none';
             $scope.browseFlags.defaultSortOrderSelection = 'prefLabel';
+            delete $scope.browseFlags.defaultDisplayNotation;
+            delete $scope.browseFlags.includeConceptSchemes;
+            delete $scope.browseFlags.includeCollections;
+            delete $scope.browseFlags.mayResolveResources;
         }
 
         // Parse an existing version's browse flags into our
@@ -118,6 +126,18 @@
                 case 'defaultSortByNotation':
                     $scope.browseFlags.defaultSortOrderSelection = 'notation';
                     break;
+                case 'defaultDisplayNotation':
+                    $scope.browseFlags.defaultDisplayNotation = true;
+                    break;
+                case 'includeConceptSchemes':
+                    $scope.browseFlags.includeConceptSchemes = true;
+                    break;
+                case 'includeCollections':
+                    $scope.browseFlags.includeCollections = true;
+                    break;
+                case 'mayResolveResources':
+                    $scope.browseFlags.mayResolveResources = true;
+                    break;
                 default:
                     // Unknown flag.
                     break;
@@ -130,9 +150,20 @@
         $scope.unparseBrowseFlags = function() {
             // Start by resetting.
             $scope.version.browseFlags = [];
+
+            if ($scope.browseFlags.includeConceptSchemes == true) {
+                $scope.version.browseFlags.push('includeConceptSchemes');
+            }
+            if ($scope.browseFlags.includeCollections == true) {
+                $scope.version.browseFlags.push('includeCollections');
+            }
+            if ($scope.browseFlags.mayResolveResources == true) {
+                $scope.version.browseFlags.push('mayResolveResources');
+            }
+
             // Now use the form elements to populate the flags.
             if ($scope.browseFlags.notationFormatSelection == 'none') {
-                // There will be no flags.
+                // There will be no more flags.
                 return;
             }
             // There's notation format.
@@ -142,11 +173,26 @@
             if ($scope.browseFlags.defaultSortOrderSelection == 'notation') {
                 $scope.version.browseFlags.push('defaultSortByNotation');
             }
+            if ($scope.browseFlags.defaultDisplayNotation == true) {
+                $scope.version.browseFlags.push('defaultDisplayNotation');
+            }
         }
 
 
         $scope.vocab = vocab;
         $scope.confluenceTip = confluenceTip;
+
+        // CC-2756 Handle the case that the user has already worked
+        // with this version, clicked "Save" on this modal, and has
+        // now reopened it. The release date field needs to be
+        // patched, just as it will be on the main page's save action.
+        if (version) {
+            if ('release_date_val' in version) {
+                version['release_date'] = version['release_date_val'];
+                delete version['release_date_val'];
+            }
+        }
+
         // Preserve the original data for later. We need this
         // specifically for the release_date value.
         $scope.original_version = angular.copy(version);

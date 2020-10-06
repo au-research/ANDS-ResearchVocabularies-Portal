@@ -89,7 +89,13 @@ class Authenticator extends CI_Model {
 			'last_login' => $role->last_login,
 			'organisational_roles' => $ret['organisational_roles'],
 			'functional_roles' => $ret['functional_roles'],
-			'redirect_to'=>base_url()
+			// CC-2733 RVA-103
+			// Set 'redirect_to' to be the user's "home page".
+			// This value comes into play when, for example, the
+			// user has a browser tab on their "home page",
+			// but leaves it long enough for their authentication
+			// cookie to expire, and they then reload that page.
+			'redirect_to'=>portal_url('vocabs/myvocabs')
 		);
 
 		$this->user->authComplete($result);
@@ -108,7 +114,11 @@ class Authenticator extends CI_Model {
 	}
 
 	public function post_authentication_hook(){
-		$redirect = $this->input->get('redirect') ? $this->input->get('redirect') : 'auth/dashboard';
+		// For Vocabs, fallback is "My Vocabs".  This comes into play
+		// if you are logged in via Social or AAF, then use browser
+		// back to return to the log in page, then log in again.  You
+		// will have "lost" the auth_redirect cookie in this case.
+		$redirect = $this->input->get('redirect') ? $this->input->get('redirect') : portal_url('vocabs/myvocabs');
 
 		$this->load->helper('cookie');
 		if(get_cookie('auth_redirect')) {

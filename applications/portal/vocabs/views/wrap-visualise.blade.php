@@ -1,5 +1,10 @@
 <div id="browse-tree" class="panel swatch-white" ng-if="hasTree">
   <div class="panel-body" style="padding-bottom: 0px">
+    <p>
+      <a href="https://documentation.ardc.edu.au/display/DOC/Browsing+vocabulary+concepts" target="_blank">
+        <i class="fa fa-question-circle" style="color: #7e408a"></i> Using browse
+      </a>
+    </p>
     <table style="width:100%">
       <tr id="large_vocabulary_warning" style="width:100%; display:none">
         <td colspan="6" style="padding-bottom: 6px"><i class="fa fa-exclamation-triangle"></i>
@@ -24,7 +29,7 @@
                by visualiseCtrl.js at the end of initialization. -->
           <input id="browse_filter"
                  type="text"
-                 style="display:none;vertical-align:middle;width:40%"
+                 style="display:none;vertical-align:middle;width:45%"
                  name="tree_search"
                  placeholder="Filter..." autocomplete="off"
                  class="form-control"
@@ -42,12 +47,16 @@
 
         <td style="width:25%">
           <span id="sort_dropdown" style="display: none">
-            <label>Sort by</label>
+            <label>Sort by
+              <a id="tip_sort" style="display:none"
+                  tip="Resources of the same type are grouped together
+                      first, then each group is sorted.">
+                <i class="fa fa-info-circle" style="color: #7e408a"></i>
+              </a>
+            </label>
             <select name="tree_sort" id="tree_sort"
                     class="form-control caret-for-select"
                     style="display:inline; width: auto; float: none">
-              <option label="Preferred label"
-                      value="prefLabel">Preferred label</option>
             </select>
           </span>
         </td>
@@ -70,6 +79,26 @@
           </div>
         </td>
 
+      </tr>
+      <tr id="node_colour_legend" style="width:100%">
+        <td colspan="6" style="padding-top: 10px; padding-bottom: 6px">
+          <span id="concept_colour_legend" style="padding-right: 10px">
+            <span class="fancytree-title node-concept"></span> Concept
+          </span>
+          <span id="concept_scheme_colour_legend" style="display:none; padding-right: 10px">
+            <span class="fancytree-title node-concept-scheme"></span> Concept scheme
+          </span>
+          <span id="unordered_collection_colour_legend" style="display:none; padding-right: 10px">
+            <span class="fancytree-title node-unordered-collection"></span> Unordered collection
+          </span>
+          <span id="ordered_collection_colour_legend" style="display:none">
+            <span class="fancytree-title node-ordered-collection"></span> Ordered collection
+            <a tip="To preserve the semantics of ordered collections, their members are always
+                    displayed in the sequence specified by their member lists.">
+              <i class="fa fa-warning" style="color: #7e408a"></i>
+            </a>
+          </span>
+        </td>
       </tr>
     </table>
   </div>
