@@ -81,6 +81,23 @@
     outline: 0;
     background-color: @secondaryColor;
 }
+// Override background colour on hover to make more obvious ...
+// ... but don't override it for an active value.
+.ui-select-bootstrap .ui-select-choices-row:not(.active) > span:hover,
+.ui-select-bootstrap .ui-select-choices-row:not(.active) > span:focus {
+    background-color: @secondaryColorNonCompliantFifteenPercent;
+}
+
+// For language selection, be tall enough to show all of the "Popular" options.
+[theme="bootstrap-languageSelection"].ui-select-bootstrap > .ui-select-choices,
+[theme="bootstrap-languageSelection"].ui-select-bootstrap > .ui-select-no-choice {
+    max-height: 400px;
+}
+// Background color of language selection text input when embedded in
+// CMS page.
+[theme="bootstrap-languageSelection"].ui-select-bootstrap input {
+    background-color: white;
+}
 
 // CMS PoolParty Search
 .swatch-gray ul[id^="typeahead-"].dropdown-menu > li > a,

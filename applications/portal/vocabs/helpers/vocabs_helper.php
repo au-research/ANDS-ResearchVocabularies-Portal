@@ -121,46 +121,20 @@ function vocab_log_terms($terms = array(), $type = 'info')
 }
 
 /**
- * Helper method to format language
- * @author Minh Duc Nguyen <minh.nguyen@ands.org.au>
- * @param $term
+ * Get the language description, given a language tag.
+ * @param $term The langauge tag.
+ * @param $languageDetailsList The list of language details provided
+ *        with the vocabulary.
  * @return string
  */
-function readable_lang($term)
+function readable_lang($term, $languageDetailsList)
 {
-    $match = strtolower($term);
-    switch ($match) {
-        case 'en':
-            return 'English';
-            break;
-        case 'zh':
-            return 'Chinese';
-            break;
-        case 'fr':
-            return 'French';
-            break;
-        case 'de':
-            return 'German';
-            break;
-        case 'it':
-            return 'Italian';
-            break;
-        case 'ja':
-            return 'Japanese';
-            break;
-        case 'mi':
-            return 'Māori';
-            break;
-        case 'ru':
-            return 'Russian';
-            break;
-        case 'es':
-            return 'Spanish';
-            break;
-        default:
-            return $term;
-            break;
+    foreach ($languageDetailsList as $languageDetails) {
+        if ($languageDetails->getTag() == $term) {
+            return $languageDetails->getDescription();
+        }
     }
+    return 'Unknown';
 }
 
 /**
