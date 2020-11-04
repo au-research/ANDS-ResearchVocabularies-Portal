@@ -137,12 +137,10 @@ foreach ($vocab->getVersion() as $version) {
                             <p>
                                 <?php
                                 echo(readable_lang($vocab->getPrimaryLanguage(), $vocab->getLanguageList()->getLanguageDetails()));
-                                echo " [" . $vocab->getPrimaryLanguage() . "]";
                                 foreach($vocab->getOtherLanguage() as $language)
                                 {
                                 echo " | ";
                                 echo(readable_lang($language, $vocab->getLanguageList()->getLanguageDetails()));
-                                echo " [" . $language . "]";
                                 }
                                 ?>
 
