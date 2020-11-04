@@ -57,6 +57,9 @@
 .ui-select-bootstrap .ui-select-choices-row:not(.active) > span:focus {
   background-color: #eee4f0;
 }
+.swatch-white ul.dropdown-menu.ui-select-choices {
+  background-color: white;
+}
 [theme="bootstrap-languageSelection"].ui-select-bootstrap > .ui-select-choices,
 [theme="bootstrap-languageSelection"].ui-select-bootstrap > .ui-select-no-choice {
   max-height: 400px;

@@ -87,6 +87,10 @@
 .ui-select-bootstrap .ui-select-choices-row:not(.active) > span:focus {
     background-color: @secondaryColorNonCompliantFifteenPercent;
 }
+// Eliminate transparency of ui-select dropdown backgrounds.
+.swatch-white ul.dropdown-menu.ui-select-choices {
+    background-color: white;
+}
 
 // For language selection, be tall enough to show all of the "Popular" options.
 [theme="bootstrap-languageSelection"].ui-select-bootstrap > .ui-select-choices,
