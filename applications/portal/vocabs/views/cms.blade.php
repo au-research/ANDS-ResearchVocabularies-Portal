@@ -259,13 +259,13 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
               <div class="panel-body">
                 <!-- Show one language field. Doesn't use input-group. -->
                 <div ng-if="vocab.language.length == 1">
-                  <language-selection ng-if="vocab.owner" ng-model="vocab.language[0]">
+                  <language-selection ng-if="vocab.owner" ng-model="vocab.language[0]" tag="[[ vocab.language[0] ]]">
                   </language-selection>
                 </div>
 
                 <!-- Show more than one language field. Does use input-group. -->
                 <div class="input-group" ng-repeat="ln in vocab.language track by $index" ng-if="vocab.language.length > 1">
-                  <language-selection ng-if="vocab.owner" ng-change="changeValue($index)" ng-model="vocab.language[$index]">
+                  <language-selection ng-if="vocab.owner" ng-change="changeValue($index)" ng-model="vocab.language[$index]" tag="[[ vocab.language[$index] ]]">
                   </language-selection>
                   <span class="input-group-btn">
                     <button class="btn btn-primary btn-primary-warning btn-non-rounded" type="button"
