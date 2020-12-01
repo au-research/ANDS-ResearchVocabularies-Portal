@@ -273,7 +273,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                   </span>
                 </div>
 
-                <div class="has-error" ng-show="languageErrors != undefined">
+                <div class="form-group has-error" ng-show="languageErrors != undefined">
                   <p class="help-block"><span ng-repeat="error in languageErrors track by $index">[[ error ]]<br ng-if="!$last"/></span></p>
                 </div>
 
