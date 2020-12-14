@@ -54,6 +54,9 @@
         }
         var api = new VocabularyRegistryApi.ResourcesApi();
         var ServicesAPI = new VocabularyRegistryApi.ServicesApi();
+        // UtilitiesAPI is used not only by us, but also by
+        // languageSelectionDirective.js, so it needs to be in $scope.
+        $scope.UtilitiesAPI = new VocabularyRegistryApi.UtilitiesApi();
 
         // TODO: Move to config
         $scope.PPServerID = 1;
@@ -208,17 +211,41 @@
         $scope.vocab.user_owner = $scope.user_owner;
 
         $scope.mode = 'add'; // [add|edit]
-        $scope.langs = [
-            {"value": "zh", "text": "Chinese"},
-            {"value": "en", "text": "English"},
-            {"value": "fr", "text": "French"},
-            {"value": "de", "text": "German"},
-            {"value": "it", "text": "Italian"},
-            {"value": "ja", "text": "Japanese"},
-            {"value": "mi", "text": "Māori"},
-            {"value": "ru", "text": "Russian"},
-            {"value": "es", "text": "Spanish"}
+
+
+        // Settings for language selection.
+        var mostCommonLanguageGroup = 'Commonly-used languages';
+        var customLanguageGroup = 'Custom languages';
+        $scope.languagesConfig = {
+            'customGroup': customLanguageGroup
+        };
+        $scope.languagesConfig.languageList = [
+            { 'group': mostCommonLanguageGroup, 'tag': 'en', 'description': 'English' },
+            { 'group': mostCommonLanguageGroup, 'tag': 'zh', 'description': 'Chinese' },
+            { 'group': mostCommonLanguageGroup, 'tag': 'fr', 'description': 'French' },
+            { 'group': mostCommonLanguageGroup, 'tag': 'de', 'description': 'German' },
+            { 'group': mostCommonLanguageGroup, 'tag': 'it', 'description': 'Italian' },
+            { 'group': mostCommonLanguageGroup, 'tag': 'ja', 'description': 'Japanese' },
+            { 'group': mostCommonLanguageGroup, 'tag': 'mi', 'description': 'Māori' },
+            { 'group': mostCommonLanguageGroup, 'tag': 'ru', 'description': 'Russian' },
+            { 'group': mostCommonLanguageGroup, 'tag': 'es', 'description': 'Spanish' }
         ];
+        // Extract just the list of known tags, for use in
+        // $scope.applyPPData.
+        var languageListTags = $scope.languagesConfig.languageList.map(
+            function(language) {
+                return language.tag;
+            });
+        // Setter for the error message for language tag validation.
+        // NB: this is shared across all language fields.
+        $scope.setLanguageErrors = function(error) {
+            if (error === undefined) {
+                delete $scope.languageErrors;
+            } else {
+                $scope.languageErrors = error;
+            }
+        }
+
         $scope.licence = ["CC-BY", "CC-BY-SA", "CC-BY-ND",
                           "CC-BY-NC", "CC-BY-NC-SA", "CC-BY-NC-ND",
                           "ODC-By", "GPL", "AusGoalRestrictive",
@@ -336,6 +363,24 @@
             angular.forEach(data.getOtherLanguage(), function(lang) {
                 $scope.vocab['language'].push(lang);
             });
+            // Now also update $scope.languagesConfig.languageList with any
+            // languages we don't already know about.
+            var languageDetails = data.getLanguageList().getLanguageDetails();
+            angular.forEach($scope.vocab['language'], function(lang) {
+                var found = $scope.languagesConfig.languageList.find(function(element) {
+                    return element.tag === lang;
+                });
+                if (found == undefined) {
+                    var foundInLD = languageDetails.find(function(element) {
+                        return element.tag == lang;
+                    });
+                    var newLang = { 'group': customLanguageGroup,
+                                    'tag': foundInLD.tag,
+                                    'description': foundInLD.description};
+                    $scope.languagesConfig.languageList.unshift(newLang);
+                }
+            });
+
             $scope.vocab['subjects'] = [];
 
             var PPProject = data.getPoolpartyProject();
@@ -770,22 +815,94 @@
             // Get the primary language, so we can use it to fetch
             // other values. Defaults to 'en'.
             // Get the other languages while we're here.
+
+            // Note: we _don't_ just build up $scope.vocab.language
+            // directly, but rather, we first populate a local
+            // variable languagesInMetadata. Only when we have
+            // the details of all the languages ready to go in
+            // $scope.languagesConfig.languageList do we then copy
+            // a value into $scope.vocab.language.
+            // If we don't do it this way, the language selection
+            // widget will discard any language tag not already present
+            // in languageList.
             var primaryLanguage = 'en';
+            var languagesInMetadata = [];
             if (data['dcterms:language']) {
                 var primaryLanguage = $scope.choose(
                     data['dcterms:language'])[0];
-                $scope.vocab.language = [];
-                $scope.vocab.language.push(primaryLanguage);
+                languagesInMetadata = [];
+                languagesInMetadata.push(primaryLanguage);
                 if (data['ppcl:availablelanguages']) {
                     var otherLanguages = $scope.choose(
                         data['ppcl:availablelanguages']); {
                             angular.forEach(otherLanguages, function (lang) {
                                 if (lang != primaryLanguage) {
-                                    $scope.vocab.language.push(lang);
+                                    languagesInMetadata.push(lang);
                                 }
                             });
                         }
                 }
+            }
+            // Fetch details of any languages not in the
+            // "commonly-used" list.
+            // We build two lists: one containing the tags we "know" about;
+            // one of the tags we don't, and which need to be looked up.
+            var languagesNoNeedToLookUp = [];
+            var languagesToLookUp = [];
+            // Keep track especially of whether the primary language is to be looked
+            // up, so we can make sure it goes first in the final result.
+            var primaryLanguageNeedToLookUp =
+                languageListTags.indexOf(languagesInMetadata[0]) === -1;
+            angular.forEach(languagesInMetadata, function(tag) {
+                if (languageListTags.indexOf(tag) === -1) {
+                    languagesToLookUp.push(tag);
+                } else {
+                    languagesNoNeedToLookUp.push(tag);
+                }
+            });
+            if (languagesToLookUp.length > 0) {
+                $scope.UtilitiesAPI.parseLanguageTags(languagesToLookUp).then(function(data) {
+                    var languageList = angular.copy(languagesNoNeedToLookUp);
+                    var languageDetailsResponse = data.getLanguageDetails();
+                    if (primaryLanguageNeedToLookUp) {
+                        // Make sure that the primary language ends up
+                        // first in the list, whatever has
+                        // happened. If it's unknown, insert a blank
+                        // entry, so that none of the other languages
+                        // gets "bumped up" to be the primary language.
+                        var languageDetail = languageDetailsResponse.shift();
+                        // Note the use of unshift() here, but push()
+                        // later on: the primary language goes at the
+                        // front; other languages go at the end.
+                        if ('tag' in languageDetail) {
+                            var newLang = { 'group': customLanguageGroup,
+                                            'tag': languageDetail.getTag(),
+                                            'description': languageDetail.getDescription()};
+                            $scope.languagesConfig.languageList.unshift(newLang);
+                            // The tag may have been canonicalized to
+                            // something different, so use what came back.
+                            languageList.unshift(languageDetail.getTag());
+                        } else {
+                            // Unknown primary language.
+                            languageList.unshift('');
+                        }
+                    }
+                    angular.forEach(languageDetailsResponse, function(languageDetail) {
+                        var newLang = { 'group': customLanguageGroup,
+                                        'tag': languageDetail.getTag(),
+                                        'description': languageDetail.getDescription()};
+                        $scope.languagesConfig.languageList.unshift(newLang);
+                        // The tag may have been canonicalized to
+                        // something different, so use what came back.
+                        languageList.push(languageDetail.getTag());
+                    });
+                    // Now we can set the languages.
+                    $scope.vocab.language = languageList;
+                });
+            } else {
+                // None to look up; good to go with
+                // languagesNoNeedToLookUp.
+                $scope.vocab.language = languagesNoNeedToLookUp;
             }
 
             if (data['dcterms:title']) {

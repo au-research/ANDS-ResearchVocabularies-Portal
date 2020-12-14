@@ -6,3 +6,4 @@ Disallow: /registry/
 Disallow: /view/
 Disallow: /repository/api/download/
 Disallow: /repository/api/registry/
+Disallow: /repository/api/lda/meta/

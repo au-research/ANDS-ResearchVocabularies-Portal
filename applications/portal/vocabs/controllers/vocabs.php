@@ -81,6 +81,7 @@ class Vocabs extends MX_Controller
                 $slug,
                 'true',
                 'true',
+                'true',
                 'true'
             );
 
@@ -471,6 +472,7 @@ class Vocabs extends MX_Controller
                 $id,
                 'true',
                 'true',
+                'true',
                 'true'
             );
 
@@ -528,6 +530,7 @@ class Vocabs extends MX_Controller
         try {
             $vocab = $this->RegistryAPI->getVocabularyBySlug(
                 $slug,
+                'true',
                 'true',
                 'true',
                 'true'
@@ -759,7 +762,8 @@ class Vocabs extends MX_Controller
         $this->blade
         ->set('scripts', array('vocabs_cms', 'versionCtrl', 'relatedCtrl',
             'relatedVocabularyCtrl',
-            'subjectDirective', 'relatedEntityIdentifierDirective'))
+            'subjectDirective', 'relatedEntityIdentifierDirective',
+            'languageSelectionDirective'))
             ->set('vocab', false)
             ->set('page', 'cms')
             ->render('cms');
@@ -826,7 +830,8 @@ class Vocabs extends MX_Controller
                         'relatedCtrl',
                         'relatedVocabularyCtrl',
                         'subjectDirective',
-                        'relatedEntityIdentifierDirective'
+                        'relatedEntityIdentifierDirective',
+                        'languageSelectionDirective'
                     )
                 )
                 ->set('vocab', $vocab)

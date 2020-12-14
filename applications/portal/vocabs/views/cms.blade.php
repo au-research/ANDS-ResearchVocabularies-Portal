@@ -257,28 +257,28 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                 <span ng-bind-html="confluenceTip('Languages')"></span>
               </div>
               <div class="panel-body">
-
                 <!-- Show one language field. Doesn't use input-group. -->
-                <div ng-repeat="ln in vocab.language track by $index" ng-show="vocab.language.length == 1">
-                  <select name="vlanguage" id="vLanguage" class="form-control caret-for-select"
-                          placeholder="Select a language" ng-options="lang.value as lang.text for lang in langs"
-                          ng-model="vocab.language[$index]"><option value="">Select a language</option></select>
+                <div ng-if="vocab.language.length == 1">
+                  <language-selection ng-if="vocab.owner" ng-model="vocab.language[0]" tag="[[ vocab.language[0] ]]">
+                  </language-selection>
                 </div>
 
                 <!-- Show more than one language field. Does use input-group. -->
-                <div class="input-group" ng-repeat="ln in vocab.language track by $index" ng-show="vocab.language.length > 1">
-                  <select name="vlanguage" id="vLanguage" class="form-control caret-for-select"
-                          placeholder="Select a language" ng-options="lang.value as lang.text for lang in langs" ng-model="vocab.language[$index]"
-                  ><option value="">Select a language</option></select>
+                <div class="input-group" ng-repeat="ln in vocab.language track by $index" ng-if="vocab.language.length > 1">
+                  <language-selection ng-if="vocab.owner" ng-change="changeValue($index)" ng-model="vocab.language[$index]" tag="[[ vocab.language[$index] ]]">
+                  </language-selection>
                   <span class="input-group-btn">
                     <button class="btn btn-primary btn-primary-warning btn-non-rounded" type="button"
-                            ng-click="list_remove('language', $index)" title="Remove this language"><i class="fa fa-remove"></i></button>
+                            ng-click="list_remove('language', $index); setLanguageErrors(undefined)" title="Remove this language"><i class="fa fa-remove"></i></button>
                   </span>
                 </div>
 
+                <div class="form-group has-error" ng-show="languageErrors != undefined">
+                  <p class="help-block"><span ng-repeat="error in languageErrors track by $index">[[ error ]]<br ng-if="!$last"/></span></p>
+                </div>
 
                 <p></p>
-                <button class="btn btn-primary" type="button" ng-click="addtolist('language')"><i class="fa fa-plus"></i> Add Language</button>
+                <button class="btn btn-primary" type="button" ng-click="addtolist('language'); setLanguageErrors(undefined)"><i class="fa fa-plus"></i> Add Language</button>
 
                 <div class="form-group has-error" ng-show="vocab.language === undefined || array_has_no_nonempty_strings(vocab.language)">
                   <p class="help-block">At least one language must be provided.</p>

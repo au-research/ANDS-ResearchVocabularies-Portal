@@ -1,0 +1,26 @@
+<ui-select
+    theme="bootstrap-languageSelection"
+    append-to-body="true"
+    ng-model="containerModel.language"
+    tagging="addNew"
+    tagging-label="false"
+    on-select="onSelect($item, $model)"
+    ng-init="$parent.selectController = $select"
+>
+  <!-- Placeholder BCP 47 suggestions drawn from
+       https://www.w3.org/International/articles/language-tags/ -->
+  <ui-select-match
+      placeholder="Select a language or enter a BCP 47 tag (e.g., en, fr-CA, zh-Hans, ...) and press Enter">
+    [[ $select.selected.description ]] [<wbr />[[ $select.selected.tag ]]<wbr />]
+  </ui-select-match>
+  <ui-select-choices
+      position="down"
+      repeat="lang in langList | filter: $select.search"
+      group-by="groupBy"
+  >
+    [[ lang.description ]] [<wbr />[[ lang.tag ]]<wbr />]
+  </ui-select-choices>
+  <ui-select-no-choice>
+    &nbsp;&nbsp;<i>Press Enter to look up a BCP 47 tag</i>
+  </ui-select-no-choice>
+</ui-select>
