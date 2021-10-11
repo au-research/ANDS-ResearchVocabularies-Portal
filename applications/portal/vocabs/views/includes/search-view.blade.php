@@ -6,7 +6,8 @@
                 data-dismiss="modal"
                 aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
-        <span ng-if="doc.sissvoc_endpoint" class="pull-right"
+        <span ng-if="doc.sissvoc_endpoint && !doc.top_concept"
+              class="pull-right"
               style="padding-right: 8px">
           <a ng-click="unsetScrollRestoration(); logViewInLDA(doc)"
              target="_blank"
@@ -1173,7 +1174,8 @@
                       View other vocabularies
                     </button>
                   </span>
-                  <span ng-if="doc.sissvoc_endpoint" class="small">
+                  <span ng-if="doc.sissvoc_endpoint && !doc.top_concept"
+                        class="small">
                     <a ng-click="unsetScrollRestoration(); logViewInLDA(doc)"
                        target="_blank"
                        href="[[ doc.sissvoc_endpoint ]]/resource?uri=[[ doc.iri ]]"><i class="fa fa-xs fa-share-alt"></i> View resource as linked data</a>

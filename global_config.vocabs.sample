@@ -218,7 +218,7 @@ $ENV['tracking'] =
     array(
             'googleGA' => array(
                     'enabled' => false,
-                    'keys' => array('id' => '')
+                    'keys' => array('id' => '', 'cookie_domain' => '')
             ),
             'luckyOrange' => array(
                     'enabled' => false,
