@@ -77,6 +77,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
             </div>
             <div class="panel-footer">
               <a role="button" href="" class="btn btn-primary"
+                 ng-disabled="!project.id"
                  ng-click="selectPoolPartyProject(project)">Use this PoolParty Project</a>
             </div>
           </div>

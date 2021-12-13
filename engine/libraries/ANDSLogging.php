@@ -10,7 +10,7 @@ require_once dirname(BASEPATH).'/vendor/autoload.php';
 
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use Monolog\Formatter\LogstashFormatter;
-use Monolog\Handler\StreamHandler;
+use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 
 class ANDSLogging
@@ -28,7 +28,9 @@ class ANDSLogging
     {
         // set up the logger
         $logger = new Logger($log);
-        $handler = new StreamHandler('logs/'.$log.'.log');
+        // RotatingFileHandler gives us per-day logs.
+        // With the default options, old logs are not deleted.
+        $handler = new RotatingFileHandler('logs/'.$log.'.log');
 
         // NB: this is a difference from the RDA version of this file.
         // Here, we specify LogstashFormatter::V1 to get

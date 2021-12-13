@@ -655,8 +655,7 @@
         // other than the search results page.
         $scope.$watch(
             function () {
-                if (! $location.absUrl().slice(base_url.length).
-                    startsWith('search')) {
+                if (! $scope.onSearchPage()) {
                     // We're not even on the search results page.
                     //  console.log('Not interested');
                     return 'Not interested';
@@ -1531,13 +1530,26 @@
             $.ajax(portal_callback);
         }
 
+        /** Determine if we are on the page https://.../search
+         * using the location URL.
+         * @returns {boolean} True iff the location's URL says we are
+         *   on the search page.
+         * @memberof searchCtrl
+         */
+        $scope.onSearchPage = function () {
+            // Cope with both the canonical path "/vocabs/search"
+            // and the shortcut "/search".
+            var urlAfterBase = $location.absUrl().slice(base_url.length);
+            return urlAfterBase.startsWith('vocabs/search') ||
+                urlAfterBase.startsWith('search');
+        }
+
         // Deal with one specific case here: we've come to the page
         // https://.../search directly, and there are no filters in
         // the URL. In that case, the watcher defined above wouldn't
         // do anything without a little help. We call $scope.search()
         // to set the filters to do the default search.
-        if ($location.absUrl().slice(base_url.length).
-            startsWith('search')) {
+        if ($scope.onSearchPage()) {
             // This is the search page. Now see if there
             // were no filters provided in the URL.
             // (See the initialization of $scope.filters at
