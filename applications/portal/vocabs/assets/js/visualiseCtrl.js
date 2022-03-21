@@ -111,6 +111,7 @@
                 escapeHtml(element.notation) + '</p>';
         }
         if (sissvoc_endpoint != '') {
+            // Wording changed to "View details" by RVA-221.
             tipText = tipText + '<p><a class="pull-right" target="_blank" ' +
                 'onclick="clickLinkedData(\'' +
                 escapeHtml(element.iri).replace(/&#39;/g, "\\&#39;") +
@@ -120,7 +121,7 @@
                 'href="' + sissvoc_endpoint +
                 '/resource?uri=' +
                 encodeURIComponent(element.iri) +
-                '">View as linked data</a></p>';
+                '">View details</a></p>';
         }
 
         // Closing the paragraph tag is essential to make
@@ -305,6 +306,7 @@
                 escapeHtml(element.notation) + '</p>';
         }
         if (sissvoc_endpoint != '') {
+            // Wording changed to "View details" by RVA-221.
             tipText = tipText + '<p><a class="pull-right" target="_blank" ' +
                 'onclick="clickLinkedData(\'' +
                 escapeHtml(element.iri).replace(/&#39;/g, "\\&#39;") +
@@ -314,7 +316,7 @@
                 'href="' + sissvoc_endpoint +
                 '/resource?uri=' +
                 encodeURIComponent(element.iri) +
-                '">View as linked data</a></p>';
+                '">View details</a></p>';
         }
 
         // Closing the paragraph tag is essential to make
