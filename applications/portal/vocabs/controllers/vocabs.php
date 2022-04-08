@@ -32,6 +32,9 @@ class Vocabs extends MX_Controller
     private $RegistryAPI;
     private $ServiceAPI;
 
+    // Path to the community lenses finding aid controller.
+    const LENSES = 'lenses';
+
     /**
      * Index / Home page
      * Displaying the Home Page
@@ -496,10 +499,13 @@ class Vocabs extends MX_Controller
             ];
             vocabs_portal_log($event);
 
+            $lens = $this->getLensesFindingAid($vocab->getId());
+
             $this->blade
                 ->set('vocab', $vocab)
                 ->set('title', $vocab->getTitle()
                       . ' - Research Vocabularies Australia')
+                ->set('lens', $lens)
                 ->set('scripts', array('subscribeDialogCtrl',
                                        'visualiseCtrl'))
                 ->set('page', 'view')
@@ -556,10 +562,13 @@ class Vocabs extends MX_Controller
             ];
             vocabs_portal_log($event);
 
+            $lens = $this->getLensesFindingAid($vocab->getId());
+
             $this->blade
                 ->set('vocab', $vocab)
                 ->set('title', $vocab->getTitle()
                       . ' - Research Vocabularies Australia')
+                ->set('lens', $lens)
                 ->set('scripts', array('subscribeDialogCtrl',
                                        'visualiseCtrl'))
                 ->set('page', 'view')
@@ -1288,6 +1297,79 @@ class Vocabs extends MX_Controller
         // Do the redirect.
         redirect($shareUrl);
     }
+
+
+    /* Finding aid. */
+    /**
+     * Get lens finding aid data for a vocabulary.
+     * @param  string $vocab_id ID of the vocabulary, unique for a vocabulary
+     * @return array Array with keys 'examples' and 'users', values the
+     *    corresponding content. An empty array if no content found for this
+     *    vocabulary.
+     * @throws Exception
+     */
+    public function getLensesFindingAid($vocab_id) {
+        // Default result is an empty object.
+        $result = array();
+        $lensesFindingAid = env('FINDING_AID_LENSES');
+        if (empty($lensesFindingAid)) {
+            // No finding aid here.
+            return $result;
+        }
+        if (!is_dir($lensesFindingAid)) {
+            // Finding aid directory specified, but missing.
+            return $result;
+        }
+        foreach (array('examples', 'users') as $key) {
+            $aid_file = $lensesFindingAid . '/vocabularies/' .
+                $vocab_id . '/' . $key . '.html';
+            if (!is_file($aid_file) || !is_readable($aid_file)) {
+                // No content file, or file is unreadable.
+                continue;
+            }
+            // Sigh, can't use $doc->loadHTMLFile() directly, as it
+            // doesn't cope with non-ASCII characters.
+            $aid_content = file_get_contents($aid_file);
+            $doc = new DOMDocument();
+            // Force the parser to understand UTF-8.
+            try {
+                $doc->loadHTML('<?xml encoding="utf-8" ?>' .
+                               '<div id="aid_loaded">' .
+                               $aid_content . '</div>');
+            } catch (Exception $e) {
+                // Invalid aid file.
+                // return;
+                continue;
+            }
+            // Add target="_blank" to all links.
+            // Rewrite links with domain="ees" and href="org:imos_imos".
+            $links = $doc->getElementsByTagName('a');
+            foreach ($links as $link) {
+                $link->setAttribute('target', '_blank');
+                $href = $link->getAttribute('href');
+                if (preg_match("/^domain:([_A-Za-z0-9]+)$/",
+                               $href, $matches)) {
+                    $link->setAttribute('href', base_url() .
+                                        self::LENSES . '/domains/' .
+                                        $matches[1]);
+                }
+                if (preg_match("/^org:([_A-Za-z0-9]+)$/",
+                               $href, $matches)) {
+                    $link->setAttribute('href', base_url() .
+                                        self::LENSES . '/organisations/' .
+                                        $matches[1]);
+                }
+            }
+            // Use getElementById() to avoid getting the XML header,
+            // DOCTYPE, etc.
+            $aid_content = $doc->saveHTML(
+                $doc->getElementById('aid_loaded'));
+            $result[$key] = $aid_content;
+        }
+
+        return $result;
+    }
+
 
     /* Analytics logging of events that otherwise are only logged
        by the Registry. */
