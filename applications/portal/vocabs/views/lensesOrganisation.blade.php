@@ -8,24 +8,21 @@
 @stop
 
 @section('content')
-  <!-- <section class="section element-short-bottom element-short-top"> -->
-  <section class="section element-short-top element-short-bottom swatch-white">
-    <div class="container">
-<!--
-      <header class="text-center">
-        <h3>Organisation: {{ $organisation }}</h3>
-      </header>
--->
-      <div class="row">
-        <div id="organisation_content" class="col-md-12">
-          {{ $organisation_content }}
-
-
+  <article>
+    <!-- <section class="section element-short-bottom element-short-top"> -->
+    <section class="section element-short-top element-short-bottom swatch-white">
+      <div class="container">
+        <div class="row">
+          <!-- <div id="organisation_content" class="col-md-12"> -->
+          <div id="organisation_content"
+               class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-md-offset-2 col-lg-offset-2 animated fadeInUp">
+            {{ $organisation_content }}
+          </div>
         </div>
-      </div>
 
-    </div>
-  </section>
+      </div>
+    </section>
+  </article>
 @endsection
 @stop
 @section('emacs_local_variables')
