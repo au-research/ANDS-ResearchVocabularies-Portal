@@ -79,6 +79,9 @@ class Lenses extends MX_Controller
         $page_content = $doc->saveHTML(
             $doc->getElementById('page_loaded'));
 
+        // Get content for top-level menu.
+        $lensMenu = $this->getLensesFindingAidMenu($lensesFindingAid);
+
         // Legacy log.
         $event = array(
             'event' => 'pageview',
@@ -99,6 +102,7 @@ class Lenses extends MX_Controller
             // No script needed yet.
             // ->set('scripts', array('lensesPage'))
             ->set('page', 'lensesPage')
+            ->set('lensMenu', $lensMenu)
             ->render('lensesPage');
     }
 
@@ -166,6 +170,9 @@ class Lenses extends MX_Controller
         $domain_content = $doc->saveHTML(
             $doc->getElementById('domain_loaded'));
 
+        // Get content for top-level menu.
+        $lensMenu = $this->getLensesFindingAidMenu($lensesFindingAid);
+
         // Legacy log.
         $event = array(
             'event' => 'pageview',
@@ -185,6 +192,7 @@ class Lenses extends MX_Controller
             ->set('domain_content', $domain_content)
             ->set('scripts', array('lensesDomain'))
             ->set('page', 'findingAidDomain')
+            ->set('lensMenu', $lensMenu)
             ->render('lensesDomain');
     }
 
@@ -243,6 +251,9 @@ class Lenses extends MX_Controller
         $organisation_content = $doc->saveHTML(
             $doc->getElementById('organisation_loaded'));
 
+        // Get content for top-level menu.
+        $lensMenu = $this->getLensesFindingAidMenu($lensesFindingAid);
+
         // Legacy log.
         $event = array(
             'event' => 'pageview',
@@ -263,6 +274,7 @@ class Lenses extends MX_Controller
             // No script needed yet.
             ->set('scripts', array('lensesOrganisation'))
             ->set('page', 'lensesOrganisation')
+            ->set('lensMenu', $lensMenu)
             ->render('lensesOrganisation');
     }
 
@@ -294,6 +306,33 @@ class Lenses extends MX_Controller
                                     self::LENSES . '/organisations/' . $matches[1]);
             }
         }
+    }
+
+    /**
+     * Get community lens finding aid menu content, if any.
+     * @param string $lensesFindingAid The directory containing the
+     *    community lens finding aid.
+     * @return array Array that is the sequence of menu items
+     *    to go below a "community lens" top-level menu.
+     *    An empty array if there is no lens finding aid content.
+     * @throws Exception
+     */
+    public function getLensesFindingAidMenu($lensesFindingAid) {
+        // Default result is an empty object.
+        $result = array();
+        $menu_file = $lensesFindingAid . '/menu.json';
+        if (!is_file($menu_file) || !is_readable($menu_file)) {
+            // No menu file, or file is unreadable.
+            return $result;
+        }
+        $menu_content = file_get_contents($menu_file);
+        $menu_content_decoded = json_decode($menu_content, true);
+        //        var_dump( $menu_content_decoded);
+        if (is_array($menu_content_decoded) &&
+            count($menu_content_decoded) > 0) {
+            $result = $menu_content_decoded;
+        }
+        return $result;
     }
 
     /**
