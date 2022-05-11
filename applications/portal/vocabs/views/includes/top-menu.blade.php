@@ -28,7 +28,7 @@
             <li><a href="{{portal_url('vocabs/page/use')}}">Use a vocabulary</a></li>
             <li><a href="{{portal_url('vocabs/page/feedback')}}">Give feedback on vocabularies</a></li>
           </ul></li>
-        @if(isset($lensMenu))
+        @if(!empty($lensMenu))
           <li> <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"
                   aria-expanded="false">Community lenses <i class="fa fa-caret-down"></i></a>
             <ul class="dropdown-menu" role="menu">
