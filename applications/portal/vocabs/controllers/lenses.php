@@ -91,9 +91,8 @@ class Lenses extends MX_Controller
         vocab_log_terms($event);
         // Analytics log in logstash format.
         $event = [
-            'event' => 'portal_page',
-            'page' => 'lensesFindingAidPage',
-            'page_page' => $page
+            'event' => 'portal_facl_page',
+            'page' => $page
         ];
         vocabs_portal_log($event);
         $this->blade
@@ -164,6 +163,12 @@ class Lenses extends MX_Controller
             $dropdown->setAttribute('class', 'form-control caret-for-select');
             $dropdown->setAttribute('style', 'width:auto; display:inline');
         }
+        // Get domain title for analytics.
+        $title = '';
+        $h3nodes = $doc->getElementsByTagName('h2');
+        if ($h3nodes->length > 0) {
+            $title = $h3nodes->item(0)->nodeValue;
+        }
 
         // Use getElementById() to avoid getting the XML header,
         // DOCTYPE, etc.
@@ -182,9 +187,8 @@ class Lenses extends MX_Controller
         vocab_log_terms($event);
         // Analytics log in logstash format.
         $event = [
-            'event' => 'portal_page',
-            'page' => 'findingAidDomain',
-            'domain' => $domain
+            'event' => 'portal_facl_domain',
+            'domain' => array('slug' => $domain, 'title' => $title)
         ];
         vocabs_portal_log($event);
         $this->blade
@@ -246,6 +250,13 @@ class Lenses extends MX_Controller
         }
         $this->rewriteLinks($doc);
 
+        // Get domain title for analytics.
+        $title = '';
+        $h3nodes = $doc->getElementsByTagName('h2');
+        if ($h3nodes->length > 0) {
+            $title = $h3nodes->item(0)->nodeValue;
+        }
+
         // Use getElementById() to avoid getting the XML header,
         // DOCTYPE, etc.
         $organisation_content = $doc->saveHTML(
@@ -263,9 +274,9 @@ class Lenses extends MX_Controller
         vocab_log_terms($event);
         // Analytics log in logstash format.
         $event = [
-            'event' => 'portal_page',
-            'page' => 'findingAidOrganisation',
-            'organisation' => $organisation
+            'event' => 'portal_facl_org',
+            'organisation' => array('slug' => $organisation,
+                                    'title' => $title)
         ];
         vocabs_portal_log($event);
         $this->blade
