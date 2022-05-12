@@ -283,7 +283,7 @@ class Lenses extends MX_Controller
             ->set('organisation', $organisation)
             ->set('organisation_content', $organisation_content)
             // No script needed yet.
-            ->set('scripts', array('lensesOrganisation'))
+            // ->set('scripts', array('lensesOrganisation'))
             ->set('page', 'lensesOrganisation')
             ->set('lensMenu', $lensMenu)
             ->render('lensesOrganisation');
