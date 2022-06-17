@@ -30,6 +30,19 @@ class Lenses extends MX_Controller
         vocabs_portal_log($event);
     }
 
+    public function errorWithLensMenu($message, $lensMenu) {
+        $this->output->set_status_header('404');
+        $this->blade
+            ->set('message', $message)
+            ->set('page', 'soft_404')
+            ->set('lensMenu', $lensMenu)
+            ->render('soft_404');
+        $event = [
+            'event' => 'portal_not_found'
+        ];
+        vocabs_portal_log($event);
+    }
+
     /**
      * Show a top-level, "static" page.
      * @param  string $page The page to show.
@@ -47,15 +60,21 @@ class Lenses extends MX_Controller
             $this->error('Finding aid directory specified, but missing.');
             return;
         }
+
+        // Get content for top-level menu. Do it now, so we can
+        // use it even on error pages.
+        $lensMenu = $this->getLensesFindingAidMenu($lensesFindingAid);
+
         // Only allow slug-like page names.
         if (preg_match('/[^a-z_\-0-9]/', $page))
         {
-            $this->error('Invalid page name');
+            $this->errorWithLensMenu('Invalid page name', $lensMenu);
             return;
         }
         $page_file = $lensesFindingAid . '/pages/' . $page . '/content.html';
         if (!is_file($page_file) || !is_readable($page_file)) {
-            $this->error('No page file, or file is unreadable.');
+            $this->errorWithLensMenu('No page file, or file is unreadable.',
+                                     $lensMenu);
             return;
         }
 
@@ -69,7 +88,7 @@ class Lenses extends MX_Controller
                            '<div id="page_loaded">' .
                            $page_content . '</div>');
         } catch (Exception $e) {
-            $this->error('Invalid page file.');
+            $this->errorWithLensMenu('Invalid page file.', $lensMenu);
             return;
         }
         $this->rewriteLinks($doc);
@@ -78,9 +97,6 @@ class Lenses extends MX_Controller
         // DOCTYPE, etc.
         $page_content = $doc->saveHTML(
             $doc->getElementById('page_loaded'));
-
-        // Get content for top-level menu.
-        $lensMenu = $this->getLensesFindingAidMenu($lensesFindingAid);
 
         // Legacy log.
         $event = array(
@@ -122,15 +138,21 @@ class Lenses extends MX_Controller
             $this->error('Finding aid directory specified, but missing.');
             return;
         }
+
+        // Get content for top-level menu. Do it now, so we can
+        // use it even on error pages.
+        $lensMenu = $this->getLensesFindingAidMenu($lensesFindingAid);
+
         // Only allow slug-like domain names.
         if (preg_match('/[^a-z_\-0-9]/', $domain))
         {
-            $this->error('Invalid domain name');
+            $this->errorWithLensMenu('Invalid domain name', $lensMenu);
             return;
         }
         $domain_file = $lensesFindingAid . '/domains/' . $domain . '/content.html';
         if (!is_file($domain_file) || !is_readable($domain_file)) {
-            $this->error('No domain file, or file is unreadable.');
+            $this->errorWithLensMenu('No domain file, or file is unreadable.',
+                                     $lensMenu);
             return;
         }
 
@@ -144,7 +166,7 @@ class Lenses extends MX_Controller
                            '<div id="domain_loaded">' .
                            $domain_content . '</div>');
         } catch (Exception $e) {
-            $this->error('Invalid domain file.');
+            $this->errorWithLensMenu('Invalid domain file.', $lensMenu);
             return;
         }
         $this->rewriteLinks($doc);
@@ -174,9 +196,6 @@ class Lenses extends MX_Controller
         // DOCTYPE, etc.
         $domain_content = $doc->saveHTML(
             $doc->getElementById('domain_loaded'));
-
-        // Get content for top-level menu.
-        $lensMenu = $this->getLensesFindingAidMenu($lensesFindingAid);
 
         // Legacy log.
         $event = array(
@@ -219,10 +238,15 @@ class Lenses extends MX_Controller
             $this->error('Finding aid directory specified, but missing.');
             return;
         }
+
+        // Get content for top-level menu. Do it now, so we can
+        // use it even on error pages.
+        $lensMenu = $this->getLensesFindingAidMenu($lensesFindingAid);
+
         // Only allow slug-like organisation names.
         if (preg_match('/[^a-z_\-0-9]/', $organisation))
         {
-            $this->error('Invalid organisation name');
+            $this->errorWithLensMenu('Invalid organisation name', $lensMenu);
             return;
         }
 
@@ -231,7 +255,8 @@ class Lenses extends MX_Controller
         $organisation_file = $lensesFindingAid . '/organisations/' .
             $organisation_dir . '/content.html';
         if (!is_file($organisation_file) || !is_readable($organisation_file)) {
-            $this->error('No organisation file, or file is unreadable.');
+            $this->errorWithLensMenu('No organisation file, or file is unreadable.',
+                                     $lensMenu);
             return;
         }
 
@@ -245,7 +270,7 @@ class Lenses extends MX_Controller
                            '<div id="organisation_loaded">' .
                            $organisation_content . '</div>');
         } catch (Exception $e) {
-            $this->error('Invalid organisation file.');
+            $this->errorWithLensMenu('Invalid organisation file.', $lensMenu);
             return;
         }
         $this->rewriteLinks($doc);
@@ -261,9 +286,6 @@ class Lenses extends MX_Controller
         // DOCTYPE, etc.
         $organisation_content = $doc->saveHTML(
             $doc->getElementById('organisation_loaded'));
-
-        // Get content for top-level menu.
-        $lensMenu = $this->getLensesFindingAidMenu($lensesFindingAid);
 
         // Legacy log.
         $event = array(
