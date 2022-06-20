@@ -336,7 +336,7 @@ foreach ($vocab->getVersion() as $version) {
   @if(isset($lens['users']))
     <div class="panel swatch-white  panel-primary element-no-top element-short-bottom panel-content">
       <div class="panel-heading">Used by</div>
-      <div class="panel-body">
+      <div class="panel-body break">
         {{ $lens['users'] }}
       </div>
     </div>
@@ -345,7 +345,7 @@ foreach ($vocab->getVersion() as $version) {
   @if(isset($lens['examples']))
     <div class="panel swatch-white  panel-primary element-no-top element-short-bottom panel-content">
       <div class="panel-heading">Examples of use</div>
-      <div class="panel-body">
+      <div class="panel-body break">
         {{ $lens['examples'] }}
       </div>
     </div>
