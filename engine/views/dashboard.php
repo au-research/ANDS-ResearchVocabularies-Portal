@@ -26,7 +26,7 @@ if(get_config_item('environment_name'))
 }
 else
 {
-  $site_title = 'ANDS Online Services Home';
+  $site_title = 'ARDC Online Services Home';
 }
 
 
@@ -119,7 +119,7 @@ else
 								if ($this->user->affiliations())
 								{
 									echo '<small><span class="label label-warning"> &nbsp; ! &nbsp;</span> You are already registered as an affiliate with an organisation.</small><br/>';
-									echo '<small><span class="label label-important"> &nbsp; ! &nbsp;</span> Please contact <a href="mailto:services@ands.org.au">services@ands.org.au</a> to register for a new Data Source.</small>';
+									echo '<small><span class="label label-important"> &nbsp; ! &nbsp;</span> Please contact <a href="mailto:services@ardc.edu.au">services@ardc.edu.au</a> to register for a new Data Source.</small>';
 								}
 								else
 								{

@@ -260,76 +260,95 @@ foreach ($vocab->getVersion() as $version) {
 
 
 @section('sidebar')
-    @if($related_service)
+  @if($related_service)
 
-        <div class="panel swatch-white  panel-primary element-no-top
-                    element-short-bottom panel-content">
-            <div class="panel-heading">Services that make use of this vocabulary</div>
-            <div class="panel-body">
+    <div class="panel swatch-white  panel-primary element-no-top
+                element-short-bottom panel-content">
+      <div class="panel-heading">Services that make use of this vocabulary</div>
+      <div class="panel-body">
 
-                @foreach($related_service as $serviceRef)
-                    <p><small>
-                        <?php
-                        echo implode(array_map('trim', array_map('readable', $serviceRef->getRelation())), ', ');
-                        ?>
-                    </small>
-                    <a href="" class="re_preview" related='{{$serviceRef}}'
-                       >{{htmlspecialchars($serviceRef->getRelatedEntity()->getTitle())}}</a></p>
-                @endforeach
-
-            </div>
-        </div>
-    @endif
-    @if($related_people||$related_vocabs||$related_internal_vocabs)
-        <div class="panel swatch-white  panel-primary element-no-top element-short-bottom panel-content">
-            <div class="panel-heading">Related</div>
-            <div class="panel-body">
-
-                @if($related_people)
-                    <h5>Related people and organisations</h5>
-                    @foreach($related_people as $relatedRef)
-
-                        <p>
-
-                            <small>
-                                <?php
-                                echo implode(array_map('trim', array_map('readable', $relatedRef->getRelation())), ', ');
-                                ?>
-                            </small>
-            <a href="" class="re_preview" related='{{$relatedRef}}'
-               > {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
-        </p>
+        @foreach($related_service as $serviceRef)
+          <p><small>
+            <?php
+            echo implode(array_map('trim', array_map('readable', $serviceRef->getRelation())), ', ');
+            ?>
+          </small>
+          <a href="" class="re_preview" related='{{$serviceRef}}'
+          >{{htmlspecialchars($serviceRef->getRelatedEntity()->getTitle())}}</a></p>
         @endforeach
+
+      </div>
+    </div>
+  @endif
+  @if($related_people||$related_vocabs||$related_internal_vocabs)
+    <div class="panel swatch-white  panel-primary element-no-top element-short-bottom panel-content">
+      <div class="panel-heading">Related</div>
+      <div class="panel-body">
+
+        @if($related_people)
+          <h5>Related people and organisations</h5>
+          @foreach($related_people as $relatedRef)
+
+            <p>
+
+              <small>
+                <?php
+                echo implode(array_map('trim', array_map('readable', $relatedRef->getRelation())), ', ');
+                ?>
+              </small>
+              <a href="" class="re_preview" related='{{$relatedRef}}'
+              > {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
+            </p>
+          @endforeach
         @endif
         @if($related_vocabs||$related_internal_vocabs)
-        <h5>Related vocabularies</h5>
-        @foreach($related_vocabs as $relatedRef)
-        <p>
-            <small>
+          <h5>Related vocabularies</h5>
+          @foreach($related_vocabs as $relatedRef)
+            <p>
+              <small>
                 <?php
                 echo implode(array_map('trim', array_map('readable',
-                    $relatedRef->getRelation())), ', ');
+                $relatedRef->getRelation())), ', ');
                 ?>
-            </small>
-            <a href="" class="re_preview" related='{{$relatedRef}}'
-               > {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
-        </p>
-        @endforeach
-        @foreach($related_internal_vocabs as $relatedRef)
-        <p>
-            <small>
+              </small>
+              <a href="" class="re_preview" related='{{$relatedRef}}'
+              > {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
+            </p>
+          @endforeach
+          @foreach($related_internal_vocabs as $relatedRef)
+            <p>
+              <small>
                 <?php
                 echo implode(array_map('trim', array_map('readable',
-                    $relatedRef->getRelation())), ', ');
+                $relatedRef->getRelation())), ', ');
                 ?>
-            </small>
-            <a href="" class="re_preview"  related='{{$relatedRef}}'
-               > {{htmlspecialchars($relatedRef->getRelatedVocabulary()->getTitle())}}</a>
-        </p>
-        @endforeach
+              </small>
+              <a href="" class="re_preview"  related='{{$relatedRef}}'
+              > {{htmlspecialchars($relatedRef->getRelatedVocabulary()->getTitle())}}</a>
+            </p>
+          @endforeach
         @endif
+      </div>
     </div>
-</div>
-@endif
+
+  @endif
+
+  @if(isset($lens['users']))
+    <div class="panel swatch-white  panel-primary element-no-top element-short-bottom panel-content">
+      <div class="panel-heading">Used by</div>
+      <div class="panel-body break">
+        {{ $lens['users'] }}
+      </div>
+    </div>
+  @endif
+
+  @if(isset($lens['examples']))
+    <div class="panel swatch-white  panel-primary element-no-top element-short-bottom panel-content">
+      <div class="panel-heading">Examples of use</div>
+      <div class="panel-body break">
+        {{ $lens['examples'] }}
+      </div>
+    </div>
+  @endif
 
 @stop

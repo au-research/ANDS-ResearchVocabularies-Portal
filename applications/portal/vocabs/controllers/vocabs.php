@@ -32,6 +32,9 @@ class Vocabs extends MX_Controller
     private $RegistryAPI;
     private $ServiceAPI;
 
+    // Path to the community lenses finding aid controller.
+    const LENSES = 'lenses';
+
     /**
      * Index / Home page
      * Displaying the Home Page
@@ -47,6 +50,10 @@ class Vocabs extends MX_Controller
             redirect('/');
         }
         // header('Content-Type: text/html; charset=utf-8');
+
+        // Get content for top-level menu.
+        $lensMenu = $this->getLensesFindingAidMenu();
+
         $event = array(
             'event' => 'pageview',
             'page' => 'home',
@@ -63,6 +70,7 @@ class Vocabs extends MX_Controller
              ->set('customSearchBlock', true)
              ->set('title', 'Research Vocabularies Australia')
              ->set('page', 'home')
+             ->set('lensMenu', $lensMenu)
              ->render('home');
     }
 
@@ -76,6 +84,9 @@ class Vocabs extends MX_Controller
      */
     public function view($slug)
     {
+        // Get content for top-level menu.
+        $lensMenu = $this->getLensesFindingAidMenu();
+
         try {
             $vocab = $this->RegistryAPI->getVocabularyBySlug(
                 $slug,
@@ -96,6 +107,7 @@ class Vocabs extends MX_Controller
                 ->set('id', $vocab->getId())
                 ->set('title', 'Research Vocabularies Australia')
                 ->set('page', 'slug_redirect')
+                ->set('lensMenu', $lensMenu)
                 ->render('slug_redirect');
             */
         } catch (Exception $e) {
@@ -107,6 +119,7 @@ class Vocabs extends MX_Controller
             $this->blade
                 ->set('message', $message)
                 ->set('page', 'soft_404')
+                ->set('lensMenu', $lensMenu)
                 ->render('soft_404');
             $event = [
                 'event' => 'portal_not_found'
@@ -124,6 +137,9 @@ class Vocabs extends MX_Controller
      */
     public function search()
     {
+        // Get content for top-level menu.
+        $lensMenu = $this->getLensesFindingAidMenu();
+
         $event = array(
             'event' => 'pageview',
             'page' => 'search',
@@ -140,6 +156,7 @@ class Vocabs extends MX_Controller
              ->set('search_app', true)
              ->set('title', 'Research Vocabularies Australia')
              ->set('page', 'search')
+             ->set('lensMenu', $lensMenu)
              ->render('index');
     }
 
@@ -152,6 +169,9 @@ class Vocabs extends MX_Controller
      */
     public function page($slug = '')
     {
+        // Get content for top-level menu.
+        $lensMenu = $this->getLensesFindingAidMenu();
+
         $event = array(
             'event' => 'pageview',
             'page' => $slug,
@@ -191,6 +211,7 @@ class Vocabs extends MX_Controller
                 $this->blade
                     ->set('message', $message)
                     ->set('page', 'soft_404')
+                    ->set('lensMenu', $lensMenu)
                     ->render('soft_404');
                 $event = [
                     'event' => 'portal_not_found'
@@ -203,9 +224,11 @@ class Vocabs extends MX_Controller
             'page' => $slug
         ];
         vocabs_portal_log($event);
+
         $this->blade
              ->set('title', $title . ' - Research Vocabularies Australia')
              ->set('page', $slug)
+             ->set('lensMenu', $lensMenu)
              ->render($slug);
     }
 
@@ -214,6 +237,9 @@ class Vocabs extends MX_Controller
      * @return view
      */
 	public function login(){
+        // Get content for top-level menu.
+        $lensMenu = $this->getLensesFindingAidMenu();
+
 		$data['authenticators'] = array(
 			'built-in' => array(
 				'slug'		=> 'built_in',
@@ -282,6 +308,7 @@ class Vocabs extends MX_Controller
             ->set('title', 'Login - Research Vocabularies Australia')
             ->set('scripts', array('login'))
             ->set('page', 'login')
+            ->set('lensMenu', $lensMenu)
             ->set('authenticators', $data['authenticators'])
             ->set('default_authenticator', $data['default_authenticator'])
             ->render('login');
@@ -347,6 +374,9 @@ class Vocabs extends MX_Controller
             }
         );
 
+        // Get content for top-level menu.
+        $lensMenu = $this->getLensesFindingAidMenu();
+
         vocab_log_terms([
             'event' => 'pageview',
             'page' => 'myvocabs'
@@ -367,6 +397,7 @@ class Vocabs extends MX_Controller
             ->set('affiliates', $affiliates)
             ->set('title', 'My Vocabs - Research Vocabularies Australia')
             ->set('page', 'myvocabs')
+            ->set('lensMenu', $lensMenu)
             ->render('myvocabs');
     }
 
@@ -467,6 +498,9 @@ class Vocabs extends MX_Controller
      */
     public function viewById($id)
     {
+        // Get content for top-level menu.
+        $lensMenu = $this->getLensesFindingAidMenu();
+
         try {
             $vocab = $this->RegistryAPI->getVocabularyById(
                 $id,
@@ -496,13 +530,17 @@ class Vocabs extends MX_Controller
             ];
             vocabs_portal_log($event);
 
+            $lens = $this->getLensesFindingAidContent($vocab->getId());
+
             $this->blade
                 ->set('vocab', $vocab)
                 ->set('title', $vocab->getTitle()
                       . ' - Research Vocabularies Australia')
+                ->set('lens', $lens)
                 ->set('scripts', array('subscribeDialogCtrl',
                                        'visualiseCtrl'))
                 ->set('page', 'view')
+                ->set('lensMenu', $lensMenu)
                 ->render('vocab');
         } catch (Exception $e) {
             // No longer throw an exception, like this:
@@ -513,6 +551,7 @@ class Vocabs extends MX_Controller
             $this->blade
                 ->set('message', $message)
                 ->set('page', 'soft_404')
+                ->set('lensMenu', $lensMenu)
                 ->render('soft_404');
             $event = [
                 'event' => 'portal_not_found'
@@ -527,6 +566,9 @@ class Vocabs extends MX_Controller
      */
     public function viewBySlug($slug)
     {
+        // Get content for top-level menu.
+        $lensMenu = $this->getLensesFindingAidMenu();
+
         try {
             $vocab = $this->RegistryAPI->getVocabularyBySlug(
                 $slug,
@@ -556,13 +598,17 @@ class Vocabs extends MX_Controller
             ];
             vocabs_portal_log($event);
 
+            $lens = $this->getLensesFindingAidContent($vocab->getId());
+
             $this->blade
                 ->set('vocab', $vocab)
                 ->set('title', $vocab->getTitle()
                       . ' - Research Vocabularies Australia')
+                ->set('lens', $lens)
                 ->set('scripts', array('subscribeDialogCtrl',
                                        'visualiseCtrl'))
                 ->set('page', 'view')
+                ->set('lensMenu', $lensMenu)
                 ->render('vocab');
         } catch (Exception $e) {
             // No longer throw an exception, like this:
@@ -573,6 +619,7 @@ class Vocabs extends MX_Controller
             $this->blade
                 ->set('message', $message)
                 ->set('page', 'soft_404')
+                ->set('lensMenu', $lensMenu)
                 ->render('soft_404');
             $event = [
                 'event' => 'portal_not_found'
@@ -746,6 +793,10 @@ class Vocabs extends MX_Controller
             redirect(get_vocab_config('auth_url')
                 . 'login#?redirect=' . portal_url('vocabs/myvocabs'));
         }
+
+        // Get content for top-level menu.
+        $lensMenu = $this->getLensesFindingAidMenu();
+
         $event = array(
             'event' => 'pageview',
             'page' => 'add',
@@ -768,6 +819,7 @@ class Vocabs extends MX_Controller
             'languageSelectionDirective'))
             ->set('vocab', false)
             ->set('page', 'cms')
+            ->set('lensMenu', $lensMenu)
             ->render('cms');
     }
 
@@ -792,6 +844,9 @@ class Vocabs extends MX_Controller
         if (!$id) {
             throw new Exception('Require a Vocabulary ID to edit');
         }
+
+        // Get content for top-level menu.
+        $lensMenu = $this->getLensesFindingAidMenu();
 
         try {
             // If the vocab is not found, or the user is not
@@ -843,6 +898,7 @@ class Vocabs extends MX_Controller
                     $vocab->getTitle() . ' - Research Vocabularies Australia'
                 )
                 ->set('page', 'cms')
+                ->set('lensMenu', $lensMenu)
                 ->render('cms');
         } catch (Exception $e) {
             switch ($e->getCode()) {
@@ -860,6 +916,7 @@ class Vocabs extends MX_Controller
             $this->blade
                 ->set('message', $message)
                 ->set('page', 'soft_404')
+                ->set('lensMenu', $lensMenu)
                 ->render('soft_404');
             $event = [
                 'event' => 'portal_not_found'
@@ -1184,6 +1241,9 @@ class Vocabs extends MX_Controller
      */
     public function manageSubscriptions($token)
     {
+        // Get content for top-level menu.
+        $lensMenu = $this->getLensesFindingAidMenu();
+
         $event = array(
             'event' => 'pageview',
             'page' => 'manageSubscriptions',
@@ -1203,6 +1263,7 @@ class Vocabs extends MX_Controller
             ->set('strip_last_url_component', true)
             ->set('token', $token)
             ->set('page', 'manageSubscriptions')
+            ->set('lensMenu', $lensMenu)
             ->render('manageSubscriptions');
     }
 
@@ -1288,6 +1349,116 @@ class Vocabs extends MX_Controller
         // Do the redirect.
         redirect($shareUrl);
     }
+
+
+    /* Finding aids. */
+
+    /* Community lens finding aid. */
+
+    /**
+     * Get community lens finding aid menu content, if any.
+     * @return array Array that is the sequence of menu items
+     *    to go below a "community lens" top-level menu.
+     *    An empty array if there is no lens finding aid content.
+     * @throws Exception
+     */
+    public function getLensesFindingAidMenu() {
+        // Default result is an empty object.
+        $result = array();
+        $lensesFindingAid = env('FINDING_AID_LENSES');
+        if (empty($lensesFindingAid)) {
+            // No finding aid here.
+            return $result;
+        }
+        if (!is_dir($lensesFindingAid)) {
+            // Finding aid directory specified, but missing.
+            return $result;
+        }
+        $menu_file = $lensesFindingAid . '/menu.json';
+        if (!is_file($menu_file) || !is_readable($menu_file)) {
+            // No menu file, or file is unreadable.
+            return $result;
+        }
+        $menu_content = file_get_contents($menu_file);
+        $menu_content_decoded = json_decode($menu_content, true);
+        //        var_dump( $menu_content_decoded);
+        if (is_array($menu_content_decoded) &&
+            count($menu_content_decoded) > 0) {
+            $result = $menu_content_decoded;
+        }
+        return $result;
+    }
+
+    /**
+     * Get community lens finding aid content for a vocabulary.
+     * @param  string $vocab_id ID of the vocabulary, unique for a vocabulary
+     * @return array Array with keys 'examples' and 'users', values the
+     *    corresponding content. An empty array if no content found for this
+     *    vocabulary.
+     * @throws Exception
+     */
+    public function getLensesFindingAidContent($vocab_id) {
+        // Default result is an empty object.
+        $result = array();
+        $lensesFindingAid = env('FINDING_AID_LENSES');
+        if (empty($lensesFindingAid)) {
+            // No finding aid here.
+            return $result;
+        }
+        if (!is_dir($lensesFindingAid)) {
+            // Finding aid directory specified, but missing.
+            return $result;
+        }
+        foreach (array('examples', 'users') as $key) {
+            $aid_file = $lensesFindingAid . '/vocabularies/' .
+                $vocab_id . '/' . $key . '.html';
+            if (!is_file($aid_file) || !is_readable($aid_file)) {
+                // No content file, or file is unreadable.
+                continue;
+            }
+            // Sigh, can't use $doc->loadHTMLFile() directly, as it
+            // doesn't cope with non-ASCII characters.
+            $aid_content = file_get_contents($aid_file);
+            $doc = new DOMDocument();
+            // Force the parser to understand UTF-8.
+            try {
+                $doc->loadHTML('<?xml encoding="utf-8" ?>' .
+                               '<div id="aid_loaded">' .
+                               $aid_content . '</div>');
+            } catch (Exception $e) {
+                // Invalid aid file.
+                // return;
+                continue;
+            }
+            // Add target="_blank" to all links.
+            // Rewrite links with domain="ees" and href="org:imos_imos".
+            $links = $doc->getElementsByTagName('a');
+            foreach ($links as $link) {
+                $link->setAttribute('target', '_blank');
+                $href = $link->getAttribute('href');
+                if (preg_match("/^domain:([_A-Za-z0-9]+)$/",
+                               $href, $matches)) {
+                    $link->setAttribute('href', base_url() .
+                                        self::LENSES . '/domains/' .
+                                        $matches[1]);
+                }
+                if (preg_match("/^org:([_A-Za-z0-9]+)$/",
+                               $href, $matches)) {
+                    $link->setAttribute('href', base_url() .
+                                        self::LENSES . '/organisations/' .
+                                        $matches[1]);
+                }
+            }
+            // Use getElementById() to avoid getting the XML header,
+            // DOCTYPE, etc.
+            $aid_content = $doc->saveHTML(
+                $doc->getElementById('aid_loaded'));
+            $result[$key] = $aid_content;
+        }
+
+        return $result;
+    }
+
 
     /* Analytics logging of events that otherwise are only logged
        by the Registry. */
