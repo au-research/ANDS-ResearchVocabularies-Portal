@@ -23,15 +23,15 @@
         </script>
     @endif
     @if($tracking['luckyOrange']['enabled'])
-        <script type='text/javascript'>
-        window.__wtw_lucky_site_id = {{ $tracking['luckyOrange']['keys']['id'] }};
+      <script type='text/javascript'>
+       window.__wtw_lucky_site_id = {{ $tracking['luckyOrange']['keys']['id'] }};
 
-        (function() {
-            var wa = document.createElement('script'); wa.type = 'text/javascript'; wa.async = true;
-            wa.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://cdn') + '.luckyorange.com/w.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(wa, s);
-          })();
-        </script>
+       (function() {
+           var wa = document.createElement('script'); wa.type = 'text/javascript'; wa.async = true;
+           wa.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://cdn') + '.luckyorange.com/w.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(wa, s);
+       })();
+      </script>
     @endif
 @endif
 
@@ -40,9 +40,19 @@
      the Jira issue collector, etc.) -->
 <script src='//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.js'></script>
 
+<!--Jira issue collector.
+     Recent releases of the Jira issue collector mess with $, so as
+     to break RVA functionality ... if the collector is brought in at the end.
+     It seems to be OK to bring it in immediately after bringing in JQuery
+     but _before_ bringing in JQuery UI.
+-->
+<script type="text/javascript"
+        src="https://jira.ardc.edu.au/plugins/servlet/issueCollectorBootstrap.js?collectorId=7c2a6508&locale=en_UK"></script>
+
+
 <!-- JQuery UI used for draggable modal dialogs on CMS, and on
      ARDC-branded login page. Must be included before Bootstrap;
-see https://stackoverflow.com/questions/30190437/uncaught-error-cannot-call-methods-on-button-prior-to-initialization-attempted
+     see https://stackoverflow.com/questions/30190437/uncaught-error-cannot-call-methods-on-button-prior-to-initialization-attempted
 -->
 <script src='//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
 <!-- But including JQuery UI at this point doesn't seem to work;
@@ -101,23 +111,6 @@ see https://stackoverflow.com/questions/30190437/uncaught-error-cannot-call-meth
       <script src="{{asset_url('js/'.$script.'.js').'?'.getReleaseVersion()}}"></script>
     @endforeach
 @endif
-
-<script>
- // Recent releases of the Jira issue collector mess with $ so as
- // to break functionality.
- // So save it ...
- window.DollarSaved = $;
-</script>
-
-<script type="text/javascript"
-     src="https://jira.ardc.edu.au/plugins/servlet/issueCollectorBootstrap.js?collectorId=7c2a6508&locale=en_UK"></script>
-
-<script>
- // ... and restore it.
- $ = window.DollarSaved;
- delete window.DollarSaved;
-</script>
-
 
 @if(is_dev())
     <!-- LESS.JS for development only-->
