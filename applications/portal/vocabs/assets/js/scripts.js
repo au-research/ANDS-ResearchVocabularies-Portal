@@ -2989,7 +2989,10 @@ $(document).on(
     }
 );
 
-// Feedback button
+// Feedback buttons.
+// NB: the class .feedback_button is used for the button labelled
+// "Feedback", and the class .myCustomTrigger is used
+// for the "Contact us" link in the page footer.
 window.ATL_JQ_PAGE_PROPS = {
     "triggerFunction": function (showCollectorDialog) {
         // Requires that jQuery is available!
