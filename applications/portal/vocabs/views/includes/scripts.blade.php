@@ -36,6 +36,8 @@
 @endif
 
 <!-- fancytree requires JQuery, so include here. -->
+<!-- (Well, other things require JQuery too, e.g., search results,
+     the Jira issue collector, etc.) -->
 <script src='//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.js'></script>
 
 <!-- JQuery UI used for draggable modal dialogs on CMS, and on
@@ -96,12 +98,27 @@ see https://stackoverflow.com/questions/30190437/uncaught-error-cannot-call-meth
 
 @if(isset($scripts))
     @foreach($scripts as $script)
-        <script src="{{asset_url('js/'.$script.'.js').'?'.getReleaseVersion()}}"></script>
+      <script src="{{asset_url('js/'.$script.'.js').'?'.getReleaseVersion()}}"></script>
     @endforeach
 @endif
-<!--<script type="text/javascript" src="https://jira.ands.org.au/s/d41d8cd98f00b204e9800998ecf8427e/en_AUc8oc9c-1988229788/6265/77/1.4.7/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=d9610dcf"></script>
--->
-<script type="text/javascript" src="https://jira.ands.org.au/s/7539600e7269f53cb15d4d97de6e8a32-T/en_US-bq4gqu/64021/60/1.4.25/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=0d307b22"></script>
+
+<script>
+ // Recent releases of the Jira issue collector mess with $ so as
+ // to break functionality.
+ // So save it ...
+ window.DollarSaved = $;
+</script>
+
+<script type="text/javascript"
+     src="https://jira.ardc.edu.au/plugins/servlet/issueCollectorBootstrap.js?collectorId=7c2a6508&locale=en_UK"></script>
+
+<script>
+ // ... and restore it.
+ $ = window.DollarSaved;
+ delete window.DollarSaved;
+</script>
+
+
 @if(is_dev())
     <!-- LESS.JS for development only-->
     <script>
