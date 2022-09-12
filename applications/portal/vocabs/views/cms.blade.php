@@ -346,7 +346,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                   </thead>
                   <tbody>
                     <tr ng-repeat="version in vocab.versions track by $index">
-                      <td><a href="" ng-click="versionmodal('edit', $index)">[[ version.title ]] </a></td>
+                      <td style="max-width: 200px"><a class="break" href="" ng-click="versionmodal('edit', $index)">[[ version.title ]] </a></td>
                       <td><span class="label" ng-class="{'deprecated': 'deprecated-fore-and-back', 'current': 'current-fore-and-back', 'superseded': 'superseded-fore-and-back'}[version.status]">[[ version.status ]]</span></td>
                       <td><a href="" ng-click="list_remove('versions', $index)"
                              title="Remove this version"><i class="fa fa-remove"></i></a></td>

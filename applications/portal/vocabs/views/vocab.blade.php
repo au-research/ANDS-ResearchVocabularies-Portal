@@ -128,10 +128,10 @@ foreach ($vocab->getVersion() as $version) {
                         <div class="col-md-8 panel-body">
                             <!-- Use element-bottom-same-as-p to cancel Bootstrap's gobbling
                                  of the space after a last p of the description. -->
-                            <div class="element-bottom-same-as-p">{{ $vocab->getDescription() }}</div>
+                            <div class="element-bottom-same-as-p break">{{ $vocab->getDescription() }}</div>
                             @if(!empty($vocab->getRevisionCycle()))
                                 <h5>Revision Cycle</h5>
-                                <p>{{ $vocab->getRevisionCycle() }}</p>
+                                <p class="break">{{ $vocab->getRevisionCycle() }}</p>
                             @endif
                             <h5>Languages</h5>
                             <p>
@@ -147,7 +147,7 @@ foreach ($vocab->getVersion() as $version) {
                             </p>
                             @if(!empty($vocab->getNote()))
                                 <h5>Notes</h5>
-                                <p>{{ $vocab->getNote() }}</p>
+                                <p class="break">{{ $vocab->getNote() }}</p>
                             @endif
                             @if(isset($cc)&&$cc!='')
                                 <h5>Licence</h5>
@@ -181,7 +181,7 @@ foreach ($vocab->getVersion() as $version) {
                         <table class="table">
                             <tbody>
                                 @foreach($vocab->getTopConcept() as $concept)
-                                    <tr><td>{{htmlspecialchars($concept)}}</td></tr>
+                                    <tr><td class="break" style="max-width: 1px">{{htmlspecialchars($concept)}}</td></tr>
                                 @endforeach
                             </tbody>
                         </table>
