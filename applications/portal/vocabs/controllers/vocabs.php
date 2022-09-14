@@ -299,8 +299,9 @@ class Vocabs extends MX_Controller
 		delete_cookie('auth_redirect');
 		if ($this->input->get('redirect')) {
 			// CC-1294 Use "set_cookie", not "setcookie".
+			// CC-1294 CC-2901 Specify expiry as 600, not "time() + 3600"!
 			set_cookie('auth_redirect', $this->input->get('redirect'),
-                       time()+3600, '','/', '', TRUE);
+				600, '','/', '', TRUE);
 		}
 
         $this
