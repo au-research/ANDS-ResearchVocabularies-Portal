@@ -273,7 +273,7 @@ foreach ($vocab->getVersion() as $version) {
             echo implode(array_map('trim', array_map('readable', $serviceRef->getRelation())), ', ');
             ?>
           </small>
-          <a href="" class="re_preview" related='{{$serviceRef}}'
+          <a href="" class="re_preview" related='{{htmlspecialchars($serviceRef, ENT_QUOTES)}}'
           >{{htmlspecialchars($serviceRef->getRelatedEntity()->getTitle())}}</a></p>
         @endforeach
 
@@ -296,7 +296,7 @@ foreach ($vocab->getVersion() as $version) {
                 echo implode(array_map('trim', array_map('readable', $relatedRef->getRelation())), ', ');
                 ?>
               </small>
-              <a href="" class="re_preview" related='{{$relatedRef}}'
+              <a href="" class="re_preview" related='{{htmlspecialchars($relatedRef, ENT_QUOTES)}}'
               > {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
             </p>
           @endforeach
@@ -311,7 +311,7 @@ foreach ($vocab->getVersion() as $version) {
                 $relatedRef->getRelation())), ', ');
                 ?>
               </small>
-              <a href="" class="re_preview" related='{{$relatedRef}}'
+              <a href="" class="re_preview" related='{{htmlspecialchars($relatedRef, ENT_QUOTES)}}'
               > {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
             </p>
           @endforeach
@@ -323,7 +323,7 @@ foreach ($vocab->getVersion() as $version) {
                 $relatedRef->getRelation())), ', ');
                 ?>
               </small>
-              <a href="" class="re_preview"  related='{{$relatedRef}}'
+              <a href="" class="re_preview"  related='{{htmlspecialchars($relatedRef, ENT_QUOTES)}}'
               > {{htmlspecialchars($relatedRef->getRelatedVocabulary()->getTitle())}}</a>
             </p>
           @endforeach
