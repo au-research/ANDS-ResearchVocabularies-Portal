@@ -164,6 +164,8 @@ foreach ($vocab->getVersion() as $version) {
                                         <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/au/" tip="Attribution-Non Commercial-Shared Alike"><img src="{{asset_url('images/icons/CC-BY-NC-SA.png', 'core')}}" class="img-cc" alt="CC-BY-NC-SA"></a> <br/>
                                     @elseif($cc=='CC-BY-NC-ND')
                                         <a href="http://creativecommons.org/licenses/by-nc-nd/3.0/au/" tip="Attribution-Non Commercial-Non Derivatives"><img src="{{asset_url('images/icons/CC-BY-NC-ND.png', 'core')}}" class="img-cc" alt="CC-BY-NC-ND"></a> <br/>
+                                    @elseif($cc=='CC0')
+                                        <a href="https://creativecommons.org/publicdomain/zero/1.0/" tip="No Rights Reserved"><img src="{{asset_url('images/icons/CC0.png', 'core')}}" class="img-cc" alt="CC0"></a> <br/>
                                     @else
                                         <span>Licence: {{ htmlspecialchars($cc) }}</span>
                                     @endif

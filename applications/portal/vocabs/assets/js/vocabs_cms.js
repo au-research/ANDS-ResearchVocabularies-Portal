@@ -248,6 +248,7 @@
 
         $scope.licence = ["CC-BY", "CC-BY-SA", "CC-BY-ND",
                           "CC-BY-NC", "CC-BY-NC-SA", "CC-BY-NC-ND",
+                          "CC0",
                           "ODC-By", "GPL", "AusGoalRestrictive",
                           "NoLicence", "Unknown/Other"];
 
