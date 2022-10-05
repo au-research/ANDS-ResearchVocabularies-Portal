@@ -1815,8 +1815,13 @@ class Vocabs extends MX_Controller
         $cookie_name = $this->session->sess_cookie_name;
         $cookie = $this->input->cookie($cookie_name);
         if ($cookie) {
+            // CC-2919 Nota optime!
+            // The value of $cookie is raw data, and must be
+            // rawurlencoded before being sent in a header!
+            // (The Registry's RdaCookieAuthenticator.validate()
+            // method _expects_ the content to be URL encoded.)
             ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()
-                ->setApiKey($cookie_name, $cookie);
+                ->setApiKey($cookie_name, rawurlencode($cookie));
         }
         $this->RegistryAPIClient = new ANDS\VocabsRegistry\ApiClient();
         $this->RegistryAPI = new ANDS\VocabsRegistry\Api\ResourcesApi();
