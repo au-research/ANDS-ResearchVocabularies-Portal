@@ -7,8 +7,11 @@ class Lenses extends MX_Controller
 {
     /* Community lenses finding aid. */
 
-    // Path to this controller.
+    // Path to this controller, without trailing slash.
     const LENSES = 'lenses';
+
+    // Path to the images method, with trailing slash.
+    const LENSES_IMAGES = self::LENSES . '/' . 'images' . '/';
 
     // NB: each call to render() must be preceded by
     //      ->set('page', '...')
@@ -213,7 +216,7 @@ class Lenses extends MX_Controller
         $this->blade
             ->set('domain', $domain)
             ->set('domain_content', $domain_content)
-            ->set('scripts', array('lensesDomain'))
+            ->set('scripts', array('isotopeInit', 'lensesDomain'))
             ->set('page', 'findingAidDomain')
             ->set('lensMenu', $lensMenu)
             ->render('lensesDomain');
@@ -311,10 +314,80 @@ class Lenses extends MX_Controller
             ->render('lensesOrganisation');
     }
 
+    /**
+     * Get an image from the finding aid.
+     * @return the image, or an error page
+     * @throws Exception
+     */
+    public function images()
+    {
+        $lensesFindingAid = env('FINDING_AID_LENSES');
+        if (empty($lensesFindingAid)) {
+            $this->error('No finding aid here.');
+            return;
+        }
+        if (!is_dir($lensesFindingAid)) {
+            $this->error('Finding aid directory specified, but missing.');
+            return;
+        }
+
+        // Get content for top-level menu. Do it now, so we can
+        // use it even on error pages.
+        $lensMenu = $this->getLensesFindingAidMenu($lensesFindingAid);
+
+        // Get image path, relative to the lenses directory.
+        // Example values: organisations/ala/ala/logo.png,
+        //                 subjects/anzsrc-for/05/logo.jpg
+        $image_path = substr(uri_string(), strlen(self::LENSES_IMAGES));
+
+        // Stop here if there's nothing else.
+        if ($image_path == '') {
+            $this->errorWithLensMenu('Invalid (empty) image path', $lensMenu);
+            return;
+        }
+
+        $image_path_exploded = explode('/', $image_path);
+
+        // Only allow images for organisations and subjects.
+        switch ($image_path_exploded[0]) {
+        case 'organisations':
+        case 'subjects':
+             // Allowed.
+             break;
+        default:
+            $this->errorWithLensMenu('Invalid image path', $lensMenu);
+            return;
+        }
+
+        // Only allow filenames logo.png and logo.jpg.
+        switch ($image_path_exploded[count($image_path_exploded)-1]) {
+        case 'logo.jpg':
+             $content_type = 'image/jpg';
+             break;
+        case 'logo.png':
+             $content_type = 'image/png';
+             break;
+        default:
+            $this->errorWithLensMenu('Invalid image filename', $lensMenu);
+            return;
+        }
+
+        $image_file = $lensesFindingAid . '/' . $image_path;
+        if (!is_file($image_file) || !is_readable($image_file)) {
+            $this->errorWithLensMenu('No image file, or file is unreadable.',
+                                     $lensMenu);
+            return;
+        }
+        $image_content = file_get_contents($image_file);
+
+        header('Content-Type: ' . $content_type); 
+        echo $image_content;
+    }
 
     /**
      * Rewrite the links within a document. Add target="_blank" to all links.
-     * Rewrite links with an href that use the "domain", "id", or "org" schemes.
+     * Rewrite links with an href that use the "domain", "id",
+     * or "org" schemes.
      * @param  DOMDocument $doc The document to have its links rewritten.
      * @return view
      * @throws Exception

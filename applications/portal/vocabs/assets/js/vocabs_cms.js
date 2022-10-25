@@ -46,12 +46,22 @@
         defaultClient.defaultHeaders['portal-id'] = 'Portal-JS-CMS';
         defaultClient.defaultHeaders['portal-referrer'] =
             truncateHeader(window.location.toString());
-        // Configure API key authorization: apiKeyAuth
-        var apiKeyAuth = defaultClient.authentications['apiKeyAuth'];
-        var cookie = readCookie('ands_authentication');
-        if (cookie) {
-            apiKeyAuth.apiKey = cookie;
-        }
+        /* Since CC-2901, this is now defunct, because the authentication
+           cookie now has the HttpOnly attribute, so we can't read
+           its value. Turns out that this is not a problem:
+           The browser sends the cookie correctly anyway!
+           NB: this relies on the cookie host _and_ path (currently, "/")
+           being sufficiently permissive. E.g,. if the path were more
+           specific, this would _not_ work.
+
+           // Configure API key authorization: apiKeyAuth
+           var apiKeyAuth = defaultClient.authentications['apiKeyAuth'];
+           var cookie = readCookie('ands_authentication');
+           if (cookie) {
+               apiKeyAuth.apiKey = cookie;
+           }
+        */
+
         var api = new VocabularyRegistryApi.ResourcesApi();
         var ServicesAPI = new VocabularyRegistryApi.ServicesApi();
         // UtilitiesAPI is used not only by us, but also by
@@ -248,6 +258,7 @@
 
         $scope.licence = ["CC-BY", "CC-BY-SA", "CC-BY-ND",
                           "CC-BY-NC", "CC-BY-NC-SA", "CC-BY-NC-ND",
+                          "CC0",
                           "ODC-By", "GPL", "AusGoalRestrictive",
                           "NoLicence", "Unknown/Other"];
 

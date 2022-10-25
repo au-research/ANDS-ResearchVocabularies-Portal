@@ -651,6 +651,15 @@ function showWidget()
 }
 
 // Utility function to get a cookie.
+/* Since CC-2901, reading the authentication cookie is impossible,
+  because it now has the HttpOnly attribute, so we can't read its
+  value. Turns out that this is not a problem: The browser sends the
+  cookie correctly anyway!  NB: this relies on the cookie host _and_
+  path (currently, "/") being sufficiently permissive. E.g,. if the
+  path were more specific, this would _not_ work.
+  The places where this function was used have now also been commented
+  out; if we ever think we need to use it, we probably also need
+  to consider whether to remove the HttpOnly attribute.
 function readCookie(name) {
     var nameEQ = name + "=";
     var ca = document.cookie.split(';');
@@ -661,6 +670,7 @@ function readCookie(name) {
     }
     return null;
 }
+*/
 
 // Polyfill Array find() method from
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find

@@ -128,10 +128,10 @@ foreach ($vocab->getVersion() as $version) {
                         <div class="col-md-8 panel-body">
                             <!-- Use element-bottom-same-as-p to cancel Bootstrap's gobbling
                                  of the space after a last p of the description. -->
-                            <div class="element-bottom-same-as-p">{{ $vocab->getDescription() }}</div>
+                            <div class="element-bottom-same-as-p break">{{ $vocab->getDescription() }}</div>
                             @if(!empty($vocab->getRevisionCycle()))
                                 <h5>Revision Cycle</h5>
-                                <p>{{ $vocab->getRevisionCycle() }}</p>
+                                <p class="break">{{ $vocab->getRevisionCycle() }}</p>
                             @endif
                             <h5>Languages</h5>
                             <p>
@@ -147,7 +147,7 @@ foreach ($vocab->getVersion() as $version) {
                             </p>
                             @if(!empty($vocab->getNote()))
                                 <h5>Notes</h5>
-                                <p>{{ $vocab->getNote() }}</p>
+                                <p class="break">{{ $vocab->getNote() }}</p>
                             @endif
                             @if(isset($cc)&&$cc!='')
                                 <h5>Licence</h5>
@@ -164,6 +164,8 @@ foreach ($vocab->getVersion() as $version) {
                                         <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/au/" tip="Attribution-Non Commercial-Shared Alike"><img src="{{asset_url('images/icons/CC-BY-NC-SA.png', 'core')}}" class="img-cc" alt="CC-BY-NC-SA"></a> <br/>
                                     @elseif($cc=='CC-BY-NC-ND')
                                         <a href="http://creativecommons.org/licenses/by-nc-nd/3.0/au/" tip="Attribution-Non Commercial-Non Derivatives"><img src="{{asset_url('images/icons/CC-BY-NC-ND.png', 'core')}}" class="img-cc" alt="CC-BY-NC-ND"></a> <br/>
+                                    @elseif($cc=='CC0')
+                                        <a href="https://creativecommons.org/publicdomain/zero/1.0/" tip="No Rights Reserved"><img src="{{asset_url('images/icons/CC0.png', 'core')}}" class="img-cc" alt="CC0"></a> <br/>
                                     @else
                                         <span>Licence: {{ htmlspecialchars($cc) }}</span>
                                     @endif
@@ -181,7 +183,7 @@ foreach ($vocab->getVersion() as $version) {
                         <table class="table">
                             <tbody>
                                 @foreach($vocab->getTopConcept() as $concept)
-                                    <tr><td>{{htmlspecialchars($concept)}}</td></tr>
+                                    <tr><td class="break" style="max-width: 1px">{{htmlspecialchars($concept)}}</td></tr>
                                 @endforeach
                             </tbody>
                         </table>
@@ -273,7 +275,7 @@ foreach ($vocab->getVersion() as $version) {
             echo implode(array_map('trim', array_map('readable', $serviceRef->getRelation())), ', ');
             ?>
           </small>
-          <a href="" class="re_preview" related='{{$serviceRef}}'
+          <a href="" class="re_preview" related='{{htmlspecialchars($serviceRef, ENT_QUOTES)}}'
           >{{htmlspecialchars($serviceRef->getRelatedEntity()->getTitle())}}</a></p>
         @endforeach
 
@@ -296,7 +298,7 @@ foreach ($vocab->getVersion() as $version) {
                 echo implode(array_map('trim', array_map('readable', $relatedRef->getRelation())), ', ');
                 ?>
               </small>
-              <a href="" class="re_preview" related='{{$relatedRef}}'
+              <a href="" class="re_preview" related='{{htmlspecialchars($relatedRef, ENT_QUOTES)}}'
               > {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
             </p>
           @endforeach
@@ -311,7 +313,7 @@ foreach ($vocab->getVersion() as $version) {
                 $relatedRef->getRelation())), ', ');
                 ?>
               </small>
-              <a href="" class="re_preview" related='{{$relatedRef}}'
+              <a href="" class="re_preview" related='{{htmlspecialchars($relatedRef, ENT_QUOTES)}}'
               > {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
             </p>
           @endforeach
@@ -323,7 +325,7 @@ foreach ($vocab->getVersion() as $version) {
                 $relatedRef->getRelation())), ', ');
                 ?>
               </small>
-              <a href="" class="re_preview"  related='{{$relatedRef}}'
+              <a href="" class="re_preview"  related='{{htmlspecialchars($relatedRef, ENT_QUOTES)}}'
               > {{htmlspecialchars($relatedRef->getRelatedVocabulary()->getTitle())}}</a>
             </p>
           @endforeach

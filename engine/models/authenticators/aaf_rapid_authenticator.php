@@ -11,6 +11,7 @@ for the code that is in play.
 
 /**
  * Authenticator for AAF Rapid Connect
+ * (now known as "Australian Access Federation Login")
  * @author  Minh Duc Nguyen <minh.nguyen@ands.org.au>
  */
 require_once('engine/models/authenticator.php');

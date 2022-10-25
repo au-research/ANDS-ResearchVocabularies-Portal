@@ -407,12 +407,17 @@ $config['sess_match_useragent'] = FALSE;
 | 'cookie_domain' = Set to .your-domain.com for site-wide cookies
 | 'cookie_path'   =  Typically will be a forward slash
 | 'cookie_secure' =  Cookies will only be set if a secure HTTPS connection exists.
+| 'cookie_httponly' = Cookie will only be accessible via HTTP(S) (no javascript)
+| 'cookie_samesite' = Cookie's samesite attribute (Lax, Strict or None)
 |
 */
 $config['cookie_prefix']	= "ands_";
 $config['cookie_domain']	= isset($ENV['cookie_domain']) ? $ENV['cookie_domain'] : ".ands.org.au";
 $config['cookie_path']		= "/";
 $config['cookie_secure']	= FALSE;
+// ARDC CC-2901 Add upstream support for HttpOnly and SameSite.
+$config['cookie_httponly'] 	= FALSE;
+$config['cookie_samesite'] 	= 'Lax';
 
 /*
 |--------------------------------------------------------------------------

@@ -67,7 +67,7 @@
 
         <div class="col-md-2 visible-lg visible-md visible-sm-block visible-xs-block">
           <div class="image-caption-credit">The Australian Research Data Commons (ARDC) is enabled by NCRIS.</div>
-          <a href="https://education.gov.au/national-collaborative-research-infrastructure-strategy-ncris" target="_blank"><img style="max-height: 120px" src="<?php echo asset_url('images/NCRIS_PROVIDER_rev.png','core');?>" alt="National Collaborative Research Infrastructure Strategy (NCRIS)" /></a>
+          <a href="https://www.education.gov.au/ncris" target="_blank"><img style="max-height: 120px" src="<?php echo asset_url('images/NCRIS_PROVIDER_rev.png','core');?>" alt="National Collaborative Research Infrastructure Strategy (NCRIS)" /></a>
         </div>
 
       </div> <!-- row -->

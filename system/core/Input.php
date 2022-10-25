@@ -227,28 +227,35 @@ class CI_Input {
 
 	// ------------------------------------------------------------------------
 
+// ARDC CC-2901 Incorporate upstream changes to add extra parameters
+// $httponly and $samesite, because we need $samesite!
+// We've also made some fixes to defects in that upstream code;
+// they are marked "ARDC".
+
 	/**
-	* Set cookie
-	*
-	* Accepts six parameter, or you can submit an associative
-	* array in the first parameter containing all the values.
-	*
-	* @access	public
-	* @param	mixed
-	* @param	string	the value of the cookie
-	* @param	string	the number of seconds until expiration
-	* @param	string	the cookie domain.  Usually:  .yourdomain.com
-	* @param	string	the cookie path
-	* @param	string	the cookie prefix
-	* @param	bool	true makes the cookie secure
-	* @return	void
-	*/
-	function set_cookie($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = FALSE)
+	 * Set cookie
+	 *
+	 * Accepts an arbitrary number of parameters (up to 7) or an associative
+	 * array in the first parameter containing all the values.
+	 *
+	 * @param	string|mixed[]	$name		Cookie name or an array containing parameters
+	 * @param	string		$value		Cookie value
+	 * @param	int		$expire		Cookie expiration time in seconds
+	 * @param	string		$domain		Cookie domain (e.g.: '.yourdomain.com')
+	 * @param	string		$path		Cookie path (default: '/')
+	 * @param	string		$prefix		Cookie name prefix
+	 * @param	bool		$secure		Whether to only transfer cookies via SSL
+	 * @param	bool		$httponly	Whether to only makes the cookie accessible via HTTP (no javascript)
+	 * @param	string		$samesite	SameSite attribute
+	 * @return	void
+	 */
+	public function set_cookie($name, $value = '', $expire = 0, $domain = '', $path = '/', $prefix = '', $secure = NULL, $httponly = NULL, $samesite = NULL)
 	{
 		if (is_array($name))
 		{
+			// ARDC CC-2901 swapped the last two values in order to make consistent with the following comment!
 			// always leave 'name' in last place, as the loop will break otherwise, due to $$item
-			foreach (array('value', 'expire', 'domain', 'path', 'prefix', 'secure', 'name') as $item)
+			foreach (array('value', 'expire', 'domain', 'path', 'prefix', 'secure', 'httponly', 'samesite', 'name') as $item)
 			{
 				if (isset($name[$item]))
 				{
@@ -257,33 +264,80 @@ class CI_Input {
 			}
 		}
 
-		if ($prefix == '' AND config_item('cookie_prefix') != '')
+		if ($prefix === '' && config_item('cookie_prefix') !== '')
 		{
 			$prefix = config_item('cookie_prefix');
 		}
-		if ($domain == '' AND config_item('cookie_domain') != '')
+
+		if ($domain == '' && config_item('cookie_domain') != '')
 		{
 			$domain = config_item('cookie_domain');
 		}
-		if ($path == '/' AND config_item('cookie_path') != '/')
+
+		if ($path === '/' && config_item('cookie_path') !== '/')
 		{
 			$path = config_item('cookie_path');
 		}
-		if ($secure == FALSE AND config_item('cookie_secure') != FALSE)
-		{
-			$secure = config_item('cookie_secure');
-		}
 
-		if ( ! is_numeric($expire))
+		$secure = ($secure === NULL && config_item('cookie_secure') !== NULL)
+			? (bool) config_item('cookie_secure')
+			: (bool) $secure;
+
+		$httponly = ($httponly === NULL && config_item('cookie_httponly') !== NULL)
+			? (bool) config_item('cookie_httponly')
+			: (bool) $httponly;
+
+		if ( ! is_numeric($expire) OR $expire < 0)
 		{
-			$expire = time() - 86500;
+			$expire = 1;
 		}
 		else
 		{
 			$expire = ($expire > 0) ? time() + $expire : 0;
 		}
-		
-		setcookie($prefix.$name, $value, $expire, $path, $domain, $secure);
+
+		isset($samesite) OR $samesite = config_item('cookie_samesite');
+		if (isset($samesite))
+		{
+			$samesite = ucfirst(strtolower($samesite));
+			in_array($samesite, array('Lax', 'Strict', 'None'), TRUE) OR $samesite = 'Lax';
+		}
+		else
+		{
+			$samesite = 'Lax';
+		}
+
+		if ($samesite === 'None' && ! $secure)
+		{
+			log_message('error', $name.' cookie sent with SameSite=None, but without Secure attribute.');
+		}
+
+		if ( ! is_php('7.3'))
+		{
+			$maxage = $expire - time();
+			if ($maxage < 1)
+			{
+				$maxage = 0;
+			}
+
+			$cookie_header = 'Set-Cookie: '.$prefix.$name.'='.rawurlencode($value);
+			$cookie_header .= ($expire === 0 ? '' : '; Expires='.gmdate('D, d-M-Y H:i:s T', $expire)).'; Max-Age='.$maxage;
+			$cookie_header .= '; Path='.$path.($domain !== '' ? '; Domain='.$domain : '');
+			$cookie_header .= ($secure ? '; Secure' : '').($httponly ? '; HttpOnly' : '').'; SameSite='.$samesite;
+			// ARDC CC-2901 added second parameter, false.
+			header($cookie_header, false);
+			return;
+		}
+
+		$setcookie_options = array(
+			'expires' => $expire,
+			'path' => $path,
+			'domain' => $domain,
+			'secure' => $secure,
+			'httponly' => $httponly,
+			'samesite' => $samesite,
+		);
+		setcookie($prefix.$name, $value, $setcookie_options);
 	}
 
 	// --------------------------------------------------------------------

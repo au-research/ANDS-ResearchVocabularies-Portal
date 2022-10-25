@@ -277,7 +277,7 @@ class Vocabs extends MX_Controller
 			$rapid_connect = array(
 				'slug'		=> 'aaf_rapid',
 				'default'	=> true,
-				'display' 	=> 'AAF Rapid Connect',
+				'display' 	=> 'Australian Access Federation Login',
 				'view' 		=>  $this->load->view('authenticators/aaf_rapid',
                                                   false, true)
 			);
@@ -299,8 +299,9 @@ class Vocabs extends MX_Controller
 		delete_cookie('auth_redirect');
 		if ($this->input->get('redirect')) {
 			// CC-1294 Use "set_cookie", not "setcookie".
+			// CC-1294 CC-2901 Specify expiry as 600, not "time() + 3600"!
 			set_cookie('auth_redirect', $this->input->get('redirect'),
-                       time()+3600, '','/', '', TRUE);
+				600, '','/', '', TRUE);
 		}
 
         $this
@@ -1814,8 +1815,13 @@ class Vocabs extends MX_Controller
         $cookie_name = $this->session->sess_cookie_name;
         $cookie = $this->input->cookie($cookie_name);
         if ($cookie) {
+            // CC-2919 Nota optime!
+            // The value of $cookie is raw data, and must be
+            // rawurlencoded before being sent in a header!
+            // (The Registry's RdaCookieAuthenticator.validate()
+            // method _expects_ the content to be URL encoded.)
             ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()
-                ->setApiKey($cookie_name, $cookie);
+                ->setApiKey($cookie_name, rawurlencode($cookie));
         }
         $this->RegistryAPIClient = new ANDS\VocabsRegistry\ApiClient();
         $this->RegistryAPI = new ANDS\VocabsRegistry\Api\ResourcesApi();

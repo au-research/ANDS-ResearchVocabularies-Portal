@@ -70,8 +70,10 @@
           </div>
         @endif
         @if(isset($related['vocab_id']))
-          <div class="pull-right btn btn-link">
-            <a href="{{base_url().'viewById/'.$related['vocab_id']}}" target="_blank">View vocabulary</a>
+          <div class="pull-right">
+            <a role="button"
+               class="btn btn-large btn-primary"
+               href="{{base_url().'viewById/'.$related['vocab_id']}}" target="_blank">View vocabulary</a>
           </div>
         @endif
       </div>

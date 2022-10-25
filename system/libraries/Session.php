@@ -39,6 +39,11 @@ class CI_Session {
     var $cookie_path                = '';
     var $cookie_domain              = '';
     var $cookie_secure              = FALSE;
+    // ARDC CC-2901 Add $cookie_httponly and $cookie_samesite.  However, note
+    // that we don't really _use_ $cookie_httponly: following the upstream
+    // behaviour, the session cookie has the HttpOnly attribute _forced_.
+    var $cookie_httponly            = NULL;
+    var $cookie_samesite            = NULL;
     var $sess_time_to_update        = 300;
     var $encryption_key             = '';
     var $flashdata_key              = 'flash';
@@ -61,9 +66,10 @@ class CI_Session {
         // Set the super object to a local variable for use throughout the class
         $this->CI =& get_instance();
 
+        // ARDC CC-2901 Add $cookie_httponly and $cookie_samesite
         // Set all the session preferences, which can either be set
         // manually via the $params array above or via the config file
-        foreach (array('sess_encrypt_cookie', 'sess_use_database', 'sess_table_name', 'sess_expiration', 'sess_expire_on_close', 'sess_match_ip', 'sess_match_useragent', 'sess_cookie_name', 'cookie_path', 'cookie_domain', 'cookie_secure', 'sess_time_to_update', 'time_reference', 'cookie_prefix', 'encryption_key') as $key)
+        foreach (array('sess_encrypt_cookie', 'sess_use_database', 'sess_table_name', 'sess_expiration', 'sess_expire_on_close', 'sess_match_ip', 'sess_match_useragent', 'sess_cookie_name', 'cookie_path', 'cookie_domain', 'cookie_secure', 'cookie_httponly', 'cookie_samesite', 'sess_time_to_update', 'time_reference', 'cookie_prefix', 'encryption_key') as $key)
         {
             $this->$key = (isset($params[$key])) ? $params[$key] : $this->CI->config->item($key);
         }
@@ -423,14 +429,46 @@ class CI_Session {
         }
 
         // Kill the cookie
-        setcookie(
-                    $this->sess_cookie_name,
-                    addslashes(serialize(array())),
-                    ($this->now - 31500000),
-                    $this->cookie_path,
-                    $this->cookie_domain,
-                    0
-                );
+        // ARDC CC-2901 Support $cookie_httponly and $cookie_samesite.
+        // However, note that we don't really _use_ $cookie_httponly:
+        // following the upstream behaviour, the session cookie has the
+        // HttpOnly attribute _forced_.
+        $value = addslashes(serialize(array()));
+        $expire = $this->now - 31500000;
+        $maxage = 0;
+
+        // $httponly = $this->cookie_httponly;
+        $httponly = TRUE; // Forced. Works OK?
+
+        if ( ! is_php('7.3'))
+        {
+            /* WAS:
+            setcookie(
+                $this->sess_cookie_name,
+                addslashes(serialize(array())),
+                ($this->now - 31500000),
+                $this->cookie_path,
+                $this->cookie_domain,
+                0
+            );
+            */
+            $cookie_header = 'Set-Cookie: '.$this->sess_cookie_name.'='.$value;
+            $cookie_header .= ($expire === 0 ? '' : '; Expires='.gmdate('D, d-M-Y H:i:s T', $expire)).'; Max-Age='.$maxage;
+            $cookie_header .= '; Path='.$this->cookie_path.($this->cookie_domain !== '' ? '; Domain='.$this->cookie_domain : '');
+            $cookie_header .= ($this->cookie_secure ? '; Secure' : '').($httponly ? '; HttpOnly' : '').'; SameSite='.$this->cookie_samesite;
+            // ARDC: added second parameter, false.
+            header($cookie_header, false);
+        } else {
+            $setcookie_options = array(
+                'expires' => $expire,
+                'path' => $this->cookie_path,
+                'domain' => $this->cookie_domain,
+                'secure' => $this->cookie_secure,
+                'httponly' => $httponly,
+                'samesite' => $this->cookie_samesite,
+            );
+            setcookie($this->sess_cookie_name, $value, $setcookie_options);
+        }
 
         // Kill session data
         $this->userdata = array();
@@ -679,14 +717,44 @@ class CI_Session {
         $expire = ($this->sess_expire_on_close === TRUE) ? 0 : $this->sess_expiration + time();
 
         // Set the cookie
-        setcookie(
-            $this->sess_cookie_name,
-            $cookie_data,
-            $expire,
-            $this->cookie_path,
-            $this->cookie_domain,
-            $this->cookie_secure
-        );
+        // ARDC CC-2901 Support $cookie_httponly and $cookie_samesite.
+        // However, note that we don't really _use_ $cookie_httponly:
+        // following the upstream behaviour, the session cookie has the
+        // HttpOnly attribute _forced_.
+        $maxage = ($this->sess_expire_on_close === TRUE) ? 0 : $this->sess_expiration;
+        // $httponly = $this->cookie_httponly;
+        $httponly = TRUE; // Forced. Works OK?
+
+        if ( ! is_php('7.3'))
+        {
+            /* WAS:
+            setcookie(
+               $this->sess_cookie_name,
+               $cookie_data,
+               $expire,
+               $this->cookie_path,
+               $this->cookie_domain,
+               $this->cookie_secure
+               );
+            */
+            $cookie_header = 'Set-Cookie: '.$this->sess_cookie_name.'='.rawurlencode($cookie_data);
+            $cookie_header .= ($expire === 0 ? '' : '; Expires='.gmdate('D, d-M-Y H:i:s T', $expire)).'; Max-Age='.$maxage;
+            $cookie_header .= '; Path='.$this->cookie_path.($this->cookie_domain !== '' ? '; Domain='.$this->cookie_domain : '');
+            $cookie_header .= ($this->cookie_secure ? '; Secure' : '').($httponly ? '; HttpOnly' : '').'; SameSite='.$this->cookie_samesite;
+            // ARDC: added second parameter, false.
+            header($cookie_header, false);
+        } else {
+            $setcookie_options = array(
+                'expires' => $expire,
+                'path' => $this->cookie_path,
+                'domain' => $this->cookie_domain,
+                'secure' => $this->cookie_secure,
+                'httponly' => $httponly,
+                'samesite' => $this->cookie_samesite,
+            );
+            setcookie($this->sess_cookie_name, $cookie_data, $setcookie_options);
+        }
+
     }
 
     // --------------------------------------------------------------------

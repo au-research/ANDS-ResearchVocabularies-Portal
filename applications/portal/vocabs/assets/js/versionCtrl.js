@@ -667,10 +667,21 @@
                         // url: base_url + 'vocabs/upload' + '?owner=' + vocab.owner + '&format=' + ap.format,
                         url: uploadEndpoint,
                         data: {file: file},
+                        /* Since CC-2901, setting the header is now
+                           defunct, because the authentication cookie
+                           now has the HttpOnly attribute, so we can't
+                           read its value. Turns out that this is not
+                           a problem: The browser sends the cookie
+                           correctly anyway!  NB: this relies on the
+                           cookie host _and_ path (currently, "/")
+                           being sufficiently permissive. E.g,. if the
+                           path were more specific, this would _not_
+                           work.
                         headers: {
                             'ands_authentication':
                               readCookie('ands_authentication')
                         }
+                        */
 
                     }).then(function (resp, status, xhr) {
                         // success

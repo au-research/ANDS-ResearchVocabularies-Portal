@@ -42,7 +42,7 @@ class Auth extends CI_Controller {
 			$rapid_connect = array(
 				'slug'		=> 'aaf_rapid',
 				'default'	=> true,
-				'display' 	=> 'AAF Rapid Connect',
+				'display' 	=> 'Australian Access Federation Login',
 				'view' 		=>  $this->load->view('authenticators/aaf_rapid', false, true)
 			);
 			array_push($data['authenticators'], $rapid_connect);
@@ -61,7 +61,8 @@ class Auth extends CI_Controller {
 		delete_cookie('auth_redirect');
 		if ($this->input->get('redirect')) {
 			// CC-1294 Use "set_cookie", not "setcookie".
-			set_cookie('auth_redirect', $this->input->get('redirect'), time()+3600);
+			// CC-1294 CC-2901 Specify expiry as 600, not "time() + 3600"!
+			set_cookie('auth_redirect', $this->input->get('redirect'), 600);
 		}
 
 		$this->load->view('login', $data);
@@ -102,7 +103,7 @@ class Auth extends CI_Controller {
 		// built_in, aaf-rapid, linkedin, shibboleth_sp
 
 		$authenticator_class = $method.'_authenticator';
-		
+
 		if (!file_exists('engine/models/authenticators/'.$authenticator_class.'.php')) {
 			throw new Exception('Authenticator '.$authenticator_class.' not found!');
 		}
@@ -131,7 +132,7 @@ class Auth extends CI_Controller {
 			// $this->auth->post_authentication_hook();
 			throw new Exception($e->getMessage());
 		}
-		
+
 	}
 
 	/**
@@ -283,13 +284,13 @@ class Auth extends CI_Controller {
 		}
 		require_once FCPATH.'/assets/lib/hybridauth/index.php';
 	}
-	
+
 	public function logout(){
 		// Logs the user out and redirects them to the homepage/logout confirmation screen
 		$redirect = $this->input->get('redirect') ? $this->input->get('redirect') : false;
 		$this->user->logout($redirect);
 	}
-	
+
 	//MAYBE DEPRECATED as of R14
 	public function setUser(){
 		$sharedToken = '';
@@ -363,21 +364,21 @@ class Auth extends CI_Controller {
 				$jsonData['message']='problem encountered while registering affiliation';
 			}
 		}
-		
+
 		//$jsonData['message'].=$thisRole. ' affiliates with '.$orgRole;
 		echo json_encode($jsonData);
 
 		//sending email
 		$this->load->library('email');
 		$this->email->from($this->config->item('vocab_admin_email'), 'ANDS Vocabulary Notification');
-		$this->email->to($this->config->item('vocab_admin_email')); 
+		$this->email->to($this->config->item('vocab_admin_email'));
 		$this->email->subject('New user affiliation registered');
 		$message = 'Registering user '.$thisRole. ' to affiliate with '.$orgRole;
 		if($new) $message.='. User created '.$orgRole;
-		$this->email->message($message);	
+		$this->email->message($message);
 		$this->email->send();
 	}
-	
+
 	public function dashboard()
 	{
 		$data['title'] = 'ANDS Online Services Home';
@@ -385,12 +386,12 @@ class Auth extends CI_Controller {
 		$data['scripts'] = array();
 		$data['available_organisations'] = array();
 		$data['group_vocabs'] = array();
-		if($this->user->loggedIn()) 
+		if($this->user->loggedIn())
 		{
 			if(sizeof($this->user->affiliations())>0){
 				$data['hasAffiliation']=true;
 			}else $data['hasAffiliation']=false;
-			
+
 			if (mod_enabled('vocab_service'))
 			{
 				$this->load->model('apps/vocab_service/vocab_services','vocab');
@@ -412,7 +413,7 @@ class Auth extends CI_Controller {
 
 			$this->load->view('dashboard', $data);
 		}
-		else 
+		else
 		{
 			redirect('auth/login');
 		}
@@ -452,7 +453,7 @@ class Auth extends CI_Controller {
 		}
 		$this->load->view('dashboard_records', $data);
 	}
-	
+
 	public function printData($title, $internal_array)
 	{
 		if( $internal_array )
@@ -460,7 +461,7 @@ class Auth extends CI_Controller {
 			print '<b>'.$title."</b><br />\n";
 			foreach($internal_array as $key => $value)
 			{
-				print("$key=");	
+				print("$key=");
 				if( is_array($value) )
 				{
 					foreach( $value as $subvalue )
@@ -472,7 +473,7 @@ class Auth extends CI_Controller {
 				{
 					print($value);
 				}
-				print "<br />\n";			
+				print "<br />\n";
 			}
 		}
 	}
@@ -514,7 +515,7 @@ class Auth extends CI_Controller {
 		}
 
 		$this->load->view('change_password_form', $data);
-		
+
 	}
 
 }

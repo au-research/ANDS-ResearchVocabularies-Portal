@@ -116,7 +116,7 @@ function getIdForSissvocAccessPoint() {
   <div class="box" ng-non-bindable>
     <div
       class="box-title {{ $hasNotCurrentVersion ? 'box-title-collapsible' : '' }}">
-      <h4>
+      <h4 class="break">
         <i class="fa fa-lg fa-caret-down" style="display: none;">&nbsp;</i><i
           class="fa fa-lg fa-caret-right" style="display: none;">&nbsp;</i>
         {{ htmlspecialchars($current_version->getTitle()) }}
@@ -274,7 +274,7 @@ function getIdForSissvocAccessPoint() {
     ?>
     <div class="box" ng-non-bindable>
       <div class="box-title {{ $hasNotCurrentVersion ? 'box-title-collapsible' : '' }}">
-        <h4><i class="fa fa-lg fa-caret-down" style="display: none;"></i>&nbsp;<i class="fa fa-lg fa-caret-right" style="display: none;">&nbsp;</i> {{ htmlspecialchars($version->getTitle()) }} </h4>
+        <h4 class="break"><i class="fa fa-lg fa-caret-down" style="display: none;"></i>&nbsp;<i class="fa fa-lg fa-caret-right" style="display: none;">&nbsp;</i> {{ htmlspecialchars($version->getTitle()) }} </h4>
         <span class="box-tag box-tag box-tag-{{ htmlspecialchars($version->getStatus()) }}"> {{htmlspecialchars($version->getStatus())}} </span>
       </div>
       <div class="clearfix"></div>
