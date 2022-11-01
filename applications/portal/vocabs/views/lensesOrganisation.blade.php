@@ -10,12 +10,12 @@
 @section('content')
   <article>
     <!-- <section class="section element-short-bottom element-short-top"> -->
-    <section class="section element-short-top element-short-bottom swatch-white">
+    <section class="section swatch-gray">
       <div class="container">
-        <div class="row">
+        <div class="row element-short-top">
           <!-- <div id="organisation_content" class="col-md-12"> -->
           <div id="organisation_content"
-               class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-md-offset-2 col-lg-offset-2 animated fadeInUp">
+               class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-md-offset-1 col-lg-offset-1">
             {{ $organisation_content }}
           </div>
         </div>

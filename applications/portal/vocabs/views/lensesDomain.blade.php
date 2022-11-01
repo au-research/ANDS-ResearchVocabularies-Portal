@@ -15,7 +15,7 @@
         <div class="row">
           <!-- <div id="domain_content" class="col-md-12"> -->
           <div id="domain_content"
-               class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-md-offset-2 col-lg-offset-2 animated fadeInUp">
+               class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-md-offset-1 col-lg-offset-1 animated fadeInUp">
             {{ $domain_content }}
           </div>
         </div>
