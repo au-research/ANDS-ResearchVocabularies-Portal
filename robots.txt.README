@@ -1,0 +1,11 @@
+Please copy robots.txt.sample as robots.txt, and modify as necessary
+to suit your setup.
+
+For example, you may prefer to block everything. If so, put this in
+robots.txt instead:
+
+User-agent: *
+Disallow: /
+
+For ARDC-internal use: the various environments have their own
+robots.txt files in the vocabs-portal-config repository.
