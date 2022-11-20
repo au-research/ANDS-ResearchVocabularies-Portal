@@ -380,7 +380,7 @@ class Lenses extends MX_Controller
         }
         $image_content = file_get_contents($image_file);
 
-        header('Content-Type: ' . $content_type); 
+        header('Content-Type: ' . $content_type);
         echo $image_content;
     }
 
