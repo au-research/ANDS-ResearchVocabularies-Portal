@@ -135,6 +135,7 @@
             // Setting folder to true means that clicking on the label
             // opens to show the children.
             // (I.e., the clickFolderMode setting applies to
+            // element.)
             element.folder = true;
             element.children = element.narrower;
             // Show number of children in the title. See also
@@ -330,6 +331,7 @@
             // Setting folder to true means that clicking on the label
             // opens to show the children.
             // (I.e., the clickFolderMode setting applies to
+            // element.)
             element.folder = true;
             // Show number of children in the title. See also
             // loadChildrenHandler_v3, which patches the titles of nodes
