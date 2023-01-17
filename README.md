@@ -1,18 +1,21 @@
-ANDS-ResearchVocabularies-Portal
+ARDC-ResearchVocabularies-Portal
 ================================
 
-Repository of the ANDS Research Vocabularies Portal (currently
-maintained by the Australian National Data Service)
+NB: this was formerly known as "ANDS-ResearchVocabularies-Portal", and
+this is still the name of the publcly-visible repository in GitHub.
+
+Repository of the ARDC Research Vocabularies Portal (currently
+maintained by the Australian Research Data Commons)
 https://documentation.ardc.edu.au/
 
-### ANDS Research Vocabularies Repository Structure
+### ARDC Research Vocabularies Repository Structure
 
 The Research Vocabularies software is structured into a number of
 separate software repositories, which need to be deployed together:
 
 - (this repository) `au-research/ANDS-ResearchVocabularies-Portal` - the front-end portal codebase.
 - `au-research/ANDS-ResearchVocabularies-Registry` - the back-end registry and toolkit.
-- `au-research/ANDS-ResearchVocabularies-LDA` - ANDS-local customizations applied to the SISSVoc implementation of the Linked Data API.
+- `au-research/ANDS-ResearchVocabularies-LDA` - ARDC-local customizations applied to the SISSVoc implementation of the Linked Data API.
 
 ### Installation and Support
 
