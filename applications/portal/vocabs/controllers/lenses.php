@@ -307,8 +307,7 @@ class Lenses extends MX_Controller
         $this->blade
             ->set('organisation', $organisation)
             ->set('organisation_content', $organisation_content)
-            // No script needed yet.
-            // ->set('scripts', array('lensesOrganisation'))
+            ->set('scripts', array('isotopeInit'))
             ->set('page', 'lensesOrganisation')
             ->set('lensMenu', $lensMenu)
             ->render('lensesOrganisation');
@@ -380,7 +379,7 @@ class Lenses extends MX_Controller
         }
         $image_content = file_get_contents($image_file);
 
-        header('Content-Type: ' . $content_type); 
+        header('Content-Type: ' . $content_type);
         echo $image_content;
     }
 
