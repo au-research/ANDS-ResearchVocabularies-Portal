@@ -46,9 +46,15 @@
 	@include('includes/scripts')
 </head>
 
-<!-- Environment Indicator -->
 @if(ENVIRONMENT!='production')
+	<!-- Environment Indicator -->
 	<div class="environment" style="background:{{get_config_item('environment_colour')}};color:white;padding:5px 10px;">
 		<h5>{{get_config_item('environment_name')}} - {{ENVIRONMENT}}</h5>
+	</div>
+@endif
+@if(env('HEADER_BANNER','')!='')
+	<!-- General-purpose header banner, e.g., for maintenance window. -->
+	<div class="environment" style="background:{{env('HEADER_BANNER_COLOUR','#ff0000')}};color:white;padding:5px 10px;">
+		<h5>{{env('HEADER_BANNER')}}</h5>
 	</div>
 @endif
