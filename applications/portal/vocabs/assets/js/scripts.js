@@ -2756,7 +2756,7 @@ $(document).on(
     function (event) {
             event.preventDefault();
             $(this).hide();
-            var box     = $(this).parents('.box-content');
+            var box     = $(this).parents('.sp-box');
             var content = $('.sp', box);
             content.slideDown('fast');
     }
