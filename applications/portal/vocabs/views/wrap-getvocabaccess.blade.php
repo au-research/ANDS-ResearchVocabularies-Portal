@@ -183,21 +183,23 @@ function getIdForSissvocAccessPoint() {
       @endforeach
       @foreach($current_version->getAccessPoint() as $ap)
         @if($ap->getDiscriminator() === AP_API_SPARQL)
-          <div class="text-center">
-            {{--  href not in play, as click event overridden due to showsp --}}
-            <small><a class="showsp" href="javascript:;">Show SPARQL Endpoint</a></small>
-          </div>
-          <div class="sp text-center collapse">
-            <small>SPARQL Endpoint:</small>
-            <p style="word-break: break-all">
-              <a target="_blank"
-                onclick="$.ajax('{{ onclickURL($vocab, $current_version, $ap) }}'); return true"
-                href="{{ $ap->getApApiSparql()->getUrl() }}"><i
-                class="fa fa-cog"></i> {{ htmlspecialchars($ap->getApApiSparql()->getUrl()) }}</a>
-            </p>
-            <p>
-              <a target="_blank" href="https://documentation.ardc.edu.au/display/DOC/SPARQL+endpoint">Learn More</a>
-            </p>
+          <div class="sp-box">
+            <div class="text-center">
+              {{--  href not in play, as click event overridden due to showsp --}}
+              <small><a class="showsp" href="javascript:;">Show SPARQL Endpoint</a></small>
+            </div>
+            <div class="sp text-center collapse">
+              <small>SPARQL Endpoint:</small>
+              <p style="word-break: break-all">
+                <a target="_blank"
+                  onclick="$.ajax('{{ onclickURL($vocab, $current_version, $ap) }}'); return true"
+                  href="{{ $ap->getApApiSparql()->getUrl() }}"><i
+                  class="fa fa-cog"></i> {{ htmlspecialchars($ap->getApApiSparql()->getUrl()) }}</a>
+              </p>
+              <p>
+                <a target="_blank" href="https://documentation.ardc.edu.au/display/DOC/SPARQL+endpoint">Learn More</a>
+              </p>
+            </div>
           </div>
         @endif
       @endforeach
@@ -320,21 +322,23 @@ function getIdForSissvocAccessPoint() {
 
         @foreach($version->getAccessPoint() as $ap)
           @if($ap->getDiscriminator() === AP_API_SPARQL)
-            <div class="text-center">
-              {{--  href not in play, as click event overridden due to showsp --}}
-              <small><a class="showsp" href="{{ $ap->getApApiSparql()->getUrl() }}">Show SPARQL Endpoint</a></small>
-            </div>
-            <div class="sp text-center collapse">
-              <small>SPARQL Endpoint:</small>
-              <p style="word-break:break-all">
-                <a target="_blank"
-                  onclick="$.ajax('{{ onclickURL($vocab, $version, $ap) }}'); return true"
-                  href="{{ $ap->getApApiSparql()->getUrl() }}"><i
-                  class="fa fa-cog"></i> {{ htmlspecialchars($ap->getApApiSparql()->getUrl()) }}</a>
-              </p>
-              <p>
-                <a target="_blank" href="https://documentation.ardc.edu.au/display/DOC/SPARQL+endpoint">Learn More</a>
-              </p>
+            <div class="sp-box">
+              <div class="text-center">
+                {{--  href not in play, as click event overridden due to showsp --}}
+                <small><a class="showsp" href="{{ $ap->getApApiSparql()->getUrl() }}">Show SPARQL Endpoint</a></small>
+              </div>
+              <div class="sp text-center collapse">
+                <small>SPARQL Endpoint:</small>
+                <p style="word-break:break-all">
+                  <a target="_blank"
+                    onclick="$.ajax('{{ onclickURL($vocab, $version, $ap) }}'); return true"
+                    href="{{ $ap->getApApiSparql()->getUrl() }}"><i
+                    class="fa fa-cog"></i> {{ htmlspecialchars($ap->getApApiSparql()->getUrl()) }}</a>
+                </p>
+                <p>
+                  <a target="_blank" href="https://documentation.ardc.edu.au/display/DOC/SPARQL+endpoint">Learn More</a>
+                </p>
+              </div>
             </div>
           @endif
         @endforeach
