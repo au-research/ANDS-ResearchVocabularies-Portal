@@ -932,6 +932,20 @@
           </div>
         </div>  <!-- End of facet/filter contents for resources tab -->
 
+        <!-- Checking {vocabularies,resources}.result.response.docs is a
+             trick used elsewhere to make this div visible only when the
+             filter panel's contents are completely displayed.  See the
+             definition of $scope.tabChanged(). -->
+        <div ng-show="(filters.activeTab == 'vocabularies' &&
+                       vocabularies.result.response.docs) ||
+                      (filters.activeTab == 'resources' &&
+                       resources.result.response.docs)">
+          <a target="_blank"
+             href="https://ardc.edu.au/researcher/?utm_source=RVA&utm_medium=referral-G&utm_id=TRDC&utm_term=generic&utm_content=rva-search">
+            <img src="{{asset_url('images/GEN-330pxAdSpace.gif')}}"/>
+          </a>
+        </div>
+
       </div> <!-- End of sidebar -->
 
       <div class="col-md-8 col-lg-9">
