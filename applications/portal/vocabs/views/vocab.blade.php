@@ -388,7 +388,7 @@ foreach ($vocab->getSubject() as $subject) {
     </div>
   @endif
 
-  <div >
+  <div class="element-short-bottom">
     <a target="_blank"
        href="{{ $ad_href }}">
       <img src="{{asset_url('images/' . $ad_image)}}"/>
