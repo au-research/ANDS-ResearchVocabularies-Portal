@@ -27,6 +27,7 @@
             <li><a href="{{portal_url('vocabs/page/contribute')}}">Publish a vocabulary</a></li>
             <li><a href="{{portal_url('vocabs/page/use')}}">Use a vocabulary</a></li>
             <li><a href="{{portal_url('vocabs/page/feedback')}}">Give feedback on vocabularies</a></li>
+            <li><a href="https://ardc.edu.au/researcher/?utm_source=RVA&amp;utm_medium=referral-G&amp;utm_id=TRDC&amp;utm_term=generic&amp;utm_content=rva-menu" target="_blank">Researcher guides</a></li>
           </ul></li>
         @if(!empty($lensMenu))
           <li> <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"

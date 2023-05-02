@@ -54,6 +54,7 @@
           <div id="categories-4" class="sidebar-widget widget_categories text-uppercase">
             <h5 class="sidebar-header">External Resources</h5>
             <ul>
+              <li class="cat-item"> <a href="https://ardc.edu.au/researcher/?utm_source=RVA&amp;utm_medium=referral-G&amp;utm_id=TRDC&amp;utm_term=generic&amp;utm_content=rva-footer" title="" target="_blank">Researcher guides</a></li>
               <li class="cat-item"> <a href="https://ardc.edu.au/" title="" target="_blank">ARDC Website</a> </li>
               <li class="cat-item"> <a href="https://documentation.ardc.edu.au/" title="" target="_blank">Developers</a> </li>
               <!-- <li class="cat-item"> <a href="{{base_url('registry/')}}" title="">ARDC Online Services</a> </li> -->

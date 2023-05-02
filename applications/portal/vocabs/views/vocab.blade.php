@@ -74,6 +74,41 @@ foreach ($vocab->getVersion() as $version) {
         }
 }
 
+// Determine the "ad" to show.
+// Default to the generic ad.
+$ad_image = 'GEN-330pxAdSpace.gif';
+$ad_href = 'https://ardc.edu.au/researcher/?utm_source=RVA&utm_medium=referral-G&utm_id=TRDC&utm_term=generic&utm_content=rva-view';
+$subjects = $vocab->getSubject();
+foreach ($vocab->getSubject() as $subject) {
+  if ($subject->getSource() != 'anzsrc-for') {
+    continue;
+  }
+  $notation_first_two_digits = substr($subject->getNotation(), 0, 2);
+  // We only show one ad, so first match wins.
+  switch ($notation_first_two_digits) {
+    case '04':
+    case '05':
+      $ad_image = 'Planet-330pxAdSpace.gif';
+      $ad_href = 'https://ardc.edu.au/campaign/accelerate-your-earth-and-environmental-sciences-research/?utm_source=RVA&utm_medium=referral-EE&utm_id=TRDC&utm_term=planet&utm_content=rva-view';
+      break 2;
+    case '11':
+      $ad_image = 'People-330pxAdSpace.gif';
+      $ad_href = 'https://ardc.edu.au/campaign/accelerate-your-health-and-medical-research/?utm_source=RVA&utm_medium=referral-HM&utm_id=TRDC&utm_term=people&utm_content=rva-view';
+      break 2;
+    case '13':
+    case '16':
+    case '17':
+    case '19':
+    case '20':
+    case '21':
+    case '22':
+      $ad_image = 'HASS-330pxAdSpace.gif';
+      $ad_href = 'https://ardc.edu.au/campaign/accelerate-your-hass-and-indigenous-research/?utm_source=RVA&utm_medium=referral-HASS&utm_id=TRDC&utm_term=HASS&utm_content=rva-view';
+      break 2;
+    default:
+      break;
+  }
+}
 
 ?>
 
@@ -352,5 +387,12 @@ foreach ($vocab->getVersion() as $version) {
       </div>
     </div>
   @endif
+
+  <div class="element-short-bottom">
+    <a target="_blank"
+       href="{{ $ad_href }}">
+      <img src="{{asset_url('images/' . $ad_image)}}"/>
+    </a>
+  </div>
 
 @stop
