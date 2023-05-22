@@ -292,18 +292,23 @@
                 'This is a top concept of the containing concept scheme.</p>';
         }
 
+        if ('altLabels' in element) {
+            tipText = tipText + '<p><b>Alternate label(s):</b> ';
+            tipText = tipText + escapeHtml(element.altLabels.join(', '));
+            tipText = tipText + '</p>';
+        }
         if ('definition' in element) {
-            tipText = tipText + '<p><b>Definition: </b>' +
+            tipText = tipText + '<p><b>Definition:</b> ' +
                 escapeHtml(element.definition) + '</p>';
         }
         // Show description, but only if different from definition.
         if (('dctermsDescription' in element) &&
            element.dctermsDescription != element.definition) {
-            tipText = tipText + '<p><b>Description: </b>' +
+            tipText = tipText + '<p><b>Description:</b> ' +
                 escapeHtml(element.dctermsDescription) + '</p>';
         }
         if ('notation' in element) {
-            tipText = tipText + '<p><b>Notation: </b>' +
+            tipText = tipText + '<p><b>Notation:</b> ' +
                 escapeHtml(element.notation) + '</p>';
         }
         if (sissvoc_endpoint != '') {
@@ -1348,7 +1353,7 @@
                     var reHighlight = new RegExp(_escapeRegex(match), "gi");
 
                     // Custom filter to search not only titles,
-                    // but also definitions and notations.
+                    // but also altLabels, definitions, and notations.
                     var filterImpl = function(node) {
                         if (!node.title) {
                             return false;
@@ -1359,15 +1364,24 @@
                         var text = node.title,
                             res = !!re.test(text);
                         if (!res) {
-                            // Also test definitions and notations.
+                            // Also test altLabels, definitions, and notations.
                             // Note that we don't override the variable text here;
                             // that continues to hold the node title, as that
                             // is what is highlighted.
-                            var definition = extractHtmlText(node.data.definition);
-                            res = !!re.test(definition);
+                            var altLabels = node.data.altLabels;
+                            if (altLabels != undefined) {
+                                for (let l of altLabels) {
+                                    res = !!re.test(l);
+                                    if (res) break;
+                                }
+                            }
                             if (!res) {
-                                var notation = extractHtmlText(node.data.notation);
-                                res = !!re.test(notation);
+                                var definition = extractHtmlText(node.data.definition);
+                                res = !!re.test(definition);
+                                if (!res) {
+                                    var notation = extractHtmlText(node.data.notation);
+                                    res = !!re.test(notation);
+                                }
                             }
                         }
 
