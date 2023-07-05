@@ -213,15 +213,16 @@
         $log.debug("Editing Version", $scope.version);
 
         $scope.action = version ? 'save' : 'add';
-        $scope.formats = ['RDF/XML', 'TTL', 'N-Triples', 'JSON', 'TriG',
-                          'TriX', 'N3', 'CSV', 'TSV', 'XLS', 'XLSX',
-                          'BinaryRDF', 'ODS', 'ZIP', 'XML', 'TXT', 'ODT',
-                          'PDF'];
         $scope.types = [{"value": "webPage", "text": "Web page"},
             {"value": "apiSparql", "text": "API/SPARQL endpoint"},
             {"value": "file", "text": "File"}
         ];
 
+        // Whenever updating this list, you must also update the
+        // contents of FILE_FORMAT_TO_MIMETYPE_MAP (and possibly
+        // also SESAME_FORMAT_TO_MIMETYPE_MAP) in Vocabs-Registry
+        // (GitHub: ANDS-ResearchVocabularies-Registry) file:
+        // src/main/java/au/org/ands/vocabs/toolkit/restlet/Download.java
         $scope.typeFormatOptions = [
             { name: 'Web page', value: 'webPage'},
             { name: 'API/SPARQL endpoint', value: 'apiSparql'},
