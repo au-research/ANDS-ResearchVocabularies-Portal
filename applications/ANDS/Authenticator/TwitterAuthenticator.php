@@ -68,8 +68,10 @@ class TwitterAuthenticator
         $profile = [
             'identifier' => $access['user_id'],
             'photoURL' => $profile->data->profile_image_url,
-            'displayName' => $access['screen_name'],
+            // Construct a display name of the form "My Real Name (@myHandle)".
+            'displayName' => $profile->data->name . ' (@' . $access['screen_name'] . ')',
             'firstName' => $profile->data->name,
+            'handle' => $access['screen_name'],
             'lastName' => '',
             'email' => '',
             'accessToken' => $access['oauth_token'],
