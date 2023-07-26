@@ -239,7 +239,7 @@ $ENV['tracking'] =
             )
     );
 
-//OAUTH Configuration
+// CC-2968 LEGACY OAUTH Configuration; not used
 $ENV['oauth_config'] =
 	array(
 		// set on "base_url" the relative url that point to HybridAuth Endpoint
