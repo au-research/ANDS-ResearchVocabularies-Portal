@@ -1,7 +1,7 @@
 <div id="browse-tree" class="panel swatch-white" ng-if="hasTree">
   <div class="panel-body" style="padding-bottom: 0px">
     <p>
-      <a href="https://documentation.ardc.edu.au/display/DOC/Browsing+vocabulary+concepts" target="_blank">
+      <a href="https://documentation.ardc.edu.au/rva/browsing-vocabulary-concepts" target="_blank">
         <i class="fa fa-question-circle" style="color: #7e408a"></i> Using browse
       </a>
     </p>

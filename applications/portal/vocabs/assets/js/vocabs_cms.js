@@ -1898,31 +1898,33 @@
 
     }
 
-    /* Load help document containing the tooltips.
-       Note the URL: configure the web server to
-       proxy the pages.  Here is a suitable rva_doc.conf to go
-       into /etc/httpd/conf.d:
+    /* Load help document containing the tooltips.  Note the URL:
+       configure the web server to use a local cache of the pages.
+       Here is a suitable rva_doc.conf to go into /etc/httpd/conf.d:
 
-SSLProxyEngine on
+# Serve the Vocab Portal's CMS tooltips; content cached locally
+# from ARDC's public Confluence.
 
 # Use /ands_doc/tooltips in the code as the location of the RVA portal tooltips.
 # Then rewrite it here to point to the appropriate Confluence page.
 # Doing it here means you don't have to change the code if the original
 # page moves.
 
-RewriteRule ^/ands_doc/tooltips$  /ands_doc/pages/viewpage.action?pageId=22478849  [PT]
+RewriteEngine On
 
-# Need to proxy the Confluence pages so as to be able to get images too.
-<Location /ands_doc>
+# The front page.
+RewriteRule ^/ands_doc/tooltips$  "/opt/ardc/vocabs-portal-cms-tooltips/documentation.ardc.edu.au/pages/viewpage.action\%3FpageId=22478849.html" [B,NE,L,END]
 
-  ProxyPass https://documentation.ardc.edu.au/
-  ProxyPassReverse https://documentation.ardc.edu.au/
+# The remaining content (CSS, images, etc.).
+# With a query string ...
+RewriteCond %{QUERY_STRING} !^$
+RewriteRule ^/ands_doc/(.*)$  "/opt/ardc/vocabs-portal-cms-tooltips/documentation.ardc.edu.au/$1\%3F%{QUERY_STRING}" [NE,L,END]
+# ... and without.
+RewriteRule ^/ands_doc/(.*)$  "/opt/ardc/vocabs-portal-cms-tooltips/documentation.ardc.edu.au/$1" [NE,L,END]
 
-  # Confluence adds this header. Once you view such a page in Firefox,
-  # it "infects" access to _this_ server, preventing non-SSL access via
-  # browser to all ports (e.g., including 8080).
-  Header unset Strict-Transport-Security
-</Location>
+<Directory "/opt/ardc/vocabs-portal-cms-tooltips">
+  Require all granted
+</Directory>
 
     */
     $(document).ready(function() {
