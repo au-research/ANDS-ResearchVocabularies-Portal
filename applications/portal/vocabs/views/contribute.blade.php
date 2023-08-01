@@ -37,7 +37,7 @@
                     Contact <a href="mailto:services@ardc.edu.au">services@ardc.edu.au</a> to register for the RVA editor.
                    </p>
                     <p>
-                    Learn more about the <a href="https://documentation.ardc.edu.au/pages/viewpage.action?pageId=86192087" target="_blank">RVA editor</a>.
+                    Learn more about the <a href="https://documentation.ardc.edu.au/rva/what-is-rva-editor-poolparty" target="_blank">RVA editor</a>.
                     </p>
                 </div>
                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
@@ -56,7 +56,7 @@
                         Contact <a href="mailto:services@ardc.edu.au">services@ardc.edu.au</a> to register for the RVA portal.
                     </p>
                     <p>
-                        Learn more about the <a href="https://documentation.ardc.edu.au/pages/viewpage.action?pageId=19529985" target="_blank">RVA portal</a>.
+                        Learn more about the <a href="https://documentation.ardc.edu.au/rva/what-is-the-research-vocabularies-australia-portal" target="_blank">RVA portal</a>.
                     </p>
                 </div>
                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">

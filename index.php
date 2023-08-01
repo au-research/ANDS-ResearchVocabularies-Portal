@@ -22,6 +22,8 @@ if (!file_exists('./vendor/autoload.php')) {
     die("Installation incompleted. vendor directory missing. Try running composer install");
 }
 require_once './vendor/autoload.php';
+// Our customized Twitter auth
+require_once './applications/abraham/twitteroauth/autoload.php';
 
 // pull in .env file
 if (!file_exists('.env')) {

@@ -35,8 +35,9 @@
         "jaybizzle/crawler-detect": "1.*",
         "vlucas/phpdotenv": "^2.4",
         "google/recaptcha": "~1.1",
-        "google/apiclient": "^2.2",
-        "abraham/twitteroauth": "^0.9.2",
+        "google/apiclient": "2.4.0",
+        "google/apiclient-services": "v0.121",
+        "google/auth": "v1.6.1",
         "facebook/graph-sdk": "^5.6",
         "illuminate/support": "~5.2.0",
         "au-research/vocabs-php-client": "@dev"

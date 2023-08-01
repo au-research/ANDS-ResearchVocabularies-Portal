@@ -278,12 +278,15 @@ class Auth extends CI_Controller {
 	 * DEPRECATED
 	 * TODO Remove
 	 */
+        /* CC-2968 As noted in the previous comment, we don't use it.
+           Comment it out for now.
 	public function oauth(){
 		if ($_SERVER['REQUEST_METHOD'] === 'GET'){
 			$_GET = $_REQUEST;
 		}
 		require_once FCPATH.'/assets/lib/hybridauth/index.php';
 	}
+        */
 
 	public function logout(){
 		// Logs the user out and redirects them to the homepage/logout confirmation screen

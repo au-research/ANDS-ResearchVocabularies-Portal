@@ -197,7 +197,7 @@ function getIdForSissvocAccessPoint() {
                   class="fa fa-cog"></i> {{ htmlspecialchars($ap->getApApiSparql()->getUrl()) }}</a>
               </p>
               <p>
-                <a target="_blank" href="https://documentation.ardc.edu.au/display/DOC/SPARQL+endpoint">Learn More</a>
+                <a target="_blank" href="//documentation.ardc.edu.au/rva/sparql-endpoint">Learn More</a>
               </p>
             </div>
           </div>
@@ -336,7 +336,7 @@ function getIdForSissvocAccessPoint() {
                     class="fa fa-cog"></i> {{ htmlspecialchars($ap->getApApiSparql()->getUrl()) }}</a>
                 </p>
                 <p>
-                  <a target="_blank" href="https://documentation.ardc.edu.au/display/DOC/SPARQL+endpoint">Learn More</a>
+                  <a target="_blank" href="//documentation.ardc.edu.au/rva/sparql-endpoint">Learn More</a>
                 </p>
               </div>
             </div>

@@ -28,7 +28,7 @@
             </div>
           </form>
           <div class="pull-right">
-            <a href="https://documentation.ardc.edu.au/display/DOC/Vocabulary+search" target="_blank"><i class="fa fa-question-circle"></i> Using search</a><span class="emsp"></span>
+            <a href="https://documentation.ardc.edu.au/rva/vocabulary-search" target="_blank"><i class="fa fa-question-circle"></i> Using search</a><span class="emsp"></span>
             <a href="{{ portal_url('search/#!/?activeTab=vocabularies') }}">Browse all vocabularies</a>
             |
             <a href="{{ portal_url('search/#!/?activeTab=resources') }}">concepts</a>
