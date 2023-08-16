@@ -333,7 +333,7 @@ foreach ($vocab->getSubject() as $subject) {
                 echo implode(array_map('trim', array_map('readable', $relatedRef->getRelation())), ', ');
                 ?>
               </small>
-              <a href="" class="re_preview" related='{{htmlspecialchars($relatedRef, ENT_QUOTES)}}'
+              <a href="" class="re_preview break" related='{{htmlspecialchars($relatedRef, ENT_QUOTES)}}'
               > {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
             </p>
           @endforeach
@@ -348,7 +348,7 @@ foreach ($vocab->getSubject() as $subject) {
                 $relatedRef->getRelation())), ', ');
                 ?>
               </small>
-              <a href="" class="re_preview" related='{{htmlspecialchars($relatedRef, ENT_QUOTES)}}'
+              <a href="" class="re_preview break" related='{{htmlspecialchars($relatedRef, ENT_QUOTES)}}'
               > {{htmlspecialchars($relatedRef->getRelatedEntity()->getTitle())}}</a>
             </p>
           @endforeach
@@ -360,7 +360,7 @@ foreach ($vocab->getSubject() as $subject) {
                 $relatedRef->getRelation())), ', ');
                 ?>
               </small>
-              <a href="" class="re_preview"  related='{{htmlspecialchars($relatedRef, ENT_QUOTES)}}'
+              <a href="" class="re_preview break"  related='{{htmlspecialchars($relatedRef, ENT_QUOTES)}}'
               > {{htmlspecialchars($relatedRef->getRelatedVocabulary()->getTitle())}}</a>
             </p>
           @endforeach

@@ -368,14 +368,14 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                   </thead>
                   <tbody>
                     <tr ng-repeat="related in vocab.related_entity track by $index">
-                      <td><a href="" ng-click="relatedmodal('edit', related.type, $index)"
+                      <td style="max-width: 200px"><a class="break" href="" ng-click="relatedmodal('edit', related.type, $index)"
                              tooltip="[[ related.relationship.join() ]]">[[ related.title ]]</a></td>
                       <td>[[ related.type ]]</td>
                       <td><a href="" ng-click="list_remove('related_entity', $index)"
                              title="Remove this related entity"><i class="fa fa-remove"></i></a></td>
                     </tr>
                     <tr ng-repeat="related in vocab.related_vocabulary track by $index">
-                      <td><a href="" ng-click="relatedvocabularymodal('edit', $index)"
+                      <td style="max-width: 200px"><a class="break" href="" ng-click="relatedvocabularymodal('edit', $index)"
                              tooltip="[[ related.relationship.join() ]]">[[ related.title ]]</a></td>
                       <td>internal</td>
                       <td><a href="" ng-click="list_remove('related_vocabulary', $index)"
