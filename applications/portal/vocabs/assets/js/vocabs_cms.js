@@ -1385,14 +1385,14 @@
 
             $scope.errors = [];
 
-            // show servers errores
+            // Show errors from Registry.
             if ("message" in payload) {
                 $scope.errors = [ payload.message ];
             } else {
                 $log.debug("No message found in ", payload);
             }
 
-            // show constraints violation
+            // Show constraint violations, sorted.
             if ("constraintViolation" in payload) {
                 $scope.errors = payload.constraintViolation.map(function (item) {
 		    var error_text = item.message;
@@ -1400,12 +1400,13 @@
 			// Note parens in regex: we don't want the brackets in the match.
 			var path = item.path.match(/\[(\d+)\]/);
 			if (path !== null) {
-			    // Use first capturing group only, i.e., without the brackets.
+			    // 1. Use first capturing group only, i.e., without the brackets.
+			    // 2. The paths are zero-based; add one to make them user-friendlier.
 			    error_text = error_text + ": position " + (parseInt(path[1]) + 1);
 			}
 		    }
                     return error_text;
-                });
+                }).sort();
             } else {
                 $log.debug("No constraintViolation found in ", payload);
             }
