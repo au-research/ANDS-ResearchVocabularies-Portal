@@ -442,7 +442,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
 
                 <div class="alert alert-danger element-short-top os-animation animated fadeInUp"
                      data-os-animation="fadeInUp"
-                     ng-repeat="error in errors">
+                     ng-repeat="error in errors track by $index">
                   [[ error ]]
                 </div>
 
