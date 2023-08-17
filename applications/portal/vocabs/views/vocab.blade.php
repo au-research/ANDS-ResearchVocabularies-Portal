@@ -58,20 +58,22 @@ foreach ($vocab->getRelatedVocabularyRef() as $relatedVocabRef) {
 
 // Determine whether or not to show the widgetableness.
 // Set $sissvocEndPoint if it is to be shown.
-foreach ($vocab->getVersion() as $version) {
-    if (($version->getStatus() === Version::STATUS_CURRENT
-        && !empty($version->getAccessPoint()))
-        || ($version->getStatus() === Version::STATUS_SUPERSEDED
-            && !empty($version->getAccessPoint())
-            && isset($superseded_version))) {
-            foreach ($version->getAccessPoint() as $ap)
-            {
-                if(is_object($ap->getApSissvoc())) {
-                    $url = $ap->getApSissvoc()->getUrlPrefix();
-                    $sissvocEndPoint = $url;
-                }
-            }
+if (isset($current_version)) {
+    foreach ($current_version->getAccessPoint() as $ap) {
+        if (is_object($ap->getApSissvoc())) {
+            $url = $ap->getApSissvoc()->getUrlPrefix();
+            $sissvocEndPoint = $url;
+            break;
         }
+    }
+} elseif (isset($superseded_version)) {
+    foreach ($superseded_version->getAccessPoint() as $ap) {
+        if (is_object($ap->getApSissvoc())) {
+            $url = $ap->getApSissvoc()->getUrlPrefix();
+            $sissvocEndPoint = $url;
+            break;
+        }
+    }
 }
 
 // Determine the "ad" to show.
@@ -231,6 +233,11 @@ foreach ($vocab->getSubject() as $subject) {
             @if(isset($current_version))
                 <div ng-controller="visualise"
                 versionid="{{ $current_version->getId() }}">
+                @include('wrap-visualise')
+                </div>
+            @elseif(isset($superseded_version))
+                <div ng-controller="visualise"
+                versionid="{{ $superseded_version->getId() }}">
                 @include('wrap-visualise')
                 </div>
             @endif
