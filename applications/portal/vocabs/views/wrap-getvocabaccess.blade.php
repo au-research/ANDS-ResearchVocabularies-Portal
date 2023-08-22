@@ -1,12 +1,5 @@
 <?php
 
-// check if there's not current version
-$hasNotCurrentVersion = false;
-foreach ($vocab->getVersion() as $version) {
-    if ($version->getStatus() !== ANDS\VocabsRegistry\Model\Version::STATUS_CURRENT && ! empty($version->getAccessPoint())) {
-        $hasNotCurrentVersion = true;
-    }
-}
 // Doesn't work due to scoping rules.
 //   use ANDS\VocabsRegistry\Model\AccessPoint;
 // So define constants instead.
