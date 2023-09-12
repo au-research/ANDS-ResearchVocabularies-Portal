@@ -2480,6 +2480,17 @@ $(document).ready(
                 }
             );
         }
+
+        // Control that's visible on page load when and only when
+        // there are more than a certain number of supserseded
+        // versions.
+        $('#showSupersededVersions').click(
+            function (event) {
+                event.preventDefault();
+                $('#hiddenSupersedVersions').show();
+                $('#hideAfterShowingSuperdedVersions').hide();
+            }
+	);
     }
 );
 
