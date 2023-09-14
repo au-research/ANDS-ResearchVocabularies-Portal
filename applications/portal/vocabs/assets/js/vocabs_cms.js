@@ -1331,7 +1331,8 @@
             case 'add': action = 'create'; break;
             case 'edit': action = 'update'; break;
             }
-            $.ajax(base_url + 'vocabs/logCms',
+            // CC-2920 Capture the return value; we use it later ...
+            var logCmsPromise = $.ajax(base_url + 'vocabs/logCms',
                    {
                        'data': {
                            'action': action,
@@ -1356,15 +1357,23 @@
             $scope.show_alert_after_save(resp, function() {
                 if ($scope.targetStatus === "published" ||
                     $scope.targetStatus === "deprecated") {
-                    window.location.replace(base_url + "viewById/" +
-                                            resp.getId());
+                    // ... (CC-2920) Wait for logCms to complete
+                    // before navigating.
+                    logCmsPromise.always(function() {
+                        window.location.replace(base_url + "viewById/" +
+                                                resp.getId());
+                    });
                     return;
                 }
 
                 if ($scope.mode === "add") {
-                    // relocate to the new edit page with an id now
-                    window.location.replace(base_url +
-                                            'vocabs/edit/' + resp.getId());
+                    // ... (CC-2920) Wait for logCms to complete
+                    // before navigating.
+                    logCmsPromise.always(function() {
+                        // relocate to the new edit page with an id now
+                        window.location.replace(base_url +
+                                                'vocabs/edit/' + resp.getId());
+                    });
                     return;
                 }
             });
