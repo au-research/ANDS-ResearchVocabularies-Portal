@@ -14,6 +14,11 @@ define("AP_SISSVOC",
 define("AP_WEB_PAGE",
         ANDS\VocabsRegistry\Model\AccessPoint::DISCRIMINATOR_WEB_PAGE);
 
+// Maximum number of superseded versions to show on page load.
+// If there are more than that, the remaining ones will
+// be initially hidden.
+define("DEFAULT_SUPERSEDED_VERSIONS", 5);
+
 // check if there's not current version
 $hasNotCurrentVersion = true;
 foreach ($vocab->getVersion() as $version) {
@@ -245,7 +250,7 @@ function getIdForSissvocAccessPoint() {
   </div>
 @endif <!-- current_version -->
 
-<?php $first = true; ?>
+<?php $first = true; $supersedVersionsDisplayed = 0; ?>
 @foreach($vocab->getVersion() as $version)
 
   @if($version->getStatus() !== ANDS\VocabsRegistry\Model\Version::STATUS_CURRENT && !empty($version->getAccessPoint()))
@@ -267,6 +272,9 @@ function getIdForSissvocAccessPoint() {
         $singleFile = true;
       }
     ?>
+    @if ($supersedVersionsDisplayed == DEFAULT_SUPERSEDED_VERSIONS)
+    <div id="hiddenSupersedVersions" style="display: none;">
+    @endif
     <div class="box" ng-non-bindable>
       <div class="box-title {{ $hasNotCurrentVersion ? 'box-title-collapsible' : '' }}">
         <h4 class="break"><i class="fa fa-lg fa-caret-down" style="display: none;"></i>&nbsp;<i class="fa fa-lg fa-caret-right" style="display: none;">&nbsp;</i> {{ htmlspecialchars($version->getTitle()) }} </h4>
@@ -382,6 +390,11 @@ function getIdForSissvocAccessPoint() {
 
       </div>
     </div>
+    <?php $first = false; $supersedVersionsDisplayed++; ?>
   @endif
-    <?php $first = false; ?>
 @endforeach
+
+@if ($supersedVersionsDisplayed > DEFAULT_SUPERSEDED_VERSIONS)
+  </div>
+  <div class="box" id="hideAfterShowingSuperdedVersions"><div class="box-content text-center"><a id="showSupersededVersions" href="#">Show the other superseded versions</a></div></div>
+@endif

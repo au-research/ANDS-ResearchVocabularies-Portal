@@ -33,6 +33,8 @@
             {"value": "implementedBy", "text": "Implementer",
              "types": ["party"]},
             {"value": "consumerOf", "text": "Consumer", "types": ["party"]},
+            {"value": "isFundedBy", "text": "Funder",
+             "types": ["party"]},
             {"value": "hasAssociationWith", "text": "Associated with",
              "types": ["service", "vocabulary"]},
             {"value": "isPresentedBy", "text": "Presented by",
