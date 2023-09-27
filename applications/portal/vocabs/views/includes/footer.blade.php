@@ -42,10 +42,10 @@
             <ul>
               @if(isset($share_controller))
                 <li class="cat-item"><a class="noexicon social-sharing" href="{{$share_controller . 'facebook?' . $share_query_params}}" target="_blank"><i class="fa fa-facebook"></i> Facebook</a></li>
-                <li class="cat-item"><a class="noexicon social-sharing" href="{{$share_controller . 'twitter?' . $share_query_params}}" target="_blank"><i class="fa fa-twitter"></i> Twitter</a></li>
+                <li class="cat-item"><a class="noexicon social-sharing" href="{{$share_controller . 'twitter?' . $share_query_params}}" target="_blank"><span style="font-size: 16px;"><b>&#x1D54F;</b></span></a></li>
               @else
                 <li class="cat-item"><a class="noexicon social-sharing" href="{{ portal_url('vocabs/share/facebook?url=' . $url . '&page=' . $page) }}" target="_blank"><i class="fa fa-facebook"></i> Facebook</a></li>
-                <li class="cat-item"><a class="noexicon social-sharing" href="{{ portal_url('vocabs/share/twitter?url=' . $url . '&page=' . $page . '&title=' . $title) }}" target="_blank"><i class="fa fa-twitter"></i> Twitter</a></li>
+                <li class="cat-item"><a class="noexicon social-sharing" href="{{ portal_url('vocabs/share/twitter?url=' . $url . '&page=' . $page . '&title=' . $title) }}" target="_blank"><span style="font-size: 16px;"><b>&#x1D54F;</b></span></a></li>
               @endif
             </ul>
           </div>

@@ -25,7 +25,7 @@
 
           <p>At ARDC, we take our privacy obligations seriously and are committed to ensuring that we handle personal information in accordance with the Australian Privacy Principles (APPs) contained in the <a target="_blank" href="https://www.legislation.gov.au/Series/C2004A03712">Privacy Act 1988</a> (Privacy Act).</p>
 
-          <p>This policy covers all our activities, including the operation of the services we provide, this website and our other websites and social media accounts including ARDC's Twitter (ARDC Social Media).</p>
+          <p>This policy covers all our activities, including the operation of the services we provide, this website and our other websites and social media accounts including ARDC's &#x1D54F; (Twitter) (ARDC Social Media).</p>
 
           <h4>2. What is personal information?</h4>
 
@@ -39,7 +39,7 @@
 
           <p>ARDC collects personal information directly from you when you communicate with us. For example, when we receive an email from you, we are collecting your personal information.</p>
 
-          <p>ARDC also collects information about you from third parties or via other methods. This would include where you use one of our services that are offered through a collaborating institution, where you sign into one of our services using a third party (including Twitter, ORCID, OAuth or the Australian Access Federation (AAF)) or where your information is provided to us by a person using our services. ARDC may also collect information that individuals publish on social and other media, for example when you engage with ARDC Social Media.</p>
+          <p>ARDC also collects information about you from third parties or via other methods. This would include where you use one of our services that are offered through a collaborating institution, where you sign into one of our services using a third party (including &#x1D54F; (Twitter), ORCID, OAuth or the Australian Access Federation (AAF)) or where your information is provided to us by a person using our services. ARDC may also collect information that individuals publish on social and other media, for example when you engage with ARDC Social Media.</p>
 
           <p>ARDC may make a record of information relating to your visit to the websites. Such information includes your server address, domain name, IP address, the date and time of your visit, pages accessed, and documents downloaded. ARDC websites may also use cookies. More information regarding cookies can be found below.</p>
 
