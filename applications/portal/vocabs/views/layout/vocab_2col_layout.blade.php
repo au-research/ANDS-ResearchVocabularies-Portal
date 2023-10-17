@@ -76,7 +76,7 @@ $share_query_params = http_build_query($share_params);
                                 @endif
                                 @if(isset($publisher))
                                 @foreach($publisher as $apub)
-                                <small>Publisher </small> <a class="re_preview" related='{{$apub}}' sub_type="publisher"
+                                <small>Publisher </small> <a class="re_preview" related='{{htmlspecialchars($apub, ENT_QUOTES)}}' sub_type="publisher"
                                     >{{htmlspecialchars($apub->getRelatedEntity()->getTitle())}}</a>
                                 @endforeach
                                 @endif
