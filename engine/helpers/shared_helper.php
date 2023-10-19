@@ -272,12 +272,33 @@ function getResolvedLinkForIdentifier($type, $value) {
                 'base_path') . '" style="height: 16px" alt="ROR icon"></a>';
             break;
         case RelatedEntityIdentifier::IDENTIFIER_TYPE_URI:
-            return 'URI: <a class="identifier" href="' .
-                urlEncodeForHref($value) .
-                '" title="Resolve this URI" target="_blank">' .
-                htmlspecialchars($value) .
-                ' <img src="' . asset_url('assets/core/images/icons/external_link.png',
-                'base_path') . '" alt="URI icon"></a>';
+            // CC-2723 In general, URIs are not resolvable. So no
+            // longer link them unless they have scheme http/https/ftp.
+            $isResolvable = false;
+            try {
+                $scheme = parse_url($value, PHP_URL_SCHEME);
+                switch ($scheme) {
+                    case "http":
+                    case "https":
+                    case "ftp":
+                        $isResolvable = true;
+                        break;
+                    default:
+                        break;
+                }
+            } catch (Exception $e) {
+                // No problem.
+            }
+            if ($isResolvable) {
+                return 'URI: <a class="identifier" href="' .
+                    urlEncodeForHref($value) .
+                    '" title="Resolve this URI" target="_blank">' .
+                    htmlspecialchars($value) .
+                    ' <img src="' . asset_url('assets/core/images/icons/external_link.png',
+                    'base_path') . '" alt="URI icon"></a>';
+            } else {
+               return 'URI: ' . htmlspecialchars($value);
+            }
             break;
         case RelatedEntityIdentifier::IDENTIFIER_TYPE_VIAF:
 // TODO identifier logo
