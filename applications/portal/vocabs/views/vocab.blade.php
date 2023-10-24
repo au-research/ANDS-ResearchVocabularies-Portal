@@ -15,6 +15,12 @@ foreach ($versions as $version) {
     }
 }
 if(!isset($current_version)){
+    // In fact, given that the status can only be either current
+    // or superseded, the very first version _must_ be the one
+    // we want. Leave the loop for now, "just in case" we ever introduce
+    // a third version status which would be "less suitable"
+    // than superseded. See the corresponding Registry implementation
+    // in the EntityIndexer.addFieldsForMostSuitableVersion() method.
     foreach ($versions as $version) {
         if ($version->getStatus() === Version::STATUS_SUPERSEDED) {
             $superseded_version = $version;
@@ -57,20 +63,20 @@ foreach ($vocab->getRelatedVocabularyRef() as $relatedVocabRef) {
 }
 
 // Determine whether or not to show the widgetableness.
+// It is based on the presence of a SISSVoc endpoint in
+// the "most suitable" version.
 // Set $sissvocEndPoint if it is to be shown.
 if (isset($current_version)) {
     foreach ($current_version->getAccessPoint() as $ap) {
         if (is_object($ap->getApSissvoc())) {
-            $url = $ap->getApSissvoc()->getUrlPrefix();
-            $sissvocEndPoint = $url;
+            $sissvocEndPoint = $ap->getApSissvoc()->getUrlPrefix();
             break;
         }
     }
 } elseif (isset($superseded_version)) {
     foreach ($superseded_version->getAccessPoint() as $ap) {
         if (is_object($ap->getApSissvoc())) {
-            $url = $ap->getApSissvoc()->getUrlPrefix();
-            $sissvocEndPoint = $url;
+            $sissvocEndPoint = $ap->getApSissvoc()->getUrlPrefix();
             break;
         }
     }
