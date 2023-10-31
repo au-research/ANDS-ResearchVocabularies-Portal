@@ -159,7 +159,7 @@
                     <td style="border:none;width:100%"
                         ng-class="{'has-error': form.reForm.[['website_'+$index]].$invalid}">
                       <input id="[['website_'+$index]]" type="url"
-                             required="true" class="form-control"
+                             url-better-validation required="true" class="form-control"
                              name="[['website_'+$index]]"
                              placeholder="URL" ng-model="url.url"
                              ng-disabled="!allowEdits"

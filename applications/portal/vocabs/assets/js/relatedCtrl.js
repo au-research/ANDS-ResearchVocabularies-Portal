@@ -89,7 +89,7 @@
              "placeholder": "0abc12351",
              "validate": /^0[0-9abcdefghjkmnpqrstvwxyz]{6}[0-9]{2}$/},
             {"id": ite.uri, "label": "URI",
-             "placeholder": "http://my.url/123",
+             "placeholder": "http://my.url/123 or im:a@e.com",
              "validate": URL_REGEXP},
             {"id": ite.viaf, "label": "VIAF",
              "placeholder": "49224511",

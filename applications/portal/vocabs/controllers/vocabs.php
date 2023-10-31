@@ -817,7 +817,8 @@ class Vocabs extends MX_Controller
         ->set('scripts', array('vocabs_cms', 'versionCtrl', 'relatedCtrl',
             'relatedVocabularyCtrl',
             'subjectDirective', 'relatedEntityIdentifierDirective',
-            'languageSelectionDirective'))
+            'languageSelectionDirective',
+            'uriValidatorDirective'))
             ->set('vocab', false)
             ->set('page', 'cms')
             ->set('lensMenu', $lensMenu)
@@ -889,7 +890,8 @@ class Vocabs extends MX_Controller
                         'relatedVocabularyCtrl',
                         'subjectDirective',
                         'relatedEntityIdentifierDirective',
-                        'languageSelectionDirective'
+                        'languageSelectionDirective',
+                        'uriValidatorDirective'
                     )
                 )
                 ->set('vocab', $vocab)

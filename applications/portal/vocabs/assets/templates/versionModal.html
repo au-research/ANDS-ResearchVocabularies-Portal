@@ -144,9 +144,10 @@
                   <div class="form-group"
                        ng-class="{ 'has-error' : form.apForm.uri.$invalid && form.apForm.$submitted  }"
                        ng-if="newValue.ap.type && newValue.ap.type != 'file'">
-                    <input id="newValueApUri" type="url" required name="uri"
+                    <input id="newValueApUri" type="url"
+                           url-better-validation required name="uri"
                            class="form-control"
-                           placeholder="URI"
+                           placeholder="URL"
                            ng-model="newValue.ap.uri">
                   </div>
                   <div class="form-group"
