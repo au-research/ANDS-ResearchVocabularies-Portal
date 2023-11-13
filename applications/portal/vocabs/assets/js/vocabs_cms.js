@@ -27,16 +27,31 @@
                            $location, $uibModal,
                            $templateCache, vocabs_factory) {
 
-        /* Define our template for the PoolParty project typeahead.
-           The difference from the default template is our use of
-           [[ ... ]] instead of {{ ... }} for embedded AngularJS.
+        /* Define our template for the PoolParty project selection.
+           Based on the off-the-shelf "bootstrap" template.
         */
-        $templateCache.put("uib/template/typeahead/typeahead-match.html",
-           "<a href\n" +
-           "   tabindex=\"-1\"\n" +
-           "   ng-bind-html=\"match.label | uibTypeaheadHighlight:query\"\n" +
-           "   ng-attr-title=\"[[match.label]]\"></a>\n" +
-           "");
+        // In select.tpl.html,
+        // <div class="ui-select-container ... dropdown"
+        // is changed to
+        // <div class="ui-select-container ... dropdown swatch-white"
+        $templateCache.put("poolparty-bootstrap-swatch-white/select.tpl.html","<div class=\"ui-select-container ui-select-bootstrap dropdown swatch-white\" ng-class=\"{open: $select.open}\"><div class=\"ui-select-match\"></div><span ng-show=\"$select.open && $select.refreshing && $select.spinnerEnabled\" class=\"ui-select-refreshing {{$select.spinnerClass}}\"></span> <input type=\"search\" autocomplete=\"off\" tabindex=\"-1\" aria-expanded=\"true\" aria-label=\"{{ $select.baseTitle }}\" aria-owns=\"ui-select-choices-{{ $select.generatedId }}\" class=\"form-control ui-select-search\" ng-class=\"{ \'ui-select-search-hidden\' : !$select.searchEnabled }\" placeholder=\"{{$select.placeholder}}\" ng-model=\"$select.search\" ng-show=\"$select.open\"><div class=\"ui-select-choices\"></div><div class=\"ui-select-no-choice\"></div></div>");
+
+        // In match.tpl.html,
+        // <span ... class="btn btn-default..."
+        // is changed to
+        // <span ... class="btn btn-primary..."
+        $templateCache.put("poolparty-bootstrap-swatch-white/match.tpl.html","<div class=\"ui-select-match\" ng-hide=\"$select.open && $select.searchEnabled\" ng-disabled=\"$select.disabled\" ng-class=\"{\'btn-default-focus\':$select.focus}\"><span tabindex=\"-1\" class=\"btn btn-primary form-control ui-select-toggle\" aria-label=\"{{ $select.baseTitle }} activate\" ng-disabled=\"$select.disabled\" ng-click=\"$select.activate()\" style=\"outline: 0;\"><span ng-show=\"$select.isEmpty()\" class=\"ui-select-placeholder text-muted\">{{$select.placeholder}}</span> <span ng-hide=\"$select.isEmpty()\" class=\"ui-select-match-text pull-left\" ng-class=\"{\'ui-select-allow-clear\': $select.allowClear && !$select.isEmpty()}\" ng-transclude=\"\"></span> <i class=\"caret pull-right\" ng-click=\"$select.toggle($event)\"></i> <a ng-show=\"$select.allowClear && !$select.isEmpty() && ($select.disabled !== true)\" aria-label=\"{{ $select.baseTitle }} clear\" style=\"margin-right: 10px\" ng-click=\"$select.clear($event)\" class=\"btn btn-xs btn-link pull-right\"><i class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\"></i></a></span></div>");
+
+        // This value is unchanged from
+        // bootstrap/choices.tpl.html. We need to provide a
+        // value for the theme anyway.
+        $templateCache.put("poolparty-bootstrap-swatch-white/choices.tpl.html","<ul class=\"ui-select-choices ui-select-choices-content ui-select-dropdown dropdown-menu\" ng-show=\"$select.open && $select.items.length > 0\"><li class=\"ui-select-choices-group\" id=\"ui-select-choices-{{ $select.generatedId }}\"><div class=\"divider\" ng-show=\"$select.isGrouped && $index > 0\"></div><div ng-show=\"$select.isGrouped\" class=\"ui-select-choices-group-label dropdown-header\" ng-bind=\"$group.name\"></div><div ng-attr-id=\"ui-select-choices-row-{{ $select.generatedId }}-{{$index}}\" class=\"ui-select-choices-row\" ng-class=\"{active: $select.isActive(this), disabled: $select.isDisabled(this)}\" role=\"option\"><span class=\"ui-select-choices-row-inner\"></span></div></li></ul>");
+
+        // This value is unchanged from
+        // bootstrap/no-choice.tpl.html. We need to provide a
+        // value for the theme anyway.
+        $templateCache.put("poolparty-bootstrap-swatch-white/no-choice.tpl.html","<ul class=\"ui-select-no-choice dropdown-menu\" ng-show=\"$select.items.length == 0\"><li ng-transclude=\"\"></li></ul>");
+        /* End of our template for the PoolParty project selection. */
 
         // Initialise Registry API access.
         var VocabularyRegistryApi = require('vocabulary_registry_api');
@@ -350,6 +365,20 @@
                     $scope.$apply(function() {
                         $scope.fetchingPP = false;
                         $scope.projects = data;
+                        $scope.projects.sort(function (a, b) {
+                            // Case-insensitive sort of trimmed titles, based
+                            // on https://developer.mozilla.org/en-US/docs/Web/
+                            //    JavaScript/Reference/Global_Objects/Array/sort
+                            var titleA = a.title.toUpperCase().trim();
+                            var titleB = b.title.toUpperCase().trim();
+                            if (titleA < titleB) {
+                                return -1;
+                            }
+                            if (titleA > titleB) {
+                                return 1;
+                            }
+                            return 0;
+                        });
                     });
                 });
         }

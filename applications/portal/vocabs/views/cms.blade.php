@@ -53,18 +53,34 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
       <div class="row">
         <div class="col-md-12">
           <div class="alert alert-info" ng-show="fetchingPP">
-            Loading PoolParty Projects... Please wait...
+            Loading PoolParty Projects ... please wait.
           </div>
           <div class="panel swatch-gray" ng-show="!fetchingPP">
             <div class="panel-heading">PoolParty Integration</div>
             <div class="panel-body" >
               <div class="form-group">
                 <label for="">PoolParty Search</label>
-                <input type="text" class="form-control"
-                       placeholder="PoolParty ID"
-                       ng-model="project"
-                       uib-typeahead="project as project.title for project in projects | filter:projectSearch($viewValue) | limitTo:8"
-                       typeahead-min-length="1">
+                <ui-select name="title"
+                  append-to-body="true"
+                  ng-model="$parent.project"
+                  reset-search-input="false"
+                  tagging="false"
+                  theme="poolparty-bootstrap-swatch-white"
+                  >
+                  <!-- Truncate title to 80 chars, which seems to be enough -->
+                  <ui-select-match placeholder="Click here, type to filter PoolParty projects by title or ID, and make a selection">[[$select.selected.title | limitTo:80]][[$select.selected.title.length > 80 ? '...' : '']]</ui-select-match>
+                  <ui-select-choices id="project.id"
+                     repeat="p in projects | filter:projectSearch($select.search)">
+                    <div>
+                      [[ p.title ]]
+                      <br />
+                      <small>Project ID: [[ p.id ]]</small>
+                    </div>
+                  </ui-select-choices>
+                  <ui-select-no-choice>
+                    &nbsp;&nbsp;<i>No matches</i>
+                  </ui-select-no-choice>
+               </ui-select>
                 <p class="help-block">Search for a PoolParty
                   Project to pre-fill form</p>
               </div>

@@ -104,14 +104,16 @@
 }
 
 // CMS PoolParty Search
-.swatch-gray ul[id^="typeahead-"].dropdown-menu > li > a,
-[class*="swatch-"] .swatch-gray ul[id^="typeahead-"].dropdown-menu > li > a {
-    color: @secondaryColor;
-    background: white;
-    &:hover {
-        color: white;
-        background: @secondaryColor;
-    }
+// Be tall enough to be useful
+[theme="poolparty-bootstrap-swatch-white"].ui-select-bootstrap > .ui-select-choices,
+[theme="poolparty-bootstrap-swatch-white"].ui-select-bootstrap > .ui-select-no-choice {
+    max-height: 420px;
+}
+[theme="poolparty-bootstrap-swatch-white"].ui-select-bootstrap input {
+    background-color: white;
+}
+[theme="poolparty-bootstrap-swatch-white"].ui-select-bootstrap div.active small {
+    color: white;
 }
 
 // Top menu
