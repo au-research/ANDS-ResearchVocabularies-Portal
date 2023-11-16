@@ -119,7 +119,7 @@
                 <h5>Query</h5>
                 <ul class="list-current-search">
                   <li>
-                    <a href="" ng-click="clearQuery()"
+                    <a role="button" tabindex="0" ng-click="clearQuery()"
                        title="[[ filters.q ]]">
                       [[ filters.q ]]
                       <span class="clear">
@@ -132,7 +132,7 @@
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.v_subject_labels
                                  | stringToArray track by $index">
-                    <a href=""
+                    <a role="button" tabindex="0"
                        ng-click="toggleFilter('v_subject_labels', filter, true)"
                        title="[[ filter ]]">
                       [[ filter ]]
@@ -146,7 +146,7 @@
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.v_publisher
                                  | stringToArray track by $index">
-                    <a href=""
+                    <a role="button" tabindex="0"
                        ng-click="toggleFilter('v_publisher', filter, true)"
                        title="[[ filter ]]">
                       [[ filter ]]
@@ -160,7 +160,7 @@
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.v_language
                                  | stringToArray track by $index">
-                    <a href=""
+                    <a role="button" tabindex="0"
                        ng-click="toggleFilter('v_language', filter, true)"
                        title="[[ filter ]]">
                       [[ filter ]]
@@ -174,7 +174,7 @@
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.v_format
                                  | stringToArray track by $index">
-                    <a href=""
+                    <a role="button" tabindex="0"
                        ng-click="toggleFilter('v_format', filter, true)"
                        title="[[ filter ]]">
                       [[ filter ]]
@@ -188,7 +188,7 @@
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.v_access
                                  | stringToArray track by $index">
-                    <a href=""
+                    <a role="button" tabindex="0"
                        ng-click="toggleFilter('v_access', filter, true)"
                        title="[[ filter ]]">
                       [[ filter ]]
@@ -202,7 +202,7 @@
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.v_licence
                                  | stringToArray track by $index">
-                    <a href=""
+                    <a role="button" tabindex="0"
                        ng-click="toggleFilter('v_licence', filter, true)"
                        title="[[ filter ]]">
                       [[ filter ]]
@@ -219,7 +219,7 @@
                 <h5>Query</h5>
                 <ul class="list-current-search">
                   <li>
-                    <a href="" ng-click="clearQuery()"
+                    <a role="button" tabindex="0" ng-click="clearQuery()"
                        title="[[ filters.q ]]">
                       [[ filters.q ]]
                       <span class="clear">
@@ -232,7 +232,7 @@
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.r_subject_labels
                                  | stringToArray track by $index">
-                    <a href=""
+                    <a role="button" tabindex="0"
                        ng-click="toggleFilter('r_subject_labels', filter, true)"
                        title="[[ filter ]]">
                       [[ filter ]]
@@ -246,7 +246,7 @@
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.r_publisher
                                  | stringToArray track by $index">
-                    <a href=""
+                    <a role="button" tabindex="0"
                        ng-click="toggleFilter('r_publisher', filter, true)"
                        title="[[ filter ]]">
                       [[ filter ]]
@@ -260,7 +260,7 @@
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.r_rdf_type
                                  | stringToArray track by $index">
-                    <a href=""
+                    <a role="button" tabindex="0"
                        ng-click="toggleFilter('r_rdf_type', filter, true)"
                        title="[[ rdfTypePretty(filter) ]]">
                       [[ rdfTypePretty(filter) ]]
@@ -274,7 +274,7 @@
                 <ul class="list-current-search">
                   <li ng-repeat="filter in filters.r_status
                                  | stringToArray track by $index">
-                    <a href=""
+                    <a role="button" tabindex="0"
                        ng-click="toggleFilter('r_status', filter, true)"
                        title="[[ versionStatusPretty(filter) ]]">
                       [[ versionStatusPretty(filter) ]]
@@ -288,7 +288,7 @@
                 <h5>Collapse</h5>
                 <ul class="list-current-search">
                   <li>
-                    <a href=""
+                    <a role="button" tabindex="0"
                        ng-click="resetCollapse()"
                        title="[[ collapseOptionPretty() ]]">
                       [[ collapseOptionPretty() ]]
@@ -376,14 +376,14 @@
                         </span>
                       </td>
                       <td class="filter-value">
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('v_subject_labels',
                                  facet.name, true)"
                            title="[[ facet.name ]]">
                           [[ facet.name ]]</a>
                       </td>
                       <td>
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('v_subject_labels',
                                  facet.name, true)"
                            title="[[ facet.name ]]">
@@ -444,14 +444,14 @@
                         </span>
                       </td>
                       <td class="filter-value">
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('v_publisher',
                                  facet.name, true)"
                            title="[[ facet.name ]]">
                           [[ facet.name ]]</a>
                       </td>
                       <td>
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('v_publisher',
                                  facet.name, true)"
                            title="[[ facet.name ]]">
@@ -490,14 +490,14 @@
                         </span>
                       </td>
                       <td class="filter-value">
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('v_language',
                                  facet.name, true)"
                            title="[[ facet.name ]]">
                           [[ facet.name ]]</a>
                       </td>
                       <td>
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('v_language',
                                  facet.name, true)"
                            title="[[ facet.name ]]">
@@ -536,14 +536,14 @@
                         </span>
                       </td>
                       <td class="filter-value">
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('v_format',
                                  facet.name, true)"
                            title="[[ facet.name ]]">
                           [[ facet.name ]]</a>
                       </td>
                       <td>
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('v_format',
                                  facet.name, true)"
                            title="[[ facet.name ]]">
@@ -582,13 +582,13 @@
                         </span>
                       </td>
                       <td class="filter-value">
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('v_access', facet.name, true)"
                            title="[[ facet.name ]]">
                           [[ facet.name ]]</a>
                       </td>
                       <td>
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('v_access', facet.name, true)"
                            title="[[ facet.name ]]">
                           <span>([[facet.result_count]])</span></a>
@@ -626,14 +626,14 @@
                         </span>
                       </td>
                       <td class="filter-value">
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('v_licence',
                                  facet.name, true)"
                            title="[[ facet.name ]]">
                           [[ facet.name ]]</a>
                       </td>
                       <td>
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('v_licence',
                                  facet.name, true)"
                            title="[[ facet.name ]]">
@@ -664,7 +664,7 @@
               <div ng-if="resources.facets.subject_labels.length > 0">
                 <h5>Subject
                   <a ng-if="form.collapse == 'iri'"
-                     href=""
+                     role="button" tabindex="0"
                      tip="Because collapsing of search results is active,
                             these facet counts may not accurately predict
                             the number of records that will
@@ -724,14 +724,14 @@
                         </span>
                       </td>
                       <td class="filter-value">
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('r_subject_labels',
                                  facet.name, true)"
                            title="[[ facet.name ]]">
                           [[ facet.name ]]</a>
                       </td>
                       <td>
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('r_subject_labels',
                                  facet.name, true)"
                            title="[[ facet.name ]]">
@@ -746,7 +746,7 @@
               <div ng-if="resources.facets.publisher.length > 0">
                 <h5>Publisher
                   <a ng-if="form.collapse == 'iri'"
-                     href=""
+                     role="button" tabindex="0"
                      tip="Because collapsing of search results is active,
                             these facet counts may not accurately predict
                             the number of records that will
@@ -804,14 +804,14 @@
                         </span>
                       </td>
                       <td class="filter-value">
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('r_publisher',
                                  facet.name, true)"
                            title="[[ facet.name ]]">
                           [[ facet.name ]]</a>
                       </td>
                       <td>
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('r_publisher',
                                  facet.name, true)"
                            title="[[ facet.name ]]">
@@ -850,14 +850,14 @@
                         </span>
                       </td>
                       <td class="filter-value">
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('r_rdf_type',
                                  facet.name, true)"
                            title="[[ rdfTypePretty(facet.name) ]]">
                           [[ rdfTypePretty(facet.name) ]]</a>
                       </td>
                       <td>
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('r_rdf_type',
                                  facet.name, true)"
                            title="[[ rdfTypePretty(facet.name) ]]">
@@ -872,7 +872,7 @@
               <div ng-if="resources.facets.status.length > 0">
                 <h5>Version status
                   <a ng-if="form.collapse != 'none'"
-                     href=""
+                     role="button" tabindex="0"
                      tip="Because collapsing of search results is active,
                             these facet counts may not accurately predict
                             the number of records that will
@@ -908,14 +908,14 @@
                         </span>
                       </td>
                       <td class="filter-value">
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('r_status',
                                  facet.name, true)"
                            title="[[ versionStatusPretty(facet.name) ]]">
                           [[ versionStatusPretty(facet.name) ]]</a>
                       </td>
                       <td>
-                        <a href=""
+                        <a role="button" tabindex="0"
                            ng-click="toggleFilter('r_status',
                                  facet.name, true)"
                            title="[[ versionStatusPretty(facet.name) ]]">
@@ -989,13 +989,13 @@
                     [[ activeContainer().page.end ]]</small></td>
                   <td ng-if="activeContainer().result.response.numFound > 0 &&
                              activeContainer().page.cur!=1"
-                      style="padding: 4px"><a href="" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></td>
+                      style="padding: 4px"><a role="button" tabindex="0" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></td>
                   <td ng-if="activeContainer().result.response.numFound > 0"
                       ng-repeat="x in activeContainer().page.pages"
-                      class="pagi"><a ng-class="{'active':activeContainer().page.cur==x}" href="" ng-click="goto(x)">[[x]]</a></td>
+                      class="pagi"><a ng-class="{'active':activeContainer().page.cur==x}" role="button" tabindex="0" ng-click="goto(x)">[[x]]</a></td>
                   <td ng-if="activeContainer().result.response.numFound > 0 &&
                              activeContainer().page.cur!=activeContainer().page.end"
-                      style="padding: 4px"><a href="" ng-click="goto(activeContainer().page.end)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Last</span></a></td>
+                      style="padding: 4px"><a role="button" tabindex="0" ng-click="goto(activeContainer().page.end)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Last</span></a></td>
                 </tr>
               </tbody>
             </table>
@@ -1019,7 +1019,7 @@
                       ng-if="doc.status=='deprecated' || doc.status=='DEPRECATED'"
                       style="margin-left:5px">deprecated</span>
 
-                <a id="widget-link" class="pull-right" href="" ng-if="doc.widgetable" tip="&lt;b>Widgetable&lt;/b>&lt;br/>This vocabulary can be readily used for resource description or discovery in your system using our vocabulary widget.&lt;br/>&lt;a id='widget-link2' target='_blank' href='{{portal_url('vocabs/page/widget_explorer')}}'>Learn more&lt;/a>">
+                <a id="widget-link" class="pull-right" role="button" tabindex="0" ng-if="doc.widgetable" tip="&lt;b>Widgetable&lt;/b>&lt;br/>This vocabulary can be readily used for resource description or discovery in your system using our vocabulary widget.&lt;br/>&lt;a id='widget-link2' target='_blank' href='{{portal_url('vocabs/page/widget_explorer')}}'>Learn more&lt;/a>">
                   <span class="label label-default pull-right btn-widget-link"><img class="widget-icon" height="16" width="16" src="{{asset_url('images/cogwheels_white.png', 'core')}}"/> widgetable</span>
                 </a>
 
@@ -1358,13 +1358,13 @@
                   [[ activeContainer().page.end ]]</small></td>
                 <td ng-if="activeContainer().result.response.numFound > 0 &&
                            activeContainer().page.cur!=1"
-                    style="padding: 4px"><a href="" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></td>
+                    style="padding: 4px"><a role="button" tabindex="0" ng-click="goto(1)"><span aria-hidden="true">&laquo;</span><span class="sr-only">First</span></a></td>
                 <td ng-if="activeContainer().result.response.numFound > 0"
                     ng-repeat="x in activeContainer().page.pages"
-                    class="pagi"><a ng-class="{'active':activeContainer().page.cur==x}" href="" ng-click="goto(x)">[[x]]</a></td>
+                    class="pagi"><a ng-class="{'active':activeContainer().page.cur==x}" role="button" tabindex="0" ng-click="goto(x)">[[x]]</a></td>
                 <td ng-if="activeContainer().result.response.numFound > 0 &&
                            activeContainer().page.cur!=activeContainer().page.end"
-                    style="padding: 4px"><a href="" ng-click="goto(activeContainer().page.end)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Last</span></a></td>
+                    style="padding: 4px"><a role="button" tabindex="0" ng-click="goto(activeContainer().page.end)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Last</span></a></td>
 
               </tr>
             </tbody>

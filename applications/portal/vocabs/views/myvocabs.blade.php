@@ -51,7 +51,7 @@
 				 style="float:none">
 				<i class="fa fa-edit"></i> Edit
 			      </a>
-			      <a href="javascript:;" role="button"
+			      <a role="button" tabindex="0"
 				 class="btn btn-primary btn-primary-warning btn-non-rounded deleteVocab"
 				 style="float:none"
 				 vocab_id="{{ $vocab->getId() }}"
@@ -86,7 +86,7 @@
                           <td>
 			    <div class="btn-group" style="display:inline-flex">
 			      <a role="button" href="{{ portal_url('vocabs/edit/'.$vocab->getId()) }}" class="btn btn-primary" style="float:none"><i class="fa fa-edit"></i> Edit</a>
-			      <a role="button" href="javascript:;" class="btn btn-primary btn-primary-warning btn-non-rounded deleteVocab" style="float:none" vocab_id="{{ $vocab->getId() }}" vocab_status="draft" vocab_owner="{{ htmlspecialchars($vocab->getOwner()) }}" vocab_slug="{{ htmlspecialchars($vocab->getSlug()) }}" vocab_title="{{ htmlspecialchars($vocab->getTitle()) }}" delete_mode="draft" title="Delete this vocabulary"><i class="fa fa-trash"></i></a>
+			      <a role="button" tabindex="0" class="btn btn-primary btn-primary-warning btn-non-rounded deleteVocab" style="float:none" vocab_id="{{ $vocab->getId() }}" vocab_status="draft" vocab_owner="{{ htmlspecialchars($vocab->getOwner()) }}" vocab_slug="{{ htmlspecialchars($vocab->getSlug()) }}" vocab_title="{{ htmlspecialchars($vocab->getTitle()) }}" delete_mode="draft" title="Delete this vocabulary"><i class="fa fa-trash"></i></a>
 			    </div>
 			  </td>
 			</tr>
@@ -116,7 +116,7 @@
 				<i class="fa fa-search"></i> View
 			      </a>
 			      <a role="button" href="{{ portal_url('vocabs/edit/'.$vocab->getId()) }}" class="btn btn-primary" style="float:none"><i class="fa fa-edit"></i> Edit</a>
-			      <a role="button" href="javascript:;" class="btn btn-primary btn-primary-warning btn-non-rounded deleteVocab" style="float:none" vocab_id="{{ $vocab->getId() }}" vocab_status="deprecated" vocab_owner="{{ htmlspecialchars($vocab->getOwner()) }}" vocab_slug="{{ htmlspecialchars($vocab->getSlug()) }}" vocab_title="{{ htmlspecialchars($vocab->getTitle()) }}" delete_mode="current" title="Delete this vocabulary"><i class="fa fa-trash"></i></a>
+			      <a role="button" tabindex="0" class="btn btn-primary btn-primary-warning btn-non-rounded deleteVocab" style="float:none" vocab_id="{{ $vocab->getId() }}" vocab_status="deprecated" vocab_owner="{{ htmlspecialchars($vocab->getOwner()) }}" vocab_slug="{{ htmlspecialchars($vocab->getSlug()) }}" vocab_title="{{ htmlspecialchars($vocab->getTitle()) }}" delete_mode="current" title="Delete this vocabulary"><i class="fa fa-trash"></i></a>
 			    </div>
 			  </td>
 			</tr>

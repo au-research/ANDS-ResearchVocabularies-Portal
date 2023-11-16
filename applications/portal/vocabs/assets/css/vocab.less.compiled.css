@@ -693,6 +693,9 @@ a:not([role="button"]):hover {
   border: 1px solid #7e408a;
   border-radius: 5px;
 }
+.underline-on-hover:hover {
+  text-decoration: underline;
+}
 .swatch-white .table th,
 [class*="swatch-"] .swatch-white .table th {
   background-color: #7e408a;

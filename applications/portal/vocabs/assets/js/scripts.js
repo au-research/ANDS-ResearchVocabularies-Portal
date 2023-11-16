@@ -2629,6 +2629,16 @@ $(document).on(
     }
 );
 
+// Make every "a" element with role="button" accessible:
+// having tabbed to an element, then pressing Enter is the
+// same as clicking the element.
+$(document).on('keyup', 'a[role="button"]', function(event) {
+    event.preventDefault();
+    if (event.which == 13) {
+        event.target.click();
+    }
+});
+
 // Helper function for the clickLinkedData() function below.  Note
 // (and make sure!) that this matches the definition in
 // wrap-getvocabaccess.blade.php. One exception: this version adds support

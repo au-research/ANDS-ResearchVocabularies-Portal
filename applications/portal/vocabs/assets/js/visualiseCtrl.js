@@ -1280,7 +1280,7 @@
                                         typeAsText(node.type) +
                                         ' is present in multiple locations ' +
                                         'within this vocabulary. <br />' +
-                                        '<a href="#" role="button" ' +
+                                        '<a role="button" tabindex="0" ' +
                                         'style="padding: 0px" ' +
                                         'onclick="filterClones(\'' +
                                         escapeHtml(node.data.iri).replace(/&#39;/g, "\\&#39;") +

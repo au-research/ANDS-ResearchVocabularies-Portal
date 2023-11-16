@@ -15,7 +15,7 @@
               <li class="cat-item"> <a href="{{portal_url('vocabs/page/about')}}" title="">About</a> </li>
               <li><a href="{{portal_url('vocabs/page/widget_explorer')}}">Explore Widgetable Vocabularies</a></li>
               <li class="cat-item"> <a href="{{portal_url('vocabs/myvocabs')}}" title="">My Vocabs</a> </li>
-              <li class="cat-item myCustomTrigger"> <a href="" title="">Contact us</a> </li>
+              <li class="cat-item myCustomTrigger"> <a role="button" tabindex="0" class="underline-on-hover" title="">Contact us</a> </li>
               <li class="cat-item"> <a href="{{portal_url('vocabs/page/disclaimer')}}" title="">Disclaimer</a> </li>
               <li class="cat-item"> <a href="{{portal_url('vocabs/page/privacy')}}" title="">Privacy Policy</a> </li>
             </ul>

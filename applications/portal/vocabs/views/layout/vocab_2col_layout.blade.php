@@ -58,13 +58,13 @@ $share_query_params = http_build_query($share_params);
                                 @endif
                                 <div class="pull-right">
                                     <div id="widget-link">
-                                        <a href="" tip="&lt;b>Widgetable&lt;/b>&lt;br/>This vocabulary can be readily used for resource description or discovery in your system using our vocabulary widget.&lt;br/>&lt;a id='widget-link2' target='_blank' href='{{portal_url('vocabs/page/widget_explorer')}}'>Learn more&lt;/a>">
+                                        <a role="button" tabindex="0" tip="&lt;b>Widgetable&lt;/b>&lt;br/>This vocabulary can be readily used for resource description or discovery in your system using our vocabulary widget.&lt;br/>&lt;a id='widget-link2' target='_blank' href='{{portal_url('vocabs/page/widget_explorer')}}'>Learn more&lt;/a>">
                                             <span class="label label-default pull-right btn-widget-link"><img class="widget-icon" height="16" width="16" src="{{asset_url('images/cogwheels_white.png', 'core')}}"/> widgetable</span>
                                         </a>
                                         <br />
                                     </div>
                                     <div ng-controller="subscribeDialogCtrl">
-                                        <a id="subscribe-link" href="" ng-click="openDialog()">
+                                        <a id="subscribe-link" role="button" tabindex="0" ng-click="openDialog()">
                                             <!-- b tag for icon instead of usual i, to avoid ".swatch-white i" CSS overriding the colour of the icon. -->
                                             <span class="label label-default pull-right btn-subscribe-link"><b class="fa fa-envelope" height="16" width="16"></b> &nbsp; subscribe</span>
                                         </a>
@@ -76,7 +76,7 @@ $share_query_params = http_build_query($share_params);
                                 @endif
                                 @if(isset($publisher))
                                 @foreach($publisher as $apub)
-                                <small>Publisher </small> <a class="re_preview" related='{{htmlspecialchars($apub, ENT_QUOTES)}}' sub_type="publisher"
+                                <small>Publisher </small> <a role="button" tabindex="0" class="re_preview" related='{{htmlspecialchars($apub, ENT_QUOTES)}}' sub_type="publisher"
                                     >{{htmlspecialchars($apub->getRelatedEntity()->getTitle())}}</a>
                                 @endforeach
                                 @endif

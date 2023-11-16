@@ -126,7 +126,7 @@ function getIdForSissvocAccessPoint() {
 
       @foreach($current_version->getAccessPoint() as $ap)
         @if(($ap->getDiscriminator() === AP_FILE && !$singleFile) || ($hasSesameDownloads))
-        <a role="button" class="btn btn-lg btn-block btn-primary download-chooser"><i
+        <a role="button" tabindex="0" class="btn btn-lg btn-block btn-primary download-chooser"><i
           class="fa fa-download"></i> Download <i
           class="fa fa-chevron-right"></i></a>
         <?php break; ?>
@@ -183,8 +183,7 @@ function getIdForSissvocAccessPoint() {
         @if($ap->getDiscriminator() === AP_API_SPARQL)
           <div class="sp-box">
             <div class="text-center">
-              {{--  href not in play, as click event overridden due to showsp --}}
-              <small><a class="showsp" href="javascript:;">Show SPARQL Endpoint</a></small>
+              <small><a class="showsp" role="button" tabindex="0">Show SPARQL Endpoint</a></small>
             </div>
             <div class="sp text-center collapse">
               <small>SPARQL Endpoint:</small>
@@ -202,7 +201,7 @@ function getIdForSissvocAccessPoint() {
         @endif
       @endforeach
       <div class="text-center">
-        {{ !empty($current_version->getReleaseDate()) ? '<span class="small"><em>released: '. display_release_date($current_version->getReleaseDate())."</em></span>": '' }}{{ !empty($current_version->getNote()) ? '<span class="small"> <a href="" tip="'.htmlentities($current_version->getNote()).'">view notes</a></span>': '' }}
+        {{ !empty($current_version->getReleaseDate()) ? '<span class="small"><em>released: '. display_release_date($current_version->getReleaseDate())."</em></span>": '' }}{{ !empty($current_version->getNote()) ? '<span class="small"> <a role="button" tabindex="0" tip="'.htmlentities($current_version->getNote()).'">view notes</a></span>': '' }}
       </div>
       <div class="download-content hidden">
         @if($hasFile && $hasSesameDownloads)
@@ -285,7 +284,7 @@ function getIdForSissvocAccessPoint() {
       <div class="box-content <?=$collapse?>">
         @foreach($version->getAccessPoint() as $ap)
           @if(($ap->getDiscriminator() == AP_FILE && !$singleFile) || ($hasSesameDownloads))
-            <a role="button" class="btn btn-lg btn-block btn-primary download-chooser"><i class="fa fa-download"></i> Download <i class="fa fa-chevron-right"></i></a>
+            <a role="button" tabindex="0" class="btn btn-lg btn-block btn-primary download-chooser"><i class="fa fa-download"></i> Download <i class="fa fa-chevron-right"></i></a>
               <?php break; ?>
           @endif
         @endforeach
@@ -293,7 +292,7 @@ function getIdForSissvocAccessPoint() {
         @if($singleFile)
           @foreach($version->getAccessPoint() as $ap)
             @if($ap->getDiscriminator() === AP_FILE)
-              <a role="button" class="download-link btn btn-lg btn-block btn-primary"
+              <a role="button" tabindex="0" class="download-link btn btn-lg btn-block btn-primary"
                  style="white-space: normal;"
                 onclick="$.ajax('{{ onclickURL($vocab, $version, $ap) }}'); return true"
                 href="{{ $ap->getApFile()->getUrl() }}"><i class="fa fa-download"></i> Download ({{ htmlspecialchars($ap->getApFile()->getFormat()) }})</a>
@@ -325,8 +324,7 @@ function getIdForSissvocAccessPoint() {
           @if($ap->getDiscriminator() === AP_API_SPARQL)
             <div class="sp-box">
               <div class="text-center">
-                {{--  href not in play, as click event overridden due to showsp --}}
-                <small><a class="showsp" href="{{ $ap->getApApiSparql()->getUrl() }}">Show SPARQL Endpoint</a></small>
+                <small><a class="showsp" role="button" tabindex="0">Show SPARQL Endpoint</a></small>
               </div>
               <div class="sp text-center collapse">
                 <small>SPARQL Endpoint:</small>
@@ -344,7 +342,7 @@ function getIdForSissvocAccessPoint() {
           @endif
         @endforeach
         <div class="text-center">
-          {{ !empty($version->getReleaseDate()) ? '<span class="small"><em>released: '. display_release_date($version->getReleaseDate())."</em></span>": '' }}{{ !empty($version->getNote()) ? '<span class="small"> <a href="" tip="'.htmlentities($version->getNote()).'">view notes</a></span>': '' }}
+          {{ !empty($version->getReleaseDate()) ? '<span class="small"><em>released: '. display_release_date($version->getReleaseDate())."</em></span>": '' }}{{ !empty($version->getNote()) ? '<span class="small"> <a role="button" tabindex="0" tip="'.htmlentities($version->getNote()).'">view notes</a></span>': '' }}
         </div>
         <div class="download-content hidden">
           @foreach($version->getAccessPoint() as $ap)
@@ -396,5 +394,5 @@ function getIdForSissvocAccessPoint() {
 
 @if ($supersedVersionsDisplayed > DEFAULT_SUPERSEDED_VERSIONS)
   </div>
-  <div class="box" id="hideAfterShowingSuperdedVersions"><div class="box-content text-center"><a id="showSupersededVersions" href="#">Show the other superseded versions</a></div></div>
+  <div class="box" id="hideAfterShowingSuperdedVersions"><div class="box-content text-center"><a role="button" tabindex="0" id="showSupersededVersions" >Show the other superseded versions</a></div></div>
 @endif
