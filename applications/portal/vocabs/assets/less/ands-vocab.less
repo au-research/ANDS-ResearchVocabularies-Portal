@@ -774,9 +774,21 @@ a {
 }
 
 // Underline links on hover, but not links that
-// are being styled as buttons.
+// are being styled as buttons ...
 a:not([role="button"]):hover {
     text-decoration: underline;
+}
+
+// ... but support overriding, for cases where we need to make
+// href-less links still show an underline on hover.
+.underline-on-hover:hover {
+  text-decoration: underline;
+}
+
+// And now also switch to the pointer cursor for href-less links
+// that are used as buttons.
+a[role="button"]:hover {
+    cursor: pointer;
 }
 
 // Primary, and submit-type buttons, e.g., "Close" on modals.
@@ -867,11 +879,6 @@ a:not([role="button"]):hover {
     border-radius: 5px;
     // NB: hovering over button and over text in button works differently!
     // For that, see the settings for ".swatch-white .btn:hover a"
-}
-
-// Support for making href-less links still show an underline on hover.
-.underline-on-hover:hover {
-  text-decoration: underline;
 }
 
 // CMS popup table headings
