@@ -275,6 +275,7 @@
                           "CC-BY-NC", "CC-BY-NC-SA", "CC-BY-NC-ND",
                           "CC0",
                           "ODC-By", "GPL", "AusGoalRestrictive",
+                          "CSIRODataLicence",
                           "NoLicence", "Unknown/Other"];
 
         // Initialize subject sources
