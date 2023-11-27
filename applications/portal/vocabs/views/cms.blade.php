@@ -53,18 +53,34 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
       <div class="row">
         <div class="col-md-12">
           <div class="alert alert-info" ng-show="fetchingPP">
-            Loading PoolParty Projects... Please wait...
+            Loading PoolParty Projects ... please wait.
           </div>
           <div class="panel swatch-gray" ng-show="!fetchingPP">
             <div class="panel-heading">PoolParty Integration</div>
             <div class="panel-body" >
               <div class="form-group">
                 <label for="">PoolParty Search</label>
-                <input type="text" class="form-control"
-                       placeholder="PoolParty ID"
-                       ng-model="project"
-                       uib-typeahead="project as project.title for project in projects | filter:projectSearch($viewValue) | limitTo:8"
-                       typeahead-min-length="1">
+                <ui-select name="title"
+                  append-to-body="true"
+                  ng-model="$parent.project"
+                  reset-search-input="false"
+                  tagging="false"
+                  theme="poolparty-bootstrap-swatch-white"
+                  >
+                  <!-- Truncate title to 80 chars, which seems to be enough -->
+                  <ui-select-match placeholder="Click here, type to filter PoolParty projects by title or ID, and make a selection">[[$select.selected.title | limitTo:80]][[$select.selected.title.length > 80 ? '...' : '']]</ui-select-match>
+                  <ui-select-choices id="project.id"
+                     repeat="p in projects | filter:projectSearch($select.search)">
+                    <div>
+                      [[ p.title ]]
+                      <br />
+                      <small>Project ID: [[ p.id ]]</small>
+                    </div>
+                  </ui-select-choices>
+                  <ui-select-no-choice>
+                    &nbsp;&nbsp;<i>No matches</i>
+                  </ui-select-no-choice>
+               </ui-select>
                 <p class="help-block">Search for a PoolParty
                   Project to pre-fill form</p>
               </div>
@@ -76,7 +92,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
               </div>
             </div>
             <div class="panel-footer">
-              <a role="button" href="" class="btn btn-primary"
+              <a role="button" tabindex="0" class="btn btn-primary"
                  ng-disabled="!project.id"
                  ng-click="selectPoolPartyProject(project)">Use this PoolParty Project</a>
             </div>
@@ -127,7 +143,7 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                       your organisation, please select the appropriate
                       organisational Owner.</p>
                   </div>
-                  <a role="button" href="javascript:;"
+                  <a role="button" tabindex="0"
                      class="btn btn-primary"
                      ng-show="!commitVocabOwner"
                      ng-disabled="!vocab.owner"
@@ -346,14 +362,15 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                   </thead>
                   <tbody>
                     <tr ng-repeat="version in vocab.versions track by $index">
-                      <td style="max-width: 200px"><a class="break" href="" ng-click="versionmodal('edit', $index)">[[ version.title ]] </a></td>
+                      <td style="max-width: 200px"><a role="button" tabindex="0" class="break" ng-click="versionmodal('edit', $index)">[[ version.title ]] </a></td>
                       <td><span class="label" ng-class="{'deprecated': 'deprecated-fore-and-back', 'current': 'current-fore-and-back', 'superseded': 'superseded-fore-and-back'}[version.status]">[[ version.status ]]</span></td>
-                      <td><a href="" ng-click="list_remove('versions', $index)"
+                      <td><a role="button" tabindex="0" ng-click="list_remove('versions', $index)"
                              title="Remove this version"><i class="fa fa-remove"></i></a></td>
                     </tr>
                   </tbody>
                 </table>
-                <a role="button" href="" class="btn btn-primary" ng-click="versionmodal('add')"><i class="fa fa-plus"></i> Add a version</a>
+                <button class="btn btn-primary" type="button"
+                        ng-click="versionmodal('add')"><i class="fa fa-plus"></i> Add a version</button>
               </div>
             </div>
 
@@ -368,17 +385,17 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                   </thead>
                   <tbody>
                     <tr ng-repeat="related in vocab.related_entity track by $index">
-                      <td style="max-width: 200px"><a class="break" href="" ng-click="relatedmodal('edit', related.type, $index)"
+                      <td style="max-width: 200px"><a role="button" tabindex="0" class="break" ng-click="relatedmodal('edit', related.type, $index)"
                              tooltip="[[ related.relationship.join() ]]">[[ related.title ]]</a></td>
                       <td>[[ related.type ]]</td>
-                      <td><a href="" ng-click="list_remove('related_entity', $index)"
+                      <td><a role="button" tabindex="0" ng-click="list_remove('related_entity', $index)"
                              title="Remove this related entity"><i class="fa fa-remove"></i></a></td>
                     </tr>
                     <tr ng-repeat="related in vocab.related_vocabulary track by $index">
-                      <td style="max-width: 200px"><a class="break" href="" ng-click="relatedvocabularymodal('edit', $index)"
+                      <td style="max-width: 200px"><a class="break" role="button" tabindex="0" ng-click="relatedvocabularymodal('edit', $index)"
                              tooltip="[[ related.relationship.join() ]]">[[ related.title ]]</a></td>
                       <td>internal</td>
-                      <td><a href="" ng-click="list_remove('related_vocabulary', $index)"
+                      <td><a role="button" tabindex="0" ng-click="list_remove('related_vocabulary', $index)"
                              title="Remove this related vocabulary"><i class="fa fa-remove"></i></a></td>
                     </tr>
                   </tbody>
@@ -390,10 +407,10 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                   <button type="button" class="btn btn-primary dropdown-toggle"
                           data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
                   <ul class="dropdown-menu" role="menu">
-                    <li><a role="button" href="" ng-click="relatedvocabularymodal()">Related Internal Vocabulary</a></li>
-                    <li><a role="button" href="" ng-click="relatedmodal('add', 'vocabulary')">Related External Vocabulary</a></li>
-                    <li><a role="button" href="" ng-click="relatedmodal('add', 'party')">Related Party</a></li>
-                    <li><a role="button" href="" ng-click="relatedmodal('add', 'service')">Related Service</a></li>
+                    <li><a role="button" tabindex="0" ng-click="relatedvocabularymodal()">Related Internal Vocabulary</a></li>
+                    <li><a role="button" tabindex="0" ng-click="relatedmodal('add', 'vocabulary')">Related External Vocabulary</a></li>
+                    <li><a role="button" tabindex="0" ng-click="relatedmodal('add', 'party')">Related Party</a></li>
+                    <li><a role="button" tabindex="0" ng-click="relatedmodal('add', 'service')">Related Service</a></li>
                   </ul>
                 </div>
 
@@ -411,21 +428,21 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
             <div class="panel swatch-gray">
               <div class="panel-body" ng-if="status=='idle'">
 
-                <a role="button" href=""
+                <button
                    class="btn btn-large btn-primary"
                    ng-click="save('draft')"
                    ng-disabled="form.cms.$invalid || loading">Save
-                  to draft</a>
+                  to draft</button>
 
-                <a role="button" href=""
+                <button
                    class="btn btn-large btn-primary"
                    ng-click="save('published')"
-                   ng-disabled="form.cms.$invalid || loading">Publish</a>
+                   ng-disabled="form.cms.$invalid || loading">Publish</button>
 
-                <a role="button" href=""
+                <button
                    class="btn btn-large btn-primary"
                    ng-click="save('deprecated')"
-                   ng-disabled="form.cms.$invalid || loading">Deprecate</a>
+                   ng-disabled="form.cms.$invalid || loading">Deprecate</button>
 
                 <span ng-if="loading"><i class="fa fa-refresh fa-spin"></i></span>
 
@@ -446,8 +463,8 @@ use ANDS\VocabsRegistry\Model\Vocabulary;
                   [[ error ]]
                 </div>
 
-                <a ng-if="!form.cms.$dirty && !confirmationRequiredOnExit" href="" role="button" class="btn btn-large btn-primary btn-discard" ng-click="exitNoConfirmation()">Exit</a>
-                <a ng-if="form.cms.$dirty || confirmationRequiredOnExit" href="" role="button" class="btn btn-large btn-primary btn-discard" ng-click="exitWithConfirmation()">Exit Without Saving</a>
+                <button ng-if="!form.cms.$dirty && !confirmationRequiredOnExit" class="btn btn-large btn-primary btn-discard" ng-click="exitNoConfirmation()">Exit</button>
+                <button ng-if="form.cms.$dirty || confirmationRequiredOnExit" class="btn btn-large btn-primary btn-discard" ng-click="exitWithConfirmation()">Exit Without Saving</button>
               </div>
               <div class="panel-body" ng-if="status=='saving'">
                 <i class="fa fa-refresh fa-spin"></i> Saving...

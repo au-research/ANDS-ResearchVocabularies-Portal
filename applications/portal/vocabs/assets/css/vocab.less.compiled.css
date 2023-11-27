@@ -67,15 +67,15 @@
 [theme="bootstrap-languageSelection"].ui-select-bootstrap input {
   background-color: white;
 }
-.swatch-gray ul[id^="typeahead-"].dropdown-menu > li > a,
-[class*="swatch-"] .swatch-gray ul[id^="typeahead-"].dropdown-menu > li > a {
-  color: #7e408a;
-  background: white;
+[theme="poolparty-bootstrap-swatch-white"].ui-select-bootstrap > .ui-select-choices,
+[theme="poolparty-bootstrap-swatch-white"].ui-select-bootstrap > .ui-select-no-choice {
+  max-height: 420px;
 }
-.swatch-gray ul[id^="typeahead-"].dropdown-menu > li > a:hover,
-[class*="swatch-"] .swatch-gray ul[id^="typeahead-"].dropdown-menu > li > a:hover {
+[theme="poolparty-bootstrap-swatch-white"].ui-select-bootstrap input {
+  background-color: white;
+}
+[theme="poolparty-bootstrap-swatch-white"].ui-select-bootstrap div.active small {
   color: white;
-  background: #7e408a;
 }
 .swatch-white.navbar .nav li a {
   color: #7e408a;
@@ -611,6 +611,12 @@ a {
 }
 a:not([role="button"]):hover {
   text-decoration: underline;
+}
+.underline-on-hover:hover {
+  text-decoration: underline;
+}
+a[role="button"]:hover {
+  cursor: pointer;
 }
 .swatch-gray .btn-primary,
 .swatch-gray button:not(.close),

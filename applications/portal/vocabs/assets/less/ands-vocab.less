@@ -104,14 +104,16 @@
 }
 
 // CMS PoolParty Search
-.swatch-gray ul[id^="typeahead-"].dropdown-menu > li > a,
-[class*="swatch-"] .swatch-gray ul[id^="typeahead-"].dropdown-menu > li > a {
-    color: @secondaryColor;
-    background: white;
-    &:hover {
-        color: white;
-        background: @secondaryColor;
-    }
+// Be tall enough to be useful
+[theme="poolparty-bootstrap-swatch-white"].ui-select-bootstrap > .ui-select-choices,
+[theme="poolparty-bootstrap-swatch-white"].ui-select-bootstrap > .ui-select-no-choice {
+    max-height: 420px;
+}
+[theme="poolparty-bootstrap-swatch-white"].ui-select-bootstrap input {
+    background-color: white;
+}
+[theme="poolparty-bootstrap-swatch-white"].ui-select-bootstrap div.active small {
+    color: white;
 }
 
 // Top menu
@@ -772,9 +774,21 @@ a {
 }
 
 // Underline links on hover, but not links that
-// are being styled as buttons.
+// are being styled as buttons ...
 a:not([role="button"]):hover {
     text-decoration: underline;
+}
+
+// ... but support overriding, for cases where we need to make
+// href-less links still show an underline on hover.
+.underline-on-hover:hover {
+  text-decoration: underline;
+}
+
+// And now also switch to the pointer cursor for href-less links
+// that are used as buttons.
+a[role="button"]:hover {
+    cursor: pointer;
 }
 
 // Primary, and submit-type buttons, e.g., "Close" on modals.

@@ -21,7 +21,7 @@
       <ul class="nav navbar-nav navbar-right h5 text-uppercase">
         <li><a href="{{portal_url('vocabs/page/about')}}">About</a></li>
         <li><a href="{{portal_url('vocabs/page/widget_explorer')}}">Widget Explorer</a></li>
-        <li> <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"
+        <li> <a role="button" tabindex="0" class="dropdown-toggle" data-toggle="dropdown"
                 aria-expanded="false">Get Involved <i class="fa fa-caret-down"></i></a>
           <ul class="dropdown-menu" role="menu">
             <li><a href="{{portal_url('vocabs/page/contribute')}}">Publish a vocabulary</a></li>
@@ -30,7 +30,7 @@
             <li><a href="https://ardc.edu.au/researcher/?utm_source=RVA&amp;utm_medium=referral-G&amp;utm_id=TRDC&amp;utm_term=generic&amp;utm_content=rva-menu" target="_blank">Researcher guides</a></li>
           </ul></li>
         @if(!empty($lensMenu))
-          <li> <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"
+          <li> <a role="button" tabindex="0" class="dropdown-toggle" data-toggle="dropdown"
                   aria-expanded="false">Community lenses <i class="fa fa-caret-down"></i></a>
             <ul class="dropdown-menu" role="menu">
               @foreach($lensMenu as $lensMenuItem)
