@@ -194,9 +194,11 @@ class Vocabs extends MX_Controller
             case 'disclaimer':
                 $title = 'Disclaimer';
                 break;
+            /* No longer used; we link to ARDC's policy.
             case 'privacy':
                 $title = 'Privacy';
                 break;
+            */
             case 'widget_explorer':
                 $title = 'Vocab Widget Explorer';
                 $this->blade->set(
