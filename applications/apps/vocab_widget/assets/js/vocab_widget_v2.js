@@ -17,7 +17,7 @@
  * specifically the image sprite `../img/d.png`
  */
 ;(function($) {
-    var WIDGET_NAME = "ANDS Vocabulary Widget service";
+    var WIDGET_NAME = "ARDC Vocabulary Widget service";
     var WIDGET_ID = "_vocab_widget_list";
     var WIDGET_DATA = "vocab_data";
 
@@ -27,7 +27,7 @@
 
 	var defaults = {
 	    //location (absolute URL) of the jsonp proxy
-	    endpoint: 'https://vocabs.ardc.edu.au/api/v1.0/vocab.jsonp/',
+	    endpoint: 'https://vocabs.ardc.edu.au/apps/vocab_widget/proxy/',
 
 	    //api_key set when instantiated
 	    api_key: 'public',

@@ -1979,7 +1979,14 @@ RewriteRule ^/ands_doc/(.*)$  "/opt/ardc/vocabs-portal-cms-tooltips/documentatio
     $(document).ready(function() {
         $.get("/ands_doc/tooltips", function (data) {
             var data_replaced = data.replace(/src="/gi, 'src="/ands_doc');
-            var html = $(data_replaced).find('#content-column-0');
+            // Undo Scroll Viewport's "hierarchy deflation".
+            // We note that there are no uses of h4 (or h3, for that
+            // matter) in the raw content we receive, so we're OK to
+            // replace all occurrences of h5 with h4.
+            data_replaced = data_replaced.replace(/h5/gi, 'h4');
+            data_replaced = data_replaced.replace(/h6/gi, 'h5');
+//            var html = $(data_replaced).find('#content-column-0');
+            var html = $(data_replaced).find('#main-content');
             $('#all_help').html(html);
             // Make all external links in these tooltips open a new
             // tab/window. Courtesy of:

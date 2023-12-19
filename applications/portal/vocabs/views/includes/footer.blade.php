@@ -17,7 +17,6 @@
               <li class="cat-item"> <a href="{{portal_url('vocabs/myvocabs')}}" title="">My Vocabs</a> </li>
               <li class="cat-item myCustomTrigger"> <a role="button" tabindex="0" class="underline-on-hover" title="">Contact us</a> </li>
               <li class="cat-item"> <a href="{{portal_url('vocabs/page/disclaimer')}}" title="">Disclaimer</a> </li>
-              <li class="cat-item"> <a href="{{portal_url('vocabs/page/privacy')}}" title="">Privacy Policy</a> </li>
             </ul>
           </div>
         </div>
@@ -58,6 +57,7 @@
               <li class="cat-item"> <a href="https://ardc.edu.au/" title="" target="_blank">ARDC Website</a> </li>
               <li class="cat-item"> <a href="https://documentation.ardc.edu.au/" title="" target="_blank">Developers</a> </li>
               <!-- <li class="cat-item"> <a href="{{base_url('registry/')}}" title="">ARDC Online Services</a> </li> -->
+              <li class="cat-item"> <a href="https://ardc.edu.au/privacy-policy/" title="" target="_blank">Privacy Policy</a> </li>
               @if(isset($ro) && $ro->core['id'])
                 <li class="cat-item"> <a href="{{base_url('registry/registry_object/view/')}}/<?=$this->ro->id?>" title="">Registry View</a> </li>
               @endif
