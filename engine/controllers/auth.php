@@ -1,72 +1,12 @@
 <?php
 class Auth extends CI_Controller {
 
-	public function login(){
-		$data['title'] = 'Login';
-		$data['js_lib'] = array('core', 'angular129');
-		$data['scripts'] = array('login');
-
-		$data['authenticators'] = array(
-			'built-in' => array(
-				'slug'		=> 'built_in',
-				'display' 	=> 'Built In',
-				'view' 		=>  $this->load->view('authenticators/built_in', false, true)
-			),
-			'ldap' => array(
-				'slug'		=> 'ldap',
-				'display' 	=> 'LDAP',
-				'view' 		=>  $this->load->view('authenticators/ldap', false, true)
-			),
-			'social' => array(
-				'slug' 		=> 'social',
-				'display'	=> 'Social',
-				'view' 		=> $this->load->view('authenticators/social', false, true)
-			)
-		);
-
-		if(get_config_item('shibboleth_sp')) {
-			$shibboleth_sp =  array(
-				'slug'		=>'shibboleth_sp',
-				'display'	=> 'Shibboleth SP',
-				'view'		=> $this->load->view('authenticators/shibboleth_sp', false, true)
-			);
-			array_push($data['authenticators'], $shibboleth_sp);
-		}
-
-		// var_dump(get_config_item('aaf_rapidconnect_url'));
-		// var_dump(get_config_item('aaf_rapidconnect_secret'));
-
-		$config = \ANDS\Util\Config::get('oauth');
-		if (isset($config['providers']['AAF_RapidConnect']['enabled']) &&
-			$config['providers']['AAF_RapidConnect']['enabled'] === true) {
-			$rapid_connect = array(
-				'slug'		=> 'aaf_rapid',
-				'default'	=> true,
-				'display' 	=> 'Australian Access Federation Login',
-				'view' 		=>  $this->load->view('authenticators/aaf_rapid', false, true)
-			);
-			array_push($data['authenticators'], $rapid_connect);
-		}
-
-		$data['default_authenticator'] = false;
-		foreach($data['authenticators'] as $auth) {
-			if(isset($auth['default']) && $auth['default'] === true) {
-				$data['default_authenticator'] = $auth['slug'];
-				break;
-			}
-		}
-		if(!$data['default_authenticator']) $data['default_authenticator'] = 'built_in';
-
-		$this->load->helper('cookie');
-		delete_cookie('auth_redirect');
-		if ($this->input->get('redirect')) {
-			// CC-1294 Use "set_cookie", not "setcookie".
-			// CC-1294 CC-2901 Specify expiry as 600, not "time() + 3600"!
-			set_cookie('auth_redirect', $this->input->get('redirect'), 600);
-		}
-
-		$this->load->view('login', $data);
-	}
+      /* SD-2351912 RVADEV-16 The legacy (RDA-like) login() method was
+         here. It was copied to the vocabs controller by commit
+         dc484cb5 (CC-2627 RVA-40) and modified. The version here was
+         subject to an XSS injection. Since we don't need this
+         method, it has now been deleted. See the vocabs controller's
+         login() function instead.  */
 
     /**
      * /registry/authenticate/:method
@@ -288,58 +228,12 @@ class Auth extends CI_Controller {
 	}
         */
 
-	public function logout(){
-		// Logs the user out and redirects them to the homepage/logout confirmation screen
-		$redirect = $this->input->get('redirect') ? $this->input->get('redirect') : false;
-		$this->user->logout($redirect);
-	}
-
-	//MAYBE DEPRECATED as of R14
-	public function setUser(){
-		$sharedToken = '';
-		$data['title'] = 'Login';
-		$data['js_lib'] = array('core');
-		$data['scripts'] = array();
-		$this->CI =& get_instance();
-		$data['redirect'] = '';
-		$data['authenticators'] = array(gCOSI_AUTH_METHOD_BUILT_IN => 'Built-in Authentication', gCOSI_AUTH_METHOD_LDAP=>'LDAP');
-		if (get_config_item('shibboleth_sp')=='true') {
-			$data['authenticators'][gCOSI_AUTH_METHOD_SHIBBOLETH] = 'Australian Access Federation (AAF) credentials';
-			$data['default_authenticator'] = gCOSI_AUTH_METHOD_SHIBBOLETH;
-		} else {
-			$data['default_authenticator'] = gCOSI_AUTH_METHOD_BUILT_IN;
-		}
-
-		if(isset($_SERVER['shib-shared-token'])){
-			$sharedToken = $_SERVER['shib-shared-token'];//authenticate using shared token
-		} elseif (isset($_SERVER['persistent-id'])) {
-			$sharedToken = sha1($_SERVER['persistent-id']);
-			echo $sharedToken;
-		} else {
-			$data['error_message'] = "Unable to login. Shibboleth IDP was not able to authenticate the given credentials. Missing shared token or persistent id";
-			$this->load->view('login', $data);
-		}
-
-		if($sharedToken) {
-			try {
-				if($this->user->authChallenge($sharedToken, '')) {
-					if($this->input->get('redirect')!='auth/dashboard/'){
-						redirect($this->input->get('redirect'));
-					} else {
-						redirect(registry_url().'auth/dashboard');
-					}
-				} else {
-					$data['error_message'] = "Unable to login. Please check your credentials are accurate.";
-					$this->load->view('login', $data);
-				}
-			}
-			catch (Exception $e) {
-				$data['error_message'] = "Unable to login. Please check your credentials are accurate.";
-				$data['exception'] = $e;
-				$this->load->view('login', $data);
-			}
-		}
-	}
+      /* SD-2351912 RVADEV-16 The legacy (RDA-like) logout() method was
+         here. It was copied to the vocabs controller by commit
+         dc484cb5 (CC-2627 RVA-40) and modified. The version here was
+         subject to an XSS injection. Since we don't need this
+         method, it has now been deleted. See the vocabs controller's
+         logout() function instead.  */
 
 	public function registerAffiliation($new = false){
 		header('Cache-Control: no-cache, must-revalidate');

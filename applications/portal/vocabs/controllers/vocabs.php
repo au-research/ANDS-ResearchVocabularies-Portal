@@ -35,6 +35,11 @@ class Vocabs extends MX_Controller
     // Path to the community lenses finding aid controller.
     const LENSES = 'lenses';
 
+    // Valid settings for the "redirect" query parameter.
+    // Initialized in the constructor below.
+    // SD-2351912 RVADEV-16
+    private $VALID_REDIRECT_REGEX;
+
     /**
      * Index / Home page
      * Displaying the Home Page
@@ -302,6 +307,20 @@ class Vocabs extends MX_Controller
 		if ($this->input->get('redirect')) {
 			// CC-1294 Use "set_cookie", not "setcookie".
 			// CC-1294 CC-2901 Specify expiry as 600, not "time() + 3600"!
+                        if (preg_match($this->VALID_REDIRECT_REGEX, $this->input->get('redirect')) !== 1) {
+                                $message = 'Invalid redirect query parameter';
+                                $this->output->set_status_header('404');
+                                $this->blade
+                                    ->set('message', $message)
+                                    ->set('page', 'soft_404')
+                                    ->set('lensMenu', $lensMenu)
+                                    ->render('soft_404');
+                                $event = [
+                                    'event' => 'portal_not_found'
+                                ];
+                                vocabs_portal_log($event);
+                                return;
+                        }
 			set_cookie('auth_redirect', $this->input->get('redirect'),
 				600, '','/', '', TRUE);
 		}
@@ -337,6 +356,8 @@ class Vocabs extends MX_Controller
     {
         if (!$this->user->isLoggedIn()) {
             // throw new Exception('User not logged in');
+            // NB: the value of the redirect query parameter must be included
+            // in the setting of VALID_REDIRECT_REGEX below!
             redirect(get_vocab_config('auth_url')
                      . 'login#?redirect=' . portal_url('vocabs/myvocabs'));
         }
@@ -793,6 +814,8 @@ class Vocabs extends MX_Controller
     {
         if (!$this->user->isLoggedIn()) {
             // throw new Exception('User not logged in');
+            // NB: the value of the redirect query parameter must be included
+            // in the setting of VALID_REDIRECT_REGEX below!
             redirect(get_vocab_config('auth_url')
                 . 'login#?redirect=' . portal_url('vocabs/myvocabs'));
         }
@@ -841,6 +864,8 @@ class Vocabs extends MX_Controller
     {
         if (!$this->user->isLoggedIn()) {
             // throw new Exception('User not logged in');
+            // NB: the value of the redirect query parameter must be included
+            // in the setting of VALID_REDIRECT_REGEX below!
             redirect(get_vocab_config('auth_url')
                 . 'login#?redirect='
                 . portal_url('vocabs/edit/' . $id));
@@ -1793,6 +1818,16 @@ class Vocabs extends MX_Controller
     public function __construct()
     {
         parent::__construct();
+
+        /* SD-2351912 RVADEV-16 Put here the allowed values
+           for the "redirect" query parameter. */
+        $this->VALID_REDIRECT_REGEX =
+             '/' .
+             '^' . preg_quote(portal_url('vocabs/myvocabs'), '/') . '$' .
+             '|' .
+             '^' . preg_quote(portal_url('vocabs/edit/'), '/')  . '[0-9]+' . '$' .
+             '/';
+
         $this->load->library('blade');
         ANDS\VocabsRegistry\Configuration::getDefaultConfiguration()->setHost(
             get_vocab_config('registry_api_url')
