@@ -69,9 +69,9 @@
         </div>
         <!-- Force z-index; need this with container-fluid, but
              not container. -->
-        <div class="col-md-6" style="z-index: 3">
+        <div class="col-md-9" style="z-index: 3">
           <form action="" ng-submit="$event.preventDefault();search()">
-            <div class="input-group" style="max-width: 700px">
+            <div class="input-group" style="max-width: 970px">
               <input type="text" class="form-control"
                      placeholder="Search for a vocabulary or a concept"
                      ng-model="form.query">
@@ -81,6 +81,15 @@
               </span>
               <span class="input-group-btn">
                 <a href="https://documentation.ardc.edu.au/rva/vocabulary-search" target="_blank" class="btn" style="color: white"><i class="fa fa-question-circle"></i> Using search</a>
+              </span>
+              <span class="input-group-btn" style="padding-right: 3px">
+                <a href="{{ portal_url('search/#!/?activeTab=vocabularies') }}" class="btn" style="color: white; padding-right: 0px">Browse all vocabularies</a>
+              </span>
+              <span class="input-group-btn" style="width: 0px">
+                <span style="font-size: 16px; vertical-align: middle">|</span>
+              </span>
+              <span class="input-group-btn" style="padding-left: 3px">
+                <a href="{{ portal_url('search/#!/?activeTab=resources') }}" class="btn" style="color: white; padding-left: 0px">concepts</a>
               </span>
             </div>
           </form>

@@ -91,12 +91,31 @@
         // user confirmation required.
         $scope.confirmationRequiredOnExit = false;
 
-        // $scope.commitVocabOwner is set to true if/when the owner
-        // field has been "locked in": either, this is a new vocab,
-        // and the user has made a selection from the owner dropdown
-        // and clicked the Continue button, _or_, we are editing an
-        // existing vocabulary (i.e., for which the owner is set
-        // already).
+        /*
+          $scope.commitVocabOwner is set to true if/when the owner
+          field has been "committed to": either, this is a new vocab,
+          and the user has made a selection from the owner dropdown
+          and clicked the Continue button, _or_, we are editing an
+          existing vocabulary (i.e., for which the owner is set
+          already).
+
+          NB #1: as of CC-1505, we allow the user to _change_ the
+          value of the owner field at any time. But we don't allow the
+          user to _clear_ the value of the field once set.  This is
+          evident in cms.blade.php, where we no longer have
+          'ng-disabled="commitVocabOwner"' in the 'select' elements
+          that define the owner field.
+
+          NB #2: and despite CC-1505, we do still maintain the
+          multi-step process of vocabulary creation where the user
+          specifies an owner before being able to specify other
+          metadata values. This is because an owner must be selected
+          before related entities are added; an owner must be
+          specified for them when they're created. This is
+          particularly important when adding a new PoolParty project,
+          where pre-filling the form typically adds new related
+          entities.
+        */
         $scope.commitVocabOwner = false;
 
         // Used to keep a record of the selection of PoolParty project.
@@ -339,19 +358,19 @@
         if ($('#vocab_id').val()) {
             $scope.decide = true;
             api.getVocabularyByIdEdit($('#vocab_id').val()).then(
-                             function (data) {
-               $log.debug('Editing ', data);
-               $scope.commitVocabOwner = true;
-                // Preserve the original data for later. We need this
-                // specifically for the creation_date value.
-                $scope.original_data = data;
-                // Copy the values into the form.
-                $scope.copy_incoming_vocab_to_scope(data);
-                $scope.mode = 'edit';
-                // Special handling for creation date.
-                $scope.set_creation_date_textfield($scope);
-//                $log.debug($scope.form.cms);
-            });
+                function (data) {
+                    $log.debug('Editing ', data);
+                    $scope.commitVocabOwner = true;
+                    // Preserve the original data for later. We need this
+                    // specifically for the creation_date value.
+                    $scope.original_data = data;
+                    // Copy the values into the form.
+                    $scope.copy_incoming_vocab_to_scope(data);
+                    $scope.mode = 'edit';
+                    // Special handling for creation date.
+                    $scope.set_creation_date_textfield($scope);
+                    // $log.debug($scope.form.cms);
+                });
         } else {
             /**
              * Collect All PoolParty Project
