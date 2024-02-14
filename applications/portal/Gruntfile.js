@@ -40,7 +40,12 @@ module.exports = function(grunt){
                 dest: '<%= yeoman.assets %>/css/portal.combine.css'
             },
             lib:{
-                options:{separator:';'},
+                options:{separator:';',
+                         // CC-2456 RVADEV-15 Strip out sourceMappingURL lines.
+                         process: function(src, filepath) {
+                             return src.replace(/(^|\n)\/\/# sourceMappingURL=[a-z-.]+\s*/g, '$1\n');
+                         }
+                        },
                 src:[
                     '<%=yeoman.assets %>/lib/angular/angular.min.js',
                     '<%=yeoman.assets %>/lib/angular-route/angular-route.min.js',
@@ -92,7 +97,12 @@ module.exports = function(grunt){
                 dest:'<%=yeoman.vocab_asset %>/css/lib.css'
             },
             vocab_lib: {
-                options:{separator:';\n'},
+                options:{separator:';\n',
+                         // CC-2456 RVADEV-15 Strip out sourceMappingURL lines.
+                         process: function(src, filepath) {
+                             return src.replace(/(^|\n)\/\/# sourceMappingURL=[a-z-.]+\s*/g, '$1\n');
+                         }
+                        },
                 nonull: true,
                 src:[
                     '<%= yeoman.vocab_asset %>/js/ie-polyfill.js',
