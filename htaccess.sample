@@ -1,6 +1,14 @@
 DirectoryIndex index.php
 
+# Always ensure Cookies have "Secure" set.
+# This line has been copied from Let's Encrypt's options-ssl-apache.conf.
+Header edit Set-Cookie (?i)^(.*)(;\s*secure)??((\s*;)?(.*)) "$1; Secure$3$4"
+
 RewriteEngine on
+
+# NOTA BENE: If the value of RewriteBase is anything other than "/",
+# the value must be duplicated further down in the rule beginning
+# "RewriteRule ^assets/(.*)$ ...".
 RewriteBase /
 
 # Hide .git directories
@@ -17,16 +25,44 @@ RewriteRule ^services/ registry/ [R=301,L]
 # RewriteRule ^registry/orca/services/oai\.php registry/services/oai [R=301,L,QSA]
 
 RewriteCond $1 ^(css|img|js|less|lib|uploads|shared|images)
+# The RewriteConds for "assets" with "-f" go together with the catch-all
+# RewriteCond with "!-f" further down.
+RewriteCond %{CONTEXT_DOCUMENT_ROOT}/assets/$1/$2 -f
 RewriteRule ^assets/(.*?)/(.*)$ assets/$1/$2 [L]
+
+# The RewriteConds for "assets" with "-f" go together with the catch-all
+# RewriteCond with "!-f" further down.
+RewriteCond %{CONTEXT_DOCUMENT_ROOT}/applications/portal/templates/$1/assets/$2 -f
 RewriteRule ^assets/templates/(.*?)/(.*)$ applications/portal/templates/$1/assets/$2 [L]
+
+# The RewriteConds for "assets" with "-f" go together with the catch-all
+# RewriteCond with "!-f" further down.
+RewriteCond %{CONTEXT_DOCUMENT_ROOT}/applications/portal/$1/assets/$2 -f
 RewriteRule ^assets/(.*?)/(.*)$ applications/portal/$1/assets/$2 [L]
 
 RewriteCond $1 ^(registry|roles|apps|developer|portal_auth)
 RewriteCond $2 ^(css|img|js|less|lib)
+# The RewriteConds for "assets" with "-f" go together with the catch-all
+# RewriteCond with "!-f" further down.
+RewriteCond %{CONTEXT_DOCUMENT_ROOT}/assets/$2/$3 -f
 RewriteRule ^(.*?)/assets/(.*?)/(.*)$ assets/$2/$3 [L]
 
 RewriteCond $1 !^applications/.*/
+# The RewriteConds for "assets" with "-f" go together with the catch-all
+# RewriteCond with "!-f" further down.
+RewriteCond %{CONTEXT_DOCUMENT_ROOT}/applications/$1/$2/assets/$3 -f
 RewriteRule ^(.*?)/assets/(.*?)/(.*)$ applications/$1/$2/assets/$3 [L]
+
+RewriteCond %{CONTEXT_DOCUMENT_ROOT}/assets/$1 !-f
+# Without R=302 to send a redirect back to the browser, we would get
+# only an internal redirect, which _doesn't_ change what PHP sees as
+# the request URL, and so we would get undesired proxying of a request
+# for vocabulary slug "assets" sent through to the Registry.
+# With R=302, the request is handled (eventually) entirely by the
+# Portal.
+# NB: if the value of RewriteBase set above is not equal to "/", its
+# value must be copied here at the beginning of the substitution.
+RewriteRule ^assets/(.*)$ /page/no_page [L,R=302]
 
 RewriteCond $1 !^(Shibboleth.sso)
 RewriteCond %{REQUEST_FILENAME} !-f
