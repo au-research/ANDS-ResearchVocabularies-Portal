@@ -6,9 +6,10 @@ Header edit Set-Cookie (?i)^(.*)(;\s*secure)??((\s*;)?(.*)) "$1; Secure$3$4"
 
 RewriteEngine on
 
-# NOTA BENE: If the value of RewriteBase is anything other than "/",
-# the value must be duplicated further down in the rule beginning
-# "RewriteRule ^assets/(.*)$ ...".
+# NOTA BENE: RewriteBase must be set to the same value os the server
+# variable %{CONTEXT_PREFIX}, but with a trailing slash.  E.g., if
+# %{CONTEXT_PREFIX} = "/a/b/c", then set "RewriteBase /a/b/c/". NB #2:
+# %{CONTEXT_PREFIX} is used in one of the rules below.
 RewriteBase /
 
 # Hide .git directories
@@ -60,9 +61,8 @@ RewriteCond %{CONTEXT_DOCUMENT_ROOT}/assets/$1 !-f
 # for vocabulary slug "assets" sent through to the Registry.
 # With R=302, the request is handled (eventually) entirely by the
 # Portal.
-# NB: if the value of RewriteBase set above is not equal to "/", its
-# value must be copied here at the beginning of the substitution.
-RewriteRule ^assets/(.*)$ /page/no_page [L,R=302]
+# Note the use of %{CONTEXT_PREFIX}.
+RewriteRule ^assets/(.*)$ %{CONTEXT_PREFIX}/page/no_page [L,R=302]
 
 RewriteCond $1 !^(Shibboleth.sso)
 RewriteCond %{REQUEST_FILENAME} !-f
