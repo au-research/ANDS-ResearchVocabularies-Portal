@@ -1123,6 +1123,13 @@
     function initialiseVisualisation_v2($scope, data) {
         conceptTreePostProcess_v2($scope, data);
 
+        // At this point, we know that the value of nodeCount has been
+        // settled.  We can now use it to enable/disable the
+        // collapse/expand all buttons. The vocabulary is "flat" if
+        // and only if the total number of nodes equals the number of
+        // children of the forest.
+        $scope.forestIsFlat = nodeCount == data.forest.length;
+
         // Create the tree.
         // Note: some config options are added/updated later.
         $("#tree").fancytree({
@@ -1163,6 +1170,13 @@
      */
     function initialiseVisualisation_v3($scope, data) {
         conceptTreePostProcess_v3($scope, data);
+
+        // At this point, we know that the value of nodeCount has been
+        // settled.  We can now use it to enable/disable the
+        // collapse/expand all buttons. The vocabulary is "flat" if
+        // and only if the total number of nodes equals the number of
+        // children of the forest.
+        $scope.forestIsFlat = nodeCount == data.forest.length;
 
         // Create the tree.
         // Note: some config options are added/updated later.

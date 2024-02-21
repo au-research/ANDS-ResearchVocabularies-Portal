@@ -15,7 +15,7 @@
       <tr style="width:100%">
 
         <td style="width:50%">
-          <span >
+          <span ng-if="!forestIsFlat">
             <button class="btn btn-primary" id="expandAll" title="Expand all">
               <i class="fa fa-level-down"></i>
             </button>
