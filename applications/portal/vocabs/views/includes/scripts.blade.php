@@ -47,7 +47,7 @@
      but _before_ bringing in JQuery UI.
 -->
 <script type="text/javascript"
-        src="https://jira.ardc.edu.au/plugins/servlet/issueCollectorBootstrap.js?collectorId=7c2a6508&locale=en_UK"></script>
+        src="https://ardc.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/tod1zk/b/9/c95134bc67d3a521bb3f4331beb9b804/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-GB&collectorId=873ffb9f"></script>
 
 
 <!-- JQuery UI used for draggable modal dialogs on CMS, and on
