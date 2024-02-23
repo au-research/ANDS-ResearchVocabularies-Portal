@@ -3017,13 +3017,18 @@ $(document).on(
 window.ATL_JQ_PAGE_PROPS = {
     "triggerFunction": function (showCollectorDialog) {
         // Requires that jQuery is available!
-        $(".feedback_button, .myCustomTrigger").click(
-            function (e) {
-                e.preventDefault();
-                showCollectorDialog();
-            }
-        );
-
+        jQuery(".feedback_button, #myCustomTrigger").click(function(e) {
+            e.preventDefault();
+            showCollectorDialog();
+        });
+    },
+    // The following causes the checkbox “Include data about your
+    // current environment, like the browser and page URL. This helps
+    // us understand your feedback better.” to be checked by default.
+    // See: https://community.atlassian.com/t5/Jira-Software-questions/Issue-Collector-Default-for-quot-Include-data-about-your-current/qaq-p/595651
+    "fieldValues": {
+        recordWebInfo: '1', // field Name
+        recordWebInfoConsent: ['1'] // field Id
     }
 };
 
